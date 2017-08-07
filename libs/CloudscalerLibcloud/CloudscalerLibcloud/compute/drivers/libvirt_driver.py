@@ -65,7 +65,7 @@ class NetworkInterface(object):
 class OpenvStorageVolume(StorageVolume):
 
     def __init__(self, *args, **kwargs):
-        self.iops = kwargs.pop('iops', 0)
+        self.iotune = kwargs.pop('iotune', {})
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
         vdiskid, _, vdiskguid = self.id.partition('@')
         url = urlparse.urlparse(vdiskid)
@@ -606,7 +606,7 @@ class CSLibvirtNodeDriver(object):
         self.destroy_volumes_by_guid(diskguids)
         return True
 
-    def ex_limitio(self, volume, iops):
+    def ex_limitio(self, volume):
         node = volume.extra['node']
         xmldom = ElementTree.fromstring(self._get_persistent_xml(node))
         devices, disk = self.get_volume_from_xml(xmldom, volume)
@@ -616,7 +616,8 @@ class CSLibvirtNodeDriver(object):
         self._set_persistent_xml(node, ElementTree.tostring(xmldom))
 
         if node.state == LibvirtState.RUNNING:
-            return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id, disks=[volume.id], iops=iops)
+            return self._execute_agent_job('limitdiskio', queue='hypervisor', machineid=node.id,
+                                           disks=[volume.id], iotune=volume.iotune)
 
     def destroy_volumes_by_guid(self, diskguids):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}

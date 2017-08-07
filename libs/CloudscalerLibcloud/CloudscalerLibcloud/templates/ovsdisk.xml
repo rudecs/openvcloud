@@ -3,10 +3,14 @@
     <source protocol='openvstorage' name='{{name}}' vdiskguid='{{vdiskguid}}'>
         <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
     </source>
-    {% if iops and iops != 0 %}
+{% if iotune %}
     <iotune>
-     <total_iops_sec>{{iops}}</total_iops_sec>
+     {% for key, value in iotune.items() -%}
+     {% if value %}
+     <{{key}}>{{value}}</{{key}}>
+     {% endif %}
+     {% endfor %}
     </iotune>
-    {% endif %}
+{% endif %}
     <target dev='{{dev}}' bus='{{bus}}'/>
 </disk>

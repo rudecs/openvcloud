@@ -22,7 +22,8 @@ class cloudapi_disks(BaseActor):
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):
             disk = disk.dump()
-        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], driver=provider.client, extra={'node': node}, iops=disk['iops'])
+        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], 
+                                  driver=provider.client, extra={'node': node}, iotune=disk['iotune'])
 
     @authenticator.auth(acl={'account': set('C')})
     def create(self, accountId, gid, name, description, size=10, type='D', ssdSize=0, **kwargs):
@@ -66,7 +67,27 @@ class cloudapi_disks(BaseActor):
         return disk, volume
 
     @authenticator.auth(acl={'account': set('C')})
-    def limitIO(self, diskId, iops, **kwargs):
+    def limitIO(self, diskId, iops, total_bytes_sec, read_bytes_sec, write_bytes_sec, total_iops_sec,
+                read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max, 
+                write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
+                write_iops_sec_max, size_iops_sec, **kwargs):
+
+        if (iops or total_iops_sec) and (read_bytes_sec or write_iops_sec):
+            raise exceptions.BadRequest("total and read/write of iops_sec cannot be set at the same time")
+        if (total_bytes_sec) and (read_bytes_sec or write_bytes_sec):
+            raise exceptions.BadRequest("total and read/write of bytes_sec cannot be set at the same time")
+        if (total_bytes_sec_max) and (read_bytes_sec_max or write_bytes_sec_max):
+            raise exceptions.BadRequest("total and read/write of bytes_sec_max cannot be set at the same time")
+        if (total_iops_sec_max) and (read_iops_sec_max or write_iops_sec_max):
+            raise exceptions.BadRequest("total and read/write of iops_sec_max cannot be set at the same time")
+
+        iotune = locals()
+        iotune.pop('diskId')
+        iotune.pop('kwargs')
+        iotune.pop('self')
+        iops = iotune.pop('iops')
+        if iops:
+            iotune['total_iops_sec'] = iops
         disk = self.models.disk.get(diskId)
         if disk.status == 'DESTROYED':
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
@@ -74,11 +95,12 @@ class cloudapi_disks(BaseActor):
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
             raise exceptions.NotFound("Could not find virtual machine beloning to disk")
-        disk.iops = iops
+        
+        disk.iotune = iotune
         self.models.disk.set(disk)
         provider, node, machine = self.cb.getProviderAndNode(machine['id'])
         volume = self.getStorageVolume(disk, provider, node)
-        return provider.client.ex_limitio(volume, iops)
+        return provider.client.ex_limitio(volume)
 
     @authenticator.auth(acl={'account': set('R')})
     def get(self, diskId, **kwargs):

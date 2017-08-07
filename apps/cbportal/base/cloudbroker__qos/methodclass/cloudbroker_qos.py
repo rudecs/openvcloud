@@ -19,14 +19,26 @@ class cloudbroker_qos(BaseActor):
         """
         raise NotImplementedError("not implemented method limitCPU")
 
-    def limitIO(self, diskId, iops, **kwargs):
+    def limitIO(self, diskId, iops, total_bytes_sec, read_bytes_sec, write_bytes_sec, total_iops_sec,
+                read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max, 
+                write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
+                write_iops_sec_max, size_iops_sec, **kwargs):
         """
         Limit IO done on a certain disk
         param:diskId Id of the disk to limit
         param:iops Max IO per second, 0 means unlimited
         result bool
         """
-        return self.cb.actors.cloudapi.disks.limitIO(diskId=diskId, iops=iops)
+        return self.cb.actors.cloudapi.disks.limitIO(
+            diskId=diskId, iops=iops, total_bytes_sec=total_bytes_sec,
+            read_bytes_sec=read_bytes_sec, write_bytes_sec=write_bytes_sec,
+            total_iops_sec=total_iops_sec, read_iops_sec=read_iops_sec,
+            write_iops_sec=write_iops_sec, total_bytes_sec_max=total_bytes_sec_max,
+            read_bytes_sec_max=read_bytes_sec_max, write_bytes_sec_max=write_bytes_sec_max,
+            total_iops_sec_max=total_iops_sec_max, read_iops_sec_max=read_iops_sec_max,
+            write_iops_sec_max=write_iops_sec_max, size_iops_sec=size_iops_sec,
+            **kwargs
+        )
 
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """
