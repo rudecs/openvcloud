@@ -21,10 +21,25 @@
 
     method:limitIO
         """
-        Limit IO done on a certain disk
+        Limit IO for a certain disk
+        total and read/write options are not allowed to be combined
+        see http://libvirt.org/formatdomain.html#elementsDisks iotune section for more details
         """
         var:diskId int,, Id of the disk to limit
-        var:iops int,, Max IO per second, 0 means unlimited
+        var:iops int,, alias for total_iops_sec for backwards compatibility @optional
+        var:total_bytes_sec int,, ... @optional
+        var:read_bytes_sec int,, ... @optional
+        var:write_bytes_sec int,, ... @optional
+        var:total_iops_sec int,, ... @optional
+        var:read_iops_sec int,, ... @optional
+        var:write_iops_sec int,, ... @optional
+        var:total_bytes_sec_max int,, ... @optional
+        var:read_bytes_sec_max int,, ... @optional
+        var:write_bytes_sec_max int,, ... @optional
+        var:total_iops_sec_max int,, ... @optional
+        var:read_iops_sec_max int,, ... @optional
+        var:write_iops_sec_max int,, ... @optional
+        var:size_iops_sec int,, ... @optional
         result:bool
 
     method:delete

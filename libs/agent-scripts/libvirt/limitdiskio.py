@@ -15,7 +15,7 @@ async = True
 queue = "hypervisor"
 
 
-def action(machineid, disks, iops):
+def action(machineid, disks, iotune):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     connection = LibvirtUtil()
     domain = connection.get_domain(machineid)
@@ -24,7 +24,12 @@ def action(machineid, disks, iops):
     for diskurl in disks:
         dev = connection.get_domain_disk(diskurl, domaindisks)
         if dev:
-            j.system.process.execute('virsh blkdeviotune %s %s --total_iops_sec %s --config --live' % (machineid, dev, iops))
+            cmd = ['virsh', 'blkdeviotune', str(machineid), str(dev)]
+            for key, value in iotune.items():
+                if value is not None:
+                    cmd.extend(['--%s' % key, str(value)])
+            cmd.extend(['--config', '--live'])
+            j.system.process.execute(' '.join(cmd))
 
     return True
 
