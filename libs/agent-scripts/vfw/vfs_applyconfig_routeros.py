@@ -23,7 +23,7 @@ def action(name, fwobject):
     for rule in fwobject['tcpForwardRules']:  
         protocol = rule.get('protocol', 'tcp')
         ro.addPortForwardRule(rule['fromAddr'], rule['fromPort'], rule['toAddr'], rule['toPort'], tags='cloudbroker', protocol=protocol)
-    leases = fwobject['leases']
+    leases = fwobject.get('leases')
     if leases:
         ro.add_leases(leases)
     return True
