@@ -121,6 +121,18 @@ class NetManager(object):
         self.osisvfw.set(fwobj)
         return True
 
+    def fw_executescript(self, fwid, script):
+        fwobj = self._getVFWObject(fwid)
+        args = {'fwobject': fwobj.obj2dict(), 'script': script}
+        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_runscript_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
+        if job['state'] != 'OK':
+            raise exceptions.BadRequest("Failed to execute script")
+        result, err = job['result']
+        if err:
+            raise exceptions.BadRequest("Failed to execute script: %s" % err)
+        return True
+
+
     def fw_get_ipaddress(self, fwid, macaddress):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}

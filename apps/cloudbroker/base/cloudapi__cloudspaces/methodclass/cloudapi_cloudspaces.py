@@ -1004,3 +1004,12 @@ class cloudapi_cloudspaces(BaseActor):
             zip.writestr(filename, filecontent)
         zip.close()
         return fp.getvalue()
+
+    @authenticator.auth(acl={'cloudspace': set('A')})
+    def executeRouterOSScript(self, cloudspaceId, script, **kwargs):
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status != 'DEPLOYED':
+            raise exceptions.NotFound('Can not get openvpn config for a cloudspace which is not deployed')
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        self.cb.netmgr.fw_executescript(fwid, script)
+        return True

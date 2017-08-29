@@ -134,3 +134,11 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         result:str, binary zip file
+
+    method:executeRouterOSScript
+        """
+        Execute a script on the routeros of the cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:script str,, script to execute
+        result:bool
