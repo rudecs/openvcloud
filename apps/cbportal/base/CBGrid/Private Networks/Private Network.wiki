@@ -37,8 +37,8 @@ h2. Private Network: ${id} (${'%04x' % id})
   - type: message
     messagetype: warning
     message: Resetting VFW has major consequences!</br>
-             Be aware that the external IP address of the network might change.</br>
-             All existing port forwards and IP adresses asigned to virtual machines will be broken.
+             All custom changes to the VFW will be reset!</br>
+             Leases and portforwardings will be preserved.
   - reason
 
 - display: Remove VFW
