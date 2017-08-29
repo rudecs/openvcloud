@@ -7,7 +7,7 @@ remove [/user find name=customer]
 
 /user group
 remove [/user group find name=customer]
-add name=customer policy="local,reboot,read,write,policy,web,!telnet,!ssh,!ftp,!test,!winbox,!password,!sniff,!sensitive,!api" skin=customer    
+add name=customer policy="local,reboot,read,write,policy,web,telnet,!ssh,!ftp,!test,!winbox,!password,!sniff,!sensitive,!api"
 
 /user
 add name=admin password="$password" group=customer

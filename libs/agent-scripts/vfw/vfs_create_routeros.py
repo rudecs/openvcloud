@@ -50,7 +50,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
 
     hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
-    DEFAULTGWIP = hrd.get("instance.vfw.default.ip")
     netrange = hrd.get("instance.vfw.netrange.internal")
     defaultpasswd = hrd.get("instance.vfw.admin.passwd")
     username = hrd.get("instance.vfw.admin.login")
@@ -118,7 +117,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
             run.sendline(defaultpasswd)
             print 'waiting for prompt'
             run.expect("\] >", timeout=120) # wait for primpt
-            run.send("/ip addr add address=%s/22 interface=internal\r\n" % internalip)
+            run.send("/ip addr add address=%s/22 interface=ether3\r\n" % internalip)
             print 'waiting for end of command'
             run.expect("\] >", timeout=10) # wait for primpt
             run.send("/quit\r\n")
@@ -128,23 +127,14 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s"%(networkid,networkidHex,e))
 
         print "wait max 30 sec on tcp port 22 connection to '%s'"%internalip
-        if j.system.net.waitConnectionTest(internalip, 9022,timeout=30):
+        if j.system.net.waitConnectionTest(internalip, 80,timeout=30):
             print "Router is accessible, initial configuration probably ok."
         else:
             raise RuntimeError("Could not connect to router on %s"%internalip)
 
         ro=j.clients.routeros.get(internalip,username,defaultpasswd)
-        try:
-            ro.ipaddr_remove(DEFAULTGWIP)
-            ro.resetMac("internal")
-        except Exception,e:
-            raise RuntimeError("Could not cleanup VFW temp ip addr, network id:%s:%s\n%s"%(networkid,networkidHex,e))
-
         ro.do("/system/identity/set",{"name":"%s/%s"%(networkid,networkidHex)})
         ro.executeScript('/file remove numbers=[/file find]')
-
-        if not "skins" in ro.list("/"):
-            ro.mkdir("/skins")
 
         # create certificates
         certdir = j.system.fs.getTmpDirPath()
@@ -154,6 +144,9 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         ro.uploadFilesFromDir(certdir)
         vpnpassword = j.tools.hash.sha1(j.system.fs.joinPaths(certdir, 'ca.crt'))
         j.system.fs.removeDirTree(certdir)
+
+        if not "skins" in ro.list("/"):
+            ro.mkdir("/skins")
         ro.uploadFilesFromDir("skins","/skins")
 
         pubip = "%s/%s" % (publicip, publiccidr)
@@ -165,21 +158,21 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         ro.uploadExecuteScript("systemscripts")
         ro.uploadExecuteScript("services")
 
-        print "change admin password"
-        try:
-            ro.executeScript('/user set %s password=%s' % (username, newpassword))
-        except:
-            pass
+        # skin default
+        ro.uploadExecuteScript("customer", vars={'$password': password})
 
-        ro = j.clients.routeros.get(internalip,username,newpassword)
-        if not ro.arping(publicgwip, 'public'):
-            raise RuntimeError("Could not ping to:%s for VFW %s"%(publicgwip, networkid))
+        # dirty cludge: rebooting ROS here, as ftp service doesn't propagate directories
+        ro.executeScript('/system reboot')
+        ro.close()
 
+        # We're waiting for reboot
         start = time.time()
         timeout = 60
         while time.time() - start < timeout:
             try:
-                ro.uploadExecuteScript("customer", vars={'$password': password})
+                ro = j.clients.routeros.get(internalip,username,defaultpasswd)
+                ro.executeScript("/user group set [find name=customer] skin=customer")
+                ro.close()
                 break
             except Exception as e:
                 print 'Failed to set skin will try again in 1sec', e
@@ -187,12 +180,18 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         else:
             raise RuntimeError("Failed to set customer skin")
 
-        print "wait max 2 sec on tcp port 9022 connection to '%s'"%internalip
-        if j.system.net.waitConnectionTest(internalip,9022,timeout=2):
-            print "Router is accessible, configuration probably ok."
-        else:
-            raise RuntimeError("Internal ssh is not accsessible.")
+        if not ro.arping(publicgwip, 'public'):
+            raise RuntimeError("Could not ping to:%s for VFW %s"%(publicgwip, networkid))
 
+
+        # now, set the pasword
+        try:
+            ro = j.clients.routeros.get(internalip,username,defaultpasswd)
+            ro.executeScript('/user set %s password=%s' % (username, newpassword))
+        except:
+            pass
+
+        ro.close()
         print 'Finished configuring VFW'
 
     except:

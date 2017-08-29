@@ -18,7 +18,8 @@ add bridge=cloudspace-bridge interface=cloudspace
 
 /ip pool
 remove [/ip pool find name=dhcp]
-add name=dhcp ranges=192.168.103.3-192.168.103.254
+add name=dhcp ranges=192.168.103.11-192.168.103.254
+add name=dhcpppp ranges=192.168.103.2-192.168.103.10
 
 /ip dns set allow-remote-requests=no
 
@@ -30,6 +31,9 @@ add address=192.168.103.0/24 gateway=192.168.103.1 netmask=255.255.255.0 dns-ser
 remove [/ip dhcp-server find name=server1]
 add address-pool=dhcp disabled=no interface=cloudspace-bridge name=server1 lease-time=5200w
 config set store-leases-disk=immediately
+
+/ip dhcp-client
+remove [find]
 
 /ip address
 remove numbers=[/ip address find interface=public]
