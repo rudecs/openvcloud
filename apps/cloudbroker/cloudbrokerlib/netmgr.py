@@ -234,8 +234,8 @@ class NetManager(object):
     def fw_reapply(self, fwid, leases):
         fwobj = self._getVFWObject(fwid).obj2dict()
         fwobj['leases'] = leases
-        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj}
-        return self._applyconfig(fwobj.gid, fwobj.nid, args)
+        args = {'name': '%(domain)s_%(name)s' % fwobj, 'fwobject': fwobj}
+        return self._applyconfig(fwobj['gid'], fwobj['nid'], args)
 
 
     def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, apply=True, **kwargs):
