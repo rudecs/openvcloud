@@ -55,12 +55,16 @@ class NetManager(object):
         param:host management address to manage the firewall
         param:type type of firewall e.g routeros, ...
         """
-        fwobj = self.osisvfw.new()
+        fwid = '{}_{}'.format(gid, networkid)
+        if not self.osisvfw.exists(fwid):
+            fwobj = self.osisvfw.new()
+        else:
+            fwobj = self.osisvfw.get(fwid)
         fwobj.domain = domain
         fwobj.id = networkid
         fwobj.gid = gid
         fwobj.vlan = vlan
-        fwobj.pubips.append(publicip)
+        fwobj.pubips = [publicip]
         fwobj.type = type
         key = self.osisvfw.set(fwobj)[0]
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name)}
@@ -165,7 +169,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("Failed to get OpenVPN Config")
         return job['result']
 
-    def fw_delete(self, fwid, gid, **kwargs):
+    def fw_delete(self, fwid, gid, deletemodel=True, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
@@ -182,7 +186,8 @@ class NetManager(object):
                 job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
                     raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
-            self.osisvfw.delete(fwid)
+            if deletemodel:
+                self.osisvfw.delete(fwid)
         else:
             result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_delete', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
             if result:
@@ -225,6 +230,13 @@ class NetManager(object):
         if not result:
             self.fw_forward_delete(fwid, gid, fwip, fwport, destip, destport, protocol, apply=False)
         return result
+
+    def fw_reapply(self, fwid, leases):
+        fwobj = self._getVFWObject(fwid).obj2dict()
+        fwobj['leases'] = leases
+        args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj}
+        return self._applyconfig(fwobj.gid, fwobj.nid, args)
+
 
     def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, apply=True, **kwargs):
         """
