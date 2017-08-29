@@ -139,7 +139,7 @@ class cloudapi_portforwarding(BaseActor):
             raise exceptions.NotFound('Cannot find the rule with id %s' % str(id))
         forward = forwards[id]
         self.netmgr.fw_forward_delete(fw_id, fw_gid, forward['publicIp'], forward['publicPort'],
-                                      forward['localIp'], forward['localPort'])
+                                      forward['localIp'], forward['localPort'], forward['protocol'])
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceId)
 
@@ -163,7 +163,7 @@ class cloudapi_portforwarding(BaseActor):
 
     def _deleteByPort(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
         fw_id, fw_gid = self._getFirewallId(cloudspaceId)
-        if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort, proto):
+        if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort, protocol=proto):
             raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         return self._process_list(forwards, cloudspaceId)
