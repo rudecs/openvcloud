@@ -47,3 +47,7 @@ discovery set [ /interface ethernet find name=public ] discover=no
 /interface ethernet reset-mac-address numbers=0
 /interface ethernet reset-mac-address numbers=1
 /interface ethernet reset-mac-address numbers=2
+
+/ip firewall nat
+add action=masquerade chain=srcnat out-interface=public
+
