@@ -5,6 +5,8 @@ from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from cloudbrokerlib import network
 from JumpScale.portal.portal import exceptions
+import netaddr
+import uuid
 
 
 class cloudbroker_cloudspace(BaseActor):
@@ -154,8 +156,36 @@ class cloudbroker_cloudspace(BaseActor):
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
-        self.destroyVFW(cloudspaceId, **kwargs)
-        self.cb.actors.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status != 'DEPLOYED':
+            raise exceptions.BadRequest('Can not reset VFW which is not deployed please deploy instead.')
+
+        self._destroyVFW(cloudspace.gid, cloudspaceId, deletemodel=False)
+
+        pool = self.models.externalnetwork.get(cloudspace.externalnetworkId)
+
+        if cloudspace.externalnetworkip is None:
+            raise exceptions.BadRequest('Can not reset VFW which has no external network IP please deploy instead.')
+
+        externalipaddress = netaddr.IPNetwork(cloudspace.externalnetworkip)
+        networkid = cloudspace.networkId
+        password = str(uuid.uuid4())
+        publicgw = pool.gateway
+        publiccidr = externalipaddress.prefixlen
+
+        # redeploy vfw
+        self.cb.netmgr.fw_create(cloudspace.gid, str(cloudspaceId), 'admin', password,
+                                str(externalipaddress.ip),
+                                'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+        # restore portforwards and leases
+        leases = []
+        fwid = '{}_{}'.format(cloudspace.gid, networkid)
+        for vm in self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
+            for nic in vm['nics']:
+                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':
+                    leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
+        self.cb.netmgr.fw_reapply(fwid, leases)
+
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -199,10 +229,10 @@ class cloudbroker_cloudspace(BaseActor):
         self.models.cloudspace.set(cloudspace)
         return True
 
-    def _destroyVFW(self, gid, cloudspaceId):
+    def _destroyVFW(self, gid, cloudspaceId, deletemodel=True):
         fws = self.cb.netmgr.fw_list(gid=int(gid), domain=str(cloudspaceId))
         if fws:
-            self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid)
+            self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid, deletemodel=deletemodel)
             return True
         return False
 
