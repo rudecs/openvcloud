@@ -136,7 +136,6 @@ class NetManager(object):
             raise exceptions.BadRequest("Failed to execute script: %s" % err)
         return True
 
-
     def fw_get_ipaddress(self, fwid, macaddress):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
@@ -182,10 +181,12 @@ class NetManager(object):
                 job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
                 if job['state'] != 'OK':
                     raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
-                args = {'ovs_connection': self.get_ovs_connection(fwobj.gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
-                job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
-                if job['state'] != 'OK':
-                    raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
+                if deletemodel:
+                    # delete backup if the delete is final
+                    args = {'ovs_connection': self.get_ovs_connection(fwobj.gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
+                    job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
+                    if job['state'] != 'OK':
+                        raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
             if deletemodel:
                 self.osisvfw.delete(fwid)
         else:
@@ -193,6 +194,17 @@ class NetManager(object):
             if result:
                 self.osisvfw.delete(fwid)
             return result
+
+    def fw_restore(self, fwid, **kwargs):
+        fwobj = self.osisvfw.get(fwid)
+        args = {'networkid': fwobj.id}
+        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_routeros_restore', nid=fwobj.nid, gid=fwobj.gid, args=args)
+        if job['state'] != 'OK':
+            raise exceptions.ServiceUnavailable("Failed to restore vfw")
+        result = job['result']
+        if result:
+            self.fw_start(fwid)
+        return result
 
     def fw_destroy(self, fwid):
         self.osisvfw.delete(fwid)
@@ -236,7 +248,6 @@ class NetManager(object):
         fwobj['leases'] = leases
         args = {'name': '%(domain)s_%(name)s' % fwobj, 'fwobject': fwobj}
         return self._applyconfig(fwobj['gid'], fwobj['nid'], args)
-
 
     def fw_forward_delete(self, fwid, gid, fwip, fwport, destip=None, destport=None, protocol=None, apply=True, **kwargs):
         """

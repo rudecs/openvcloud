@@ -147,7 +147,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     @async('Redeploying Cloud Space', 'Finished redeploying Cloud Space', 'Failed to redeploy Cloud Space')
-    def resetVFW(self, cloudspaceId, **kwargs):
+    def resetVFW(self, cloudspaceId, resettype, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
         param:cloudspaceId id of the cloudspace
@@ -155,6 +155,8 @@ class cloudbroker_cloudspace(BaseActor):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+        if resettype not in ['factory', 'restore']:
+            raise exceptions.BadRequest("Invalid value {} for resettype".format(resettype))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         if cloudspace.status != 'DEPLOYED':
@@ -172,14 +174,18 @@ class cloudbroker_cloudspace(BaseActor):
         password = str(uuid.uuid4())
         publicgw = pool.gateway
         publiccidr = externalipaddress.prefixlen
+        fwid = '{}_{}'.format(cloudspace.gid, networkid)
 
         # redeploy vfw
-        self.cb.netmgr.fw_create(cloudspace.gid, str(cloudspaceId), 'admin', password,
-                                str(externalipaddress.ip),
-                                'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+        if resettype == 'restore':
+            restored = self.cb.netmgr.fw_restore(fwid)
+        if resettype == 'factory' or not restored:
+            self.cb.netmgr.fw_create(cloudspace.gid, str(cloudspaceId), 'admin', password,
+                                     str(externalipaddress.ip),
+                                     'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+
         # restore portforwards and leases
         leases = []
-        fwid = '{}_{}'.format(cloudspace.gid, networkid)
         for vm in self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
             for nic in vm['nics']:
                 if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':

@@ -803,6 +803,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         fw = self.netmgr._getVFWObject(fwid)
+        self.netmgr.osisvfw.updateSearch({'guid': fwid}, {'$set': {'accesstime': int(time.time())}})
 
         pwd = str(uuid.uuid4())
         self.netmgr.fw_set_password(fwid, 'admin', pwd)

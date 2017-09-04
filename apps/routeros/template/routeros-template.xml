@@ -18,13 +18,10 @@
   <on_crash>restart</on_crash>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='network' device='disk'>
-      <driver name='qemu' type='raw' cache='none' io='threads'/>
-      <source protocol='openvstorage' name='{{name}}'>
-        <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
-      </source>
-      <target dev='vda' bus='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='qcow2'/>
+      <source file='{{destinationfile}}'/>
+      <target dev='hda' bus='ide'/>
     </disk>
     <controller type='usb' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
@@ -32,6 +29,9 @@
     <controller type='pci' index='0' model='pci-root'/>
     <controller type='scsi' index='0'>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
+    </controller>
+    <controller type='ide' index='0'>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <interface type='network'>
       <source network='{{publicbridge}}'/>

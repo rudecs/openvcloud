@@ -21,6 +21,7 @@
     prop:vlan int,,VLAN of the public network
     prop:state str,, OK;ERROR;INIT;DELETED
     prop:moddate int,,
+    prop:accesstime int,,
     prop:deployment_jobguid str,, jobs excecutedin deployment guid
 
 

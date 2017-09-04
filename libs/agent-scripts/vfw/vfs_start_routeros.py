@@ -15,10 +15,11 @@ queue = 'hypervisor'
 
 
 def action(networkid, vlan):
+    import os
     createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
     createnetwork.executeLocal(networkid=networkid)
     create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-    create_external_network.executeLocal(vlan=vlan)
+    bridgename = create_external_network.executeLocal(vlan=vlan)
     import libvirt
     con = libvirt.open()
     try:
@@ -34,16 +35,16 @@ def action(networkid, vlan):
         except:
             import jinja2
             networkidHex = '%04x' % int(networkid)
-            devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
-            acl = j.clients.agentcontroller.get()
-            edgeip, edgeport, edgetransport = acl.execute(
-                'greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
             imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
             xmltemplate = jinja2.Template(j.system.fs.fileGetContents(
                 j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
-            xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
-                                           edgehost=edgeip, edgeport=edgeport,
-                                           edgetransport=edgetransport)
+
+            destination = '/var/lib/libvirt/images/routeros/%s' % networkidHex
+            destinationfile = os.path.join(destination, 'routeros.qcow2')
+            xmlsource = xmltemplate.render(networkid=networkidHex,
+                                           destinationfile=destinationfile,
+                                           publicbridge=bridgename)
+
             dom = con.defineXML(xmlsource)
             dom.create()
             return True

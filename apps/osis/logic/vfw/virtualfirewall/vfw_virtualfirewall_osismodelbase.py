@@ -215,6 +215,7 @@ class vfw_virtualfirewall_osismodelbase(j.code.classGetJSRootModelBase()):
         self._P_vlan=0
         self._P_state=""
         self._P_moddate=0
+        self._P_accesstime=0
         self._P_deployment_jobguid=""
         self._P_guid=""
         self._P__meta=list()
@@ -599,6 +600,25 @@ class vfw_virtualfirewall_osismodelbase(j.code.classGetJSRootModelBase()):
     @moddate.deleter
     def moddate(self):
         del self._P_moddate
+
+    @property
+    def accesstime(self):
+        return self._P_accesstime
+
+    @accesstime.setter
+    def accesstime(self, value):
+        if not isinstance(value, int) and value is not None:
+            if isinstance(value, basestring) and j.basetype.integer.checkString(value):
+                value = j.basetype.integer.fromString(value)
+            else:
+                msg="property accesstime input error, needs to be int, specfile: /opt/jumpscale7/apps/osis/logic/vfw/model.spec, name model: virtualfirewall, value was:" + str(value)
+                raise TypeError(msg)
+
+        self._P_accesstime=value
+
+    @accesstime.deleter
+    def accesstime(self):
+        del self._P_accesstime
 
     @property
     def deployment_jobguid(self):

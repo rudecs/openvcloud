@@ -39,6 +39,11 @@ def action(networkid):
         except libvirt.libvirtError:
             pass
     connection.cleanupNetwork(networkid, bridges)
+    destination = '/var/lib/libvirt/images/routeros/'
+    networkidHex = '%04x' % int(networkid)
+    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
+        j.system.btrfs.subvolumeDelete(destination, networkidHex)
+
 
 if __name__ == '__main__':
     import argparse

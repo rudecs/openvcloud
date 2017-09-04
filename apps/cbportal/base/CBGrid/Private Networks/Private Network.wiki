@@ -36,9 +36,17 @@ h2. Private Network: ${id} (${'%04x' % id})
   input:
   - type: message
     messagetype: warning
-    message: Resetting VFW has major consequences!</br>
-             All custom changes to the VFW will be reset!</br>
+    message: You are about to reset your VFW:</br>
+             It is possible to restore from backup or to reset the VFW to factory settings</br></br>
              Leases and portforwardings will be preserved.
+  - type: dropdown
+    label: Reset type
+    name: resettype
+    values:
+    - label: Restore from backup
+      value: restore
+    - label: Factory reset
+      value: factory
   - reason
 
 - display: Remove VFW
