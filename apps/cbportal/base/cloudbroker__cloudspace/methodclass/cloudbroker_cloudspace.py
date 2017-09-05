@@ -109,7 +109,9 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
-        self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid))
+        if not self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid)):
+            # fw_move returned false this mains clean migration failed we will deploy from scratch on new node instead
+            self.resetVFW(cloudspaceId, resettype='restore', targetNid=targetNid)
         return True
 
     @auth(['level1', 'level2', 'level3'])
@@ -147,7 +149,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     @async('Redeploying Cloud Space', 'Finished redeploying Cloud Space', 'Failed to redeploy Cloud Space')
-    def resetVFW(self, cloudspaceId, resettype, **kwargs):
+    def resetVFW(self, cloudspaceId, resettype, targetNid=None, **kwargs):
         """
         Restore the virtual firewall of a cloudspace on an available firewall node
         param:cloudspaceId id of the cloudspace
@@ -178,11 +180,12 @@ class cloudbroker_cloudspace(BaseActor):
 
         # redeploy vfw
         if resettype == 'restore':
-            restored = self.cb.netmgr.fw_restore(fwid)
+            restored = self.cb.netmgr.fw_restore(fwid, targetNid)
         if resettype == 'factory' or not restored:
             self.cb.netmgr.fw_create(cloudspace.gid, str(cloudspaceId), 'admin', password,
                                      str(externalipaddress.ip),
-                                     'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+                                     'routeros', networkid, publicgwip=publicgw,
+                                     publiccidr=publiccidr, vlan=pool.vlan, targetNid=targetNid)
 
         # restore portforwards and leases
         leases = []

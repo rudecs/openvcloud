@@ -30,10 +30,15 @@ def action(networkid, sourceip, vlan):
     name = 'routeros_%04x' % networkid
 
     if source_con:
+        templatepath = '/var/lib/libvirt/images/routeros/template/'
+        destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
         domain = source_con.lookupByName(name)
-        target_con.defineXML(domain.XMLDesc())
         if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
+            if not j.system.fs.exists(destination):
+                print 'Creating image snapshot %s -> %s' % (templatepath, destination)
+            j.system.btrfs.snapshot(templatepath, destination)
+            target_con.defineXML(domain.XMLDesc())
+            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
             try:
                 domain.migrate2(target_con, flags=flags)
             except:
@@ -45,22 +50,14 @@ def action(networkid, sourceip, vlan):
                 raise
         else:
             domain.undefine()
+            return False
+        # remove disk from source
+        con = j.remote.cuisine.connect(sourceip, 22)
+        con.run('btrfs subvol delete {} || true'.format(destination))
+        return True
     else:
-        import jinja2
-        acl = j.clients.agentcontroller.get()
-        networkidHex = '%04x' % int(networkid)
-        devicename = 'routeros/{0}/routeros-small-{0}'.format(networkidHex)
-        edgeip, edgeport, edgetransport = acl.execute(
-            'greenitglobe', 'getedgeconnection', role='storagedriver', gid=j.application.whoAmI.gid)
-        imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
-        xmltemplate = jinja2.Template(j.system.fs.fileGetContents(
-            j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
-        xmlsource = xmltemplate.render(networkid=networkidHex, name=devicename,
-                                       edgehost=edgeip, edgeport=edgeport,
-                                       edgetransport=edgetransport)
-        dom = target_con.defineXML(xmlsource)
-        dom.create()
-
+        # source is not available caller should probable do a restore from scratch
+        return False
     return True
 
 

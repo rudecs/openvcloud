@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
+import time
 
 
 class NetManager(object):
@@ -44,7 +45,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
-    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, vlan, **kwargs):
+    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)
         param:gid grid id
@@ -76,7 +77,10 @@ class NetManager(object):
                     'vlan': vlan,
                     'publiccidr': publiccidr,
                     }
-            nid = int(self.cb.getBestProvider(gid)['referenceId'])
+            if targetNid:
+                nid = targetNid
+            else:
+                nid = int(self.cb.getBestProvider(gid)['referenceId'])
             job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, queue='default', wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
@@ -121,9 +125,10 @@ class NetManager(object):
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to move routeros check job %(guid)s" % job)
-        fwobj.nid = targetNid
-        self.osisvfw.set(fwobj)
-        return True
+        if job['result']:
+            fwobj.nid = targetNid
+            self.osisvfw.set(fwobj)
+        return job['result']
 
     def fw_executescript(self, fwid, script):
         fwobj = self._getVFWObject(fwid)
@@ -134,6 +139,7 @@ class NetManager(object):
         result, err = job['result']
         if err:
             raise exceptions.BadRequest("Failed to execute script: %s" % err)
+        self.osisvfw.updateSearch({'guid': fwid}, {'$set': {'accesstime': int(time.time())}})
         return True
 
     def fw_get_ipaddress(self, fwid, macaddress):
@@ -195,8 +201,11 @@ class NetManager(object):
                 self.osisvfw.delete(fwid)
             return result
 
-    def fw_restore(self, fwid, **kwargs):
+    def fw_restore(self, fwid, targetNid=None, **kwargs):
         fwobj = self.osisvfw.get(fwid)
+        if targetNid:
+            fwobj.nid = targetNid
+            self.osisvfw.set(fwobj)
         args = {'networkid': fwobj.id}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_routeros_restore', nid=fwobj.nid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
