@@ -229,6 +229,15 @@ def restartNodes():
     applyOnServices(nodeservices, restartNode)
 
 
+def cleanupLogs():
+    j.console.notice('Cleanup logs')
+
+    def cleanlogs(master):
+        master.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/cleanlogs.py -s {}'.format(starttime))
+    master = next(ifilter(lambda x: x.instance == 'ovc_master', cloudservices))
+    applyOnServices([master], cleanlogs)
+
+
 def stopNodes():
     j.console.notice('stopping nodes')
     applyOnServices(nodeservices, stopNode)
@@ -395,9 +404,7 @@ if allStep:
     stopNodes()
     restartCloudspace()
     startNodes()
-    j.console.notice('Cleaning logs')
-    master = next(ifilter(lambda x: x.instance == 'ovc_master', cloudservices))
-    master.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/cleanlogs.py -s {}'.format(starttime))
+    cleanupLogs()
 
     versionBuilder()
 
