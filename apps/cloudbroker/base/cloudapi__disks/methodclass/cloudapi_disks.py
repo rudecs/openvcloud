@@ -22,7 +22,7 @@ class cloudapi_disks(BaseActor):
     def getStorageVolume(self, disk, provider, node=None):
         if not isinstance(disk, dict):
             disk = disk.dump()
-        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'], 
+        return OpenvStorageVolume(id=disk['referenceId'], name=disk['name'], size=disk['sizeMax'],
                                   driver=provider.client, extra={'node': node}, iotune=disk['iotune'])
 
     @authenticator.auth(acl={'account': set('C')})
@@ -68,11 +68,11 @@ class cloudapi_disks(BaseActor):
 
     @authenticator.auth(acl={'account': set('C')})
     def limitIO(self, diskId, iops, total_bytes_sec, read_bytes_sec, write_bytes_sec, total_iops_sec,
-                read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max, 
+                read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max,
                 write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
                 write_iops_sec_max, size_iops_sec, **kwargs):
 
-        if (iops or total_iops_sec) and (read_bytes_sec or write_iops_sec):
+        if (iops or total_iops_sec) and (read_iops_sec or write_iops_sec):
             raise exceptions.BadRequest("total and read/write of iops_sec cannot be set at the same time")
         if (total_bytes_sec) and (read_bytes_sec or write_bytes_sec):
             raise exceptions.BadRequest("total and read/write of bytes_sec cannot be set at the same time")
@@ -95,7 +95,7 @@ class cloudapi_disks(BaseActor):
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
             raise exceptions.NotFound("Could not find virtual machine beloning to disk")
-        
+
         disk.iotune = iotune
         self.models.disk.set(disk)
         provider, node, machine = self.cb.getProviderAndNode(machine['id'])
