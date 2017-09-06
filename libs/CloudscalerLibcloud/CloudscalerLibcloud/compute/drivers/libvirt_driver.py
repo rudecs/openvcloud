@@ -11,7 +11,6 @@ import uuid
 import crypt
 import random
 import string
-import time
 
 baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
@@ -218,7 +217,9 @@ class CSLibvirtNodeDriver(object):
             diskspervpool[edgeclient['vpool']] = diskspervpool.setdefault(
                 edgeclient['vpool'], 0) + edgeclient['vdiskcount']
         if len(diskspervpool) > 1:
-            diskspervpool.pop('vmstor', None)
+            for vpool in list(diskspervpool.keys()):
+                if not vpool.startswith('data'):
+                    diskspervpool.pop(vpool)
         # get vpool with least vdiskcount
         return sorted(diskspervpool.items(), key=lambda vpool: vpool[1])[0][0], edgeclients
 
@@ -723,7 +724,7 @@ class CSLibvirtNodeDriver(object):
             diskinfo = {'clone_name': diskname,
                         'diskguid': volume.vdiskguid,
                         'storagerouterguid': edgeclient['storagerouterguid']}
-            if not snapshotTimestamp is None:
+            if snapshotTimestamp is not None:
                 diskinfo['snapshottimestamp'] = snapshotTimestamp
             diskvpool[volume.vdiskguid] = edgeclient
             disks.append(diskinfo)
