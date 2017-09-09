@@ -404,7 +404,21 @@ class CSLibvirtNodeDriver(object):
             return self._update_node(node, domxml)
         return node
 
-    def _create_metadata_iso(self, name, userdata, metadata, type):
+    def _create_metadata_iso(self, name, password, type):
+        if type not in ['WINDOWS', 'Windows']:
+            userdata = {'password': password,
+                        'users': [{'name': 'cloudscalers',
+                                   'plain_text_passwd': password,
+                                   'lock-passwd': False,
+                                   'shell': '/bin/bash',
+                                   'sudo': 'ALL=(ALL) ALL'}],
+                        'ssh_pwauth': True,
+                        'manage_etc_hosts': True,
+                        'chpasswd': {'expire': False}}
+            metadata = {'local-hostname': name}
+        else:
+            userdata = {}
+            metadata = {'admin_pass': password, 'hostname': name}
         volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
                                            name=name, metadata=metadata, userdata=userdata, type=type)
         return OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
@@ -452,22 +466,7 @@ class CSLibvirtNodeDriver(object):
         try:
             if auth:
                 # At this moment we handle only NodeAuthPassword
-                password = auth.password
-                if image.extra['imagetype'] not in ['WINDOWS', 'Windows']:
-                    userdata = {'password': password,
-                                'users': [{'name': 'cloudscalers',
-                                           'plain_text_passwd': password,
-                                           'lock-passwd': False,
-                                           'shell': '/bin/bash',
-                                           'sudo': 'ALL=(ALL) ALL'}],
-                                'ssh_pwauth': True,
-                                'manage_etc_hosts': True,
-                                'chpasswd': {'expire': False}}
-                    metadata = {'local-hostname': name}
-                else:
-                    userdata = {}
-                    metadata = {'admin_pass': password, 'hostname': name}
-                volumes.append(self._create_metadata_iso(name, userdata, metadata, image.extra['imagetype']))
+                volumes.append(self._create_metadata_iso(name, auth.password, image.extra['imagetype']))
 
             volume = self._create_disk(name, size, image)
             volume.dev = 'vda'
@@ -747,9 +746,10 @@ class CSLibvirtNodeDriver(object):
                                 ovs_connection=self.ovs_connection,
                                 diskguids=volumeguids)
 
-    def ex_clone(self, node, size, vmid, networkid, diskmapping, snapshotTimestamp=None):
+    def ex_clone(self, node, password, imagetype, size, vmid, networkid, diskmapping, snapshotTimestamp=None):
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, snapshotTimestamp)
+        volumes.append(self._create_metadata_iso(name, password, imagetype))
         return self. _create_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
