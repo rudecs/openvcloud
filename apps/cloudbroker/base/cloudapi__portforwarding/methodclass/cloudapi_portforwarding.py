@@ -254,6 +254,8 @@ class cloudapi_portforwarding(BaseActor):
                         return nic.ipAddress
             return None
         localip = getIP()
+        if machine and not localip:
+            return []
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fw = self.netmgr.fw_list(cloudspace.gid, cloudspaceId)
