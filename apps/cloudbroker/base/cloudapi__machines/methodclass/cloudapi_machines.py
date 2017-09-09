@@ -813,14 +813,17 @@ class cloudapi_machines(BaseActor):
         clone.descr = machine.descr
         clone.sizeId = machine.sizeId
         clone.imageId = machine.imageId
+        image = self.models.image.get(machine.imageId)
         clone.cloneReference = machine.id
         clone.acl = machine.acl
         clone.creationTime = int(time.time())
         clone.type = 'VIRTUAL'
+        password = 'Unknown'
         for account in machine.accounts:
             newaccount = clone.new_account()
             newaccount.login = account.login
             newaccount.password = account.password
+            password = account.password
         clone.id = self.models.vmachine.set(clone)[0]
 
         diskmapping = []
@@ -856,7 +859,7 @@ class cloudapi_machines(BaseActor):
             snapshotTimestamp = self.snapshot(machineId, name)
 
         try:
-            node = provider.client.ex_clone(node, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
+            node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
         except:
             self.cb.machine.cleanup(clone)
