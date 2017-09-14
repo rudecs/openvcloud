@@ -15,6 +15,11 @@ from ovs.dal.lists.storagerouterlist import StorageRouterList
 from ovs.dal.lists.storagedriverlist import StorageDriverList
 
 VPOOLNAME = 'vmstor'
+MESSAGETYPE = {'error': 'ERROR',
+               'success': 'OK',
+               'warning': 'WARNING',
+               'exception': 'ERROR',
+               'skip': 'SKIPPED'}
 
 
 def setAsTemplate(templatepath):
@@ -24,6 +29,26 @@ def setAsTemplate(templatepath):
     if disk.info['object_type'] != 'TEMPLATE':
         VDiskController.set_as_template(disk.guid)
     return disk.guid
+
+
+def run_healthcheck(modulename, testname, category):
+    from ovs.extensions.healthcheck.expose_to_cli import HealthCheckCLIRunner
+    results = []
+    try:
+        hcresults = HealthCheckCLIRunner.run_method(modulename, testname)
+        for testcategory, messageinfo in hcresults['result'].iteritems():
+            for state, messages in messageinfo['messages'].iteritems():
+                for message in messages:
+                    results.append(dict(state=MESSAGETYPE.get(state),
+                                        message=message['message'],
+                                        uid=message['message'],
+                                        category=category)
+                                   )
+    except Exception as e:
+        eco = j.errorconditionhandler.processPythonExceptionObject(e)
+        msg = 'Failure in check see [eco|/grid/error condition?id={}]'.format(eco.guid)
+        results.append({'message': msg, 'category': category, 'state': 'ERROR'})
+    return results
 
 
 def listEdgeclients():
