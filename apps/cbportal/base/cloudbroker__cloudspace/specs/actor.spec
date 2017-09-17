@@ -24,6 +24,12 @@
         """
         var:cloudspaceId int,, id of the cloudspace
         var:resettype str,,either reset or restore
+    
+    method:applyConfig
+        """
+        Apply vfw rules
+        """
+        var:cloudspaceId int,, id of the cloudspace
 
     method:deployVFW
         """

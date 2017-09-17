@@ -48,6 +48,15 @@ h2. Private Network: ${id} (${'%04x' % id})
     - label: Factory reset
       value: factory
   - reason
+- display: Reapply Config
+  action: /restmachine/cloudbroker/cloudspace/applyConfig
+  reload: false
+  data:
+   cloudspaceId: ${domain}
+  input:
+  - type: message
+    messagetype: info
+    message: You are about to reapply dhcp leases and portforwards
 
 - display: Remove VFW
   action: /restmachine/cloudbroker/cloudspace/destroyVFW
