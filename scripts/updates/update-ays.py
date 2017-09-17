@@ -198,13 +198,15 @@ Updater stuff
 
 
 def applyOnServices(services, func, msg=None, kwargs=None):
+    for service in services:
+        service.status = 'QUEUED'
     runningjobs = []
     alljobs = []
     servicestostart = services[:]
     concurrency = options.concurrency or len(services)
 
     def getStatus(service):
-        status = getattr(service, 'status', 'QUEUED')
+        status = service.status
         if status in COLORMAP:
             status = COLORMAP[status] + status + COLORESET
         return status
@@ -234,17 +236,19 @@ def applyOnServices(services, func, msg=None, kwargs=None):
     while runningjobs:
         time.sleep(1)
         statechange = False
+        up = True
         for runningjob in runningjobs[:]:
             if not runningjob.is_alive():
                 statechange = True
                 runningjobs.remove(runningjob)
                 if runningjob.exitcode:
+                    up = False
                     runningjob.service.status = 'ERROR'
                 else:
                     runningjob.service.status = 'DONE'
         if statechange:
             schedule_services()
-            print_status(True)
+            print_status(up)
 
     error = False
     for job in alljobs:
