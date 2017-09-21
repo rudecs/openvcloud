@@ -19,10 +19,10 @@ Clicking the **POST /cloudapi/cloudspaces/create** expands a form that allows yo
 ![](Images/createCloudSpace.png)
 
 Here's an example with some valid values:
-[](Images/form.png)
+![](Images/form.png)
 
 And here's the result when you hit **Try it out!**:
-[](Images/result.png)
+![](Images/result.png)
 
 
 <a id="curl"></a>
