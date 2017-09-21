@@ -20,3 +20,6 @@ Through the [Swagger UI](https://swagger.io/swagger-ui/) you can interact with t
 ![](Images/AddUser.png)
 
 While all documentation for using this API is nicely included in this Swagger API console, you can also create a static HTML web page for the API documentation as documented in [Create Static HTML Page for API Documentation](OpenAPI2HTML.md).
+
+
+In order to get stared with the Cloud API check [Getting started with the OpenvCloud Cloud API](GettingStarted.md).
