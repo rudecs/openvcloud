@@ -1,7 +1,7 @@
 #!/usr/bin/env jspython
 from JumpScale import j
-import netaddr
-import itertools
+from xml.etree import ElementTree
+import urlparse
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
 
@@ -13,64 +13,111 @@ class cloudbroker_ovsnode(BaseActor):
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.lcl = j.clients.osis.getNamespace('libcloud')
 
-    def decommissionNode(self, nid, **kwargs):
+    def activateNodes(self, nids, **kwargs):
+        return self.scl.node.updateSearch({'id': {'$in': nids}}, {'$set': {'active': True}})
+
+    def deactivateNodes(self, nids, **kwargs):
+        if len(nids) != 1:
+            raise exceptions.BadRequest("Can only deactivate 1 Storagerouter at a time")
+        nid = nids[0]
         ctx = kwargs['ctx']
         node = self.scl.node.get(nid)
         node.active = False
         self.scl.node.set(node)
-        ipaddress = None
+        storageip = None
+        myips = []
         for nic in node.netaddr:
-            if nic["name"] == "backplane1":
-                ipaddress = nic["ip"][0]
-                break
+            myips.extend(nic["ip"])
 
-        if ipaddress is None:
-            raise exceptions.Error("Could not find IP for nic backplane1 on node %s" % nid)
         if 'storagedriver' not in node.roles:
             raise exceptions.BadRequest('Node with nid %s is not a storagedriver' % nid)
-        query = {'$query': {'referenceId': {'$regex': ipaddress.replace('.', '\.')},
-                            'status': {'$ne': 'DESTROYED'}
-                            },
-                 }
-        disks = self.ccl.disk.search(query)[1:]
-        diskids = [disk['id'] for disk in disks]
-        print(diskids)
-        query = {'$query': {'disks': {'$in': diskids},
-                            'status': {'$ne': 'DESTROYED'}
-                            },
-                 }
-        vms = self.ccl.vmachine.search(query)[1:]
-        runningvms = []
-        for idx, vm in enumerate(vms):
+
+        driver = self.cb.getProviderByGID(node.gid).client
+        alledgeclients = driver.edgeclients[:]
+        edgeclients = []
+        for edgeclient in alledgeclients:
+            if edgeclient['storageip'] in myips:
+                storageip = edgeclient['storageip']
+                continue
+            edgeclients.append(edgeclient)
+
+        if storageip is None:
+            raise exceptions.Error("Could not find storage IP on node %s" % nid)
+
+        def get_vpool_name(host, port):
+            for edgeclient in alledgeclients:
+                if edgeclient['storageip'] == host and edgeclient['edgeport'] == port:
+                    return edgeclient['vpool']
+            return None
+
+        query = {
+            '$query': {
+                'gid': node.gid,
+                'status': {'$ne': 'DESTROYED'},
+            },
+            '$fields': ['id']
+        }
+        cloudspaces = [cs['id'] for cs in self.models.cloudspace.search(query, size=0)[1:]]
+
+        query = {
+            '$query': {
+                'status': {'$ne': 'DESTROYED'},
+                'cloudspaceId': {'$in': cloudspaces}
+            },
+            '$fields': ['referenceId', 'id', 'disks']
+        }
+
+        requireschanges = []
+        for vm in self.models.vmachine.search(query, size=0)[1:]:
+            node = self.cb.Dummy(id=vm['referenceId'])
+            xml = driver._get_persistent_xml(node)
+            if storageip in xml:
+                vm['xml'] = xml
+                vm['node'] = node
+                requireschanges.append(vm)
+
+        for idx, vm in enumerate(requireschanges):
             vmdata = self.cb.actors.cloudapi.machines.get(machineId=vm['id'])
+            startme = False
             if vmdata['status'] == 'RUNNING':
-                ctx.events.sendMessage("Decomission OVS Node", 'Stopping Virtual Machine %s/%s' % (idx + 1, len(vms)))
+                startme = True
+                ctx.events.sendMessage("Deactivate Storagerouter", 'Stopping Virtual Machine %s/%s' % (idx + 1, len(requireschanges)))
                 self.cb.actors.cloudapi.machines.stop(machineId=vm['id'])
-                runningvms.append(vm['id'])
 
-        storagedrivers = self.scl.node.search({'roles': 'storagedriver',
-                                               'active': True})[1:]
-        storagedriverips = []
-        for storagedriver in storagedrivers:
-            for netaddress in storagedriver['netaddr']:
-                for ip, cidr in zip(netaddress['ip'], netaddress['cidr']):
-                    network = netaddr.IPNetwork('%s/%s' % (ip, cidr))
-                    if netaddr.IPNetwork(ipaddress).ip in network:
-                        storagedriverips.append(ip)
-
-        storagedriverips = itertools.cycle(storagedriverips)
-        for vm in vms:
-            storagedriverip = next(storagedriverips)
+            ctx.events.sendMessage("Deactivate Storagerouter", 'Moving Storagerouter on Virtual Machine %s/%s' % (idx+1, len(requireschanges)))
+            node = vm['node']
+            xml = vm['xml']
+            xmldom = ElementTree.fromstring(xml)
             for diskid in vm['disks']:
                 disk = self.ccl.disk.get(diskid)
-                disk.referenceId = disk.referenceId.replace(ipaddress, storagedriverip)
-                self.ccl.disk.set(disk)
-            domainkey = 'domain_%s' % (vm['referenceId'])
-            xml = self.lcl.libvirtdomain.get(domainkey)
-            xml = xml.replace(ipaddress, storagedriverip)
-            self.lcl.libvirtdomain.set(xml, domainkey)
+                if storageip in disk.referenceId:
+                    parsedurl = urlparse.urlparse(disk.referenceId)
+                    vpool = get_vpool_name(parsedurl.hostname, parsedurl.port)
+                    client = driver.getNextEdgeClient(vpool, edgeclients)
+                    client['vdiskcount'] += 1
+                    newloc = "{}:{}".format(client['storageip'], client['edgeport'])
+                    disk.referenceId = disk.referenceId.replace(parsedurl.netloc, newloc)
+                    self.ccl.disk.set(disk)
+                    diskname = parsedurl.path.strip('/').split('@', 1)[0]
+                    volume = self.cb.Dummy(name=diskname)
+                    devices, xmldisk = driver.get_volume_from_xml(xmldom, volume)
+                    if xmldisk:
+                        host = xmldisk.find('source/host')
+                        host.attrib['name'] = client['storageip']
+                        host.attrib['port'] = str(client['edgeport'])
+            for host in xmldom.findall('devices/disk/source/host'):
+                if host.attrib['name'] == storageip:
+                    vpool = get_vpool_name(storageip, int(host.attrib['port']))
+                    client = driver.getNextEdgeClient(vpool, edgeclients)
+                    client['vdiskcount'] += 1
+                    host.attrib['name'] = client['storageip']
+                    host.attrib['port'] = str(client['edgeport'])
 
-        vmcount = len(runningvms)
-        for idx, vmid in enumerate(runningvms):
-            print("Starting vm %s/%s" % (idx + 1, vmcount))
-            self.cb.actors.cloudapi.machines.start(machineId=vmid)
+            xml = ElementTree.tostring(xmldom)
+            driver._set_persistent_xml(node, xml)
+
+            if startme:
+                ctx.events.sendMessage("Deactive Storagerouter", 'Starting Virtual Machine %s/%s' % (idx + 1, len(requireschanges)))
+                self.cb.actors.cloudapi.machines.start(machineId=vm['id'])
+
+        return "Finished Deactivating Storagerouter"

@@ -2,8 +2,14 @@
     """
     Operator actions for interventions on accounts
     """
-    method:decommissionNode
+    method:deactivateNodes
         """
-        put a storage driver in decommition node.
+        deactivate a storagerouter by moving all the storage connections
         """
-        var:nid int,,nid of storage node down
+        var:nids list(int),,nids of storagerouter
+
+    method:activateNodes
+        """
+        Activate storagerouter 
+        """
+        var:nids list(int),,nids of storagerouter
