@@ -113,7 +113,6 @@ def OpenvStorageVolumeFromXML(disk, driver):
 class CSLibvirtNodeDriver(object):
 
     _ovsdata = {}
-    _edgenodes = {}
     type = 'CSLibvirt'
 
     NODE_STATE_MAP = {
@@ -178,24 +177,29 @@ class CSLibvirtNodeDriver(object):
         )
 
     @property
-    def edgeclients(self):
-        edgeclients = self._execute_agent_job('listedgeclients', role='storagemaster',
+    def all_edgeclients(self):
+        return self._execute_agent_job('listedgeclients', role='storagemaster',
                                               ovs_connection=self.ovs_connection)
 
+    @property
+    def edgeclients(self):
+        edgeclients = self.all_edgeclients
+
         activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
+        activenodes = self.scl.node.search({'active': True, 'gid': self.gid, 'roles': 'storagedriver'})[1:]
+
+        def get_active_node(storageip):
+            for activenode in activenodes:
+                if storageip in activenode['ipaddr']:
+                    return activenode
+            return False
 
         def filter_clients(client):
-            node = self._edgenodes.get(client['storageip'])
+            node = get_active_node(client['storageip'])
             if node is None:
-                node = next(iter(self.scl.node.search({'gid': self.gid, 'netaddr.ip': client['storageip']})[1:]), None)
-                if node is None:
-                    return False
-                else:
-                    self._edgenodes[client['storageip']] = node
-            client['nid'] = node['id']
-            if (node['gid'], node['id']) not in activesessions:
                 return False
-            return True
+            client['nid'] = node['id']
+            return (node['gid'], node['id']) in activesessions
 
         return filter(filter_clients, edgeclients)
 

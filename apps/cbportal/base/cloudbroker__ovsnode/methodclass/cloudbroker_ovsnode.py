@@ -33,7 +33,7 @@ class cloudbroker_ovsnode(BaseActor):
             raise exceptions.BadRequest('Node with nid %s is not a storagedriver' % nid)
 
         driver = self.cb.getProviderByGID(node.gid).client
-        alledgeclients = driver.edgeclients[:]
+        alledgeclients = driver.all_edgeclients[:]
         edgeclients = []
         for edgeclient in alledgeclients:
             if edgeclient['storageip'] in myips:
