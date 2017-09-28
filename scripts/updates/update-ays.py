@@ -375,9 +375,9 @@ def updateGit():
     settings = j.application.getAppInstanceHRD(name='ovc_setup', instance='main', domain='openvcloud')
     repopath = settings.getStr('instance.ovc.path')
     with j.logger.nostdout():
-        j.system.process.run("cd %s; git add ." % repopath, True, False)
-        j.system.process.run("cd %s; git commit -m 'environement updated (update script)'" % repopath, True, False)
-        j.system.process.run("cd %s; git push" % repopath, True, False)
+        j.do.execute("cd %s; git add ." % repopath)
+        j.do.execute("cd %s; git commit -m 'environement updated (update script)'" % repopath)
+        j.do.execute("cd %s; git push" % repopath)
 
 
 """
