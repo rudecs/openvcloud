@@ -192,7 +192,7 @@ class CSLibvirtNodeDriver(object):
             for activenode in activenodes:
                 if storageip in activenode['ipaddr']:
                     return activenode
-            return False
+            return None
 
         def filter_clients(client):
             node = get_active_node(client['storageip'])
