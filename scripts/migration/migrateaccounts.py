@@ -5,6 +5,8 @@ from JumpScale import j
 from xml.etree import ElementTree
 from gevent.pool import Pool
 import urlparse
+import subprocess
+import os
 import sys
 sys.path.append('/opt/code/github/0-complexity/openvcloud/apps/cloudbroker')
 j.db.serializers.getSerializerType('j')
@@ -16,7 +18,7 @@ class MaskClass(object):
 
 
 class Migrator(object):
-    def __init__(self, debug=False, dryrun=False, concurrency=1):
+    def __init__(self, debug=False, dryrun=False, concurrency=1, cloudspaces=None, oldedgenode=None):
         self.acl = j.clients.agentcontroller.getByInstance('main')
         self.source_osis = j.clients.osis.getByInstance('source')
         self.osis = j.clients.osis.getByInstance('main')
@@ -27,6 +29,9 @@ class Migrator(object):
         self.ccl = j.clients.osis.getNamespace('cloudbroker', self.osis)
         self.scl = j.clients.osis.getNamespace('system', self.osis)
         self.vfw = j.clients.osis.getNamespace('vfw', self.osis)
+        self.lcl = j.clients.osis.getNamespace('libvirt', self.osis)
+        self.cloudspaces = cloudspaces
+        self.oldedgenode = oldedgenode
         self.concurrency = concurrency
         self.debug = debug
         self.dryrun = dryrun
@@ -63,11 +68,10 @@ class Migrator(object):
         else:
             newaccount = self.ccl.account.get(accounts[0]['id'])
         for cloudspace in self.source_ccl.cloudspace.search({'accountId': accountId, 'status': 'DEPLOYED'})[1:]:
+            if self.cloudspaces is not None and cloudspace['id'] not in self.cloudspaces:
+                continue
             cloudspace = self.source_ccl.cloudspace.get(cloudspace['id'])
             self.migrate_space(cloudspace, newaccount)
-        account.status = 'DESTROYED'
-        if not self.dryrun:
-            self.source_ccl.account.set(account)
 
     def empty(self, obj, newmethod):
         newobj = newmethod()
@@ -87,15 +91,19 @@ class Migrator(object):
             'networkId': cloudspace.networkId,
             'gid': self.rgid
         })[1:]
+        needsmigration = True
         if not cloudspaces:
             newcloudspace = self.empty(cloudspace, self.ccl.cloudspace.new)
         else:
             newcloudspace = self.ccl.cloudspace.get(cloudspaces[0]['id'])
+            if newcloudspace.status == 'DEPLOYED':
+                needsmigration = False
         newcloudspace.accountId = newaccount.id
         newcloudspace.gid = self.rgid
         if not self.dryrun:
             newcloudspace.id, _, _ = self.ccl.cloudspace.set(newcloudspace)
-        self.migrate_routeros(cloudspace, newcloudspace)
+        if needsmigration:
+            self.migrate_routeros(cloudspace, newcloudspace)
         vms = self.source_ccl.vmachine.search({
             'status': {'$nin': ['ERROR', 'DESTROYED']},
             'cloudspaceId': cloudspace.id
@@ -149,6 +157,7 @@ class Migrator(object):
         newvfw = self.empty(lvfw, self.vfw.virtualfirewall.new)
         newvfw.gid = self.rgid
         newvfw.id = lvfw.id
+        newvfw.domain = str(newspace.id)
         newvfw.nid = int(provider['referenceId'])
         if not self.dryrun:
             self.vfw.virtualfirewall.set(newvfw)
@@ -187,10 +196,12 @@ class Migrator(object):
             else:
                 disk.referenceId = 'openvstorage+tcp://127.0.0.1:23022/{}@uuuid'.format(diskname)
         else:
-            volume = provider.client.create_volume(disk.sizeMax, disk.id)
-            disk.referenceId = volume.id
             if not self.dryrun:
+                volume = provider.create_volume(disk.sizeMax, disk.id)
+                disk.referenceId = volume.id
                 self.ccl.disk.set(disk)
+            else:
+                disk.referenceId = 'openvstorage+tcp://127.0.0.1:23022/{}@uuuid'.format(disk.name)
 
     def get_volume_from_xml(self, xmldom, name):
         devices = xmldom.find('devices')
@@ -199,6 +210,22 @@ class Migrator(object):
             if source.attrib.get('dev', source.attrib.get('name')) == name:
                 return devices, disk
         return None, None
+
+    def qemu_img(self, args, silent=False):
+        stdout = None
+        if silent:
+            stdout = open(os.devnull, 'rw')
+        else:
+            stdout = sys.stdout
+        command = []
+        if self.oldedgenode:
+            command.extend(['ssh', self.oldedgenode])
+        command.append('qemu-img')
+        command.extend(args)
+        proc = subprocess.Popen(command, stdout=stdout)
+        proc.wait()
+        if proc.returncode != 0:
+            raise RuntimeError("Failed to executed {}".format(args))
     
     def migrate_vm(self, vm, newspace):
         import libvirt
@@ -246,10 +273,11 @@ class Migrator(object):
             parsedurl = urlparse.urlparse(sourcedisk.referenceId)
             diskname = parsedurl.path.strip('/').split('@', 1)[0]
             newurl = urlparse.urlparse(disk.referenceId)
-            newdiskname = newurl.path.strip('/').split('@', 1)[0]
+            newdiskname, _, vidskguid = newurl.path.strip('/').partition('@')
             _, xmldisk = self.get_volume_from_xml(xmldom, diskname)
             source = xmldisk.find('source')
             source.attrib['name'] = newdiskname
+            source.attrib['vdiskguid'] = vidskguid
             host = source.find('host')
             host.attrib['name'] = newurl.hostname
             host.attrib['port'] = str(newurl.port)
@@ -261,7 +289,11 @@ class Migrator(object):
         host = source.find('host')
         host.attrib['name'] = metavolume.edgehost
         host.attrib['port'] = str(metavolume.edgeport)
-        # now re migrate copying storage
+        # lets kick out seclabel as not all nodes support this
+        seclabel = xmldom.find('seclabel')
+        if seclabel is not None:
+            xmldom.remove(seclabel)
+
         newxml = ElementTree.tostring(xmldom)
         excludelist = []
         if sourcestack.gid == self.rgid:
@@ -270,39 +302,42 @@ class Migrator(object):
         newvm.stackId = deststack['id']
         if not self.dryrun:
             self.ccl.vmachine.set(newvm)
+            provider._set_persistent_xml(self.rcb.Dummy(id=vm.referenceId), newxml)
+
+        # create libvirt node model
+        node = self.lcl.node.new()
+        node.id = newvm.referenceId
+        node.guid = newvm.referenceId
+        node.networkid = newspace.networkId
+        self.lcl.node.set(node)
 
         # now re migrate
-        if domain:
+        if domain and domain.info()[0] == libvirt.VIR_DOMAIN_RUNNING:
             # create network
             if not self.dryrun:
                 provider._execute_agent_job('createnetwork', id=int(deststack['referenceId']), networkid=newspace.networkId)
 
-            isrunning = domain.info()[0] == libvirt.VIR_DOMAIN_RUNNING
             destcon = libvirt.open(deststack['apiUrl'].replace('ssh', 'tcp'))
             flags = libvirt.VIR_MIGRATE_COMPRESSED | libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_NON_SHARED_DISK | \
                     libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_PEER2PEER
+            uri = 'tcp://{}'.format(urlparse.urlparse(deststack['apiUrl']).hostname)
             self.info('Running migrate to {}'.format(deststack['name']), 3)
             if not self.dryrun:
-                domain.migrate2(destcon, flags=flags, dxml=newxml, dname='vm-{}'.format(newvm.id))
+                domain.migrate2(destcon, flags=flags, dxml=newxml, dname='vm-{}'.format(newvm.id), uri=uri)
         else:
             # we copy over the data
             for sourcedisk, disk in disks:
                 sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
                 desturl = disk.referenceId.split('@')[0].replace('://', ':')
                 self.info('Copying disk {} to {}'.format(sourceurl, desturl), 3)
+                self.qemu_img(['info', sourceurl], True)
+                convertcmd = ['convert', '-n', '-p', '-O', 'raw', '-f', 'raw', sourceurl, desturl]
                 if not self.dryrun:
-                    j.system.platform.qemu_img.convert(
-                        sourceurl,
-                        'raw',
-                        desturl,
-                        'raw',
-                        createTarget=False
-                    )
+                    self.qemu_img(convertcmd)
 
         vm.status = 'DESTROYED'
         if not self.dryrun:
             self.source_ccl.vmachine.set(vm)
-            provider._set_persistent_xml(self.rcb.Dummy(id=vm.referenceId), newxml)
         for sourcedisk, disk in disks:
             sourcedisk.status = 'DESTROYED'
             if not self.dryrun:
@@ -313,9 +348,15 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--accounts', help='Comma seperated accountids that require migration', required=True)
+    parser.add_argument('-c', '--cloudspaces', dest='cloudspaces', default=None, help='Failter for cloudspaces to migrate')
+    parser.add_argument('-e', '--oldedgenode', dest='oldedgenode', default=None, help='If passed this node will perform the qemu-img commands')
     parser.add_argument('-d', '--dry-run', dest='dry', action='store_true', default=False)
-    parser.add_argument('-c', '--concurrency', dest='concurrency', type=int, default=1, help='Amount of VMs to migrate at once')
+    parser.add_argument('--debug', action='store_true', default=False)
+    parser.add_argument('-n', '--concurrency', dest='concurrency', type=int, default=1, help='Amount of VMs to migrate at once')
     options = parser.parse_args()
-    migrator = Migrator(True, options.dry)
+    cloudspaces = None
+    if options.cloudspaces:
+        cloudspaces = [int(cs) for cs in options.cloudspaces.split(',')]
+    migrator = Migrator(options.debug, options.dry, options.concurrency, cloudspaces, options.oldedgenode)
     for accountid in options.accounts.split(','):
         migrator.migrate_account(int(accountid))
