@@ -211,7 +211,7 @@ class Migrator(object):
                 return devices, disk
         return None, None
 
-    def qemu_img(self, args, silent=False):
+    def qemu_img(self, args, silent=False, sync=True):
         stdout = None
         if silent:
             stdout = open(os.devnull, 'rw')
@@ -223,9 +223,11 @@ class Migrator(object):
         command.append('qemu-img')
         command.extend(args)
         proc = subprocess.Popen(command, stdout=stdout)
-        proc.wait()
-        if proc.returncode != 0:
-            raise RuntimeError("Failed to executed {}".format(args))
+        if sync:
+            proc.wait()
+            if proc.returncode != 0:
+                raise RuntimeError("Failed to executed {}".format(args))
+        return proc
     
     def migrate_vm(self, vm, newspace):
         import libvirt
@@ -281,6 +283,9 @@ class Migrator(object):
             host = source.find('host')
             host.attrib['name'] = newurl.hostname
             host.attrib['port'] = str(newurl.port)
+            sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
+            desturl = disk.referenceId.split('@')[0].replace('://', ':')
+            self.info("{} {}".format(sourceurl, desturl), 3)
         # lets update cloudinit aswell
         metaname = 'vm-{0}/cloud-init-vm-{0}'.format(vm.id)
         _, xmldisk = self.get_volume_from_xml(xmldom, metaname)
@@ -326,6 +331,7 @@ class Migrator(object):
                 domain.migrate2(destcon, flags=flags, dxml=newxml, dname='vm-{}'.format(newvm.id), uri=uri)
         else:
             # we copy over the data
+            qemujobs = []
             for sourcedisk, disk in disks:
                 sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
                 desturl = disk.referenceId.split('@')[0].replace('://', ':')
@@ -333,7 +339,9 @@ class Migrator(object):
                 self.qemu_img(['info', sourceurl], True)
                 convertcmd = ['convert', '-n', '-p', '-O', 'raw', '-f', 'raw', sourceurl, desturl]
                 if not self.dryrun:
-                    self.qemu_img(convertcmd)
+                    qemujobs.append(self.qemu_img(convertcmd, sync=False))
+            for qemujob in qemujobs:
+                qemujob.wait()
 
         vm.status = 'DESTROYED'
         if not self.dryrun:
