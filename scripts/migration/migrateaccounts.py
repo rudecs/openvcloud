@@ -11,6 +11,10 @@ import sys
 sys.path.append('/opt/code/github/0-complexity/openvcloud/apps/cloudbroker')
 j.db.serializers.getSerializerType('j')
 
+IMAGEMAP = {
+    'New Windows 2012r2 Standard': 'Windows 2012r2 Standard'
+}
+
 
 class MaskClass(object):
     def __init__(self, *args, **kwargs):
@@ -93,6 +97,8 @@ class Migrator(object):
         })[1:]
         needsmigration = True
         if not cloudspaces:
+            if self.ccl.cloudspace.count({'networkId': cloudspace.networkId, 'gid': self.rgid}) > 0:
+                raise RuntimeError("Can not migrate cloudspace {} networkId {} is already in use!".format(cloudspace.name, cloudspace.networkId))
             newcloudspace = self.empty(cloudspace, self.ccl.cloudspace.new)
         else:
             newcloudspace = self.ccl.cloudspace.get(cloudspaces[0]['id'])
@@ -102,6 +108,8 @@ class Migrator(object):
         newcloudspace.gid = self.rgid
         if not self.dryrun:
             newcloudspace.id, _, _ = self.ccl.cloudspace.set(newcloudspace)
+            res = self.lcl.networkids.updateSearch({'id': self.rgid},
+                                                   {'$pull': {'networkids': cloudspace.networkId}})
         if needsmigration:
             self.migrate_routeros(cloudspace, newcloudspace)
         vms = self.source_ccl.vmachine.search({
@@ -231,7 +239,7 @@ class Migrator(object):
     
     def migrate_vm(self, vm, newspace):
         import libvirt
-        self.info('Migrating vm {}'.format(vm.name), 2)
+        self.info(u'Migrating vm {}'.format(vm.name), 2)
         provider = self.rcb.getProviderByGID(self.rgid).client
         sourcestack = self.source_ccl.stack.get(vm.stackId)
         sourcecon = libvirt.open(sourcestack.apiUrl.replace('ssh', 'tcp'))
@@ -241,6 +249,19 @@ class Migrator(object):
             domain = None
         newvm = self.empty(vm, self.ccl.vmachine.new)
         newvm.cloudspaceId = newspace.id
+        # update imageid
+        oldimage = self.source_ccl.image.get(vm.imageId)
+        imagename = IMAGEMAP.get(oldimage.name, oldimage.name)
+        images = self.ccl.image.search({'name': imagename})[1:]
+        if not images:
+            raise LookupError("Could not find image matching {}".format(oldimage.name))
+        newvm.imageId = images[0]['id']
+        # update sizeid
+        oldsize = self.source_ccl.size.get(vm.sizeId)
+        sizes = self.ccl.size.search({'memory': oldsize.memory, 'vcpus': oldsize.vcpus})[1:]
+        if not sizes:
+            raise LookupError("Could not find size matchin vcpu: {} memory: {} disks: {}".format(oldsize.vcpus, oldsize.memory, oldsize.disks))
+        newvm.sizeId = sizes[0]['id']
         newvm.disks = []
         disks = []
         for diskid in vm.disks:
@@ -253,14 +274,6 @@ class Migrator(object):
             newvm.disks.append(newdisk.id)
             disks.append((disk, newdisk))
         
-        # update imageid
-        oldimage = self.source_ccl.image.get(vm.imageId)
-        newimage = self.ccl.image.search({'name': oldimage.name})[1]
-        newvm.imageId = newimage['id']
-        # update sizeid
-        oldsize = self.source_ccl.size.get(vm.sizeId)
-        newsize = self.ccl.size.search({'memory': oldsize.memory, 'vcpus': oldsize.vcpus})[1]
-        newvm.sizeId = newsize['id']
         if not self.dryrun:
             newvm.id, _, _ = self.ccl.vmachine.set(newvm)
         metavolume = self.create_metaiso(newvm, provider)
@@ -289,11 +302,12 @@ class Migrator(object):
         # lets update cloudinit aswell
         metaname = 'vm-{0}/cloud-init-vm-{0}'.format(vm.id)
         _, xmldisk = self.get_volume_from_xml(xmldom, metaname)
-        source = xmldisk.find('source')
-        source.attrib['name'] = metavolume.name
-        host = source.find('host')
-        host.attrib['name'] = metavolume.edgehost
-        host.attrib['port'] = str(metavolume.edgeport)
+        if xmldisk is not None:
+            source = xmldisk.find('source')
+            source.attrib['name'] = metavolume.name
+            host = source.find('host')
+            host.attrib['name'] = metavolume.edgehost
+            host.attrib['port'] = str(metavolume.edgeport)
         # lets kick out seclabel as not all nodes support this
         seclabel = xmldom.find('seclabel')
         if seclabel is not None:
