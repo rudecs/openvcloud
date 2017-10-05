@@ -83,6 +83,7 @@
   * [OpenvCloud File Locations](Sysadmin/FileLocations/file_locations.md)
   * [Create a New Windows Image](Sysadmin/Images/Creating_new_Windows_Image.md)
   * [Deploy a New Image](Sysadmin/Images/deploy_new_image.md)
+  * [Making Images Private](Sysadmin/Images/private_images.md)
   * [Putting a Node in Maintenance Mode](Sysadmin/Maintenance/putting_node_in_maintenance_mode.md)
   * [Decommission a Node](Sysadmin/Decommission/decommission_node.md)
   * [Moving Virtual Machines to Another CPU Node](Sysadmin/MovingVM/moving_vms.md)
