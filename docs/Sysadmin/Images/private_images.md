@@ -43,8 +43,8 @@ Here's the output:
 Let's change the value of `accountId`, make this image only available to account with ID 59:
 ```python
 image = lc.image.get(1)
-var = image.accountId = 59
-lc.image.set(var)
+image.accountId = 59
+lc.image.set(image)
 ```
 
 Output will be:
