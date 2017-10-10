@@ -256,7 +256,7 @@ class LibvirtUtil(object):
         for disk in domaindisks:
             source = disk.find('source')
             if source is not None:
-                if source.attrib['name'].strip('/') == name:
+                if source.attrib.get('name', '').strip('/') == name:
                     target = disk.find('target')
                     return target.attrib['dev']
 
