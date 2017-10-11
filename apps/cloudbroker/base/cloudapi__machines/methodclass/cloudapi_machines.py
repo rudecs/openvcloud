@@ -860,6 +860,8 @@ class cloudapi_machines(BaseActor):
 
         try:
             node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
+            if node == -1:
+                raise exceptions.ServiceUnavailable("Not enough resources available to host clone")
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
         except:
             self.cb.machine.cleanup(clone)
