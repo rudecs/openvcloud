@@ -483,7 +483,8 @@ class Machine(object):
 
     def cleanup(self, machine):
         for diskid in machine.disks:
-            models.disk.delete(diskid)
+            if models.disk.exists(diskid):
+                models.disk.delete(diskid)
         models.vmachine.delete(machine.id)
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):

@@ -14,6 +14,7 @@ from ovs.dal.lists.vpoollist import VPoolList
 from ovs.dal.lists.storagerouterlist import StorageRouterList
 from ovs.dal.lists.storagedriverlist import StorageDriverList
 
+CREDENTIALS = []
 VPOOLNAME = 'vmstor'
 MESSAGETYPE = {'error': 'ERROR',
                'success': 'OK',
@@ -152,6 +153,23 @@ def getUrlPath(path, vpoolname=VPOOLNAME):
                                                                  port=edgeport,
                                                                  name=newpath)
 
+def getCredentials():
+    if not CREDENTIALS:
+        scl = j.clients.osis.getNamespace('system')
+        grid = scl.grid.get(j.application.whoAmI.gid)
+        settings = grid.settings.get('ovs_credentials')
+        CREDENTIALS.extend([settings.get('edgeuser'), settings.get('edgepassword')])
+    return CREDENTIALS
+
+
+def getOpenvStorageURL(url):
+    if url.startswith('openvstorage'):
+        username, password = getCredentials()
+        url = url.replace('://', ':')
+        if username and password:
+            url += ':username={}:password={}'.format(username, password)
+    return url
+
 
 def getPath(path, vpoolname=None):
     """ Get path from referenceId of VM"""
@@ -174,27 +192,31 @@ def getPath(path, vpoolname=None):
 
 
 def copyImage(srcpath):
+    srcpath = getOpenvStorageURL(srcpath)
     imagename = os.path.splitext(j.system.fs.getBaseName(srcpath))[0]
     templatepath = 'templates/%s.raw' % imagename
-    dest = getUrlPath("templates/%s" % imagename)
+    dest = getOpenvStorageURL(getUrlPath("templates/%s" % imagename))
     if not getVDisk(templatepath):
-        j.system.platform.qemu_img.convert(srcpath, None, dest.replace('://', ':', 1), 'raw')
+        j.system.platform.qemu_img.convert(srcpath, None, dest, 'raw')
         truncate(getPath(templatepath))
     diskguid = setAsTemplate(templatepath)
     return diskguid, dest
 
 
 def importVolume(srcpath, destpath, data=False):
+    srcpath = getOpenvStorageURL(srcpath)
     if data:
         dest = getUrlPath(destpath, vpoolname=None)
     else:
         dest = getUrlPath(destpath, vpoolname=VPOOLNAME)
-    j.system.platform.qemu_img.convert(srcpath, None, dest.replace('://', ':', 1), 'raw')
+    dest = getOpenvStorageURL(dest)
+    j.system.platform.qemu_img.convert(srcpath, None, dest, 'raw')
     disk = getVDisk(destpath, timeout=60)
     return disk.guid, dest
 
 
 def exportVolume(srcpath, destpath):
+    srcpath = getOpenvStorageURL(srcpath)
     j.system.platform.qemu_img.convert(srcpath.replace('://', ':', 1), None, destpath, 'vmdk')
     return destpath
 

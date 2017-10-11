@@ -127,7 +127,7 @@ def main(j, args, params, tags, tasklet):
         data['nics'] = []
         if [nic for nic in obj.nics if nic.ipAddress == 'Undefined']:
             # reload machine details
-            j.apps.cloudbroker.machine.get(obj.id)
+            j.apps.cloudapi.machines.get(obj.id)
             obj = cbosis.vmachine.get(obj.id)
 
         for nic in obj.nics:

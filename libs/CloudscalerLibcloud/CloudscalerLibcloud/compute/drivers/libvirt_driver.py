@@ -23,8 +23,8 @@ class LibvirtState:
 
 class StorageException(Exception):
 
-    def __init__(self, msg, e):
-        super(StorageException, self).__init__(msg)
+    def __init__(self, message, e):
+        super(StorageException, self).__init__(message)
         self.origexception = e
 
     def __str__(self):
@@ -53,6 +53,19 @@ def convertchar(word):
     return number
 
 
+def getOpenvStroageVolumeId(host, port, name, vdiskguid, transport='tcp', username=None, password=None):
+    url = "openvstorage+{transport}://{host}:{port}/{name}".format(
+        transport=transport,
+        host=host,
+        port=port,
+        name=name,
+    )
+    if username and password:
+        url += ":username={}:password={}".format(username, password)
+    url += "@{}".format(vdiskguid)
+    return url
+
+
 class NetworkInterface(object):
 
     def __init__(self, mac, target, type):
@@ -72,7 +85,17 @@ class OpenvStorageVolume(StorageVolume):
         self.edgetransport = 'tcp' if '+' not in url.scheme else url.scheme.split('+')[1]
         self.edgehost = url.hostname
         self.edgeport = url.port
-        self.name = url.path.strip('/')
+        pathparams = url.path.strip('/').split(':')
+        self.username = None
+        self.password = None
+        self.name = pathparams[0]
+        for param in pathparams[1:]:
+            key, sep, value = param.partition('=')
+            if sep == '=':
+                if key == 'username':
+                    self.username = value
+                elif key == 'password':
+                    self.password = value
         self.type = 'disk'
         self.bus = 'virtio'
 
@@ -92,20 +115,20 @@ class OpenvStorageISO(OpenvStorageVolume):
 
 def OpenvStorageVolumeFromXML(disk, driver):
     source = disk.find('source')
-    protocol = source.attrib.get('protocol')
     name = source.attrib.get('name')
     host = source.find('host')
     vdiskguid = source.attrib.get('vdiskguid')
     hostname = host.attrib.get('name')
     hostport = host.attrib.get('port')
     transport = host.attrib.get('transport', 'tcp')
-    url = "{protocol}+{transport}://{hostname}:{port}/{name}@{vdiskguid}".format(
-        protocol=protocol,
-        transport=transport,
-        hostname=hostname,
+    url = getOpenvStroageVolumeId(
+        host=hostname,
         port=hostport,
         name=name,
-        vdiskguid=vdiskguid
+        transport=transport,
+        vdiskguid=vdiskguid,
+        username=source.attrib.get('username'),
+        password=source.attrib.get('passwd')
     )
     return OpenvStorageVolume(id=url, name='N/A', size=0, driver=driver)
 
@@ -168,12 +191,16 @@ class CSLibvirtNodeDriver(object):
         return self._ovsdata[cachekey]
 
     def getVolumeId(self, vdiskguid, edgeclient, name):
-        return "openvstorage+{protocol}://{ip}:{port}/{name}@{vdiskguid}".format(
-            protocol=edgeclient.get('protocol', 'tcp'),
-            ip=edgeclient['storageip'],
-            port=edgeclient['edgeport'],
-            name=name,
-            vdiskguid=vdiskguid
+        username = self.ovs_credentials.get('edgeuser')
+        password = self.ovs_credentials.get('edgepassword')
+        return getOpenvStroageVolumeId(
+            edgeclient['storageip'],
+            edgeclient['edgeport'],
+            name,
+            vdiskguid,
+            edgeclient.get('protocol', 'tcp'),
+            username,
+            password
         )
 
     @property
@@ -322,8 +349,8 @@ class CSLibvirtNodeDriver(object):
 
         try:
             vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
-        except Exception, ex:
-            raise StorageException(ex.msg)
+        except Exception as ex:
+            raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
@@ -346,8 +373,8 @@ class CSLibvirtNodeDriver(object):
                       'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
             try:
                 vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
-            except Exception, ex:
-                raise StorageException(ex.msg)
+            except Exception as ex:
+                raise StorageException(ex.message, ex)
             volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
             stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
             stvol.dev = volume['dev']
@@ -425,7 +452,10 @@ class CSLibvirtNodeDriver(object):
             metadata = {'admin_pass': password, 'hostname': name}
         volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
                                            name=name, metadata=metadata, userdata=userdata, type=type)
-        return OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
+        isovolume = OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
+        isovolume.username = self.ovs_credentials.get('edgeuser')
+        isovolume.password = self.ovs_credentials.get('edgepassword')
+        return isovolume
 
     def generate_password_hash(self, password):
         def generate_salt():

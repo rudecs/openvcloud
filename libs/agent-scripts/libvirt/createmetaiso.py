@@ -18,8 +18,9 @@ def action(name, metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
     from CloudscalerLibcloud import openvstorage
     imagepath = openvstorage.getUrlPath('%s/cloud-init-%s' % (name, name))
+    ovspath = openvstorage.getOpenvStorageURL(imagepath)
     iso = ISO()
-    iso.create_meta_iso(imagepath.replace('://', ':'), metadata, userdata, type)
+    iso.create_meta_iso(ovspath, metadata, userdata, type)
     return "{}@{}".format(imagepath, openvstorage.getVDisk(imagepath, timeout=60).guid)
 
 

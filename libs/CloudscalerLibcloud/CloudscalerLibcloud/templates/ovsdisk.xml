@@ -1,6 +1,10 @@
 <disk type='network' device='{{type}}'>
     <driver name='qemu' type='raw' cache='none' io='threads'/>
-    <source protocol='openvstorage' name='{{name}}' vdiskguid='{{vdiskguid}}'>
+    <source protocol='openvstorage' name='{{name}}' vdiskguid='{{vdiskguid}}'
+    {% if username and password %}
+    username='{{username}}' passwd='{{password}}'
+    {% endif %}
+    >
         <host name='{{edgehost}}' port='{{edgeport}}' transport='{{edgetransport}}'/>
     </source>
 {% if iotune %}
