@@ -17,6 +17,7 @@ queue = 'hypervisor'
 
 def action(networkid, sourceip, vlan):
     import libvirt
+    from xml.etree import ElementTree
     target_con = libvirt.open()
     try:
         source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
@@ -37,10 +38,14 @@ def action(networkid, sourceip, vlan):
             if not j.system.fs.exists(destination):
                 print 'Creating image snapshot %s -> %s' % (templatepath, destination)
             j.system.btrfs.snapshot(templatepath, destination)
-            target_con.defineXML(domain.XMLDesc())
+            xmldom = ElementTree.fromstring(domain.XMLDesc())
+            seclabel = xmldom.find('seclabel')
+            if seclabel is not None:
+                xmldom.remove(seclabel)
+            xml = ElementTree.tostring(xmldom)
             flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
             try:
-                domain.migrate2(target_con, flags=flags)
+                domain.migrate2(target_con, flags=flags, dxml=xml)
             except:
                 try:
                     target_domain = target_con.lookupByName(name)
