@@ -14,7 +14,7 @@
   - type: message
     messagetype: warning
     message: You are about to deactivate a Storagerouter:</br>
-             All VirtualMachines with activate connections to this storagerouter will be restarted<br/>
+             All Virtual Disks on this Storagerouter will be moved<br/>
              If this is not what you want please press close<br/>
 }}
 

@@ -1,7 +1,5 @@
-#!/usr/bin/env jspython
 from JumpScale import j
 from xml.etree import ElementTree
-import urlparse
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
 
@@ -32,8 +30,8 @@ class cloudbroker_ovsnode(BaseActor):
         if 'storagedriver' not in node.roles:
             raise exceptions.BadRequest('Node with nid %s is not a storagedriver' % nid)
 
-        driver = self.cb.getProviderByGID(node.gid).client
-        alledgeclients = driver.all_edgeclients[:]
+        driver = self.cb.getProviderByGID(node.gid)
+        alledgeclients = driver.client.all_edgeclients[:]
         edgeclients = []
         for edgeclient in alledgeclients:
             if edgeclient['storageip'] in myips:
@@ -70,20 +68,13 @@ class cloudbroker_ovsnode(BaseActor):
         requireschanges = []
         for vm in self.models.vmachine.search(query, size=0)[1:]:
             node = self.cb.Dummy(id=vm['referenceId'])
-            xml = driver._get_persistent_xml(node)
+            xml = driver.client._get_persistent_xml(node)
             if storageip in xml:
                 vm['xml'] = xml
                 vm['node'] = node
                 requireschanges.append(vm)
 
         for idx, vm in enumerate(requireschanges):
-            vmdata = self.cb.actors.cloudapi.machines.get(machineId=vm['id'])
-            startme = False
-            if vmdata['status'] == 'RUNNING':
-                startme = True
-                ctx.events.sendMessage("Deactivate Storagerouter", 'Stopping Virtual Machine %s/%s' % (idx + 1, len(requireschanges)))
-                self.cb.actors.cloudapi.machines.stop(machineId=vm['id'])
-
             ctx.events.sendMessage("Deactivate Storagerouter", 'Moving Storagerouter on Virtual Machine %s/%s' % (idx+1, len(requireschanges)))
             node = vm['node']
             xml = vm['xml']
@@ -91,33 +82,44 @@ class cloudbroker_ovsnode(BaseActor):
             for diskid in vm['disks']:
                 disk = self.ccl.disk.get(diskid)
                 if storageip in disk.referenceId:
-                    parsedurl = urlparse.urlparse(disk.referenceId)
-                    vpool = get_vpool_name(parsedurl.hostname, parsedurl.port)
-                    client = driver.getNextEdgeClient(vpool, edgeclients)
+                    volume = j.apps.cloudapi.disks.getStorageVolume(disk, driver)
+                    vpool = get_vpool_name(volume.edgehost, volume.edgeport)
+                    client = driver.client.getNextEdgeClient(vpool, edgeclients)
                     client['vdiskcount'] += 1
+                    oldloc = "{}:{}".format(volume.edgehost, volume.edgeport)
                     newloc = "{}:{}".format(client['storageip'], client['edgeport'])
-                    disk.referenceId = disk.referenceId.replace(parsedurl.netloc, newloc)
+                    disk.referenceId = disk.referenceId.replace(oldloc, newloc)
                     self.ccl.disk.set(disk)
-                    diskname = parsedurl.path.strip('/').split('@', 1)[0]
-                    volume = self.cb.Dummy(name=diskname)
-                    devices, xmldisk = driver.get_volume_from_xml(xmldom, volume)
-                    if xmldisk:
+                    devices, xmldisk = driver.client.get_volume_from_xml(xmldom, volume)
+                    if xmldisk is not None:
                         host = xmldisk.find('source/host')
                         host.attrib['name'] = client['storageip']
                         host.attrib['port'] = str(client['edgeport'])
-            for host in xmldom.findall('devices/disk/source/host'):
+                    kwargs = {
+                        'storagerouterguid': client['storagerouterguid'],
+                        'ovs_connection': driver.client.ovs_connection,
+                        'diskguid': volume.vdiskguid
+                    }
+                    driver.client._execute_agent_job('move_disk', role='storagemaster', **kwargs)
+
+            for source in xmldom.findall('devices/disk/source'):
+                host = source.find('host')
                 if host.attrib['name'] == storageip:
                     vpool = get_vpool_name(storageip, int(host.attrib['port']))
-                    client = driver.getNextEdgeClient(vpool, edgeclients)
+                    client = driver.client.getNextEdgeClient(vpool, edgeclients)
                     client['vdiskcount'] += 1
                     host.attrib['name'] = client['storageip']
                     host.attrib['port'] = str(client['edgeport'])
+                    devicename = '/{}.raw'.format(source.attrib['name'])
+                    kwargs = {
+                        'storagerouterguid': client['storagerouterguid'],
+                        'ovs_connection': driver.client.ovs_connection,
+                        'devicename': devicename
+                    }
+                    driver.client._execute_agent_job('move_disk', role='storagemaster', **kwargs)
 
             xml = ElementTree.tostring(xmldom)
-            driver._set_persistent_xml(node, xml)
+            driver.client._set_persistent_xml(node, xml)
 
-            if startme:
-                ctx.events.sendMessage("Deactive Storagerouter", 'Starting Virtual Machine %s/%s' % (idx + 1, len(requireschanges)))
-                self.cb.actors.cloudapi.machines.start(machineId=vm['id'])
-
+        ctx.events.sendMessage("Deactivate Storagerouter", 'Finished moving all vdisks', 'success')
         return "Finished Deactivating Storagerouter"
