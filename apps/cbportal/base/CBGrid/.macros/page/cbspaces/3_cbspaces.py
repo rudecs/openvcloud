@@ -2,7 +2,7 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    filters = dict()
+    filters = {'status': {'$ne': 'DESTROYED'}}
     accountId = args.getTag('accountId')
     if accountId:
         filters['accountId'] = int(accountId)
