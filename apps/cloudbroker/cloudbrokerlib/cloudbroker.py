@@ -90,6 +90,7 @@ class CloudBroker(object):
         self._actors = None
         self.syscl = j.clients.osis.getNamespace('system')
         self.cbcl = j.clients.osis.getNamespace('cloudbroker')
+        self.vcl = j.clients.osis.getNamespace('vfw')
         self.agentcontroller = j.clients.agentcontroller.get()
         self.machine = Machine(self)
         self.cloudspace = CloudSpace(self)
@@ -151,7 +152,7 @@ class CloudBroker(object):
         else:
             return None
 
-    def getBestProvider(self, gid, imageId=None, excludelist=[]):
+    def getBestProvider(self, gid, imageId=None, excludelist=[], memory=None):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
             return -1
@@ -159,8 +160,12 @@ class CloudBroker(object):
         if not capacityinfo:
             return -1
 
-        provider = capacityinfo[0]  # is sorted by least used
-        return provider
+        for provider in capacityinfo:
+            if memory is None:
+                return provider
+            elif memory < provider['freememory']:
+                return provider
+        return -1
 
     def getNode(self, referenceId):
         return self.Dummy(id=referenceId)
@@ -191,7 +196,8 @@ class CloudBroker(object):
 
     def chooseProvider(self, machine):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
-        newstack = self.getBestProvider(cloudspace.gid, machine.imageId)
+        size = models.size.get(machine.sizeId)
+        newstack = self.getBestProvider(cloudspace.gid, machine.imageId, memory=size.memory)
         if newstack == -1:
             raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
         machine.stackId = newstack['id']
@@ -208,10 +214,15 @@ class CloudBroker(object):
             stacks = models.stack.search({"images": imageId, 'gid': gid})[1:]
         else:
             stacks = models.stack.search({'gid': gid})[1:]
+        nodeids = [int(stack['referenceId']) for stack in stacks]
+        query = {'$query': {'id': {'$in': nodeids}},
+                 '$fields': ['id', 'memory']}
+        nodesbyid = {node['id']: node['memory'] for node in self.syscl.node.search(query)[1:]}
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
-                if (stack['gid'], int(stack['referenceId'])) not in activesessions:
+                nodeid = int(stack['referenceId'])
+                if (stack['gid'], nodeid) not in activesessions:
                     continue
                 # search for all vms running on the stacks
                 usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
@@ -223,6 +234,11 @@ class CloudBroker(object):
                     stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
                 else:
                     stack['usedmemory'] = 0
+                # add vfws
+                stack['usedmemory'] = self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid}) * 128
+
+                stack['totalmemory'] = nodesbyid[nodeid]
+                stack['freememory'] = stack['totalmemory'] - stack['usedmemory']
                 resourcesdata.append(stack)
         resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata
@@ -618,12 +634,13 @@ class Machine(object):
         excludelist = []
         name = 'vm-%s' % machine.id
         newstackId = stackId
+        size = models.size.get(machine.sizeId)
 
         def getStackAndProvider(newstackId):
             provider = None
             try:
                 if not newstackId:
-                    stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist)
+                    stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist, size.memory)
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable(
@@ -648,7 +665,8 @@ class Machine(object):
                 self.cleanup(machine)
                 raise exceptions.BadRequest("Image is not available on requested stack")
 
-            psize = self.getSize(provider, machine)
+            firstdisk = models.disk.get(machine.disks[0])
+            psize = provider.getSize(size, firstdisk)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 node = provider.client.create_node(name=name, image=pimage, size=psize,
@@ -674,8 +692,3 @@ class Machine(object):
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
-
-    def getSize(self, provider, machine):
-        brokersize = models.size.get(machine.sizeId)
-        firstdisk = models.disk.get(machine.disks[0])
-        return provider.getSize(brokersize, firstdisk)
