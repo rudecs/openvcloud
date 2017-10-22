@@ -345,7 +345,7 @@ class cloudapi_machines(BaseActor):
                                                                        size.memory / 1024.0, totaldisksize)
 
             vm.id = self.models.vmachine.set(vm)[0]
-            stack = self.cb.getBestProvider(cloudspace.gid, vm.imageId)
+            stack = self.cb.getBestProvider(cloudspace.gid, vm.imageId, memory=size.memory)
             provider = self.cb.getProviderByStackId(stack['id'])
 
             machine['id'] = vm.id
@@ -829,10 +829,11 @@ class cloudapi_machines(BaseActor):
         diskmapping = []
 
         _, node, machine = self.cb.getProviderAndNode(machineId)
-        stack = self.cb.getBestProvider(cloudspace.gid, machine.imageId)
+        stack = self.cb.getBestProvider(cloudspace.gid, machine.imageId, memory=size.memory)
         provider = self.cb.getProviderByStackId(stack['id'])
 
         totaldisksize = 0
+        bootdisk = None
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
             clonedisk = self.models.disk.new()
@@ -847,6 +848,7 @@ class cloudapi_machines(BaseActor):
             clone.disks.append(clonediskId)
             volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
             if clonedisk.type == 'B':
+                bootdisk = clonedisk
                 name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
             else:
                 name = 'volumes/volume_{}'.format(clonediskId)
@@ -854,7 +856,7 @@ class cloudapi_machines(BaseActor):
             totaldisksize += clonedisk.sizeMax
 
         clone.id = self.models.vmachine.set(clone)[0]
-        size = self.cb.machine.getSize(provider, clone)
+        size = provider.getSize(size, bootdisk)
         if not snapshotTimestamp:
             snapshotTimestamp = self.snapshot(machineId, name)
 
