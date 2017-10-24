@@ -8,7 +8,7 @@ class cloudapi_sizes(BaseActor):
     A flavor is a combination of amount of compute capacity(CU) and disk capacity(GB).
     """
 
-    def list(self, cloudspaceId, location, **kwargs):
+    def list(self, cloudspaceId=None, location=None, **kwargs):
         """
         List the available flavors, filtering based on the cloudspace
 
