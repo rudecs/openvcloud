@@ -63,6 +63,9 @@ class cloudapi_portforwarding(BaseActor):
             raise exceptions.BadRequest("Invalid public IP %s" % publicIp)
 
         machine = j.apps.cloudapi.machines.get(machineId)
+        if machine['cloudspaceid'] != cloudspaceId:
+            raise exceptions.BadRequest("Machine {} does not belong to cloudspace {}".format(machine['name'], cloudspace.name))
+
         localIp = self._getLocalIp(machine)
         if localIp is None:
             raise exceptions.NotFound('Cannot create portforwarding when Virtual Machine did not acquire an IP Address.')
