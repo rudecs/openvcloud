@@ -25,10 +25,9 @@ def action(vm_id, sourceurl, domainxml, force):
 
     if source_con:
         domain = source_con.lookupByUUIDString(vm_id)
-        newdomain = target_con.defineXML(domainxml)
 
         if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
+            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
             try:
                 domain.migrate2(target_con, flags=flags)
             except:
@@ -42,14 +41,12 @@ def action(vm_id, sourceurl, domainxml, force):
                 else:
                     try:
                         domain.destroy()
-                        domain.undefine()
                     except Exception, e:
                         j.errorconditionhandler.processPythonExceptionObject(e)
-                    newdomain.create()
+                    target_con.createXML(domainxml)
 
         else:
             domain.undefine()
     else:
-        domain = target_con.defineXML(domainxml)
-        domain.create()
+        target_con.createXML(domainxml)
     return True
