@@ -19,7 +19,7 @@ def main(j, args, params, tags, tasklet):
         return params
 
     stack = ccl.stack.get(stackId).dump()
-    args.doc.applyTemplate(stack, True)
+    args.doc.applyTemplate(stack, False)
 
     return params
 
