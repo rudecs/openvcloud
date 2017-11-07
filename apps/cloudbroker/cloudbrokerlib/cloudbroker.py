@@ -235,7 +235,7 @@ class CloudBroker(object):
                 else:
                     stack['usedmemory'] = 0
                 # add vfws
-                stack['usedmemory'] = self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid}) * 128
+                stack['usedmemory'] += self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid}) * 128
 
                 stack['totalmemory'] = nodesbyid[nodeid]
                 stack['freememory'] = stack['totalmemory'] - stack['usedmemory']
