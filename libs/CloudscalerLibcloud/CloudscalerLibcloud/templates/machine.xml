@@ -11,8 +11,23 @@
             <acpi/>
             <apic/>
             <pae/>
+            {% if type == 'windows' %}
+            <hyperv>
+                <relaxed state='on'/>
+                <vapic state='on'/>
+                <spinlocks state='on' retries='4095'/>
+            </hyperv>
+            {% endif %}
         </features>
+        {% if type == 'windows' %}
+         <clock offset='localtime'>
+            <timer name='rtc' tickpolicy='catchup' track='guest'/>
+            <timer name='pit' tickpolicy='delay'/>
+            <timer name='hpet' present='no'/>
+        </clock>
+        {% else %}
         <clock offset='utc'/>
+        {% endif %}
         <on_poweroff>destroy</on_poweroff>
         <on_reboot>restart</on_reboot>
         <on_crash>restart</on_crash>

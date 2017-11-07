@@ -496,11 +496,12 @@ class CSLibvirtNodeDriver(object):
         @rtype: L{Node}
         """
         volumes = []
+        imagetype = image.extra['imagetype']
 
         try:
             if auth:
                 # At this moment we handle only NodeAuthPassword
-                volumes.append(self._create_metadata_iso(name, auth.password, image.extra['imagetype']))
+                volumes.append(self._create_metadata_iso(name, auth.password, imagetype))
 
             volume = self._create_disk(name, size, image)
             volume.dev = 'vda'
@@ -516,13 +517,13 @@ class CSLibvirtNodeDriver(object):
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise StorageException('Failed to create some volumes', e)
         try:
-            return self._create_node(name, size, networkid, volumes)
+            return self._create_node(name, size, networkid, volumes, imagetype)
         except:
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise
 
-    def _create_node(self, name, size, networkid=None, volumes=None):
+    def _create_node(self, name, size, networkid=None, volumes=None, imagetype=''):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -535,7 +536,7 @@ class CSLibvirtNodeDriver(object):
         networkname = result['networkname']
         machinexml = machinetemplate.render({'machinename': name, 'vxlan': vxlan,
                                              'memory': size.ram, 'nrcpu': size.extra['vcpus'], 'macaddress': macaddress,
-                                             'network': networkname, 'volumes': volumes})
+                                             'network': networkname, 'volumes': volumes, 'type': imagetype.lower()})
 
         # 0 means default behaviour, e.g machine is auto started.
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
@@ -784,7 +785,7 @@ class CSLibvirtNodeDriver(object):
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, snapshotTimestamp)
         volumes.append(self._create_metadata_iso(name, password, imagetype))
-        return self. _create_node(name, size, networkid=networkid, volumes=volumes)
+        return self._create_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
         self._execute_agent_job('extend_disk',
