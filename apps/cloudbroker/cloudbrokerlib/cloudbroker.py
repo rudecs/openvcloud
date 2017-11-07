@@ -230,12 +230,15 @@ class CloudBroker(object):
                                                              'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
                                                   }
                                                  )[1:]
+                stack['usedvms'] = len(usedvms)
                 if usedvms:
                     stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
                 else:
                     stack['usedmemory'] = 0
                 # add vfws
-                stack['usedmemory'] += self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid}) * 128
+                roscount = self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid})
+                stack['usedmemory'] += roscount * 128
+                stack['usedros'] = roscount
 
                 stack['totalmemory'] = nodesbyid[nodeid]
                 stack['freememory'] = stack['totalmemory'] - stack['usedmemory']
