@@ -37,6 +37,8 @@ def action(networkid, sourceip, vlan):
         if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
             if not j.system.fs.exists(destination):
                 print 'Creating image snapshot %s -> %s' % (templatepath, destination)
+            localip = j.system.net.getReachableIpAddress(sourceip, 22)
+            targeturl = "tcp://{}".format(localip)
             j.system.btrfs.snapshot(templatepath, destination)
             xmldom = ElementTree.fromstring(domain.XMLDesc())
             seclabel = xmldom.find('seclabel')
@@ -45,7 +47,7 @@ def action(networkid, sourceip, vlan):
             xml = ElementTree.tostring(xmldom)
             flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
             try:
-                domain.migrate2(target_con, flags=flags, dxml=xml)
+                domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
             except:
                 try:
                     target_domain = target_con.lookupByName(name)
