@@ -35,7 +35,7 @@ class StackInfo(object):
             stacks = self.get_stack_info()
         table = prettytable.PrettyTable(['Name', 'VM Count', 'ROS Count', 'Memory'])
         for stack in stacks:
-            meminfo = "{:.2f} / {:.2f} GiB".format(stack['usedmemory']/1024., stack['totalmemory']/1024.)
+            meminfo = "{:.2f} + {} / {:.2f} GiB".format(stack['usedmemory']/1024., stack['reservedmemory']/1024, stack['totalmemory']/1024.)
             table.add_row([stack['name'], stack['usedvms'], stack['usedros'], meminfo])
         print str(table)
 

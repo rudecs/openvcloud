@@ -35,6 +35,8 @@ group.add_option("--tag-js", dest="tag_js", help="Tag to update JumpScale to")
 group.add_option("--tag-ovc", dest="tag_ovc", help="Tag to update OpenvCloud to")
 group.add_option("--branch-js", dest="branch_js", help="Branch to update JumpScale to")
 group.add_option("--branch-ovc", dest="branch_ovc", help="Branch to update OpenvCloud to")
+group.add_option("--branch-ovc-core", dest="branch_ovc_core", default=None, help="Branch to update OpenvCloud to")
+group.add_option("--branch-ovc-selfhealing", dest="branch_ovc_selfhealing", default=None, help="Branch to update OpenvCloud to")
 parser.add_option("-U", "--update-nodes", action="store_true", dest="updateNodes",
                   help="only update node git repository, do not restart services")
 parser.add_option("-C", "--update-cloud", action="store_true", dest="updateCloud",
@@ -43,6 +45,10 @@ parser.add_option("-p", "--report", action="store_true", dest="report",
                   help="build a versions log and update git version.md")
 parser.add_option("-c", "--commit", action="store_true", dest="commit", help="commit the ovcgit repository")
 (options, args) = parser.parse_args()
+if options.branch_ovc_core is None:
+    options.branch_ovc_core = options.branch_ovc
+if options.branch_ovc_selfhealing is None:
+    options.branch_ovc_selfhealing = options.branch_ovc
 
 openvcloud = '/opt/code/github/0-complexity/openvcloud'
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
@@ -68,8 +74,8 @@ def update(nodessh):
     j.remote.cuisine.enableQuiet()
     try:
         nodessh.execute(_get_update_cmd('jumpscale7', '*', options.branch_js, options.tag_js))
-        nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
-        nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc, options.tag_ovc))
+        nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc_core, options.tag_ovc))
+        nodessh.execute(_get_update_cmd('0-complexity', 'selfhealing', options.branch_ovc_selfhealing, options.tag_ovc))
         nodessh.execute(_get_update_cmd('0-complexity', 'g8vdc', options.branch_ovc, options.tag_ovc))
         nodessh.execute(_get_update_cmd('0-complexity', 'openvcloud_ays', options.branch_ovc, options.tag_ovc))
     except Exception as e:

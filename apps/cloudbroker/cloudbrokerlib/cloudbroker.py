@@ -7,6 +7,7 @@ from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriv
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
+from CloudscalerLibcloud.utils.gridconfig import GridConfig
 from .netmgr import NetManager
 import random
 import time
@@ -219,6 +220,7 @@ class CloudBroker(object):
                  '$fields': ['id', 'memory']}
         nodesbyid = {node['id']: node['memory'] for node in self.syscl.node.search(query)[1:]}
         sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
+        grid = self.syscl.grid.get(gid)
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 nodeid = int(stack['referenceId'])
@@ -239,9 +241,10 @@ class CloudBroker(object):
                 roscount = self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid})
                 stack['usedmemory'] += roscount * 128
                 stack['usedros'] = roscount
-
                 stack['totalmemory'] = nodesbyid[nodeid]
-                stack['freememory'] = stack['totalmemory'] - stack['usedmemory']
+                reservedmemory = GridConfig(grid, stack['totalmemory']/1024.).get('reserved_mem') or 0
+                stack['reservedmemory'] = reservedmemory
+                stack['freememory'] = stack['totalmemory'] - stack['usedmemory'] - reservedmemory
                 resourcesdata.append(stack)
         resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata

@@ -21,5 +21,5 @@ def action(xml, domainid):
     domain = connection._get_domain(domainid)
     if domain:
         domain.undefineFlags(0)
-    domain = connection.connection.defineXML(xml)
+        domain = connection.connection.defineXML(xml)
     return True

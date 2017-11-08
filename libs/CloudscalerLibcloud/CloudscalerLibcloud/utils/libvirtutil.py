@@ -91,11 +91,15 @@ class LibvirtUtil(object):
                 return None
         return domain
 
-    def defineXML(self, xml):
+    def modXML(self, xml):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
         vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=CPU_COUNT - 1))
         xml = ElementTree.tostring(root)
+        return xml
+
+    def defineXML(self, xml):
+        xml = self.modXML(xml)
         return self.connection.defineXML(xml)
 
     def create(self, id, xml):
@@ -107,16 +111,15 @@ class LibvirtUtil(object):
         if isLocked(id):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
-        if not domain and xml:
-            domain = self.defineXML(xml)
-        state = domain.state(0)[0]
-        if state == libvirt.VIR_DOMAIN_RUNNING:
-            return domain.XMLDesc()
-        elif state == libvirt.VIR_DOMAIN_PAUSED:
-            domain.resume()
+        if domain:
+            state = domain.state(0)[0]
+            if state == libvirt.VIR_DOMAIN_RUNNING:
+                return domain.XMLDesc()
+            elif state == libvirt.VIR_DOMAIN_PAUSED:
+                domain.resume()
         else:
-            if not domain.create() == 0:
-                raise Exception("Failed to start machine")
+            xml = self.modXML(xml)
+            domain = self.connection.createXML(xml)
         return domain.XMLDesc()
 
     def shutdown(self, id, force=False):
@@ -543,12 +546,8 @@ class LibvirtUtil(object):
         return True
 
     def create_machine(self, machinexml):
-        domain = self.defineXML(machinexml)
-        try:
-            domain.create()
-        except:
-            domain.undefine()
-            raise
+        xml = self.modXML(machinexml)
+        domain = self.connection.createXML(xml)
         return self._to_node(domain)
 
     def _to_node(self, domain):
