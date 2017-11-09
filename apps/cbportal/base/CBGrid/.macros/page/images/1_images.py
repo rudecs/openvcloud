@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
         stackid = int(stackid)
         stack = ccl.stack.get(stackid)
         images = ccl.image.search({'id': {'$in': stack.images}})[1:]
-        imageids = [image['referenceId'] for image in images]
+        imageids = [image['id'] for image in images]
         filters['id'] = {'$in': imageids}
 
     locations = ccl.location.search({'$query': {}, '$fields': ['gid', 'name']})[1:]
