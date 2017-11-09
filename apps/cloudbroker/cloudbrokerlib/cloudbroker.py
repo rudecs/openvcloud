@@ -226,28 +226,32 @@ class CloudBroker(object):
                 nodeid = int(stack['referenceId'])
                 if (stack['gid'], nodeid) not in activesessions:
                     continue
-                # search for all vms running on the stacks
-                usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
-                                                  '$query': {'stackId': stack['id'],
-                                                             'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
-                                                  }
-                                                 )[1:]
-                stack['usedvms'] = len(usedvms)
-                if usedvms:
-                    stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
-                else:
-                    stack['usedmemory'] = 0
-                # add vfws
-                roscount = self.vcl.virtualfirewall.count({'gid': gid, 'nid': nodeid})
-                stack['usedmemory'] += roscount * 128
-                stack['usedros'] = roscount
-                stack['totalmemory'] = nodesbyid[nodeid]
-                reservedmemory = GridConfig(grid, stack['totalmemory']/1024.).get('reserved_mem') or 0
-                stack['reservedmemory'] = reservedmemory
-                stack['freememory'] = stack['totalmemory'] - stack['usedmemory'] - reservedmemory
+                self.getStackCapacity(stack, grid, sizes, nodesbyid)
                 resourcesdata.append(stack)
         resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata
+
+    def getStackCapacity(self, stack, grid, sizes, nodesbyid):
+        # search for all vms running on the stacks
+        usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
+                                          '$query': {'stackId': stack['id'],
+                                                     'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
+                                          }
+                                         )[1:]
+        stack['usedvms'] = len(usedvms)
+        if usedvms:
+            stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
+        else:
+            stack['usedmemory'] = 0
+        # add vfws
+        nodeid = int(stack['referenceId'])
+        roscount = self.vcl.virtualfirewall.count({'gid': stack['gid'], 'nid': nodeid})
+        stack['usedmemory'] += roscount * 128
+        stack['usedros'] = roscount
+        stack['totalmemory'] = nodesbyid[nodeid]
+        reservedmemory = GridConfig(grid, stack['totalmemory']/1024.).get('reserved_mem') or 0
+        stack['reservedmemory'] = reservedmemory
+        stack['freememory'] = stack['totalmemory'] - stack['usedmemory'] - reservedmemory
 
     def stackImportSizes(self, stackId):
         """
