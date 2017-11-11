@@ -22,8 +22,11 @@ def action(xml, machineid):
         domain = connection.connection.lookupByUUIDString(machineid)
     except:
         return None  # domain does not exist
-    flags = libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
+    flags = 0
     if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
         flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_LIVE
-    domain.attachDeviceFlags(xml, flags)
+    if domain.isPersistent():
+        flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
+    if flags != 0:
+        domain.attachDeviceFlags(xml, flags)
     return domain.XMLDesc()
