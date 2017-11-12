@@ -127,6 +127,7 @@ class LibvirtUtil(object):
             raise Exception("Can't stop a locked machine")
         domain = self._get_domain(id)
         if domain:
+            isPersistent = domain.isPersistent()
             networkid = self._get_domain_networkid(domain)
             bridges = list(self._get_domain_bridges(domain))
             if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
@@ -140,7 +141,8 @@ class LibvirtUtil(object):
                     except TimeoutError, e:
                         j.errorconditionhandler.processPythonExceptionObject(e)
                         domain.destroy()
-            domain.undefine()
+            if isPersistent:
+                domain.undefine()
             if networkid or bridges:
                 self.cleanupNetwork(networkid, bridges)
         return True
