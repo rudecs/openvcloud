@@ -3,7 +3,7 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
@@ -645,6 +645,7 @@ class Machine(object):
         name = 'vm-%s' % machine.id
         newstackId = stackId
         size = models.size.get(machine.sizeId)
+        volumes = []
 
         def getStackAndProvider(newstackId):
             provider = None
@@ -663,6 +664,10 @@ class Machine(object):
                         raise exceptions.ServiceUnavailable(
                             'Not enough resources available to provision the requested machine')
             except:
+                if volumes:
+                    # we don't have a provider yet so we get a random one to cleanup
+                    provider = self.cb.getProviderByGID(cloudspace.gid)
+                    provider.client.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
                 self.cleanup(machine)
                 raise
             return provider
@@ -679,24 +684,30 @@ class Machine(object):
             psize = provider.getSize(size, firstdisk)
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
-                node = provider.client.create_node(name=name, image=pimage, size=psize,
-                                                   auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+                if not volumes:
+                    node = provider.client.create_node(name=name, image=pimage, size=psize,
+                                                       auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+                else:
+                    node = provider.client.init_node(name, psize, volumes, pimage.extra['imagetype'])
             except StorageException as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cleanup(machine)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+            except NotEnoughResources as e:
+                volumes = e.volumes
+                if stackId:
+                    provider.client.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+                    self.cleanup(machine)
+                    raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                else:
+                    newstackId = 0
+                    excludelist.append(provider.stackId)
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cb.markProvider(provider.stackId, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
-            if node == -1 and stackId:
-                self.cleanup(machine)
-                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
-            elif node == -1:
-                excludelist.append(provider.stackId)
-                newstackId = 0
         self.cb.clearProvider(provider.stackId)
         self.updateMachineFromNode(machine, node, provider.stackId, psize)
         tags = str(machine.id)
