@@ -22,13 +22,18 @@ class LibvirtState:
 
 
 class StorageException(Exception):
-
     def __init__(self, message, e):
         super(StorageException, self).__init__(message)
         self.origexception = e
 
     def __str__(self):
         return "{}, {}".format(self.message, self.origexception)
+
+
+class NotEnoughResources(Exception):
+    def __init__(self, message, volumes=None):
+        super(NotEnoughResources, self).__init__(message)
+        self.volumes = volumes
 
 
 def convertnumber(number):
@@ -517,13 +522,15 @@ class CSLibvirtNodeDriver(object):
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise StorageException('Failed to create some volumes', e)
         try:
-            return self._create_node(name, size, networkid, volumes, imagetype)
+            return self.init_node(name, size, networkid, volumes, imagetype)
+        except NotEnoughResources:
+            raise
         except:
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise
 
-    def _create_node(self, name, size, networkid=None, volumes=None, imagetype=''):
+    def init_node(self, name, size, networkid=None, volumes=None, imagetype=''):
         volumes = volumes or []
         machinetemplate = self.env.get_template("machine.xml")
         vxlan = '%04x' % networkid
@@ -531,7 +538,7 @@ class CSLibvirtNodeDriver(object):
 
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
         if not result or result == -1:
-            return -1
+            raise NotEnoughResources("Failed to create network", volumes)
 
         networkname = result['networkname']
         machinexml = machinetemplate.render({'machinename': name, 'vxlan': vxlan,
@@ -545,7 +552,7 @@ class CSLibvirtNodeDriver(object):
             # machine(e.g not enough resources, delete machine)
             if result == -1:
                 self._execute_agent_job('deletemachine', queue='hypervisor', machineid=None, machinexml=machinexml)
-            return -1
+            raise NotEnoughResources("Failed to create machine", volumes)
 
         vmid = result['id']
         self.backendconnection.registerMachine(vmid, macaddress, networkid)
@@ -747,7 +754,7 @@ class CSLibvirtNodeDriver(object):
                 disk['path'], disk['guid']), name='N/A', size=disk['size'], driver=self)
             volume.dev = 'vd%s' % convertnumber(i + 1)
             volumes.append(volume)
-        return self._create_node(name, size, networkid=networkid, volumes=volumes)
+        return self.init_node(name, size, networkid=networkid, volumes=volumes)
 
     def ex_clone_disks(self, diskmapping, snapshotTimestamp=None):
         disks = []
@@ -785,7 +792,7 @@ class CSLibvirtNodeDriver(object):
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, snapshotTimestamp)
         volumes.append(self._create_metadata_iso(name, password, imagetype))
-        return self._create_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
+        return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
 
     def ex_extend_disk(self, diskguid, newsize, cloudspacegid):
         self._execute_agent_job('extend_disk',
