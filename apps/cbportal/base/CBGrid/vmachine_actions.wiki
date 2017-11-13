@@ -171,6 +171,16 @@
   hide: true
   data:
    machineId: $$id
+
+- display: Limit Disk IO
+  action: /restmachine/cloudbroker/qos/limitIO
+  reload: false
+  hide: true
+  input:
+  - name: iops
+    label: IOPS
+    type: number
+
 - display: Convert To Template
   action: /restmachine/cloudbroker/machine/convertToTemplate
   data:

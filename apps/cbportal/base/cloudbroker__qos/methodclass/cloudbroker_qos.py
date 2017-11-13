@@ -37,7 +37,6 @@ class cloudbroker_qos(BaseActor):
             read_bytes_sec_max=read_bytes_sec_max, write_bytes_sec_max=write_bytes_sec_max,
             total_iops_sec_max=total_iops_sec_max, read_iops_sec_max=read_iops_sec_max,
             write_iops_sec_max=write_iops_sec_max, size_iops_sec=size_iops_sec,
-            **kwargs
         )
 
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
