@@ -17,9 +17,17 @@ queue = "hypervisor"
 
 def action(machineid, disks, iotune):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    import libvirt
     connection = LibvirtUtil()
-    domain = connection.get_domain(machineid)
-    domaindisks = list(connection.get_domain_disks(domain['XMLDesc']))
+    domain = connection.get_domain_obj(machineid)
+    if domain is None:
+        return
+    domaindisks = list(connection.get_domain_disks(domain.XMLDesc()))
+    flags = []
+    if domain.isPersistent():
+        flags.append('--config')
+    if domain.state(0) == libvirt.VIR_DOMAIN_RUNNING:
+        flags.append('--live')
 
     for diskurl in disks:
         dev = connection.get_domain_disk(diskurl, domaindisks)
@@ -28,7 +36,7 @@ def action(machineid, disks, iotune):
             for key, value in iotune.items():
                 if value is not None:
                     cmd.extend(['--%s' % key, str(value)])
-            cmd.extend(['--config', '--live'])
+            cmd.extend(flags)
             j.system.process.execute(' '.join(cmd))
 
     return True

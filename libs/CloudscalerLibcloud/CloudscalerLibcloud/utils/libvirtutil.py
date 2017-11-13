@@ -91,6 +91,9 @@ class LibvirtUtil(object):
                 return None
         return domain
 
+    def get_domain_obj(self, id):
+        return self._get_domain(id)
+
     def modXML(self, xml):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
