@@ -30,6 +30,9 @@ parser.add_option("-N", "--restart-cloud", action="store_true",
 parser.add_option("-n", "--concurrency", type=int, default=0)
 parser.add_option("-u", "--update", action="store_true", dest="update",
                   help="only update git repository, do not restart services")
+parser.add_option("--noupdate", action="store_true", dest="noupdate",
+                  help="if combined with normal update this will only restart services not update them")
+parser.add_option("--node", default=None, help="Apply action on this node only")
 group = parser.add_option_group('Update version')
 group.add_option("--tag-js", dest="tag_js", help="Tag to update JumpScale to")
 group.add_option("--tag-ovc", dest="tag_ovc", help="Tag to update OpenvCloud to")
@@ -57,6 +60,8 @@ nodeprocs = ['redis', 'statsd-collector', 'nginx', 'vncproxy']
 # Loading nodes list
 sshservices = j.atyourservice.findServices(name='node.ssh')
 sshservices.sort(key=lambda x: x.instance)
+if options.node:
+    sshservices = filter(lambda x: x.instance == options.node, sshservices)
 nodeservices = filter(lambda x: x.instance not in hosts, sshservices)
 cloudservices = filter(lambda x: x.instance in hosts, sshservices)
 
@@ -447,9 +452,10 @@ if allStep:
     j.console.notice('processing complete upgrade')
     starttime = int(time.time())
 
-    updateLocal()
-    updateCloudspace()
-    updateNodes()
+    if not options.noupdate:
+        updateLocal()
+        updateCloudspace()
+        updateNodes()
     stopNodes()
     restartCloudspace()
     startNodes()
