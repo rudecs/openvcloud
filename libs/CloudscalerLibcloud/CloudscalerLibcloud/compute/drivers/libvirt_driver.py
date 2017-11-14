@@ -162,6 +162,10 @@ class CSLibvirtNodeDriver(object):
         self.uri = uri
         self.env = env
         self.scl = j.clients.osis.getNamespace('system')
+        # preload ovs_credentials and ovs_connection
+        # this is to detect erors earlier if there is
+        # some misconfiguration
+        self.ovs_connection
 
     backendconnection = connection.DummyConnection()
 
