@@ -110,8 +110,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
             raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s" % (networkid, networkidHex, e))
         print 'Protect network'
         domain = connection.get_domain_obj(domuuid)
-        network.protect_external(domain, '{}/{}'.format(publicip, publiccidr))
-        network.protect_gwmgmt(domain, '{}/22'.format(internalip))
+        network.protect_external(domain, publicip)
+        # network.protect_gwmgmt(domain, internalip) # TODO fix this
 
         data['internalip'] = internalip
 

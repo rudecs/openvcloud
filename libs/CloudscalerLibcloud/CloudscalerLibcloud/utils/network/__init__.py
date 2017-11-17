@@ -17,7 +17,7 @@ class Network(object):
 
     def get_external_interface(self, domain):
         for nic in self.libvirtutil.get_domain_nics_info(domain):
-            if nic['bridge'].startswith('pub') or nic['bridge'].startwith('ext'):
+            if nic['bridge'].startswith('pub') or nic['bridge'].startswith('ext'):
                 return nic['name'], nic['mac'], nic['bridge']
         raise LookupError("Could not find public interface")
 
