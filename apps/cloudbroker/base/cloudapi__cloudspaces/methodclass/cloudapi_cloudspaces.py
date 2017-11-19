@@ -214,7 +214,7 @@ class cloudapi_cloudspaces(BaseActor):
         cs.status = 'VIRTUAL'
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
-            raise RuntimeError("Failed to get networkid")
+            raise exceptions.ServiceUnavailable("Failed to get networkid")
 
         cs.networkId = networkid
         cs.secret = str(uuid.uuid4())
