@@ -224,6 +224,7 @@ class cloudapi_machines(BaseActor):
         :param basename: snapshot id on which the template is based
         :return True if template was created
         """
+        raise exceptions.NotImplemented("convertToTemplate has been disabled in this release")
         machine = self._getMachine(machineId)
         origimage = self.models.image.get(machine.imageId)
         if origimage.accountId:
