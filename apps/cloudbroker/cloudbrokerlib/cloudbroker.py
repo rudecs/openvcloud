@@ -14,6 +14,8 @@ import time
 import string
 import re
 
+DEFAULTIOPS = 2000
+
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 
@@ -570,6 +572,7 @@ class Machine(object):
             disk.name = name or 'Disk nr %s' % order
             disk.descr = 'Machine disk of type %s' % type
             disk.sizeMax = size
+            disk.iotune = {'total_iops_sec': DEFAULTIOPS}
             disk.accountId = cloudspace.accountId
             disk.gid = cloudspace.gid
             disk.order = order
@@ -685,8 +688,9 @@ class Machine(object):
             machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 if not volumes:
-                    node = provider.client.create_node(name=name, image=pimage, size=psize,
-                                                       auth=auth, networkid=cloudspace.networkId, datadisks=diskinfo)
+                    node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth,
+                                                       networkid=cloudspace.networkId,
+                                                       datadisks=diskinfo, iotune=firstdisk.iotune)
                 else:
                     node = provider.client.init_node(name, psize, volumes, pimage.extra['imagetype'])
             except StorageException as e:

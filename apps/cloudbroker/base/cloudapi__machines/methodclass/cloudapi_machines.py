@@ -131,7 +131,7 @@ class cloudapi_machines(BaseActor):
         return self._action(machineId, 'resume', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    def addDisk(self, machineId, diskName, description, size=10, type='D', ssdSize=0, **kwargs):
+    def addDisk(self, machineId, diskName, description, size=10, type='D', ssdSize=0, iops=2000, **kwargs):
         """
         Create and attach a disk to the machine
 
@@ -151,7 +151,7 @@ class cloudapi_machines(BaseActor):
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                                      name=diskName, description=description, size=size,
-                                                     type=type, **kwargs)
+                                                     type=type, iops=iops, **kwargs)
         try:
             provider.client.attach_volume(node, volume)
         except:

@@ -61,4 +61,5 @@
         var:size int,10,size in GBytes, default is 0
         var:type str,B, (B;D;T)  B=Boot;D=Data;T=Temp
         var:ssdSize int,0,size in GBytes default is 0 @optional
+        var:iops int,2000,max IOPS disk can perform defaults to 2000 @optional
         result:int, the id of the created disk

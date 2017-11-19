@@ -26,7 +26,7 @@ class cloudapi_disks(BaseActor):
                                   driver=provider.client, extra={'node': node}, iotune=disk['iotune'])
 
     @authenticator.auth(acl={'account': set('C')})
-    def create(self, accountId, gid, name, description, size=10, type='D', ssdSize=0, **kwargs):
+    def create(self, accountId, gid, name, description, size=10, type='D', ssdSize=0, iops=2000, **kwargs):
         """
         Create a disk
 
@@ -41,10 +41,10 @@ class cloudapi_disks(BaseActor):
         """
         # Validate that enough resources are available in the account CU limits to add the disk
         j.apps.cloudapi.accounts.checkAvailableMachineResources(accountId, vdisksize=size)
-        disk, volume = self._create(accountId, gid, name, description, size, type)
+        disk, volume = self._create(accountId, gid, name, description, size, type, iops)
         return disk.id
 
-    def _create(self, accountId, gid, name, description, size=10, type='D', **kwargs):
+    def _create(self, accountId, gid, name, description, size=10, type='D', iops=2000, **kwargs):
         if size > 2000:
             raise exceptions.BadRequest("Disk size can not be bigger than 2000 GB")
         disk = self.models.disk.new()
@@ -53,12 +53,14 @@ class cloudapi_disks(BaseActor):
         disk.sizeMax = size
         disk.type = type
         disk.gid = gid
+        disk.iotune = {'total_iops_sec': iops}
         disk.accountId = accountId
         diskid = self.models.disk.set(disk)[0]
         disk = self.models.disk.get(diskid)
         try:
             provider = self.cb.getProviderByGID(gid)
             volume = provider.client.create_volume(disk.sizeMax, disk.id)
+            volume.iotune = disk.iotune
             disk.referenceId = volume.id
         except:
             self.models.disk.delete(disk.id)

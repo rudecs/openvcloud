@@ -476,7 +476,7 @@ class CSLibvirtNodeDriver(object):
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
 
-    def create_node(self, name, size, image, location=None, auth=None, networkid=None, datadisks=None):
+    def create_node(self, name, size, image, location=None, auth=None, networkid=None, datadisks=None, iotune=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -506,6 +506,7 @@ class CSLibvirtNodeDriver(object):
         """
         volumes = []
         imagetype = image.extra['imagetype']
+        iotune = iotune or {}
 
         try:
             if auth:
@@ -514,6 +515,7 @@ class CSLibvirtNodeDriver(object):
 
             volume = self._create_disk(name, size, image)
             volume.dev = 'vda'
+            volume.iotune = iotune
             volumes.append(volume)
             if datadisks:
                 datavolumes = []
@@ -521,6 +523,8 @@ class CSLibvirtNodeDriver(object):
                     volume = {'name': diskname, 'size': disksize, 'dev': 'vd%s' % convertnumber(idx + 1)}
                     datavolumes.append(volume)
                 volumes += self.create_volumes(datavolumes)
+                for volume in volumes:
+                    volume.iotune = iotune
         except Exception as e:
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
