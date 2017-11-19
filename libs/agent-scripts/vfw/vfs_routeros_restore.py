@@ -31,6 +31,13 @@ def action(networkid):
         j.system.btrfs.subvolumeDelete(destination, networkidHex)
     j.system.btrfs.subvolumeCreate(destination, networkidHex)
     try:
+        j.system.platform.qemu_img.info(ovslocation)
+    except RuntimeError as e:
+        if 'No such file or directory' in e.message:
+            return False
+        j.errorconditionhandler.processPythonExceptionObject(e)
+        return False
+    try:
         j.system.platform.qemu_img.convert(ovslocation, 'raw', localfile, 'qcow2')
     except Exception as e:
         j.errorconditionhandler.processPythonExceptionObject(e)
