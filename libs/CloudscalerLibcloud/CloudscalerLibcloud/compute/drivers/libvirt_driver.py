@@ -932,7 +932,7 @@ class CSLibvirtNodeDriver(object):
                 interfacexml = ElementTree.tostring(interface)
                 break
         if interfacexml:
-            domxml = self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
+            self._execute_agent_job('detach_device', queue='hypervisor', xml=interfacexml, machineid=node.id)
             domxml = ElementTree.tostring(dom)
             return self._update_node(node, domxml)
 
@@ -942,6 +942,7 @@ class CSLibvirtNodeDriver(object):
         memory = dom.find('memory')
         if dom.find('currentMemory') is not None:
             dom.remove(dom.find('currentMemory'))
+        memory.attrib['unit'] = 'MB'
         memory.text = str(size.ram)
         vcpu = dom.find('vcpu')
         vcpu.text = str(size.extra['vcpus'])
