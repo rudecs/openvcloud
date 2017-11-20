@@ -334,11 +334,13 @@ class CSLibvirtNodeDriver(object):
             'greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                raise RuntimeError('Could not find agent with nid:%s' % id)
+                j.ErrorConditionHandler.raiseOperationalWarning('Could not find agent with nid:%s' % id)
             elif job['state'] == 'TIMEOUT':
-                raise RuntimeError('Job failed to execute on time')
+                j.ErrorConditionHandler.raiseOperationalWarning('Job failed to execute on time')
             else:
-                raise RuntimeError("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
+                j.ErrorConditionHandler.raiseOperationalWarning("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
+
+            raise exceptions.ServiceUnavailable('Could not perform action: {name} at this time'.format(name=name_))
         if wait:
             return job['result']
         else:
@@ -673,7 +675,7 @@ class CSLibvirtNodeDriver(object):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
         try:
             self._execute_agent_job('deletedisks', role='storagedriver', **kwargs)
-        except RuntimeError as rError:
+        except exceptions.ServiceUnavailable as rError:
             j.errorconditionhandler.processPythonExceptionObject(
                 rError, message="Failed to delete disks may be they are deleted from the storage node")
 
