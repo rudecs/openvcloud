@@ -1,0 +1,42 @@
+#!/bin/bash
+
+for loopdir in /sys/block/loop*; do
+    udevadm test $loopdir &> /dev/null
+    loopname=$(basename $loopdir)
+    for part in $loopdir/$loopname*; do
+        udevadm test $part &> /dev/null
+    done
+done
+
+
+set -e
+
+if [ -e /sys/class/net/backplane1 ]; then
+    echo "Backplane1 is already configured nothing to do"
+    exit 0
+fi
+if [[ $# == 2 ]]; then
+    ip=$1
+    gateway=$2
+else 
+    ip=$(ip a s dev eth0 | grep 'inet ' | awk '{print $2}')
+    gateway=$(ip r | grep default | awk '{print $3}')
+fi
+
+echo $ip
+echo $gateway
+
+apt-get update
+apt-get install -y openvswitch-switch
+mkdir -p /mnt/db
+mkdir -p /mnt/alba-asd/1234567890123456
+mount LABEL="$(hostname -s)-db" /mnt/db
+mount LABEL="$(hostname -s)-asd" /mnt/alba-asd/1234567890123456
+scriptdir=$(dirname $(readlink -f $0))
+$scriptdir/createnet $ip $gateway
+echo "${scriptdir}/createnet ${ip} ${gateway}
+mount LABEL="$(hostname -s)-db" /mnt/db
+mount -a
+exit 0
+" > /etc/rc.local
+

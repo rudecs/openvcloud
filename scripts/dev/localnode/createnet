@@ -1,0 +1,17 @@
+#!/bin/bash
+ip=$1
+gateway=$2
+
+ifdown eth0 || true
+ovs-vsctl --may-exist add-br  backplane1
+ovs-vsctl --may-exist add-port backplane1 eth0
+ip l s dev eth0 up
+ip l s dev backplane1 up
+ip l s dev backplane1 mtu 2000
+ip a a $ip dev backplane1
+ip r a default via $gateway
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+ip l s vxbackend mtu 2000
+ovs-vsctl add-port backplane1 vxbackend-200 tag=200 -- set Interface vxbackend-200 type=patch options:peer=backplane1-200
+ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0

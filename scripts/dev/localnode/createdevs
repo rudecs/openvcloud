@@ -1,0 +1,49 @@
+#!/bin/bash
+sudo modprobe fuse
+sudo modprobe openvswitch
+sudo modprobe kvm
+sudo modprobe tun
+node=$1
+
+echoerr() { echo "$@" 1>&2; }
+
+function createdev() {
+    devname="${node}-${1}"
+    devsize=$2
+    created="0"
+    if [ ! -e $devname ]; then
+        echoerr Create devices
+        truncate -s $devsize $devname
+        created="1"
+    fi
+    if ! losetup | grep $devname > /dev/null; then
+        echoerr Loop devices
+        sudo losetup -P -f $devname
+    fi
+    dev=$(losetup -a | grep $devname | cut -d ':' -f 1)
+    if [[ $created == "0" ]]; then
+        echo $dev
+        return 0
+    fi
+    if [ ! -e "${dev}p1" ]; then
+        echoerr Create partitions
+        sudo parted -s -a optimal $dev mklabel gpt -- mkpart primary ext4 1 -1 &> /dev/null
+        echoerr Create fs
+        sudo mkfs.ext4 -L $devname "${dev}p1" &> /dev/null
+    fi
+    echo $dev
+
+}
+
+function patchconfig() {
+    scriptdir=$(dirname $(readlink -f $0))
+    lxcconfig="/var/lib/lxc/${node}/config"
+    if ! sudo grep 'lxc.hook.autodev' $lxcconfig; then
+        echo "lxc.hook.autodev = ${scriptdir}/lxcdevicehook" | sudo tee -a $lxcconfig
+    fi
+}
+
+
+createdev db 4GB
+createdev asd 200GB
+patchconfig
