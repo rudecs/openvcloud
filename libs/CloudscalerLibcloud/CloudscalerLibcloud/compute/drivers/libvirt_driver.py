@@ -4,6 +4,7 @@ from CloudscalerLibcloud.utils import connection
 from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, StorageVolume
 from libcloud.compute.drivers.dummy import DummyNodeDriver
 from jinja2 import Environment, PackageLoader
+from JumpScale.portal.portal import exceptions
 from xml.etree import ElementTree
 import urlparse
 import json
