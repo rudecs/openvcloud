@@ -43,7 +43,7 @@ class cloudbroker_iaas(BaseActor):
         pool.gid = int(gid)
         pool.gateway = gateway
         pool.name = name
-        pool.vlan = vlan
+        pool.vlan = vlan or 0
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
         pool.accountId = accountId or 0
