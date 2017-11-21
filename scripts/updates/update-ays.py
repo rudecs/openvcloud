@@ -95,6 +95,11 @@ def restart(nodessh):
     nodessh.execute('ays start')
 
 
+def configure(service):
+    j.remote.cuisine.enableQuiet()
+    service.configure()
+
+
 def restartNode(nodessh):
     j.remote.cuisine.enableQuiet()
     for service in nodeprocs:
@@ -322,8 +327,8 @@ def startNodes():
 def restartCloudspace():
     j.console.notice('Restarting cloudspace:')
     applyOnServices(cloudservices, restart, msg="\t[{status}] {name}")
-    for service in j.atyourservice.findServices(name='g8vdc'):
-        service.configure()
+    g8vdcs = j.atyourservice.findServices(name='g8vdc')
+    applyOnServices(g8vdcs, configure, msg="\t[{status}] g8vdc {name}")
 
 
 def versionBuilder():
