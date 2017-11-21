@@ -322,6 +322,8 @@ def startNodes():
 def restartCloudspace():
     j.console.notice('Restarting cloudspace:')
     applyOnServices(cloudservices, restart, msg="\t[{status}] {name}")
+    for service in j.atyourservice.findServices(name='g8vdc'):
+        service.configure()
 
 
 def versionBuilder():
