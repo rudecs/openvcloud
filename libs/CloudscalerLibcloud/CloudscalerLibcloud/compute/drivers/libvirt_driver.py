@@ -334,11 +334,11 @@ class CSLibvirtNodeDriver(object):
             'greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
-                j.ErrorConditionHandler.raiseOperationalWarning('Could not find agent with nid:%s' % id)
+                j.errorconditionhandler.raiseOperationalWarning('Could not find agent with nid:%s' % id)
             elif job['state'] == 'TIMEOUT':
-                j.ErrorConditionHandler.raiseOperationalWarning('Job failed to execute on time')
+                j.errorconditionhandler.raiseOperationalWarning('Job failed to execute on time')
             else:
-                j.ErrorConditionHandler.raiseOperationalWarning("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
+                j.errorconditionhandler.raiseOperationalWarning("Could not execute %s for nid:%s, error was:%s" % (name_, id, job['result']))
 
             raise exceptions.ServiceUnavailable('Could not perform action: {name} at this time'.format(name=name_))
         if wait:
