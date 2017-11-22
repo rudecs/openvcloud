@@ -169,13 +169,13 @@ class cloudbroker_iaas(BaseActor):
         size['vcpus'] = vcpus
         locations = self.models.location.search({"$query": {}, "$fields": ['gid']})
         size['gids'] = [location['gid'] for location in locations[1:]]
+        size['name'] = name
         for disk in disks:
             if self.lcl.size.count({"vcpus": vcpus, "memory": memory, "disk": disk}) >= 1:
                 raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
             for gid in size['gids']:
                 name = '%s-%s-%s-%s' % (vcpus, memory, disk, gid)
                 self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus, 'name': name, "gid": gid})
-        size['name'] = name
         cloudbroker_size = next(iter(self.models.size.search({"vcpus": vcpus, "memory": memory})[1:]), None)
 
         if not cloudbroker_size:
