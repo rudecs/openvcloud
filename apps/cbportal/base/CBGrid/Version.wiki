@@ -9,5 +9,4 @@ h3. OpenvCloud
    * G8VDC: {{repoversion: account:0-complexity repo:g8vdc provider:github}}
    * Selfhealing: {{repoversion: account:0-complexity repo:selfhealing provider:github}}
 
-h3. OpenvStorage:
 {{ovsversion}}
