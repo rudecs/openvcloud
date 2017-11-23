@@ -181,8 +181,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         while time.time() - start < timeout:
             try:
                 ro = j.clients.routeros.get(internalip, username, defaultpasswd)
-                ro.executeScript("/user group set [find name=customer] skin=customer")
-                ro.close()
+                try:
+                    ro.executeScript("/user group set [find name=customer] skin=customer")
+                finally:
+                    ro.close()
                 break
             except Exception as e:
                 print 'Failed to set skin will try again in 1sec', e
@@ -190,17 +192,27 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         else:
             raise RuntimeError("Failed to set customer skin")
 
-        if not ro.arping(publicgwip, 'public'):
+        for x in xrange(30):
+            ro = j.clients.routeros.get(internalip, username, defaultpasswd)
+            try:
+                if ro.arping(publicgwip, 'public'):
+                    break
+            finally:
+                ro.close()
+            time.sleep(1)
+        else:
             raise RuntimeError("Could not ping to:%s for VFW %s" % (publicgwip, networkid))
 
         # now, set the pasword
         try:
             ro = j.clients.routeros.get(internalip, username, defaultpasswd)
-            ro.executeScript('/user set %s password=%s' % (username, newpassword))
+            try:
+                ro.executeScript('/user set %s password=%s' % (username, newpassword))
+            finally:
+                ro.close()
         except:
             pass
 
-        ro.close()
         print 'Finished configuring VFW'
 
     except:
