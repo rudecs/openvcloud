@@ -53,6 +53,6 @@
         """
         var:username str,, id of user @tags validator:username
         var:emailaddress list,, emailaddresses of the user
-        var:password str,, password of user
+        var:password str,, password of user @optional
         var:groups list,,list of groups this user belongs to @optional default_is_none
         result:bool

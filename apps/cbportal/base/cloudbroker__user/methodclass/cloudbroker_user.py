@@ -5,7 +5,7 @@ from JumpScale.portal.portal import exceptions
 from JumpScale.baselib.http_client.HttpClient import HTTPError
 import hashlib
 import time
-
+import uuid
 
 class cloudbroker_user(BaseActor):
     """
@@ -38,6 +38,8 @@ class cloudbroker_user(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, groups, **kwargs):
         groups = groups or []
+        if password is None:
+            password = str(uuid.uuid4())
         created = j.core.portal.active.auth.createUser(username, password, emailaddress, groups,
                                                        None, protected=True)
         if created:
