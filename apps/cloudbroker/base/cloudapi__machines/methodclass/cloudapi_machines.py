@@ -39,7 +39,6 @@ class cloudapi_machines(BaseActor):
     def __init__(self):
         super(cloudapi_machines, self).__init__()
         self.osisclient = j.core.portal.active.osis
-        self.osis_logs = j.clients.osis.getCategory(self.osisclient, "system", "log")
         self.network = network.Network(self.models)
         self.systemodel = j.clients.osis.getNamespace('system')
         self.netmgr = self.cb.netmgr
@@ -67,8 +66,6 @@ class cloudapi_machines(BaseActor):
                     raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             if newstatus and newstatus != machine.status:
                 self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'status': newstatus}})
-            tags = str(machineId)
-            j.logger.log(actiontype.capitalize(), category='machine.history.ui', tags=tags)
             return method(node, **kwargs)
 
     @authenticator.auth(acl={'machine': set('X')})
@@ -528,7 +525,10 @@ class cloudapi_machines(BaseActor):
                                                                    size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(
             name, description, cloudspace, imageId, sizeId, disksize, datadisks)
-        return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
+        machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
+        kwargs['ctx'].env['beaker.session']['tags'] += " machineId:{}".format(machineId)
+        return machineId
+
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def delete(self, machineId, **kwargs):
@@ -553,8 +553,6 @@ class cloudapi_machines(BaseActor):
             vmachinemodel.status = 'DESTROYED'
             self.models.vmachine.set(vmachinemodel)
 
-        tags = str(machineId)
-        j.logger.log('Deleted', category='machine.history.ui', tags=tags)
         try:
             j.apps.cloudapi.portforwarding.deleteByVM(vmachinemodel)
         except Exception as e:
@@ -686,8 +684,6 @@ class cloudapi_machines(BaseActor):
         node = provider.client.ex_get_node_details(node.id)
         if node.extra.get('locked', False):
             raise exceptions.Conflict('Cannot create snapshot on a locked machine')
-        tags = str(machineId)
-        j.logger.log('Snapshot created', category='machine.history.ui', tags=tags)
         snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot
 
@@ -720,8 +716,6 @@ class cloudapi_machines(BaseActor):
         :param epoch: epoch time of snapshot
         """
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        tags = str(machineId)
-        j.logger.log('Snapshot deleted', category='machine.history.ui', tags=tags)
         provider.client.ex_delete_snapshot(node, epoch)['state']
         return True
 
@@ -735,8 +729,6 @@ class cloudapi_machines(BaseActor):
         :param epoch: epoch time of snapshot
         """
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        tags = str(machineId)
-        j.logger.log('Snapshot rolled back', category='machine.history.ui', tags=tags)
         return provider.client.ex_rollback_snapshot(node, epoch)
 
     @authenticator.auth(acl={'machine': set('C')})
@@ -869,8 +861,6 @@ class cloudapi_machines(BaseActor):
         except:
             self.cb.machine.cleanup(clone)
             raise
-        tags = str(machineId)
-        j.logger.log('Cloned', category='machine.history.ui', tags=tags)
         return clone.id
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -885,9 +875,18 @@ class cloudapi_machines(BaseActor):
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
-        tags = str(machineId)
-        query = {'category': 'machine_history_ui', 'tags': tags}
-        return self.osis_logs.search(query, size=size)[1:]
+        tags = 'machineId:{}'.format(machineId)
+        results = []
+        for audit in self.systemodel.audit.search({'tags': {'$regex': tags}})[1:]:
+            parts = audit['call'].split('/')
+            call = '/'.join(parts[-2:])
+            if parts[-1] in ['get', 'getHistory', 'listSnapshots', 'list', 'getConsoleUrl']:
+                continue
+            results.append({
+                'epoch': audit['timestamp'],
+                'message': 'User {} called {}'.format(audit['user'], call)
+            })
+        return results
 
     @authenticator.auth(acl={'cloudspace': set('X'), 'machine': set('U')})
     def addUser(self, machineId, userId, accesstype, **kwargs):
