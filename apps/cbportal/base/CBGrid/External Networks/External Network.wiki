@@ -29,12 +29,13 @@
 
 - display: Delete external network
   action: /restmachine/cloudbroker/iaas/deleteExternalNetwork
+  navigateback: true
   data:
     externalnetworkId: ${id}
 
 - display: Remove External IP
   action: /restmachine/cloudbroker/iaas/removeExternalIP
-  refresh: flase
+  refresh: false
   hide: true
   data:
     externalnetworkId: ${id}
