@@ -45,11 +45,13 @@ def main(j, args, params, tags, tasklet):
         {
             'name': 'Name',
             'value': nameLinkify,
-            'id': 'name'
+            'id': 'name',
+            'type': 'text',
         }, {
             'name': 'Hostname',
             'value': 'hostName',
-            'id': 'hostName'
+            'id': 'hostName',
+            'type': 'text',
         }, {
             'name': 'Status',
             'value': 'status',

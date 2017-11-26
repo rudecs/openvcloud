@@ -10,19 +10,34 @@ def main(j, args, params, tags, tasklet):
         filters[tag] = val
 
 
-    fieldnames = ['GID', 'ID', 'Cloud Space ID', 'Public IPs', 'Management IP' ]
-
     def makeNS(row, field):
         return str(', '.join(row[field]))
 
-    fieldids = ['gid', 'id', 'domain', 'pubips', 'host']
-    fieldvalues = ['gid',
-                   '[%(id)s|/CBGrid/private network?id=%(id)s&gid=%(gid)s] (%(id)04x)',
-                   '[%(domain)s|/CBGrid/cloud space?id=%(domain)s]',
-                   makeNS,
-                   'host'
-                   ]
-    tableid = modifier.addTableForModel('vfw', 'virtualfirewall', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+        {'name': 'GID',
+         'id': 'gid',
+         'value': '[%(gid)s|/CBGrid/grid?gid=%(gid)s]',
+        },
+        {'name': 'id',
+         'id': 'id',
+         'value': '[%(id)s|/CBGrid/private network?id=%(id)s&gid=%(gid)s] (%(id)04x)',
+        },
+        {'name': 'Cloud Space ID',
+         'id': 'domain',
+         'value': '[%(domain)s|/CBGrid/cloud space?id=%(domain)s]',
+        },
+        {'name': 'Public IPs',
+         'id': 'pubips',
+         'value': makeNS,
+         'type': 'text'
+        },
+        {'name': 'Management IP',
+         'id': 'host',
+         'value': 'host',
+         'type': 'text'
+        },
+    ]
+    tableid = modifier.addTableFromModel('vfw', 'virtualfirewall', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 
