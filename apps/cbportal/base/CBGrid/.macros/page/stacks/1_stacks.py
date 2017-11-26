@@ -59,7 +59,8 @@ def main(j, args, params, tags, tasklet):
          },
         {'name': 'Name',
          'id': 'name',
-         'value': 'name'
+         'value': 'name',
+         'type': 'text',
          },
         {'name': 'Status',
          'id': 'status',
@@ -67,7 +68,8 @@ def main(j, args, params, tags, tasklet):
          },
         {'name': 'Reference ID',
          'id': 'referenceId',
-         'value': "<a href='/grid/grid node?id=%(referenceId)s&gid=%(gid)s'>%(referenceId)s</a>"
+         'value': "<a href='/grid/grid node?id=%(referenceId)s&gid=%(gid)s'>%(referenceId)s</a>",
+         'type': 'text',
          },
         {'name': 'ROS + VMS',
          'id': 'is',

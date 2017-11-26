@@ -12,9 +12,37 @@ def main(j, args, params, tags, tasklet):
     def getFreeIPS(row, id):
         return str(len(row[id]))
 
-    fieldids = ['name', 'network', 'netmask', 'gid', 'vlan', 'ips']
-    fieldvalues = ['[%(name)s|External Network?networkid=%(id)s]', 'network', 'subnetmask', '[%(gid)s|grid?gid=%(gid)s]', 'vlan', getFreeIPS]
-    tableid = modifier.addTableForModel('cloudbroker', 'externalnetwork', fieldids, fieldnames, fieldvalues, filters)
+    fields = [
+            {'name': 'Name',
+             'id': 'name',
+             'value': '[%(name)s|External Network?networkid=%(id)s]',
+            },
+            {'name': 'Network',
+             'id': 'network',
+             'value': 'network',
+             'type': 'text',
+            },
+            {'name': 'Netmask',
+             'id': 'subnetmask',
+             'value': 'subnetmask',
+             'type': 'text',
+            },
+            {'name': 'GID',
+             'id': 'gid',
+             'value': 'gid',
+            },
+            {'name': 'VLAN',
+             'id': 'vlan',
+             'value': 'vlan',
+            },
+            {'name': 'Free',
+             'id': 'ips',
+             'value': getFreeIPS,
+             'sortable': False,
+             'filterable': False,
+            },
+    ]
+    tableid = modifier.addTableFromModel('cloudbroker', 'externalnetwork', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
     modifier.addSorting('#%s' % tableid, 1, 'desc')
 

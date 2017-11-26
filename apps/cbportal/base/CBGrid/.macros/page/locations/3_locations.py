@@ -13,7 +13,7 @@ def main(j, args, params, tags, tasklet):
 
     fieldnames = ['GID', 'Name', 'Location Code']
 
-    fieldids = ['gid', 'name', 'flag', 'locationCode']
+    fieldids = ['gid', 'name', 'locationCode']
     fieldvalues = ['[%(gid)s|/CBGrid/grid?gid=%(gid)s]', 'name', 'locationCode']
     tableid = modifier.addTableForModel('cloudbroker', 'location', fieldids, fieldnames,
                                         fieldvalues, filters)
