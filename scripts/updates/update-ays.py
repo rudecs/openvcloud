@@ -97,6 +97,7 @@ def restart(nodessh):
 
 def configure(service):
     j.remote.cuisine.enableQuiet()
+    service.resetstate()
     service.configure()
 
 
@@ -326,6 +327,8 @@ def startNodes():
 
 def restartCloudspace():
     j.console.notice('Restarting cloudspace:')
+    branding = j.atyourservice.findServices(name='portal_branding')
+    applyOnServices(branding, configure, msg="\t[{status}] Portal branding {name}")
     applyOnServices(cloudservices, restart, msg="\t[{status}] {name}")
     g8vdcs = j.atyourservice.findServices(name='g8vdc')
     applyOnServices(g8vdcs, configure, msg="\t[{status}] g8vdc {name}")
