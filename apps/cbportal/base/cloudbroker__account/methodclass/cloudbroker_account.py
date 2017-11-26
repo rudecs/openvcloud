@@ -65,81 +65,82 @@ class cloudbroker_account(BaseActor):
     def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
                maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, sendAccessEmails=True, **kwargs):
 
-        if sendAccessEmails == 1:
-            sendAccessEmails = True
-        elif sendAccessEmails == 0:
-            sendAccessEmails = False
-        accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
-        if accounts:
-            raise exceptions.Conflict('Account name is already in use.')
+        with self.models.account.lock(name):
+            if sendAccessEmails == 1:
+                sendAccessEmails = True
+            elif sendAccessEmails == 0:
+                sendAccessEmails = False
+            accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
+            if accounts:
+                raise exceptions.Conflict('Account name is already in use.')
 
-        created = False
-        if j.core.portal.active.auth.userExists(username):
-            if emailaddress and not self.syscl.user.search({'id': username,
-                                                            'emails': emailaddress})[1:]:
-                raise exceptions.Conflict('The specified username and email do not match.')
+            created = False
+            if j.core.portal.active.auth.userExists(username):
+                if emailaddress and not self.syscl.user.search({'id': username,
+                                                                'emails': emailaddress})[1:]:
+                    raise exceptions.Conflict('The specified username and email do not match.')
 
-            user = j.core.portal.active.auth.getUserInfo(username)
-            emailaddress = user.emails[0] if user.emails else None
-        else:
-            if not emailaddress:
-                raise exceptions.BadRequest('Email address is required for new users.')
-            Validators.EMAIL(emailaddress)
+                user = j.core.portal.active.auth.getUserInfo(username)
+                emailaddress = user.emails[0] if user.emails else None
+            else:
+                if not emailaddress:
+                    raise exceptions.BadRequest('Email address is required for new users.')
+                Validators.EMAIL(emailaddress)
 
-            password = j.base.idgenerator.generateGUID()
-            j.apps.cloudbroker.user.create(username=username, emailaddress=[emailaddress], password=password, groups=['user'])
-            created = True
+                password = j.base.idgenerator.generateGUID()
+                j.apps.cloudbroker.user.create(username=username, emailaddress=[emailaddress], password=password, groups=['user'])
+                created = True
 
-        now = int(time.time())
-        locationurl = self.cb.actors.cloudapi.locations.getUrl().strip('/')
+            now = int(time.time())
+            locationurl = self.cb.actors.cloudapi.locations.getUrl().strip('/')
 
-        account = self.models.account.new()
-        account.name = name
-        account.creationTime = now
-        account.updateTime = now
-        account.company = ''
-        account.companyurl = ''
-        account.status = 'CONFIRMED'
-        account.sendAccessEmails = sendAccessEmails
+            account = self.models.account.new()
+            account.name = name
+            account.creationTime = now
+            account.updateTime = now
+            account.company = ''
+            account.companyurl = ''
+            account.status = 'CONFIRMED'
+            account.sendAccessEmails = sendAccessEmails
 
-        resourcelimits = {'CU_M': maxMemoryCapacity,
-                          'CU_D': maxVDiskCapacity,
-                          'CU_C': maxCPUCapacity,
-                          'CU_NP': maxNetworkPeerTransfer,
-                          'CU_I': maxNumPublicIP}
-        self.cb.fillResourceLimits(resourcelimits)
-        account.resourceLimits = resourcelimits
+            resourcelimits = {'CU_M': maxMemoryCapacity,
+                            'CU_D': maxVDiskCapacity,
+                            'CU_C': maxCPUCapacity,
+                            'CU_NP': maxNetworkPeerTransfer,
+                            'CU_I': maxNumPublicIP}
+            self.cb.fillResourceLimits(resourcelimits)
+            account.resourceLimits = resourcelimits
 
-        ace = account.new_acl()
-        ace.userGroupId = username
-        ace.type = 'U'
-        ace.right = 'CXDRAU'
-        ace.status = 'CONFIRMED'
-        accountid = self.models.account.set(account)[0]
+            ace = account.new_acl()
+            ace.userGroupId = username
+            ace.type = 'U'
+            ace.right = 'CXDRAU'
+            ace.status = 'CONFIRMED'
+            accountid = self.models.account.set(account)[0]
 
-        mail_args = {
-            'account': name,
-            'username': username,
-            'email': emailaddress,
-            'portalurl': locationurl
-        }
+            mail_args = {
+                'account': name,
+                'username': username,
+                'email': emailaddress,
+                'portalurl': locationurl
+            }
 
-        if created:
-            # new user.
-            validation_token = self.models.resetpasswordtoken.new()
-            validation_token.id = j.base.idgenerator.generateGUID()
-            validation_token.creationTime = int(time.time())
-            validation_token.username = username
+            if created:
+                # new user.
+                validation_token = self.models.resetpasswordtoken.new()
+                validation_token.id = j.base.idgenerator.generateGUID()
+                validation_token.creationTime = int(time.time())
+                validation_token.username = username
 
-            self.models.resetpasswordtoken.set(validation_token)
-            mail_args.update({
-                'token': validation_token.id
-            })
+                self.models.resetpasswordtoken.set(validation_token)
+                mail_args.update({
+                    'token': validation_token.id
+                })
 
-        if emailaddress:
-            _send_signup_mail(hrd=self.hrd, **mail_args)
+            if emailaddress:
+                _send_signup_mail(hrd=self.hrd, **mail_args)
 
-        return accountid
+            return accountid
 
     @auth(['level1', 'level2', 'level3'])
     def enable(self, accountId, reason, **kwargs):
