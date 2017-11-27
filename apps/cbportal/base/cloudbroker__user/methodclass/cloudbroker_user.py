@@ -59,7 +59,7 @@ class cloudbroker_user(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     def deleteUsers(self, userIds, **kwargs):
-        if isinstance(userIds, str):
+        if isinstance(userIds, basestring):
             userIds = [userIds]
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._deleteUsers,
