@@ -3,7 +3,7 @@
 {{title:CBGrid - $$page}}
 {{ApplyFlatTheme}}
 
-{{logo:/system/.files/img/green.png}}
+{{logo:/CBGrid/.files/green.png}}
 {{PortalsHamburgerMenu}}
 {{menu:
 Cloud Broker Portal:/cbgrid
