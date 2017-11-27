@@ -13,9 +13,9 @@
 Every hour a consumption data file per account is generated on the master node.
 
 This involves following three Jumpscripts:
-- [`aggregate_account_data.py`](https://github.com/0-complexity/openvcloud/blob/master/libs/agent-scripts/resmonitoring/aggregate_account_data.py): aggregates data from all locations that it gets by executing `collect_account_data.py` on the controller of each location
+- [`aggregate_account_data.py`](https://github.com/0-complexity/openvcloud/blob/master/libs/agent-scripts/resmonitoring/aggregate_account_data.py): aggregates data from all locations that it gets by executing `collect_account_data.py` on the controller of each location, and stores the result on the master
 - [`collect_account_data.py`](https://github.com/0-complexity/openvcloud/blob/master/libs/agent-scripts/resmonitoring/collect_account_data.py): per location this script runs on the controller to get the actual data for each account
-- [`resmonitoring.py`](https://github.com/0-complexity/openvcloud/blob/master/libs/agent-scripts/resmonitoring/resmonitoring.py): copies the aggregated data to the master node
+- [`resmonitoring.py`](https://github.com/0-complexity/openvcloud/blob/master/libs/agent-scripts/resmonitoring/resmonitoring.py): this scripts runs on the controller and stores the data on the controller, this data is afterwards collected by the `collect_account_data.py` script
 
 
 <a id="capnp"></a>
@@ -62,8 +62,6 @@ struct Account {
 }
 ```
 
-Get access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud/blob/master/libs/CloudscalerLibcloud/CloudscalerLibcloud/schemas/resourcemonitoring.capnp) repository for the most up to date schema.
-
 
 <a id="curl"></a>
 ## Get the consumption files using the CloudAPI
@@ -81,6 +79,7 @@ JWT=`curl -d "grant_type=client_credentials&client_id=${APP_ID}&client_secret=${
 BASE_URL="https://be-gen-1.demo.greenitglobe.com"
 ACCOUNT_ID=<...>
 
+# Specify the start and end time in epoch format
 START=1211507665
 END=1511517665
 
@@ -90,7 +89,7 @@ curl -X GET --header 'Accept: application/octet-stream'  -H "Authorization: bear
 <a id="process-files"></a>
 ## Process the consumption data files
 
-As an example you can check the [export_accounts_xls.py](https://github.com/0-complexity/openvcloud/blob/master/scripts/demo/export_account_xls.py) demo script that processes all cpnp files it find in `account/year/month/day/hour` and converts it into an Excel document.
+As an example you can check the [export_accounts_xls.py](export_accounts_xls.py) demo script that processes all cpnp files it find in `account/year/month/day/hour` and converts it into an Excel document.
 
 
 - First make sure you have the **python-xlwt** package installed:
