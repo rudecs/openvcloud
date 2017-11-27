@@ -17,10 +17,12 @@ docleanup = True
 
 def cleanup(name, networkid):
     import libvirt
-    from CloudscalerLibcloud.utils import libvirtutil
-    con = libvirt.open()
+    from CloudscalerLibcloud.utils.network import Network
+    network = Network()
+    con = network.libvirtutil.connection
     try:
         dom = con.lookupByName(name)
+        network.cleanup_external(dom)
         if dom.isActive():
             dom.destroy()
         dom.undefine()
@@ -28,9 +30,9 @@ def cleanup(name, networkid):
         pass
 
     try:
-        libvirtutil.LibvirtUtil().cleanupNetwork(networkid)
+        network.libvirt.cleanupNetwork(networkid)
     except:
-        pass
+        network.close()
 
     destination = '/var/lib/libvirt/images/routeros/'
     networkidHex = '%04x' % int(networkid)
@@ -41,9 +43,12 @@ def cleanup(name, networkid):
 def createVM(xml):
     import libvirt
     con = libvirt.open()
-    dom = con.defineXML(xml)
-    dom.create()
-    return dom.UUIDString()
+    try:
+        dom = con.defineXML(xml)
+        dom.create()
+        return dom.UUIDString()
+    finally:
+        con.close()
 
 
 def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
@@ -61,8 +66,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     username = hrd.get("instance.vfw.admin.login")
     newpassword = hrd.get("instance.vfw.admin.newpasswd")
     destinationfile = None
-    connection = libvirtutil.LibvirtUtil()
-    network = Network(connection)
 
     data = {'nid': j.application.whoAmI.nid,
             'gid': j.application.whoAmI.gid,
@@ -85,6 +88,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
     else:
         raise RuntimeError("IP conflict there is router with %s" % internalip)
 
+    connection = libvirtutil.LibvirtUtil()
+    network = Network(connection)
     try:
         # setup network vxlan
         print 'Creating network'
@@ -220,6 +225,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
             j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
                                                networkid=networkid)
         raise
+    finally:
+        network.close()
 
     return data
 

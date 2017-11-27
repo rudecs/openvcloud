@@ -91,6 +91,10 @@ class LibvirtUtil(object):
                 return None
         return domain
 
+    def close(self):
+        self.connection.close()
+        self.readonly.close()
+
     def get_domain_obj(self, id):
         return self._get_domain(id)
 

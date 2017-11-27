@@ -15,6 +15,9 @@ class Network(object):
         cmd = rules.CLEANUPFLOWS_CMD.format(mac=mac, port=port, bridge=bridge)
         j.system.process.execute(cmd)
 
+    def close(self):
+        self.libvirtutil.close()
+
     def get_external_interface(self, domain):
         for nic in self.libvirtutil.get_domain_nics_info(domain):
             if nic['bridge'].startswith('pub') or nic['bridge'].startswith('ext'):
