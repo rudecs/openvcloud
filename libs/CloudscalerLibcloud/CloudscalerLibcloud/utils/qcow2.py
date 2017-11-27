@@ -4,7 +4,7 @@ import os
 import subprocess
 
 
-class Qcow2():  
+class Qcow2():
     #object representing a qcow2, at this moment only readonly!
 
 
@@ -32,15 +32,13 @@ class Qcow2():
         self.backing_file_path = self._read_data(filename, self.backing_file_size, self.backing_file_offset)
 
     def _read_data(self, filename, size, offset=0):
-        f = open(filename, 'r')
-        try:
-            f.seek(offset)
-            data = f.read(size)
-            f.close()
-            return data
-        except:
-            f.close()
-            raise Exception('A error occured during reading of the file')
+        with open(filename, 'r') as f:
+            try:
+                f.seek(offset)
+                data = f.read(size)
+                return data
+            except:
+                raise Exception('A error occured during reading of the file')
 
     def export(self, destination, outputtype='qcow2'):
             subprocess.check_call(

@@ -17,10 +17,12 @@ queue = "hypervisor"
 def action():
     import libvirt
     con = libvirt.open()
-    for dom in con.listAllDomains():
-        if dom.state()[0] != libvirt.VIR_DOMAIN_SHUTOFF:
-            dom.shutdown()
-    con.close()
+    try:
+        for dom in con.listAllDomains():
+            if dom.state()[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+                dom.shutdown()
+    finally:
+        con.close()
     return True
 
 

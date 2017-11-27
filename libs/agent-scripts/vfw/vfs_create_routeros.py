@@ -119,9 +119,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         # network.protect_gwmgmt(domain, internalip) # TODO fix this
 
         data['internalip'] = internalip
-
+        run = pexpect.spawn("virsh console %s" % name, timeout=300)
         try:
-            run = pexpect.spawn("virsh console %s" % name, timeout=300)
             print "Waiting to attach to console"
             run.expect("Connected to domain", timeout=10)
             run.sendline()  # first enter to clear welcome message of kvm console
@@ -137,9 +136,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
             run.expect("\] >", timeout=10)  # wait for primpt
             run.send("/quit\r\n")
             run.expect("Login:", timeout=10)
-            run.close()
         except Exception, e:
             raise RuntimeError("Could not set internal ip on VFW, network id:%s:%s\n%s" % (networkid, networkidHex, e))
+        finally:
+            run.close()
 
         print "wait max 30 sec on tcp port 22 connection to '%s'" % internalip
         if j.system.net.waitConnectionTest(internalip, 80, timeout=30):
@@ -177,8 +177,10 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         ro.uploadExecuteScript("customer", vars={'$password': password})
 
         # dirty cludge: rebooting ROS here, as ftp service doesn't propagate directories
-        ro.executeScript('/system reboot')
-        ro.close()
+        try:
+            ro.executeScript('/system reboot')
+        finally:
+            ro.close()
 
         # We're waiting for reboot
         start = time.time()

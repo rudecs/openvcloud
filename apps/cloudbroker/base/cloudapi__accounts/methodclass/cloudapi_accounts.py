@@ -228,7 +228,7 @@ class cloudapi_accounts(BaseActor):
             sendAccessEmails = True
         elif sendAccessEmails == 0:
             sendAccessEmails = False
-            
+
         accountobj = self.models.account.get(accountId)
 
         if name:
@@ -543,9 +543,8 @@ class cloudapi_accounts(BaseActor):
         ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
                                       ('content-disposition', "inline; filename = account.zip")])
         fp = StringIO()
-        zip = zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED)
-        for path in pathes_in_range:
-            file_path = os.path.join(path, 'account_capnp.bin')
-            zip.write(file_path, file_path.replace(root_path, ''))
-        zip.close()
+        with zipfile.ZipFile(fp, 'w', zipfile.ZIP_DEFLATED) as zip:
+            for path in pathes_in_range:
+                file_path = os.path.join(path, 'account_capnp.bin')
+                zip.write(file_path, file_path.replace(root_path, ''))
         return fp.getvalue()

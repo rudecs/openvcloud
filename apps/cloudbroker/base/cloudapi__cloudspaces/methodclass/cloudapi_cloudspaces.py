@@ -1000,10 +1000,10 @@ class cloudapi_cloudspaces(BaseActor):
         ctx.start_response('200 OK', [('content-type', 'application/octet-stream'),
                                       ('content-disposition', "inline; filename = openvpn.zip")])
         fp = StringIO()
-        zip = zipfile.ZipFile(fp, 'w')
-        for filename, filecontent in config.iteritems():
-            zip.writestr(filename, filecontent)
-        zip.close()
+
+        with zipfile.ZipFile(fp, 'w') as zip:
+            for filename, filecontent in config.iteritems():
+                zip.writestr(filename, filecontent)
         return fp.getvalue()
 
     @authenticator.auth(acl={'cloudspace': set('A')})

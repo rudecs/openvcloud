@@ -52,15 +52,16 @@ def action(link, username, passwd, path, envelope, disks):
         uploadthread.start()
 
         wfile = os.fdopen(wfd, 'w', blocksize)
-        tar = tarfile.open(mode='w|gz', fileobj=wfile, bufsize=blocksize)
+        try:
+            with tarfile.open(mode='w|gz', fileobj=wfile, bufsize=blocksize) as tar:
 
-        ti = tarfile.TarInfo('descriptor.ovf')
-        ti.size = len(envelope)
-        tar.addfile(ti, BytesIO(j.tools.text.toStr(envelope)))
-        for vmdk in vmdks:
-            tar.add(vmdk, filter=reset)
-        tar.close()
-        wfile.close()
+                ti = tarfile.TarInfo('descriptor.ovf')
+                ti.size = len(envelope)
+                tar.addfile(ti, BytesIO(j.tools.text.toStr(envelope)))
+                for vmdk in vmdks:
+                    tar.add(vmdk, filter=reset)
+        finally:
+            wfile.close()
         uploadthread.join()
 
 

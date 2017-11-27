@@ -14,10 +14,10 @@ def createbuckets(s3server, accesskey, secretkey):
         conn.create_bucket(bucketname)
 
 def main(args):
-    json_file=open(args.usersfile)
-    userdata = json.load(json_file)
-    json_file.close()
-    
+
+    with open(args.usersfile) as json_file:
+        userdata = json.load(json_file)
+
     for user in userdata:
         accesskey = user['keys'][0]['access_key']
         secretkey = user['keys'][0]['secret_key']
@@ -27,17 +27,17 @@ def main(args):
 
 
 if __name__ == '__main__':
-    
+
     try:
-        
+
         parser = ArgumentParser()
         parser.add_argument('-u', '--usersfile')
         parser.add_argument('-s', '--s3server')
         args = parser.parse_args()
         main(args)
-        
+
         sys.exit(0)
     except KeyboardInterrupt:
         ### handle keyboard interrupt ###
         sys.exit(0)
-    
+

@@ -495,8 +495,10 @@ class LibvirtUtil(object):
         if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED, libvirt.VIR_DOMAIN_PAUSED] or not self._isRootVolume(domain, clonefrom):
             size = int(j.system.platform.qemu_img.info(clonefrom, unit='')['virtual size'])
             fd = os.open(destination_path, os.O_RDWR | os.O_CREAT)
-            os.ftruncate(fd, size)
-            os.close(fd)
+            try:
+                os.ftruncate(fd, size)
+            finally:
+                os.close(fd)
             j.system.platform.qemu_img.convert(clonefrom, 'raw', destination_path, 'raw', createTarget=False)
         else:
             domain.undefine()
