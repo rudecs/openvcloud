@@ -29,6 +29,7 @@ def action():
     """
     Send tar of account data on  each enviroment
     """
+
     base_path_active = "/opt/jumpscale7/var/resourcetracking/active"
     base_path_collected = "/opt/jumpscale7/var/resourcetracking/collected"
 
@@ -56,6 +57,8 @@ def action():
     tar = create_hour_tar()
     move_to_collected(tar)
     tar.seek(0)
+    j.system.fs.removeDirTree(base_path_active)
+
     return base64.encodestring(tar.getvalue())
 
 
