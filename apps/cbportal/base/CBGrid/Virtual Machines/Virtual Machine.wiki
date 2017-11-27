@@ -56,9 +56,12 @@ h3. NICs
 
 h3. Disks
 {{action id:'action-AddDisk' class:'glyphicon glyphicon-plus margin-bottom-medium margin-left-medium' label:'Create Disk'}}
+{%for disk in disks -%}
+{{disk_limitio: diskid:${disk.id}}}
+{% endfor %}
 ||Name||Size||Backend Size||Type||Path||Actions||
 {%for disk in disks -%}
-|${disk.name}|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}| {% if disk.type == 'Data' %} {{action deleterow:true id:'action-DeleteDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-remove'}} {% endif %} {{action deleterow:false id:'action-LimitDiskIO' data-diskId:'${disk.id}' class:'glyphicon glyphicon-dashboard'}}|
+|[${disk.name}|disk?id=${disk.id}]|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}| {% if disk.type == 'Data' %} {{action deleterow:true id:'action-DeleteDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-remove'}} {% endif %} {{action deleterow:false id:'disk_limitio_${disk.id}' class:'glyphicon glyphicon-dashboard'}}|
 {% else -%}
 | | | | | | |
 {% endfor %}

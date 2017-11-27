@@ -1,0 +1,25 @@
+@usedefaults
+{{disk}}
+
+{% if id %}
+h2. Disk: ${name} 
+
+{{actions:
+- display: Limit IO
+  action: '#disk_limitio_$$id'
+}}
+
+{{disk_limitio: diskid:$$id}}
+
+|*ID*| ${id}|
+|*Description*| ${descr}|
+|*Type*| ${type}|
+|*Name*| ${name}|
+|*Account*| [${accountId}|account?id=${accountId}]|
+{% for name, tune in iotune.items() -%}
+    |*${name}*| ${tune if tune else "N/A"}|
+{% endfor %}
+
+{% else %}
+No disk found
+{% endif %}

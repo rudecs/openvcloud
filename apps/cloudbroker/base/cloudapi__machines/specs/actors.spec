@@ -102,6 +102,7 @@
         var:size int,10,size in GByte
         var:type str,B, (B;D;T) B=Boot;D=Data;T=Temp
         var:ssdSize int,0,size in GBytes default is 0 @optional
+        var:iops int,2000, total disk iops per sec @optional
         result:int, id of the disk
 
     method:attachDisk

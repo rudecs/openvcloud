@@ -249,6 +249,7 @@
         var:diskName str,,Name of the disk @tags validator:name
         var:description str,,Description
         var:size int,,size in GByte default=10 @tags: optional
+        var:iops int,2000, total disk iops per sec @optional
 
     method:deleteDisk
         """

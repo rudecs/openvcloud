@@ -164,6 +164,10 @@
   - name: size
     label: Size
     type: number
+  - name: iops
+    label: Total iops per sec
+    type: number
+    placeholder: Optional, default 2000
 
 - display: Delete Disk
   action: /restmachine/cloudbroker/machine/deleteDisk
@@ -171,15 +175,6 @@
   hide: true
   data:
    machineId: $$id
-
-- display: Limit Disk IO
-  action: /restmachine/cloudbroker/qos/limitIO
-  reload: false
-  hide: true
-  input:
-  - name: iops
-    label: IOPS
-    type: number
 
 - display: Convert To Template
   action: /restmachine/cloudbroker/machine/convertToTemplate

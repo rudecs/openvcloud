@@ -466,10 +466,10 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def addDisk(self, machineId, diskName, description, size=10, **kwargs):
+    def addDisk(self, machineId, diskName, description, size=10, iops=2000, **kwargs):
         self._validateMachineRequest(machineId)
         self.cb.actors.cloudapi.machines.addDisk(machineId=machineId, diskName=diskName,
-                                                 description=description, size=size, type='D')
+                                                 description=description, size=size, type='D', iops=iops)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
