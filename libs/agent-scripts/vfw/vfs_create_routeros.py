@@ -23,6 +23,7 @@ def cleanup(name, networkid):
     try:
         dom = con.lookupByName(name)
         network.cleanup_external(dom)
+        network.cleanup_gwmgmt(dom)
         if dom.isActive():
             dom.destroy()
         dom.undefine()
@@ -116,7 +117,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         print 'Protect network'
         domain = connection.get_domain_obj(domuuid)
         network.protect_external(domain, publicip)
-        # network.protect_gwmgmt(domain, internalip) # TODO fix this
+        network.protect_gwmgmt(domain, internalip)
 
         data['internalip'] = internalip
         run = pexpect.spawn("virsh console %s" % name, timeout=300)
