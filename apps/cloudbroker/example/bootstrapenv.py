@@ -75,7 +75,7 @@ size2id = j.apps.libcloud.libvirt.model_size_set(size2)
 
 #add iprange to the libvirt config
 
-j.apps.libcloud.libvirt.addFreeSubnet('192.168.100.0/24')
+#j.apps.libcloud.libvirt.addFreeSubnet('192.168.100.0/24')
 
 #A size is also needed in the cloudbroker
 

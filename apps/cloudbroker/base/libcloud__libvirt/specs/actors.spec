@@ -26,12 +26,12 @@
         var:gid int,, Grid id
         result: free macaddress in the unix mac address format
 
-    method: getFreeIpaddress
-    """
-    Get a free Ipaddress from one of ipadress ranges
-    """
-        var:networkid int,, id representing the network
-        result: free ipaddress composed as string
+    #method: getFreeIpaddress
+    #"""
+    #Get a free Ipaddress from one of ipadress ranges
+    #"""
+    #    var:networkid int,, id representing the network
+    #    result: free ipaddress composed as string
 
     method: releaseIpaddress
     """
@@ -57,13 +57,13 @@
         result:bool
 
 
-    method: addFreeSubnet
-    """
-    Add a free subnet to the range
-    """
-        var:subnet str,,subnet in CIDR notation
-        var:networkid int,,id of the network
-        result:bool
+    #method: addFreeSubnet
+    #"""
+    #Add a free subnet to the range
+    #"""
+    #    var:subnet str,,subnet in CIDR notation
+    #    var:networkid int,,id of the network
+    #    result:bool
 
     method: registerNetworkIdRange
     """
