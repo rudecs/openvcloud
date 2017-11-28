@@ -165,3 +165,19 @@ class cloudapi_disks(BaseActor):
         disk.status = 'DESTROYED'
         self.models.disk.set(disk)
         return True
+
+    @authenticator.auth(acl={'account': set('C')})
+    def resize(self, diskId, size, **kwargs):
+
+        disk = self.models.disk.get(diskId)
+        if disk.sizeMax >= size:
+            raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
+        if disk.status == 'DESTROYED':
+            raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
+
+        provider = self.cb.getProviderByGID(disk.gid)
+        volume = self.getStorageVolume(disk, provider)
+        disk.sizeMax = size
+        provider.client.ex_extend_disk(volume.vdiskguid, size)
+        self.models.disk.set(disk)
+        return True

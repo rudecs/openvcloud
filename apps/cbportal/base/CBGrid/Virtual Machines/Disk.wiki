@@ -7,6 +7,16 @@ h2. Disk: ${name}
 {{actions:
 - display: Limit IO
   action: '#disk_limitio_$$id'
+
+- display: Resize Disk
+  action: /restmachine/cloudapi/disks/resize
+  data:
+   diskId: ${id}
+  input:
+  - name: size
+    type: number
+    label: Disk size (in GiB)
+
 }}
 
 {{disk_limitio: diskid:$$id}}
@@ -15,6 +25,7 @@ h2. Disk: ${name}
 |*Description*| ${descr}|
 |*Type*| ${type}|
 |*Name*| ${name}|
+|*Size*| ${sizeMax} GiB|
 |*Account*| [${accountId}|account?id=${accountId}]|
 {% for name, tune in iotune.items() -%}
     |*${name}*| ${tune if tune else "N/A"}|

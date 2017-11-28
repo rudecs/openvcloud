@@ -63,3 +63,11 @@
         var:ssdSize int,0,size in GBytes default is 0 @optional
         var:iops int,2000,max IOPS disk can perform defaults to 2000 @optional
         result:int, the id of the created disk
+
+    method:resize
+        """
+        Resize disk
+        """
+        var:diskId int,, Id of the disk to resize
+        var:size int,, New size of the disk in GB
+        result:bool

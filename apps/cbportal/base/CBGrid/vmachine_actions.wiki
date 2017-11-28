@@ -169,6 +169,14 @@
     type: number
     placeholder: Optional, default 2000
 
+- display: Resize Disk
+  action: /restmachine/cloudapi/disks/resize
+  hide: true
+  input:
+  - name: size
+    type: number
+    label: Disk size (in GiB)
+
 - display: Delete Disk
   action: /restmachine/cloudbroker/machine/deleteDisk
   reload: false

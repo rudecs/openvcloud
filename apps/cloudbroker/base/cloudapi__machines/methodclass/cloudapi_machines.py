@@ -358,7 +358,7 @@ class cloudapi_machines(BaseActor):
             try:
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
-                provider.client.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk, cloudspace.gid)
+                provider.client.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk)
                 node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
                 self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
             except:
