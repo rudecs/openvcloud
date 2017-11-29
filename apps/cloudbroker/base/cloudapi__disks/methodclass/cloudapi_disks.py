@@ -175,7 +175,7 @@ class cloudapi_disks(BaseActor):
         :param size: the new size of the disk in GB
         """
         if size > 2000:
-            return exceptions.BadRequest('Size can not be more than 2TB')
+            raise exceptions.BadRequest('Size can not be more than 2TB')
         disk = self.models.disk.get(diskId)
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
