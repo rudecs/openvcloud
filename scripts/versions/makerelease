@@ -103,10 +103,13 @@ def prepare_source(repo, force, push_target=True):
     client = repo['client']
     if target.type == 'tag':
         j.console.info('Creating tag {} on {}'.format(target.name, repo['name']))
-        client.repo.checkout('-B', source.name, 'origin/{0}'.format(source.name))
+        client.repo.git.checkout('-B', source.name, 'origin/{0}'.format(source.name))
         if push_target:
             make_tag(client, target.name, force)
-            client.repo.git.push('tags/{}'.format(target.name))
+            args = ['origin', 'tag', target.name]
+            if force:
+                args.insert(0, '-f')
+            client.repo.git.push(*args)
     elif target.type == 'branch':
         remote = client.repo.remote()
         for ref in remote.refs:
@@ -118,7 +121,10 @@ def prepare_source(repo, force, push_target=True):
             j.console.info('Creathing branch {} on repo {}'.format(target.name, repo['name']))
             client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
         if push_target:
-            client.repo.git.push('-u', 'origin', target.name)
+            args = ['-u', 'origin', target.name]
+            if force:
+                args.insert(0, '-f')
+            client.repo.git.push(*args)
 
 
 def main(manifest, force, dry):
@@ -142,7 +148,7 @@ def main(manifest, force, dry):
             repo['client'] = j.clients.git.get(repo['info'].path)
         # validate tag and branch
         if target.type == 'tag':
-            if tag_exists(repo['client'], target.name):
+            if tag_exists(repo['client'], target.name) and not force:
                 j.console.warning('Tag {} already exists for repo {}'.format(target.name, repo['name']))
                 sys.exit(1)
 
@@ -160,14 +166,17 @@ def main(manifest, force, dry):
         if changeversion(repo, repos):
             client.commit('Tagging %s' % target.name)
             j.console.info('Commiting version changes on ays {}'.format(repo['name']))
+            args = []
+            if force:
+                args.append('-f')
+            args.append('origin')
             if target.type == 'tag':
-                if not dry:
-                    make_tag(repo, target.name)
-                    client.repo.git.push('tags/{}'.format(target.name))
+                args.append('tag')
+            args.append(target.name)
+            if not dry:
+                client.repo.git.push(*args)
+                if target.type == 'tag':
                     client.repo.git.reset('--hard', 'origin/%s' % source.name)
-            else:
-                if not dry:
-                    client.repo.git.push('origin', target.name)
 
 
 if __name__ == '__main__':
