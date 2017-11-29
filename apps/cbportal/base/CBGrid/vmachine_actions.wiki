@@ -173,9 +173,13 @@
   action: /restmachine/cloudapi/disks/resize
   hide: true
   input:
+  - type: message
+    messagetype: info
+    message: Please <b>stop</b> and <b>start</b> your machine after changing the disk size, for your changes to be reflected.
   - name: size
     type: number
     label: Disk size (in GiB)
+
 
 - display: Delete Disk
   action: /restmachine/cloudbroker/machine/deleteDisk

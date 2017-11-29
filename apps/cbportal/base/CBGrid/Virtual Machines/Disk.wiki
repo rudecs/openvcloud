@@ -2,7 +2,7 @@
 {{disk}}
 
 {% if id %}
-h2. Disk: ${name} 
+h2. Disk: ${name}
 
 {{actions:
 - display: Limit IO
@@ -13,6 +13,9 @@ h2. Disk: ${name}
   data:
    diskId: ${id}
   input:
+  - type: message
+    messagetype: info
+    message: Please <b>stop</b> and <b>start</b> your machine after changing the disk size, for your changes to be reflected.
   - name: size
     type: number
     label: Disk size (in GiB)

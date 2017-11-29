@@ -168,7 +168,12 @@ class cloudapi_disks(BaseActor):
 
     @authenticator.auth(acl={'account': set('C')})
     def resize(self, diskId, size, **kwargs):
-
+        """
+        Resize a Disk
+        stop and start required for the changes to be reflected
+        :param diskId: id of disk to delete
+        :param size: the new size of the disk
+        """
         disk = self.models.disk.get(diskId)
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")

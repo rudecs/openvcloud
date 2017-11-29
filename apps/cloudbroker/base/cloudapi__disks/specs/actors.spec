@@ -67,6 +67,7 @@
     method:resize
         """
         Resize disk
+        please stop and start your machine after changing the disk size, for your changes to be reflected.
         """
         var:diskId int,, Id of the disk to resize
         var:size int,, New size of the disk in GB
