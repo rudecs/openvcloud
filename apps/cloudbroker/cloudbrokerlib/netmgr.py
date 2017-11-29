@@ -337,8 +337,7 @@ class NetManager(object):
         param:gid grid id
         """
         fwobj = self._getVFWObject(fwid)
-        args = {'networkid': fwobj.id,
-                'vlan': fwobj.vlan}
+        args = {'fwobject': fwobj.obj2dict()}
         if fwobj.type == 'routeros':
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         else:

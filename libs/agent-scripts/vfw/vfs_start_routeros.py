@@ -14,16 +14,28 @@ async = True
 queue = 'hypervisor'
 
 
-def action(networkid, vlan):
+def action(fwobject):
     import os
+    import libvirt
+    from CloudscalerLibcloud.utils.network import Network
+    internalip = fwobject['host']
+    networkid = fwobject['id']
+    vlan = fwobject['vlan']
 
     def createnetwork():
         createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
         createnetwork.executeLocal(networkid=networkid)
         create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
         return create_external_network.executeLocal(vlan=vlan)
-    import libvirt
-    con = libvirt.open()
+
+    def protect_interfaces(network, domain):
+        for publicip in fwobject['pubips']:
+            network.protect_external(domain, publicip)
+        network.protect_gwmgmt(domain, internalip)
+
+
+    network = Network()
+    con = network.libvirtutil.connection
     try:
         networkidHex = '%04x' % int(networkid)
         name = 'routeros_%s' % networkidHex
@@ -34,6 +46,7 @@ def action(networkid, vlan):
             else:
                 createnetwork()
                 domain.create()
+                protect_interfaces(network, domain)
                 return True
         except:
             bridgename = createnetwork()
@@ -51,9 +64,10 @@ def action(networkid, vlan):
 
             dom = con.defineXML(xmlsource)
             dom.create()
+            protect_interfaces(network, domain)
             return True
     finally:
-        con.close()
+        network.close()
     return True
 
 
