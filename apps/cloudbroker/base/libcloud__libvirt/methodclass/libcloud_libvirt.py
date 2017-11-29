@@ -61,7 +61,7 @@ class libcloud_libvirt(object):
         List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
         result
         """
-        sizes = self._models.size.search({})[1:]
+        sizes = self._models.size.search({}, size=0)[1:]
         return sizes
 
     def addFreeSubnet(self, subnet, networkid, **kwargs):
