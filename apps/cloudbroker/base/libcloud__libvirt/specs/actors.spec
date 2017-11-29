@@ -33,13 +33,13 @@
     #    var:networkid int,, id representing the network
     #    result: free ipaddress composed as string
 
-    method: releaseIpaddress
-    """
-    Release a ipaddress.
-    """
-        var:networkid int,, id representing the network
-        var:ipaddress str,,string representing the ipaddres to release
-        result:bool
+    #method: releaseIpaddress
+    #"""
+    #Release a ipaddress.
+    #"""
+    #    var:networkid int,, id representing the network
+    #    var:ipaddress str,,string representing the ipaddres to release
+    #    result:bool
 
     method: getFreeNetworkId
     """

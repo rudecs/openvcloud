@@ -14,25 +14,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         #libcloud_libvirt_osis.__init__(self)
 
 
-    def addFreeSubnet(self, subnet, networkid, **kwargs):
-        """
-        Add a free subnet to the range
-        param:subnet subnet in CIDR notation
-        param:networkid id of the network
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method addFreeSubnet")
-
-    def getFreeIpaddress(self, networkid, **kwargs):
-        """
-        Get a free Ipaddress from one of ipadress ranges
-        param:networkid id representing the network
-        result 
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getFreeIpaddress")
-
     def getFreeMacAddress(self, gid, **kwargs):
         """
         Get a free macaddres in this libvirt environment
@@ -159,16 +140,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerVNC")
-
-    def releaseIpaddress(self, networkid, ipaddress, **kwargs):
-        """
-        Release a ipaddress.
-        param:networkid id representing the network
-        param:ipaddress string representing the ipaddres to release
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method releaseIpaddress")
 
     def releaseNetworkId(self, gid, networkid, **kwargs):
         """
