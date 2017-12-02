@@ -81,7 +81,7 @@ class NetManager(object):
                 nid = targetNid
             else:
                 nid = int(self.cb.getBestProvider(gid, memory=128)['referenceId'])
-            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, queue='default', wait=True)
+            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, queue='routeros', wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
             result = self.agentcontroller.waitJumpscript(job=job)
@@ -220,7 +220,7 @@ class NetManager(object):
 
     def _applyconfig(self, gid, nid, args):
         if args['fwobject']['type'] == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args, queue='routeros')
         else:
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
 
@@ -252,9 +252,9 @@ class NetManager(object):
             self.fw_forward_delete(fwid, gid, fwip, fwport, destip, destport, protocol, apply=False)
         return result
 
-    def fw_reapply(self, fwid, leases):
+    def fw_reapply(self, fwid):
         fwobj = self._getVFWObject(fwid).obj2dict()
-        fwobj['leases'] = leases
+        fwobj['leases'] = self.cb.cloudspace.get_leases(int(fwobj['domain']))
         args = {'name': '%(domain)s_%(name)s' % fwobj, 'fwobject': fwobj}
         return self._applyconfig(fwobj['gid'], fwobj['nid'], args)
 
@@ -345,6 +345,7 @@ class NetManager(object):
 
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to start vfw")
+        self.fw_reapply(fwid)
         return job['result']
 
     def fw_stop(self, fwid, **kwargs):

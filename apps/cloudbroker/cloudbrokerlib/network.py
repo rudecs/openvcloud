@@ -1,4 +1,5 @@
 import netaddr
+DEFAULTCIDR = '192.168.103.0/24'
 
 
 class Network(object):
@@ -21,3 +22,24 @@ class Network(object):
         net = netaddr.IPNetwork(ip)
         self.models.externalnetwork.updateSearch({'id': externalnetworkId},
                                                  {'$addToSet': {'ips': str(net.ip)}})
+
+    def getFreeIPAddress(self, cloudspace):
+        query = {'cloudspaceId': cloudspace.id,
+                 'status': {'$nin': ['ERROR', 'DESTROYED']},
+                }
+        q = {
+            '$query': query,
+            '$fields': ['nics.ipAddress', 'nics.type', 'nics.networkId']
+        }
+        machines = self.models.vmachine.search(q, size=0)[1:]
+        network = netaddr.IPNetwork(DEFAULTCIDR)
+        usedips = [netaddr.IPAddress(nic['ipAddress']) for vm in machines for nic in vm['nics'] if nic['type'] == 'bridge'and nic['ipAddress'] != 'Undefined']
+        usedips.append(network.ip)
+        ip = network.broadcast - 1
+        while ip in network:
+            if ip not in usedips:
+                return str(ip)
+            else:
+                ip -= 1
+        else:
+            raise RuntimeError("No more free IP addresses for space")
