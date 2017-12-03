@@ -196,17 +196,13 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         if disk.accountId != cloudspace.accountId:
             raise exceptions.Forbidden("This disk belongs to another account")
-        vmachines = self.models.vmachine.search({'disks': diskId})[1:]
-        if vmachines:
-            if vmachines[0]["cloudspaceId"] != machine.cloudspaceId:
-                # Validate that enough resources are available in the CU limits of the new cloudspace to add the disk
-                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
-                    machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
-            self.detachDisk(machineId=vmachines[0]['id'], diskId=diskId)
-        else:
-            # the disk was not attached to any machines so check if there is enough resources in the cloudspace
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
-                machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
+
+        count = self.models.vmachine.count({'disks': diskId})
+        if count > 0:
+            raise exceptions.BadRequest("This disk is already attached to another machine: %s" % old_machine['id'])
+        # the disk was not attached to any machines so check if there is enough resources in the cloudspace
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
+            machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
