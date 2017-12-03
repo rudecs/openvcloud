@@ -191,7 +191,7 @@ class cloudapi_cloudspaces(BaseActor):
         cs.name = name
         cs.accountId = accountId
         cs.externalnetworkId = externalnetworkId
-        cs.allowedVMSizes = allowedVMSizes
+        cs.allowedVMSizes = allowedVMSizes or []
         cs.location = location['locationCode']
         cs.gid = location['gid']
         ace = cs.new_acl()
