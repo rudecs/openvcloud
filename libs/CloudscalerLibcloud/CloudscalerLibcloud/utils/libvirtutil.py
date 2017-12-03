@@ -192,6 +192,7 @@ class LibvirtUtil(object):
                 domain.reboot()
         else:
             self.create(id, xml)
+        return True
 
     def suspend(self, id):
         if isLocked(id):
