@@ -76,6 +76,15 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         """
         machine = self._getMachine(machineId)
+        has_boot_disk = False
+        for disk_id in machine.disks:
+            disk = self.models.disk.get(disk_id)
+            if disk.type == "B" and has_boot_disk:
+                raise exceptions.BadRequest("Machine has more than one boot disk")
+            if disk.type == "B":
+                has_boot_disk = True
+        if not has_boot_disk:
+            raise exceptions.BadRequest("This machine doesn't have a boot disk")
         if "start" in machine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(machineId=machine.id, tagName="start")
         if machine.status not in ['RUNNING', 'PAUSED']:
@@ -171,6 +180,8 @@ class cloudapi_machines(BaseActor):
         if diskId not in machine.disks:
             return True
         disk = self.models.disk.get(int(diskId))
+        if disk.type == "B":
+            raise exceptions.BadRequest("Cannot detach boot disks")
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.detach_volume(volume)
         machine.disks.remove(diskId)
@@ -193,6 +204,8 @@ class cloudapi_machines(BaseActor):
         if len(machine.disks) >= 25:
             raise exceptions.BadRequest("Cannot attach more than 25 disk to a machine")
         disk = self.models.disk.get(int(diskId))
+        if disk.type == "B":
+            raise exceptions.BadRequest("Cannot attach boot disks")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         if disk.accountId != cloudspace.accountId:
             raise exceptions.Forbidden("This disk belongs to another account")
@@ -203,6 +216,7 @@ class cloudapi_machines(BaseActor):
         # the disk was not attached to any machines so check if there is enough resources in the cloudspace
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
             machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
+
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
         machine.disks.append(diskId)
