@@ -193,6 +193,9 @@ class cloudapi_machines(BaseActor):
         if len(machine.disks) >= 25:
             raise exceptions.BadRequest("Cannot attach more than 25 disk to a machine")
         disk = self.models.disk.get(int(diskId))
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        if disk.accountId != cloudspace.accountId:
+            raise exceptions.Forbidden("This disk belongs to another account")
         vmachines = self.models.vmachine.search({'disks': diskId})[1:]
         if vmachines:
             if vmachines[0]["cloudspaceId"] != machine.cloudspaceId:
