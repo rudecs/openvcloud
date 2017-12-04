@@ -502,6 +502,19 @@ class CloudSpace(object):
             cloudspace.externalnetworkip = None
         return cloudspace
 
+    def get_leases(self, cloudspaceId):
+        leases = []
+        for vm in models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
+            for nic in vm['nics']:
+                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':
+                    leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
+        return leases
+
+    def update_firewall(self, cloudspace):
+        fwid = '{}_{}'.format(cloudspace.gid, cloudspace.networkId)
+        self.cb.netmgr.fw_reapply(fwid)
+
+
 
 class Machine(object):
 
@@ -607,7 +620,10 @@ class Machine(object):
             passwd = passwd + random.choice(string.digits) + random.choice(letters[0]) + random.choice(letters[1])
             account.password = passwd
         auth = NodeAuthPassword(account.password)
-        machine.id = models.vmachine.set(machine)[0]
+        with models.cloudspace.lock('{}_ip'.format(cloudspace.id)):
+            nic = machine.new_nic()
+            nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
+            machine.id = models.vmachine.set(machine)[0]
         return machine, auth, diskinfo
 
     def updateMachineFromNode(self, machine, node, stackId, psize):
@@ -619,7 +635,12 @@ class Machine(object):
         if 'ifaces' in node.extra:
             for iface in node.extra['ifaces']:
                 for nic in machine.nics:
-                    if nic.macaddress == iface.mac:
+                    if nic.macAddress == iface.mac:
+                        break
+                    if not nic.macAddress:
+                        nic.macAddress = iface.mac
+                        nic.target = iface.target
+                        nic.type = iface.type
                         break
                 else:
                     nic = machine.new_nic()

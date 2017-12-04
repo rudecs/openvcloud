@@ -4,6 +4,7 @@ from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import exceptions
+import gevent
 import ujson
 
 
@@ -52,7 +53,9 @@ class cloudbroker_machine(BaseActor):
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
                                                                    size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
-        return self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
+        machineId =  self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        return machineId
 
     def _validateMachineRequest(self, machineId):
         machineId = int(machineId)

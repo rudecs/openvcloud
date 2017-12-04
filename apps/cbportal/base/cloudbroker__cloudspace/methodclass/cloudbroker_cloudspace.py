@@ -188,12 +188,7 @@ class cloudbroker_cloudspace(BaseActor):
                                      publiccidr=publiccidr, vlan=pool.vlan, targetNid=targetNid)
 
         # restore portforwards and leases
-        leases = []
-        for vm in self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
-            for nic in vm['nics']:
-                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':
-                    leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
-        self.cb.netmgr.fw_reapply(fwid, leases)
+        self.cb.cloudspace.update_firewall(cloudspace)
 
     @auth(['level1', 'level2', 'level3'])
     def applyConfig(self, cloudspaceId, **kwargs):
@@ -204,13 +199,7 @@ class cloudbroker_cloudspace(BaseActor):
         if cloudspace.status != 'DEPLOYED':
             raise exceptions.BadRequest('Can not reset VFW which is not deployed please deploy instead.')
         # restore portforwards and leases
-        fwid = '{}_{}'.format(cloudspace.gid, cloudspace.networkId)
-        leases = []
-        for vm in self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
-            for nic in vm['nics']:
-                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':
-                    leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
-        self.cb.netmgr.fw_reapply(fwid, leases)
+        self.cb.cloudspace.update_firewall(cloudspace)
 
 
     @auth(['level1', 'level2', 'level3'])

@@ -540,6 +540,7 @@ class cloudapi_machines(BaseActor):
             name, description, cloudspace, imageId, sizeId, disksize, datadisks)
         machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
         kwargs['ctx'].env['beaker.session']['tags'] += " machineId:{}".format(machineId)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
 
 
@@ -633,13 +634,14 @@ class cloudapi_machines(BaseActor):
         creationTime = machine.creationTime if machine.creationTime else None
         acl = list()
         machine_acl = authenticator.auth().getVMachineAcl(machine.id)
+        machinedict = machine.dump()
         for _, ace in machine_acl.iteritems():
             acl.append({'userGroupId': ace['userGroupId'], 'type': ace['type'], 'canBeDeleted': ace[
                        'canBeDeleted'], 'right': ''.join(sorted(ace['right'])), 'status': ace['status']})
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machine.nics, 'storage': storage, 'accounts': machine.accounts, 'locked': locked, 'updateTime': updateTime, 'creationTime': creationTime}
+                'interfaces': machinedict['nics'], 'storage': storage, 'accounts': machinedict['accounts'], 'locked': locked, 'updateTime': updateTime, 'creationTime': creationTime}
 
     # Authentication (permissions) are checked while retrieving the machines
     def list(self, cloudspaceId, **kwargs):
