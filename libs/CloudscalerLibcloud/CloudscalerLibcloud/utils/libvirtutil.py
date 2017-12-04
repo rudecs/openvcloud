@@ -265,7 +265,7 @@ class LibvirtUtil(object):
 
     def get_domain_disk(self, referenceId, domaindisks):
         url = urlparse.urlparse(referenceId)
-        name = url.path.split('@')[0].strip('/')
+        name = url.path.split('@')[0].strip('/').split(':')[0]
         for disk in domaindisks:
             source = disk.find('source')
             if source is not None:
