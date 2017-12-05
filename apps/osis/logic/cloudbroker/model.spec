@@ -190,6 +190,7 @@
     prop:name str,,Name of public network
     prop:accountId int,,Account which can use this network @index
     prop:ips list(str),,list of ips
+    prop:pingips list(str),, list of ips to be pinged to check for network
 
 [rootmodel:Size] @dbtype:osis
     """

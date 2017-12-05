@@ -33,6 +33,15 @@
   data:
     externalnetworkId: ${id}
 
+- display: Edit list of ips to check
+  action: /restmachine/cloudbroker/iaas/editPingIps
+  data:
+    externalnetworkId: ${id}
+  input:
+  - name: pingips
+    label: Enter list of ips(seperated by commas), eg 8.8.8.8,10.10.10.10. If you want to disable the health check, enter 127.0.0.1
+    type: text
+
 - display: Remove External IP
   action: /restmachine/cloudbroker/iaas/removeExternalIP
   refresh: false
@@ -48,6 +57,7 @@ h3. External Network
 |*Network*|${network}|
 |*Subnet Mask*|${subnetmask}|
 |*Gateway*|${gateway} {{action: id:'action-ChangeGateway' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}} |
+|*IPs to check*|${pingips} {{action: id:'action-Editlistofipstocheck' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}}|
 
 @HR
 

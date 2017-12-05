@@ -20,6 +20,7 @@
         var:gid int,, id of grid
         var:vlan int,,VLAN Tag @optional
         var:accountId int,,accountId that has exclusive access to this network Tag @optional
+        var:pingips str,, comma seperated list of ips to be pinged to check for network, default is 8.8.8.8(to disable check enter 127.0.0.1) @optional
         result:int
 
     method:deleteExternalNetwork
@@ -52,6 +53,14 @@
         var:ip str,,
         result:boolean
         
+    method:editPingIps
+        """
+        Edit list of ips pinged for network check
+        """
+        var:externalnetworkId int,,
+        var:pingips str,, Comma seperated list of ips to be pinged to check for network(if desired empty enter 0)
+        result:boolean
+
     method:addSize
         """
         Add size to location
