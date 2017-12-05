@@ -188,13 +188,13 @@
   data:
    machineId: $$id
 
-- display: Convert To Template
-  action: /restmachine/cloudbroker/machine/convertToTemplate
-  data:
-   machineId: $$id
-  input:
-  - templateName
-  - reason
+#- display: Convert To Template
+#  action: /restmachine/cloudbroker/machine/convertToTemplate
+#  data:
+#   machineId: $$id
+#  input:
+#  - templateName
+#  - reason
 
 - display: Update Machine
   action: /restmachine/cloudbroker/machine/updateMachine
