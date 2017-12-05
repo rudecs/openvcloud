@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import netaddr
+import socket
 from JumpScale.portal.portal.auth import auth
 from cloudbrokerlib.baseactor import BaseActor
 json = j.db.serializers.ujson
@@ -21,7 +22,19 @@ class cloudbroker_iaas(BaseActor):
         super(cloudbroker_iaas, self).__init__()
         self.lcl = j.clients.osis.getNamespace('libvirt')
 
-    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, **kwargs):
+    def _checkPingIps(self, pingips):
+        pingips = pingips.split(',')
+        res = []
+        for pingip in pingips:
+            pingip = pingip.lstrip()
+            try:
+                socket.inet_aton(pingip)
+            except socket.error:
+                raise exceptions.BadRequest("Illegal ip address passed in pingips: %s" % pingip)
+            res.append(pingip)
+        return res
+
+    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, pingips, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
@@ -39,10 +52,15 @@ class cloudbroker_iaas(BaseActor):
         except netaddr.AddrFormatError as e:
             raise exceptions.BadRequest(e.message)
 
+        if pingips is None:
+            pingips = '8.8.8.8'
+        pingips = self._checkPingIps(pingips)
+
         pool = self.models.externalnetwork.new()
         pool.gid = int(gid)
         pool.gateway = gateway
         pool.name = name
+        pool.pingips = pingips
         pool.vlan = vlan or 0
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
@@ -150,6 +168,16 @@ class cloudbroker_iaas(BaseActor):
         if not self.models.externalnetwork.exists(externalnetworkId):
             raise exceptions.NotFound("Could not find externalnetwork with id %s" % externalnetworkId)
         self.models.externalnetwork.updateSearch({'id': externalnetworkId}, {'$pull': {'ips': ip}})
+        return True
+
+    def editPingIps(self, externalnetworkId, pingips, **kwargs):
+        """
+        Edit list of ips pinged for network check
+        """
+        if not self.models.externalnetwork.exists(externalnetworkId):
+            raise exceptions.NotFound("Could not find externalnetwork with id %s" % externalnetworkId)
+        pingips = self._checkPingIps(pingips)
+        self.models.externalnetwork.updateSearch({'id': externalnetworkId}, {'$set': {'pingips': pingips}})
         return True
 
     @auth(['level1', 'level2', 'level3'])

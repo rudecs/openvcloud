@@ -18,6 +18,7 @@ def main(j, args, params, tags, tasklet):
     pool = cbclient.externalnetwork.get(networkid)
     networkinfo = j.apps.cloudbroker.iaas.getUsedIPInfo(pool)
     network = pool.dump()
+    network['pingips'] = ','.join(network['pingips'])
     network.update(networkinfo)
 
     args.doc.applyTemplate(network, True)
