@@ -224,7 +224,7 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('C')})
-    @RequireState(enums.MachineStatus.HALTED, 'Can only convert a stopped machine.')
+    # @RequireState(enums.MachineStatus.HALTED, 'Can only convert a stopped machine.')
     def convertToTemplate(self, machineId, templatename, **kwargs):
         """
         Create a template from the active machine
