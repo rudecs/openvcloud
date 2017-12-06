@@ -212,7 +212,7 @@ class cloudapi_machines(BaseActor):
 
         count = self.models.vmachine.count({'disks': diskId})
         if count > 0:
-            raise exceptions.BadRequest("This disk is already attached to another machine: %s" % old_machine['id'])
+            raise exceptions.BadRequest("This disk is already attached to another machine")
         # the disk was not attached to any machines so check if there is enough resources in the cloudspace
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
             machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
