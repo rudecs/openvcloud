@@ -19,8 +19,8 @@ class cloudapi_portforwarding(BaseActor):
 
     def _getLocalIp(self, machine):
         for nic in machine['interfaces']:
-            if nic.ipAddress != 'Undefined':
-                return nic.ipAddress
+            if nic['ipAddress'] != 'Undefined':
+                return nic['ipAddress']
         return None
 
     @authenticator.auth(acl={'cloudspace': set('C')})
