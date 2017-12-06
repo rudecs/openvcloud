@@ -81,7 +81,7 @@ class NetManager(object):
                 nid = targetNid
             else:
                 nid = int(self.cb.getBestProvider(gid, memory=128)['referenceId'])
-            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, queue='routeros', wait=True)
+            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
             result = self.agentcontroller.waitJumpscript(job=job)
@@ -102,6 +102,7 @@ class NetManager(object):
             fwobj.password = data['password']
             fwobj.nid = data['nid']
             self.osisvfw.set(fwobj)
+            self.fw_reapply(fwid)
             return result
         else:
             job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_routeros', roles=['fw'], gid=gid, args=args, wait=True)
@@ -121,6 +122,7 @@ class NetManager(object):
         srcip = get_backplane_ip(srcnode)
         args = {'networkid': fwobj.id,
                 'vlan': fwobj.vlan,
+                'externalip': fwobj.pubips[0],
                 'sourceip': srcip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
@@ -220,7 +222,7 @@ class NetManager(object):
 
     def _applyconfig(self, gid, nid, args):
         if args['fwobject']['type'] == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args, queue='routeros')
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)
         else:
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
 

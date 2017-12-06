@@ -15,14 +15,20 @@ async = True
 queue = 'hypervisor'
 
 
-def action(networkid, sourceip, vlan):
+def action(networkid, sourceip, vlan, externalip):
+    from CloudscalerLibcloud.utils.network import Network
     import libvirt
+    import netaddr
     from xml.etree import ElementTree
     target_con = libvirt.open()
     try:
         source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
     except:
         source_con = None
+    network = Network()
+    hrd = j.atyourservice.get(name='vfwnode', instance='main').hrd
+    netrange = hrd.get("instance.vfw.netrange.internal")
+    internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
 
     createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
     createnetwork.executeLocal(networkid=networkid)
@@ -55,6 +61,9 @@ def action(networkid, sourceip, vlan):
                 except:
                     pass  # vm wasn't created on target
                 raise
+            domain = target_con.lookupByName(name)
+            network.protect_external(domain, externalip)
+            network.protect_gwmgmt(domain, internalip)
         else:
             domain.undefine()
             return False

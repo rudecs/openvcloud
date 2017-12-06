@@ -187,8 +187,6 @@ class cloudbroker_cloudspace(BaseActor):
                                      'routeros', networkid, publicgwip=publicgw,
                                      publiccidr=publiccidr, vlan=pool.vlan, targetNid=targetNid)
 
-        # restore portforwards and leases
-        self.cb.cloudspace.update_firewall(cloudspace)
 
     @auth(['level1', 'level2', 'level3'])
     def applyConfig(self, cloudspaceId, **kwargs):
