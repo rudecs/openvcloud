@@ -83,6 +83,12 @@ class cloudapi_users(BaseActor):
             ctx.start_response('403 Forbidden', [])
             return 'Forbidden'
 
+        if not isinstance(data, dict):
+            try:
+                data = json.loads(data)
+            except:
+                raise exceptions.BadRequest("data needs to be in json format")
+
         user = j.core.portal.active.auth.getUserInfo(username)
         if user:
             try:

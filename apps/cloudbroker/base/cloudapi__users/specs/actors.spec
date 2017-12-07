@@ -25,7 +25,7 @@
 	    """
 	    Set extra user information
 	    """
-        var:data obj,,data to set on user
+        var:data str,,data to set to user in json format
         result:True
 
 	method:updatePassword
