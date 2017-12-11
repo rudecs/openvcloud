@@ -241,13 +241,16 @@ class NetManager(object):
         """
         with self.osisvfw.lock(fwid):
             fwobj = self._getVFWObject(fwid)
+            for tcprule in fwobj.tcpForwardRules:
+                if tcprule.fromAddr == fwip and tcprule.fromPort == str(fwport):
+                    raise exceptions.Conflict("Forward to %s with port %s already exists" % (fwip, fwport))
             rule = fwobj.new_tcpForwardRule()
             rule.fromAddr = fwip
             rule.fromPort = str(fwport)
             rule.toAddr = destip
             rule.toPort = str(destport)
             rule.protocol = protocol
-            self.osisvfw.set(fwobj)
+            self.osisvfw.updateSearch({'guid': fwid}, {'$addToSet': {'tcpForwardRules': rule}})
         args = {'name': '%s_%s' % (fwobj.domain, fwobj.name), 'fwobject': fwobj.obj2dict()}
         result = self._applyconfig(fwobj.gid, fwobj.nid, args)
         if not result:
