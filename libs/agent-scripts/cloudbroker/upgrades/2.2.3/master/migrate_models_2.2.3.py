@@ -15,5 +15,8 @@ async = True
 
 def action():
     osis_cl = j.clients.osis.getNamespace('cloudbroker')
+    scl = j.clients.osis.getNamespace('system')
     osis_cl.cloudspace.updateSearch({'allowedVMSizes': None}, {'$set': {'allowedVMSizes': []}})
     osis_cl.externalnetwork.updateSearch({'pingips': {'$in': [None, []]}}, {'$set': {'pingips': ['8.8.8.8']}})
+    if scl.group.exists('finance'):
+        scl.group.delete('finance')
