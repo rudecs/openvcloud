@@ -15,6 +15,10 @@ class Network(object):
         cmd = rules.CLEANUPFLOWS_CMD.format(mac=mac, port=port, bridge=bridge)
         j.system.process.execute(cmd)
 
+    def clear_flows(self, bridge):
+        cmd = rules.CLEARFLOWS_CMD.format(bridge=bridge)
+        j.system.process.execute(cmd)
+
     def close(self):
         self.libvirtutil.close()
 

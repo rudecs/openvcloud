@@ -19,6 +19,11 @@ ovs-ofctl del-flows {bridge} "dl_src={mac}";
 ovs-ofctl del-flows {bridge} "dl_dst={mac}";
 '''
 
+CLEARFLOWS_CMD='''
+ovs-ofctl del-flows {bridge}
+ovs-ofctl add-flow {bridge} "table=0,priority=0,actions=normal"
+'''
+
 GWMGMTINPUT = '''\
 # drop network chatter
 table=0, priority=100,dl_src=01:00:00:00:00:00/01:00:00:00:00:00, actions=drop
@@ -27,8 +32,8 @@ table=0, priority=100,arp actions=normal
 # drop all ipv6
 table=0, priority=100,ipv6,actions=drop
 # if mac/ip combo fit, continue into t1
-# table=0, priority=10,ip,nw_src={ipaddress}/32,dl_src={mac} actions=resubmit(,1)
-# table=0, priority=10,ip,nw_dst={ipaddress}/32,dl_dst={mac} actions=resubmit(,1)
+table=0, priority=10,ip,nw_src={ipaddress}/32,dl_src={mac} actions=resubmit(,1)
+table=0, priority=10,ip,nw_dst={ipaddress}/32,dl_dst={mac} actions=resubmit(,1)
 table=0, priority=10,tcp, actions=resubmit(,1)
 table=0, priority=1,actions=drop
 
