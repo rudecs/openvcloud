@@ -761,8 +761,12 @@ class CSLibvirtNodeDriver(object):
         name = 'vm-%s' % vmid
         volumes = []
         for i, disk in enumerate(disks):
+            path = disk['path']
+            parsedurl = urlparse.urlparse(path)
+            if parsedurl.netloc == '':
+                path = path.replace('{}:'.format(parsedurl.scheme), '{}://'.format(parsedurl.scheme))
             volume = OpenvStorageVolume(id='%s@%s' % (
-                disk['path'], disk['guid']), name='N/A', size=disk['size'], driver=self)
+                path, disk['guid']), name='N/A', size=disk['size'], driver=self)
             volume.dev = 'vd%s' % convertnumber(i + 1)
             volumes.append(volume)
         return self.init_node(name, size, networkid=networkid, volumes=volumes)
