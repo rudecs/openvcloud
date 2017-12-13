@@ -13,7 +13,7 @@ version = "1.0"
 roles = ['storagedriver']
 queue = 'io'
 async = True
-timeout = 60 * 60
+timeout = 60 * 60 * 24
 
 
 def action(link, username, passwd, path, envelope, disks):
