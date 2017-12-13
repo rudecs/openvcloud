@@ -65,4 +65,18 @@ In the **Virtual Machines** table all virtual machines running in the cloud spac
 
 Click the **+ Add Virtual Machine** in order to add a new virtual machine in the cloud space which will pop-up the **Create Machine On CPU Node** window:
 
-![[]](CreateMachine.png)
+![](CreateMachine.png)
+
+Click the **+ Import Virtual Machine** in order to import a new virtual machine in the cloud space which will pop-up the **Import Machine** window:
+![](ImportMachine.png)
+
+Form data:
+
+* **Machine Name**: New name for the machine to import
+* **Machine Description**: Description for new machine 
+* **Import Link**: `HTTP(S)` link to your WebDAV server
+* **OVF Path**: Path toward the directory on your WebDAV server where the export data lives
+* **Username for Link**: Username for your WebDAV server
+* **Password for Link**: Password` for your WebDAV server
+* **Memory**: Choose the memory you would like to assign to your new machine
+

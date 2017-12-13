@@ -14,6 +14,7 @@ From the **Actions** dropdown menu you can:
 - Update the virtual machine
 - Check image chain
 - [Move to another CPU node](Actions/MoveVM2AnotherCPUNode.md)
+- [Export VM](Actions/ExportVM.md)
 - Add and remove tag
 
 
