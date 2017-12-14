@@ -25,11 +25,16 @@ h2. Disk: ${name}
 {{disk_limitio: diskid:$$id}}
 
 |*ID*| ${id}|
+|*Name*| ${name}|
 |*Description*| ${descr}|
 |*Type*| ${type}|
-|*Name*| ${name}|
+|*Device name*| ${devicename}|
 |*Size*| ${sizeMax} GiB|
 |*Account*| [${accountId}|account?id=${accountId}]|
+|*vDisk GUID*| ${vdiskguid}|
+|*Edge host*| ${edgehost}|
+|*Edge port*| ${edgeport}|
+|*Edge name*| ${edgename}|
 {% for name, tune in iotune.items() -%}
     |*${name}*| ${tune if tune else "N/A"}|
 {% endfor %}

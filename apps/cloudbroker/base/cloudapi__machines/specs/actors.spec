@@ -196,6 +196,8 @@
     method:resize
         """
         Change the size of a machine
+        Returns status code 200 with response true if size has been updated live on the machine
+        Returns status code 202 with response false if the size could not be applied live and required a stop/start of the machine
         """
         var:machineId int,, id of machine to resize
         var:sizeId int,,new sizeId

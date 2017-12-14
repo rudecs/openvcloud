@@ -1,0 +1,10 @@
+            <interface type='network'>
+                <source network='{{bridgename}}'/>
+                <mac address='{{mac}}'/>
+                <target dev='{{target}}' />
+                <model type='virtio'/>
+                <bandwidth>
+                  <inbound average='134218' peak='134218' burst='134218'/>
+                  <outbound average='134218' peak='134218' burst='134218'/>
+                </bandwidth>
+            </interface>

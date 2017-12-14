@@ -243,8 +243,9 @@ class cloudbroker_machine(BaseActor):
             self.acl.executeJumpscript('greenitglobe', 'createnetwork', args={'networkid': cloudspace.networkId},
                                        gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
 
-            node = self.cb.Dummy(id=vmachine.referenceId)
-            target_provider.client.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId).client, force)
+            node = self.cb.getNode(vmachine, target_provider)
+            size = target_provider.getSizeFromMachine(vmachine)
+            target_provider.client.ex_migrate(node, size, self.cb.getProviderByStackId(vmachine.stackId).client, force)
         vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 
@@ -551,4 +552,8 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def resize(self, machineId, sizeId, **kwargs):
-        return self.cb.actors.cloudapi.machines.resize(machineId=machineId, sizeId=sizeId)
+        response = self.cb.actors.cloudapi.machines.resize(machineId=machineId, sizeId=sizeId)
+        if response:
+            return "Successfully resized machine"
+        else:
+            return "Could not apply changes on running machine please stop and start machine for the change to take effect"

@@ -3,7 +3,7 @@ from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface, NodeState
 from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
@@ -76,6 +76,13 @@ class CloudProvider(object):
                 elif firstdisk.sizeMax < s.disk and (biggerdisk is None or biggerdisk.disk > s.disk):
                     biggerdisk = s
         return biggerdisk
+
+    def getSizeFromMachine(self, machine, bootdisk=None, cbsize=None):
+        if bootdisk is None:
+            bootdisk = j.apps.cloudapi.machines._get_boot_disk(machine)
+        if cbsize is None:
+            cbsize = models.size.get(machine.sizeId)
+        return self.getSize(cbsize, bootdisk)
 
     def getImage(self, imageId):
         iimage = models.image.get(imageId)
@@ -170,8 +177,46 @@ class CloudBroker(object):
                 return provider
         return -1
 
-    def getNode(self, referenceId):
-        return self.Dummy(id=referenceId)
+    def getNode(self, machine, driver=None):
+        image = models.image.get(machine.imageId)
+        cloudspace = models.cloudspace.get(machine.cloudspaceId)
+        name = 'vm-{}'.format(machine.id)
+        interfaces = []
+        volumes = []
+        for nic in machine.nics:
+            if nic.type == 'bridge':
+                bridgename = 'space_{:04x}'.format(cloudspace.networkId)
+                bridgetype = 'private'
+                networkId = cloudspace.networkId
+            elif nic.type == 'PUBLIC':
+                tags = j.core.tags.getObject(nic.params)
+                pool = models.externalnetwork.get(int(tags.tagGet('externalnetworkId')))
+                networkId = pool.vlan
+                if networkId == 0:
+                    bridgename = 'public'
+                else:
+                    bridgename = 'ext_{:04x}'.format(networkId)
+                bridgetype = 'external'
+            else:
+                continue
+            interfaces.append(NetworkInterface(nic.macAddress, nic.deviceName, bridgetype, bridgename, networkId))
+        for diskId in machine.disks:
+            disk = models.disk.get(diskId)
+            volume = j.apps.cloudapi.disks.getStorageVolume(disk, driver)
+            volumes.append(volume)
+
+
+        extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes}
+        node = Node(
+            id=machine.referenceId,
+            name=name,
+            state=5,
+            public_ips=[],
+            private_ips=[],
+            driver=driver,
+            extra=extra
+        )
+        return node
 
     def getProvider(self, machine):
         if machine.referenceId and machine.stackId:
@@ -184,12 +229,16 @@ class CloudBroker(object):
         if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
             return None, None, machine
         provider = self.getProvider(machine)
+        node = None
+        drivertype = 'libvirt'
         if provider:
-            node = provider.client.ex_get_node_details(machine.referenceId)
-        else:
-            return provider, None, machine
+            drivertype = provider.client.name
+        vmnode = provider.client.ex_get_node_details(machine.referenceId)
+        node = self.getNode(machine, provider)
+        if vmnode:
+            node.state = vmnode.state
 
-        realstatus = enums.MachineStatusMap.getByValue(node.state, provider.client.name) or machine.status
+        realstatus = enums.MachineStatusMap.getByValue(node.state, drivertype) or machine.status
         if realstatus != machine.status:
             if realstatus == 'DESTROYED':
                 realstatus = 'HALTED'
@@ -526,7 +575,8 @@ class Machine(object):
         for diskid in machine.disks:
             if models.disk.exists(diskid):
                 models.disk.delete(diskid)
-        models.vmachine.delete(machine.id)
+        if models.vmachine.exists(machine.id):
+            models.vmachine.delete(machine.id)
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):
         self.assertName(cloudspace.id, name)
@@ -594,10 +644,10 @@ class Machine(object):
             machine.disks.append(diskid)
             return diskid
 
-        addDisk(-1, disksize, 'B', 'Boot disk')
+        addDisk(0, disksize, 'B', 'Boot disk')
         diskinfo = []
         for order, datadisksize in enumerate(datadisks):
-            diskid = addDisk(order, int(datadisksize), 'D')
+            diskid = addDisk(order + 1, int(datadisksize), 'D')
             diskinfo.append((diskid, int(datadisksize)))
 
         account = machine.new_account()
@@ -639,7 +689,7 @@ class Machine(object):
                         break
                     if not nic.macAddress:
                         nic.macAddress = iface.mac
-                        nic.target = iface.target
+                        nic.deviceName = iface.target
                         nic.type = iface.type
                         break
                 else:
@@ -653,16 +703,32 @@ class Machine(object):
                 nic = machine.new_nic()
                 nic.ipAddress = ipaddress
         machine.updateTime = int(time.time())
-        models.vmachine.set(machine)
 
         # filter out iso volumes
         volumes = filter(lambda v: v.type == 'disk', node.extra['volumes'])
-
+        bootdisk = None
         for order, diskid in enumerate(machine.disks):
             disk = models.disk.get(diskid)
             disk.stackId = stackId
             disk.referenceId = volumes[order].id
             models.disk.set(disk)
+            if disk.type == 'B':
+                bootdisk = disk
+
+        cdroms = filter(lambda v: v.type == 'cdrom', node.extra['volumes'])
+        for cdrom in cdroms:
+            disk = models.disk.new()
+            disk.name = 'Metadata iso'
+            disk.type = 'M'
+            disk.stackId = stackId
+            disk.accountId = bootdisk.accountId
+            disk.gid = bootdisk.gid
+            disk.referenceId = cdrom.id
+            diskid = models.disk.set(disk)[0]
+            machine.disks.append(diskid)
+
+        models.vmachine.set(machine)
+
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
         excludelist = []
@@ -727,6 +793,9 @@ class Machine(object):
                 else:
                     newstackId = 0
                     excludelist.append(provider.stackId)
+            except exceptions.ServiceUnavailable:
+                self.cleanup(machine)
+                raise
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cb.markProvider(provider.stackId, eco)

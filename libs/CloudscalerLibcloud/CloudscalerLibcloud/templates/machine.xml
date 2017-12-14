@@ -1,8 +1,16 @@
  <domain type='kvm' xmlns:qemu='http://libvirt.org/schemas/domain/qemu/1.0'>
-        <name>{{machinename}}</name>
-        <memory unit='MB'>{{memory}}</memory>
-        <currentMemory unit='MB'>{{memory}}</currentMemory>
-        <vcpu placement='static'>{{nrcpu}}</vcpu>
+        <name>{{node.name}}</name>
+        <uuid>{{node.id}}</uuid>
+        <maxMemory slots='16' unit='MiB'>{{hostmemory}}</maxMemory>
+        {% if size %}
+        <currentMemory unit='MiB'>{{size.ram}}</currentMemory>
+        <cpu>
+          <numa>
+              <cell id='0' cpus='0-{{size.extra.vcpus - 1}}' memory='{{size.ram}}' unit='MiB'/>
+          </numa>
+        </cpu>
+        <vcpu placement='static' current='{{size.extra.vcpus}}'>255</vcpu>
+        {% endif %}
         <os>
             <type arch='x86_64' machine='ubuntu'>hvm</type>
             <boot dev='hd'/>
@@ -11,7 +19,7 @@
             <acpi/>
             <apic/>
             <pae/>
-            {% if type == 'windows' %}
+            {% if node.extra.imagetype == 'windows' %}
             <hyperv>
                 <relaxed state='on'/>
                 <vapic state='on'/>
@@ -19,7 +27,7 @@
             </hyperv>
             {% endif %}
         </features>
-        {% if type == 'windows' %}
+        {% if node.extra.imagetype == 'windows' %}
          <clock offset='localtime'>
             <timer name='rtc' tickpolicy='catchup' track='guest'/>
             <timer name='pit' tickpolicy='delay'/>
@@ -33,7 +41,7 @@
         <on_crash>restart</on_crash>
         <devices>
             <emulator>/usr/bin/qemu-system-x86_64</emulator>
-            {% for volume in volumes %}
+            {% for volume in node.extra.volumes %}
             {{volume}}
             {% endfor %}
             <controller type='usb' index='0'>
@@ -44,17 +52,9 @@
                 <alias name='ide0'/>
                 <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
             </controller>
-            <interface type='network'>
-                <source network='{{network}}'/>
-                <mac address='{{macaddress}}'/>
-                <target dev='{{machinename}}-{{vxlan}}' />
-                <model type='virtio'/>
-                <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
-                <bandwidth>
-                  <inbound average='134218' peak='134218' burst='134218'/>
-                  <outbound average='134218' peak='134218' burst='134218'/>
-                </bandwidth>
-            </interface>
+            {% for interface in node.extra.ifaces %}
+            {{interface}}
+            {% endfor %}
             <serial type='pty'>
                 <source path='/dev/pts/1'/>
                 <target port='0'/>

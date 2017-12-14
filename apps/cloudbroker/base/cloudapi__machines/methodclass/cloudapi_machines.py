@@ -44,7 +44,7 @@ class cloudapi_machines(BaseActor):
         self.netmgr = self.cb.netmgr
         self.acl = self.cb.agentcontroller
 
-    def _action(self, machineId, actiontype, newstatus=None, **kwargs):
+    def _action(self, machineId, actiontype, newstatus=None, bootdisk=None, **kwargs):
         """
         Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME, REBOOT
         param:machineId id of the machine
@@ -59,14 +59,28 @@ class cloudapi_machines(BaseActor):
             if node.extra.get('locked', False):
                 raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
             actionname = "%s_node" % actiontype.lower()
+            if bootdisk:
+                size = self.models.size.get(machine.sizeId)
+                kwargs['size'] = provider.getSize(size, bootdisk)
             method = getattr(provider.client, actionname, None)
             if not method:
                 method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
                 if not method:
                     raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
+            result = method(node, **kwargs)
             if newstatus and newstatus != machine.status:
                 self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'status': newstatus}})
-            return method(node, **kwargs)
+            return result
+
+    def _get_boot_disk(self, machine):
+        bootdisk = None
+        for disk_id in machine.disks:
+            disk = self.models.disk.get(disk_id)
+            if disk.type == "B" and bootdisk:
+                raise exceptions.BadRequest("Machine has more than one boot disk")
+            if disk.type == "B":
+                bootdisk = disk
+        return bootdisk
 
     @authenticator.auth(acl={'machine': set('X')})
     def start(self, machineId, **kwargs):
@@ -76,20 +90,15 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         """
         machine = self._getMachine(machineId)
-        has_boot_disk = False
-        for disk_id in machine.disks:
-            disk = self.models.disk.get(disk_id)
-            if disk.type == "B" and has_boot_disk:
-                raise exceptions.BadRequest("Machine has more than one boot disk")
-            if disk.type == "B":
-                has_boot_disk = True
-        if not has_boot_disk:
+        bootdisk = self._get_boot_disk(machine)
+        if not bootdisk:
             raise exceptions.BadRequest("This machine doesn't have a boot disk")
         if "start" in machine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(machineId=machine.id, tagName="start")
         if machine.status not in ['RUNNING', 'PAUSED']:
             self.cb.chooseProvider(machine)
-        return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
+
+        return self._action(machineId, 'start', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
 
     @authenticator.auth(acl={'machine': set('X')})
     def stop(self, machineId, force=False, **kwargs):
@@ -107,7 +116,9 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine
         """
-        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
+        machine = self._getMachine(machineId)
+        bootdisk = self._get_boot_disk(machine)
+        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
 
     @authenticator.auth(acl={'machine': set('X')})
     def reset(self, machineId, **kwargs):
@@ -152,18 +163,15 @@ class cloudapi_machines(BaseActor):
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         if len(machine.disks) >= 25:
             raise exceptions.BadRequest("Cannot create more than 25 disk on a machine")
+        if type == 'B':
+            raise exceptions.BadRequest("Cannot create boot disks")
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         # Validate that enough resources are available in the CU limits to add the disk
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vdisksize=size)
         disk, volume = j.apps.cloudapi.disks._create(accountId=cloudspace.accountId, gid=cloudspace.gid,
                                                      name=diskName, description=description, size=size,
                                                      type=type, iops=iops, **kwargs)
-        try:
-            provider.client.attach_volume(node, volume)
-        except:
-            raise
-        machine.disks.append(disk.id)
-        self.models.vmachine.set(machine)
+        self._attach_disk_volume(machine, node, disk, provider)
         return disk.id
 
     @authenticator.auth(acl={'cloudspace': set('X')})
@@ -216,10 +224,20 @@ class cloudapi_machines(BaseActor):
         # the disk was not attached to any machines so check if there is enough resources in the cloudspace
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(
             machine.cloudspaceId, vdisksize=disk.sizeMax, checkaccount=False)
+        return self._attach_disk_volume(machine, node, disk, provider)
 
+    def _attach_disk_volume(self, machine, node, disk, provider):
+        diskorder = 1
+        query = {'$query': {'id': {'$in': machine.disks}}, '$fields': ['order']}
+        diskorders = [vmdisk['order'] for vmdisk in self.models.disk.search(query)[1:]]
+        while diskorder in diskorders:
+            diskorder += 1
+
+        disk.order = diskorder
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.client.attach_volume(node, volume)
-        machine.disks.append(diskId)
+        self.models.disk.updateSearch({'id': disk.id}, {'$set': {'order': diskorder}})
+        machine.disks.append(disk.id)
         self.models.vmachine.set(machine)
         return True
 
@@ -239,8 +257,9 @@ class cloudapi_machines(BaseActor):
         origimage = self.models.image.get(machine.imageId)
         if origimage.accountId:
             raise exceptions.Conflict("Can not make template from a machine which was created from a custom template.")
-        node = self.cb.getNode(machine.referenceId)
+
         provider = self.cb.getProvider(machine)
+        node = self.cb.getNode(machine.referenceId, provider)
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
         image.name = templatename
@@ -696,9 +715,6 @@ class cloudapi_machines(BaseActor):
         :return the timestamp
         """
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        node = provider.client.ex_get_node_details(node.id)
-        if node.extra.get('locked', False):
-            raise exceptions.Conflict('Cannot create snapshot on a locked machine')
         snapshot = provider.client.ex_create_snapshot(node, name)
         return snapshot
 
@@ -1064,35 +1080,46 @@ class cloudapi_machines(BaseActor):
         nic.ipAddress = str(externalnetworkip)
         nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway, 'externalnetworkId': str(pool.id)})
         nic.type = 'PUBLIC'
+        try:
+            iface = provider.client.attach_public_network(node, pool.vlan, nic.ipAddress)
+        except:
+            self._detachExternalNetworkFromModel(vmachine)
+            raise
         self.models.vmachine.set(vmachine)
-        iface = provider.client.attach_public_network(node, pool.vlan, nic.ipAddress)
         nic.deviceName = iface.target
         nic.macAddress = iface.mac
         self.models.vmachine.set(vmachine)
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    @RequireState(enums.MachineStatus.HALTED, 'Can only resize a halted Virtual Machine')
     def resize(self, machineId, sizeId, **kwargs):
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
-        bootdisks = self.models.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
-        if len(bootdisks) != 1:
-            raise exceptions.Error('Failed to retreive first disk')
-        bootdisk = self.models.disk.get(bootdisks[0]['id'])
         size = self.models.size.get(sizeId)
-        providersize = provider.getSize(size, bootdisk)
 
         # Validate that enough resources are available in the CU limits if size will be increased
         oldsize = self.models.size.get(vmachine.sizeId)
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
         deltacpu = max(size.vcpus - oldsize.vcpus, 0)
-        deltamemory = max((size.memory - oldsize.memory) / 1024.0, 0)
+        deltamemorymb = size.memory - oldsize.memory
+        if deltamemorymb < 0 and vmachine.status != 'HALTED':
+            raise exceptions.BadRequest('Can not decrease memory on a running machine')
+        if size.vcpus < oldsize.vcpus and vmachine.status != 'HALTED':
+            raise exceptions.BadRequest('Can not decrease vcpus on a running machine')
+
+        deltamemory = max(deltamemorymb/1024., 0)
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(vmachine.cloudspaceId,
                                                                    numcpus=deltacpu,
                                                                    memorysize=deltamemory)
-        provider.client.ex_resize(node=node, size=providersize)
-        vmachine.sizeId = sizeId
-        self.models.vmachine.set(vmachine)
+
+        newcpucount = None
+        if size.vcpus > oldsize.vcpus:
+            newcpucount = size.vcpus
+        success = True
+        if vmachine.status != 'HALTED':
+            success = provider.client.ex_resize(node=node, extramem=deltamemorymb, vcpus=newcpucount)
+        self.models.vmachine.updateSearch({'id': machineId}, {'$set': {'sizeId': sizeId}})
+        if not success:
+            raise exceptions.Accepted(False)
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
@@ -1103,7 +1130,6 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :return: True if external network was detached from the machine
         """
-
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
 
         for nic in vmachine.nics:

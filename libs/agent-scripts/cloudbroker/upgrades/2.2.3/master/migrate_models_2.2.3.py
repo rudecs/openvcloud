@@ -20,3 +20,4 @@ def action():
     osis_cl.externalnetwork.updateSearch({'pingips': {'$in': [None, []]}}, {'$set': {'pingips': ['8.8.8.8']}})
     if scl.group.exists('finance'):
         scl.group.delete('finance')
+    osis_cl.disk.updateSearch({'iotune': None}, {'$set': {'iotune': {}}})

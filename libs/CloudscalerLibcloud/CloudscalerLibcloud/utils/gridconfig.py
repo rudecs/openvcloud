@@ -43,5 +43,5 @@ class GridConfig(object):
         self.settings[key] = value
         return self.scl.grid.updateSearch({"guid": self.gid}, {"$set": {"settings.%s" % key: value}})
 
-    def get(self, key):
-        return self.settings.get(key, self.default.get(key, None))
+    def get(self, key, default=None):
+        return self.settings.get(key, self.default.get(key, default))

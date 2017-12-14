@@ -336,16 +336,16 @@ class LibvirtUtil(object):
         for id in ids:
             dom = self.readonly.lookupByID(id)
             machinestate, maxmem, mem = dom.info()[0:3]
-            totalmax += maxmem / 1000
+            totalmax += mem / 1024
             if machinestate == libvirt.VIR_DOMAIN_RUNNING:
-                totalrunningmax += maxmem / 1000
+                totalrunningmax += maxmem / 1024
         return (hostmem, totalmax, totalrunningmax)
 
     def check_machine(self, machinexml, reserved_mem=None):
         if reserved_mem is None:
             reserved_mem = self.config.get("reserved_mem")
         xml = ElementTree.fromstring(machinexml)
-        memory = int(xml.find('memory').text)
+        memory = int(xml.find('currentMemory').text)
         hostmem, totalmax, totalrunningmax = self.memory_usage()
         if (totalrunningmax + memory) > (hostmem - reserved_mem):
             return False

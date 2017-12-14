@@ -61,7 +61,7 @@ h3. Disks
 {% endfor %}
 ||Name||Size||Backend Size||Type||Path||Actions||
 {%for disk in disks -%}
-|[${disk.name}|disk?id=${disk.id}]|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}| {% if disk.type == 'Data' %} {{action deleterow:true id:'action-DeleteDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-remove'}} {% endif %} {{action deleterow:false id:'disk_limitio_${disk.id}' class:'glyphicon glyphicon-dashboard'}} {{action deleterow:false id:'action-ResizeDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-resize-full'}}|
+|[${disk.name}|disk?id=${disk.id}]|${disk.sizeMax} GiB|${ disk.footprint + " GiB" if disk.footprint else "N/A" }|${disk.type}|${disk.referenceId}| {% if disk.type != 'Meta' %} {{action deleterow:false id:'disk_limitio_${disk.id}' class:'glyphicon glyphicon-dashboard'}} {{action deleterow:false id:'action-ResizeDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-resize-full'}} {% endif %} {% if disk.type == 'Data' %} {{action deleterow:true id:'action-DeleteDisk' data-diskId:'${disk.id}' class:'glyphicon glyphicon-remove'}} {% endif %} |
 {% else -%}
 | | | | | | |
 {% endfor %}

@@ -20,17 +20,25 @@ def action(xml, machineid, ipcidr=None):
     from CloudscalerLibcloud.utils.network import Network
     connection = LibvirtUtil()
     try:
-        domain = connection.connection.lookupByUUIDString(machineid)
-    except:
-        return None  # domain does not exist
-    flags = 0
-    if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
-        flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_LIVE
-    if domain.isPersistent():
-        flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
-    if flags != 0:
-        domain.attachDeviceFlags(xml, flags)
-    if ipcidr:
-        network = Network(connection)
-        network.protect_external(domain, ipcidr)
-    return domain.XMLDesc()
+        domain = connection.get_domain_obj(machineid)
+        if domain is None:
+            return
+        flags = 0
+        if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
+            flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_LIVE
+        if domain.isPersistent():
+            flags |= libvirt.VIR_DOMAIN_DEVICE_MODIFY_CONFIG
+        if flags != 0:
+            try:
+                domain.attachDeviceFlags(xml, flags)
+            except libvirt.libvirtError as e:
+                if e.get_error_code() == libvirt.VIR_ERR_CONFIG_UNSUPPORTED:
+                    return False
+                raise
+
+        if ipcidr:
+            network = Network(connection)
+            network.protect_external(domain, ipcidr)
+        return domain.XMLDesc()
+    finally:
+        connection.close()

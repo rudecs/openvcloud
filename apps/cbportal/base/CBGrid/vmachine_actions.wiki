@@ -211,11 +211,8 @@
     label: Reason
     type: text
 
-{% if status == 'HALTED' %}
 - display: Resize Machine
   action: '#resizemachine'
-
-{% endif %}
 
 # def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
 - display: Export

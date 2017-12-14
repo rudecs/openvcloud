@@ -146,7 +146,7 @@ def main(j, args, params, tags, tasklet):
 
     data['disks'] = cbosis.disk.search({'id': {'$in': obj.disks}})[1:]
     diskstats = stats.get('diskinfo', [])
-    disktypemap = {'D': 'Data', 'B': 'Boot', 'T': 'Temp'}
+    disktypemap = {'D': 'Data', 'B': 'Boot', 'T': 'Temp', 'M': 'Meta'}
     for disk in data['disks']:
         disk['type'] = disktypemap.get(disk['type'], disk['type'])
         for diskinfo in diskstats:

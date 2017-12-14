@@ -1,0 +1,6 @@
+<memory model='dimm'>
+  <target>
+    <size unit='MiB'>{{memory}}</size>
+    <node>0</node>
+  </target>
+</memory>

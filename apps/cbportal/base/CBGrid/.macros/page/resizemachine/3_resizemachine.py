@@ -25,7 +25,7 @@ def main(j, args, params, tags, tasklet):
     if not dropsizes:
         return params
 
-    popup = Popup(id='resizemachine', header='Resize Machine', submit_url='/restmachine/cloudbroker/machine/resize')
+    popup = Popup(id='resizemachine', header='Resize Machine', submit_url='/restmachine/cloudbroker/machine/resize', showresponse=True)
     popup.addDropdown('Choose Size', 'sizeId', dropsizes)
     popup.addHiddenField('machineId', machineId)
     popup.write_html(page)
