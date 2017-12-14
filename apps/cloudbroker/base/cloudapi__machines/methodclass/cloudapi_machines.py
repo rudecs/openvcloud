@@ -450,7 +450,9 @@ class cloudapi_machines(BaseActor):
                 [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
-        except:
+        except Exception as e:
+            eco = j.errorconditionhandler.processPythonExceptionObject(e)
+            eco.process()
             error = True
             if not callbackUrl:
                 [self._sendExportCompletionMail(email, success=False, error=error) for email in userobj.emails]
