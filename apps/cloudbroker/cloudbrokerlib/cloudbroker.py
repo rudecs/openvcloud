@@ -672,6 +672,7 @@ class Machine(object):
         auth = NodeAuthPassword(account.password)
         with models.cloudspace.lock('{}_ip'.format(cloudspace.id)):
             nic = machine.new_nic()
+            nic.type = 'bridge'
             nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
             machine.id = models.vmachine.set(machine)[0]
         return machine, auth, diskinfo
