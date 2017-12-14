@@ -11,9 +11,12 @@ class Network(object):
         else:
             self.libvirtutil = libvirtutil.LibvirtUtil()
 
-    def cleanup_flows(self, bridge, port, mac):
+    def cleanup_flows(self, bridge, port, mac, ip=None):
         cmd = rules.CLEANUPFLOWS_CMD.format(mac=mac, port=port, bridge=bridge)
         j.system.process.execute(cmd)
+        if ip:
+            cmd = rules.CLEANUPFLOWS_CMD_IP.format(bridge=bridge, ipaddress=ip)
+            j.system.process.execute(cmd)
 
     def close(self):
         self.libvirtutil.close()
@@ -49,7 +52,7 @@ class Network(object):
             return
         ipaddress = str(netaddr.IPNetwork(ipaddress).ip)
         port = self.get_port(interface)
-        self.cleanup_flows(bridge, port, mac)
+        self.cleanup_flows(bridge, port, mac, ipaddress)
         tmpfile = j.system.fs.getTmpFilePath()
         try:
             j.system.fs.writeFile(tmpfile, rules.PUBLICINPUT.format(port=port, mac=mac, publicipv4addr=ipaddress))
@@ -60,6 +63,7 @@ class Network(object):
     def protect_gwmgmt(self, domain, ipaddress):
         interface, mac = self.get_gwmgmt_interface(domain)
         port = self.get_port(interface)
+        self.cleanup_flows('gw_mgmt', port, mac, ipaddress)
         tmpfile = j.system.fs.getTmpFilePath()
         try:
             j.system.fs.writeFile(tmpfile, rules.GWMGMTINPUT.format(port=port, mac=mac, ipaddress=ipaddress))

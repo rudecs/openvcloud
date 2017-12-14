@@ -1,7 +1,7 @@
 PUBLICINPUT = '''\
 # Allow dhcp client
 in_port={port},priority=8000,udp,tp_dst=67,dl_src={mac},idle_timeout=0,action=normal
-# Allow arp 
+# Allow arp
 in_port={port},priority=7000,arp,action=normal
 # Drop DHCP server replies coming from here (rogue dhcp server)
 in_port={port},priority=8000,udp,tp_src=68,dl_src={mac},idle_timeout=0,action=drop
@@ -17,6 +17,11 @@ CLEANUPFLOWS_CMD = '''\
 ovs-ofctl del-flows {bridge} "in_port={port}";
 ovs-ofctl del-flows {bridge} "dl_src={mac}";
 ovs-ofctl del-flows {bridge} "dl_dst={mac}";
+'''
+
+CLEANUPFLOWS_CMD_IP = '''\
+ovs-ofctl del-flows {bridge} "nw_src={ipaddress}";
+ovs-ofctl del-flows {bridge} "nw_dst={ipaddress}";
 '''
 
 GWMGMTINPUT = '''\
