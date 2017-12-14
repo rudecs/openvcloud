@@ -351,6 +351,7 @@ class cloudapi_machines(BaseActor):
             vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Unknown').id
             vm.creationTime = int(time.time())
             vm.updateTime = int(time.time())
+            vm.type = 'VIRTUAL'
 
             totaldisksize = 0
             bootdisk = None
