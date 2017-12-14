@@ -1,16 +1,16 @@
 PUBLICINPUT = '''\
 # Allow dhcp client
-in_port={port},priority=8000,dl_type=0x0800,nw_proto=0x11,tp_dst=67,dl_src={mac},idle_timeout=0,action=normal
-# Allow arp req
-in_port={port},priority=7000,dl_type=0x0806,dl_src={mac},arp_sha={mac},nw_src=0.0.0.0,idle_timeout=0,action=normal
-# Allow ARP responses.
-in_port={port},priority=7000,dl_type=0x0806,dl_src={mac},arp_sha={mac},nw_src={publicipv4addr}/32,idle_timeout=0,action=normal
+in_port={port},priority=8000,udp,tp_dst=67,dl_src={mac},idle_timeout=0,action=normal
+# Allow arp 
+in_port={port},priority=7000,arp,action=normal
 # Drop DHCP server replies coming from here (rogue dhcp server)
-in_port={port},priority=8000,dl_type=0x0800,nw_proto=0x11,tp_src=68,dl_src={mac},idle_timeout=0,action=drop
+in_port={port},priority=8000,udp,tp_src=68,dl_src={mac},idle_timeout=0,action=drop
 # Allow ipv4/mac (note: this is a /32). "There can be only one!" (sic McLeod)
 in_port={port},priority=6000,dl_type=0x0800,dl_src={mac},nw_src={publicipv4addr}/32,idle_timeout=0,action=normal
 # Fsck all the rest (that means also no IPV6)
 in_port={port},priority=100,action=drop
+# but for everything coming back, (or in, for that matter), allow
+priority=0,actions=normal
 '''
 
 CLEANUPFLOWS_CMD = '''\
