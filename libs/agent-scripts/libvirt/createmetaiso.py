@@ -17,11 +17,15 @@ async = True
 def action(name, metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
     from CloudscalerLibcloud import openvstorage
+    import urlparse
     imagepath = openvstorage.getUrlPath('%s/cloud-init-%s' % (name, name))
     ovspath = openvstorage.getOpenvStorageURL(imagepath)
     iso = ISO()
     iso.create_meta_iso(ovspath, metadata, userdata, type)
-    return "{}@{}".format(imagepath, openvstorage.getVDisk(imagepath, timeout=60).guid)
+    parsedurl = urlparse.urlparse(ovspath)
+    if parsedurl.netloc == '':
+        ovspath = ovspath.replace('{}:'.format(parsedurl.scheme), '{}://'.format(parsedurl.scheme))
+    return "{}@{}".format(ovspath, openvstorage.getVDisk(imagepath, timeout=60).guid)
 
 
 if __name__ == '__main__':
