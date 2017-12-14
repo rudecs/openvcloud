@@ -45,6 +45,17 @@ def action():
         j.console.info('Updating firewall')
         pcl.actors.cloudbroker.cloudspace.applyConfig(machine['cloudspaceId'])
 
+    all_machines = ccl.vmachine.search({'status': {'$nin':  ['ERROR', 'DESTROYED']}}, size=0)[1:]
+    used_ips = {}
+    for machine in all_machines:
+        cloudspace_id = machine['cloudspaceId']
+        used_ips.setdefault(cloudspace_id, [])
+        for nic in machine['nics']:
+            if nic['ipAddress'] in used_ips[cloudspace_id]:
+                j.errorconditionhandler.raiseOperationalWarning("Duplicate ip found {name}".format(name=machine['hostname']))
+            else:
+                used_ips[cloudspace_id].append(nic['ipAddress'])
+
 
 
 if __name__ == '__main__':
