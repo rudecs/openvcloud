@@ -22,7 +22,7 @@ ovs-ofctl del-flows {bridge} "dl_dst={mac}";
 CLEANUPFLOWS_CMD_IP = '''\
 ovs-ofctl del-flows {bridge} "ip,nw_src={ipaddress}";
 ovs-ofctl del-flows {bridge} "ip,nw_dst={ipaddress}";
-ovs-ofctl del-flows {bridge}" "arp,nw_src={ipaddress}";
+ovs-ofctl del-flows {bridge} "arp,nw_src={ipaddress}";
 '''
 
 GWMGMTINPUT = '''\
