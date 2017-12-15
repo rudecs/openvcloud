@@ -1,12 +1,12 @@
 PUBLICINPUT = '''\
 # Allow dhcp client
 in_port={port},priority=8000,udp,tp_dst=67,dl_src={mac},idle_timeout=0,action=normal
-# Allow arp
-in_port={port},priority=7000,arp,action=normal
+# Allow arp replies only specifically from that ip/mac combo
+in_port={port},priority=7000,arp,arp_op=2,dl_src={mac},nw_src={publicipv4addr}/32,action=normal
 # Drop DHCP server replies coming from here (rogue dhcp server)
 in_port={port},priority=8000,udp,tp_src=68,dl_src={mac},idle_timeout=0,action=drop
 # Allow ipv4/mac (note: this is a /32). "There can be only one!" (sic McLeod)
-in_port={port},priority=6000,dl_type=0x0800,dl_src={mac},nw_src={publicipv4addr}/32,idle_timeout=0,action=normal
+in_port={port},priority=6000,ip,dl_src={mac},nw_src={publicipv4addr}/32,idle_timeout=0,action=normal
 # Fsck all the rest (that means also no IPV6)
 in_port={port},priority=100,action=drop
 # but for everything coming back, (or in, for that matter), allow
@@ -22,6 +22,7 @@ ovs-ofctl del-flows {bridge} "dl_dst={mac}";
 CLEANUPFLOWS_CMD_IP = '''\
 ovs-ofctl del-flows {bridge} "ip,nw_src={ipaddress}";
 ovs-ofctl del-flows {bridge} "ip,nw_dst={ipaddress}";
+ovs-ofctl del-flows {bridge} "arp,nw_src={ipaddress}";
 '''
 
 GWMGMTINPUT = '''\
