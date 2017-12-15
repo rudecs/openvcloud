@@ -1,8 +1,9 @@
 PUBLICINPUT = '''\
 # Allow dhcp client
 in_port={port},priority=8000,udp,tp_dst=67,dl_src={mac},idle_timeout=0,action=normal
-# Allow arp replies only specifically from that ip/mac combo
+# Allow arp request/replies only specifically from that ip/mac combo
 in_port={port},priority=7000,arp,arp_op=2,dl_src={mac},nw_src={publicipv4addr}/32,action=normal
+in_port={port},priority=7000,arp,arp_op=1,dl_src={mac},nw_src={publicipv4addr}/32,action=normal
 # Drop DHCP server replies coming from here (rogue dhcp server)
 in_port={port},priority=8000,udp,tp_src=68,dl_src={mac},idle_timeout=0,action=drop
 # Allow ipv4/mac (note: this is a /32). "There can be only one!" (sic McLeod)
