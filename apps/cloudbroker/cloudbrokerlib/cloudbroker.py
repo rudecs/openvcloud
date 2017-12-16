@@ -555,7 +555,7 @@ class CloudSpace(object):
         leases = []
         for vm in models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
             for nic in vm['nics']:
-                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC':
+                if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC' and nic['macAddress']:
                     leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
         return leases
 
