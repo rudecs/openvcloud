@@ -195,8 +195,8 @@ class CloudBroker(object):
                 if networkId == 0:
                     bridgename = 'public'
                 else:
-                    bridgename = 'ext_{:04x}'.format(networkId)
-                bridgetype = 'external'
+                    bridgename = 'ext-{:04x}'.format(networkId)
+                bridgetype = 'PUBLIC'
             else:
                 continue
             interfaces.append(NetworkInterface(nic.macAddress, nic.deviceName, bridgetype, bridgename, networkId))
