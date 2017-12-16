@@ -1,7 +1,0 @@
-grid.id=59
-grid.node.id=1
-grid.useavahi=1
-grid.ismaster=True
-grid.master=
-grid.master.ip=localhost
-grid.node.roles=node,cloudscale59

@@ -1,8 +1,0 @@
-grid.id=53
-grid.node.id=1
-grid.useavahi=1
-grid.ismaster=True
-grid.master=
-grid.master.ip=localhost
-grid.node.roles=node,cloudscale53
-grid.master.superadminpasswd=6bde6ce08268a6d58ba96f27402bd7d4

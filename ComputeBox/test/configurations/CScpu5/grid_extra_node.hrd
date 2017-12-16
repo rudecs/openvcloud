@@ -1,7 +1,0 @@
-grid.id=241
-grid.node.id=5
-grid.useavahi=1
-grid.ismaster=False
-grid.master=
-grid.master.ip=
-grid.node.roles=node,CScpu5

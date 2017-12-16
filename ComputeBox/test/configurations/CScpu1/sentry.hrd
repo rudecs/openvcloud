@@ -1,5 +1,0 @@
-sentry.public_key=18275531e40849ae8f259a4edd8f1c22
-sentry.secret_key=d43b0396addb4b789cd6c325a9ceb36e
-sentry.server=127.0.0.1
-sentry.port=9000
-sentry.project.default=2
