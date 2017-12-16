@@ -919,8 +919,10 @@ class CSLibvirtNodeDriver(object):
 
     def ex_resize(self, node, extramem, vcpus):
         machinetemplate = self.env.get_template("memory.xml")
-        memory = machinetemplate.render({'memory': extramem})
-        result = self._execute_agent_job('attach_device', queue='hypervisor', xml=memory, machineid=node.id) is not False
+        result = True
+        if extramem > 0:
+            memory = machinetemplate.render({'memory': extramem})
+            result = self._execute_agent_job('attach_device', queue='hypervisor', xml=memory, machineid=node.id) is not False
         if vcpus is not None:
             result &= self._execute_agent_job('change_vcpus', queue='hypervisor', vcpus=vcpus, machineid=node.id)
 
