@@ -1,6 +1,0 @@
-gridmaster.useavahi=1
-gridmaster.grid.id=31
-gridmaster.mainbroker.port.clients=5651
-gridmaster.mainbroker.port.workers=5650
-gridmaster.mainbroker.id=1
-

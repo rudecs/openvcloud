@@ -1,9 +1,0 @@
-grid.id=241
-grid.node.id=2
-grid.useavahi=0
-grid.ismaster=False
-grid.master=
-grid.master.ip=10.101.175.1
-grid.node.roles=node,CScpu2
-osis.key=myencryptionkey
-grid.master.superadminpasswd=6bde6ce08268a6d58ba96f27402bd7d4
