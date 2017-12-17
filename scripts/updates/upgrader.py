@@ -1,7 +1,6 @@
 from JumpScale import j
 import os
 import sys
-import json
 UPGRADEFOLDER = '/opt/code/github/0-complexity/openvcloud/libs/agent-scripts/cloudbroker/upgrades/'
 
 def main(options):
@@ -35,7 +34,7 @@ def main(options):
                     if job['state'] == 'ERROR':
                         errors = True
                         try:
-                            eco = json.loads(job['result'])['guid']
+                            eco = job['result']['guid']
                         except:
                             eco = False
                         if eco:
