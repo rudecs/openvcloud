@@ -39,6 +39,13 @@ class cloudbroker_qos(BaseActor):
             write_iops_sec_max=write_iops_sec_max, size_iops_sec=size_iops_sec,
         )
 
+    def resize(self, diskId, size, **kwargs):
+        res = self.cb.actors.cloudapi.disks.resize(diskId=diskId, size=size)
+        message = 'Online disk resize done'
+        if not res:
+            message = "Unable to perform an online disk resize. Please <b>stop</b> and <b>start</b> your machine for your changes to be reflected."
+        return message
+
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """
         This will put a limit on the VIF of all VMs within the cloudspace

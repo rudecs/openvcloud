@@ -206,6 +206,10 @@ class cloudapi_disks(BaseActor):
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
         disk.sizeMax = size
-        provider.client.ex_extend_disk(volume.vdiskguid, size)
+        disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine['referenceId']}
+        res = provider.client.ex_extend_disk(volume.vdiskguid, size, disk_info)
         self.models.disk.set(disk)
+        if not res:
+            raise exceptions.Accepted(False)
         return True
+

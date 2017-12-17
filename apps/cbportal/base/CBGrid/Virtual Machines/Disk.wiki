@@ -9,13 +9,11 @@ h2. Disk: ${name}
   action: '#disk_limitio_$$id'
 
 - display: Resize Disk
-  action: /restmachine/cloudapi/disks/resize
+  action: /restmachine/cloudbroker/qos/resize
+  showresponse: true
   data:
    diskId: ${id}
   input:
-  - type: message
-    messagetype: info
-    message: Please <b>stop</b> and <b>start</b> your machine after changing the disk size, for your changes to be reflected.
   - name: size
     type: number
     label: Disk size (in GiB)

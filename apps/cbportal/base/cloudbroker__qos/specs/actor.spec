@@ -48,6 +48,14 @@
         var:size_iops_sec int,, ... @optional
         result:bool
 
+    method:resize
+        """
+        Change size of a disk to a bigger size
+        """
+        var:diskId int,, id of disk we want to resize
+        var:size int,, new size of disk in GB
+        result:str, message indicating whether user needs to restart the machine or not
+
     method:limitCPU
         """
         Limit CPU quota

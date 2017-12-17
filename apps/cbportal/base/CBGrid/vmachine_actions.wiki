@@ -170,12 +170,10 @@
     placeholder: Optional, default 2000
 
 - display: Resize Disk
-  action: /restmachine/cloudapi/disks/resize
+  action: /restmachine/cloudbroker/qos/resize
   hide: true
+  showresponse: true
   input:
-  - type: message
-    messagetype: info
-    message: Please <b>stop</b> and <b>start</b> your machine after changing the disk size, for your changes to be reflected.
   - name: size
     type: number
     label: Disk size (in GiB)

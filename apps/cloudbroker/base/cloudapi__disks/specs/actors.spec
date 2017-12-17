@@ -67,8 +67,8 @@
     method:resize
         """
         Resize disk
-        please stop and start your machine after changing the disk size, for your changes to be reflected.
+        Returns 200 if disk is resized online, else will return 202, in that case please stop and start your machine after changing the disk size, for your changes to be reflected.
         """
         var:diskId int,, Id of the disk to resize
         var:size int,, New size of the disk in GB
-        result:bool
+        result:str, return code of the operation
