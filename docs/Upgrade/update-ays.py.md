@@ -16,20 +16,42 @@ The update script will help you doing some tasks like:
 
 Here are all available options listed:
 ```
-  -s, --self           self update: only update the update script
-  -r, --restart        restart everything (master cloud space and all CPU nodes)
-  -R, --restart-nodes  restart all the CPU nodes
-  -N, --restart-cloud  restart all the master cloud space services
-  -u, --update         update git repository (do not restart services)
-  -U, --update-nodes   update node git repository (do not restart services)
-  -C, --update-cloud   update the master cloud space git repository (does not restart services)
-  -p, --report         build a versions log and update git version.md
-  -c, --commit         commit the ovc_git repository
+Usage: update-ays.py [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -s, --self            only update the update script
+  -r, --restart         only restart everything
+  -R, --restart-nodes   only restart all the nodes
+  -N, --restart-cloud   only restart all the cloudspace vm
+  -n CONCURRENCY, --concurrency=CONCURRENCY
+  -u, --update          only update git repository, do not restart services
+  --noupdate            if combined with normal update this will only restart
+                        services not update them
+  --node=NODE           Apply action on this node only
+  -U, --update-nodes    only update node git repository, do not restart
+                        services
+  -C, --update-cloud    only update cloudspace git repository, do not restart
+                        services
+  -p, --report          build a versions log and update git version.md
+  -c, --commit          commit the ovcgit repository
+
+  Update version:
+    --tag-js=TAG_JS     Tag to update JumpScale to
+    --tag-ovc=TAG_OVC   Tag to update OpenvCloud to
+    --branch-js=BRANCH_JS
+                        Branch to update JumpScale to
+    --branch-ovc=BRANCH_OVC
+                        Branch to update OpenvCloud to
+    --branch-ovc-core=BRANCH_OVC_CORE
+                        Branch to update OpenvCloud to
+    --branch-ovc-selfhealing=BRANCH_OVC_SELFHEALING
+                        Branch to update OpenvCloud to
 ```
 
 Keep in mind for what follows that:
 - The upgrade script will only work when executed from ovc_git, see the [How to Connect to an OpenvCloud Environment](../Sysadmin/connect.md) section.
-- You first need to change the current directory to the directory where all cloned repositories reside, e.g. for environment du-conv-1 this is `/opt/code/git/openvcloudEnvirnement/be-conv-1`
+- You first need to change the current directory to the directory where all cloned repositories reside, e.g. for environment du-conv-1 this is `/opt/code/git/openvcloudEnvirnement/du-conv-1`
 
 > Don't forget to first update the update script itself, which can be achieved with:
 
