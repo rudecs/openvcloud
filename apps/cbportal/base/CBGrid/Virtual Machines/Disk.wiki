@@ -35,9 +35,16 @@ h2. Disk: ${name}
 |*Edge host*| ${edgehost}|
 |*Edge port*| ${edgeport}|
 |*Edge name*| ${edgename}|
-{% for name, tune in iotune.items() -%}
-    |*${name}*| ${tune if tune else "N/A"}|
-{% endfor %}
+
+h2. Disk tune {{action: id:'disk_limitio_$$id' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}}|
+
+|*IOPS size per sec*| ${iotune['size_iops_sec']}|
+
+||Type || Read || Write || Total ||
+| IOPS | ${iotune['read_iops_sec']} | ${iotune['write_iops_sec']} | ${iotune['total_iops_sec']} | 
+| Bytes | ${iotune['read_bytes_sec']} | ${iotune['write_bytes_sec']} | ${iotune['total_bytes_sec']} |
+| Max IOPS | ${iotune['read_iops_sec_max']} | ${iotune['write_iops_sec_max']} | ${iotune['total_iops_sec_max']} |
+| Max Bytes | ${iotune['read_bytes_sec_max']} | ${iotune['write_bytes_sec_max']} | ${iotune['total_bytes_sec_max']} |
 
 {% else %}
 No disk found

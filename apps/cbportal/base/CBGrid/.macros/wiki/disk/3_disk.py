@@ -5,18 +5,6 @@ def main(j, args, params, tags, tasklet):
     osiscl = j.clients.osis.getByInstance('main')
     cbosis = j.clients.osis.getNamespace('cloudbroker', osiscl)
 
-    def prettify(iotune):
-        result = {}
-        for key in iotune.keys():
-            orig = key
-            if 'max' in key:
-                key = 'max ' + key.replace('_max', '')
-            key = key.capitalize().replace('_', ' ')
-            index = key.find('sec')
-            key = key[:index] + 'per ' + key[index:]
-            result[key] = iotune[orig]
-        return result
-
     try:
         disk = cbosis.disk.get(int(diskid))
     except:
@@ -31,8 +19,9 @@ def main(j, args, params, tags, tasklet):
     disk_data['edgename'] = volume.name
     disk_data['devicename'] = volume.dev
 
-    if disk_data['iotune']:
-        disk_data['iotune'] = prettify(disk_data['iotune'])
+    for iotune, value in disk_data['iotune'].items():
+        if not value:
+            disk_data['iotune'][iotune] = ''
     args.doc.applyTemplate(disk_data, False)
     return params
 
