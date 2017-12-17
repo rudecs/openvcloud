@@ -41,6 +41,15 @@ def main(j, args, params, tags, tasklet):
     def spaceLinkify(row, field):
         return '[%s|cloud space?id=%s]' % (row[field], row[field])
 
+    def get_ip(row, field):
+        ip = ''
+        for nic in row['nics']:
+            if nic['type'] == 'bridge':
+                ip = nic['ipAddress']
+                break
+        return ip
+
+
     fields = [
         {
             'name': 'Name',
@@ -56,6 +65,12 @@ def main(j, args, params, tags, tasklet):
             'name': 'Status',
             'value': 'status',
             'id': 'status'
+        }, {
+            'name': 'IP Address',
+            'value': get_ip,
+            'id': 'nics.ipAddress',
+            'sortable': False,
+            'filterable': False,
         }, {
             'name': 'Cloud Space',
             'value': spaceLinkify,
