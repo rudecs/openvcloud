@@ -107,6 +107,9 @@ class cloudapi_disks(BaseActor):
         if disk.status == 'DESTROYED':
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
+        if disk.type == 'M':
+            raise exceptions.BadRequest("Can't limitIO on a disk of type Meta")
+
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
         if not machine:
             raise exceptions.NotFound("Could not find virtual machine beloning to disk")
@@ -190,6 +193,8 @@ class cloudapi_disks(BaseActor):
         if size > 2000:
             raise exceptions.BadRequest('Size can not be more than 2TB')
         disk = self.models.disk.get(diskId)
+        if disk.type == 'M':
+            raise exceptions.BadRequest("Can't resize a disk of type Meta")
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
         if disk.status == 'DESTROYED':
