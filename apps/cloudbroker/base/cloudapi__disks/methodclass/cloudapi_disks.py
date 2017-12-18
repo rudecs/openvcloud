@@ -199,17 +199,19 @@ class cloudapi_disks(BaseActor):
         if machine:
             # Validate that enough resources are available in the CU limits to add the disk
             j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine['cloudspaceId'], vdisksize=size)
+            provider, _, _ = self.cb.getProviderAndNode(machine['id'])
+            machine_id = machine['referenceId']
         else:
             # Validate that enough resources are available in the CU limits to add the disk
             j.apps.cloudapi.accounts.checkAvailableMachineResources(disk.accountId, vdisksize=size)
+            provider = self.cb.getProviderByGID(disk.gid)
+            machine_id = None
 
-        provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
         disk.sizeMax = size
-        disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine['referenceId']}
+        disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine_id}
         res = provider.client.ex_extend_disk(volume.vdiskguid, size, disk_info)
         self.models.disk.set(disk)
         if not res:
             raise exceptions.Accepted(False)
         return True
-
