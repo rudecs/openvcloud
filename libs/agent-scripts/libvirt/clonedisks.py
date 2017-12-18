@@ -35,18 +35,6 @@ def action(ovs_connection, disks):
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
-    path = '/vdisks/{}'
-
-    jobs = [(disk, gevent.spawn(ovs.get, path.format(disk['diskguid']))) for disk in disks if disk.get('snapshottimestamp')]
-    gevent.joinall([job for _, job in jobs])
-    for disk, job in jobs:
-        for snapshot in job.get()['snapshots']:
-            if int(snapshot['timestamp']) == int(disk['snapshottimestamp']):
-                disk['snapshotguid'] = snapshot['guid']
-                break
-        else:
-            raise Exception("Could not find snapshot with timestamp %(snapshottimestamp)s for disk %(diskguid)s" % disk)
-
     def clone(disk):
         diskguid = disk['diskguid']
         clone_name = disk['clone_name']

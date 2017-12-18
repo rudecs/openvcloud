@@ -420,8 +420,8 @@ class cloudapi_machines(BaseActor):
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
-            snapshotTimestamp = self.snapshot(vm.id, vm.name)
-            volumes = provider.client.ex_clone_disks(diskmapping, snapshotTimestamp)
+            disks_snapshots = self.snapshot(vm.id, vm.name)
+            volumes = provider.client.ex_clone_disks(diskmapping, disks_snapshots)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
             size = self.models.size.get(vm.sizeId)
@@ -801,7 +801,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
-    def clone(self, machineId, name, cloudspaceId=None, snapshotTimestamp=None, **kwargs):
+    def clone(self, machineId, name, cloudspaceId=None, disks_snapshots=None, **kwargs):
         """
         Clone the machine
 
@@ -809,6 +809,7 @@ class cloudapi_machines(BaseActor):
         :param name: name of the cloned machine
         :return id of the new cloned machine
         """
+        disks_snapshots = disks_snapshots or {}
         machine = self._getMachine(machineId)
         if cloudspaceId is None:
             cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
@@ -884,11 +885,11 @@ class cloudapi_machines(BaseActor):
 
         clone.id = self.models.vmachine.set(clone)[0]
         size = provider.getSize(size, bootdisk)
-        if not snapshotTimestamp:
-            snapshotTimestamp = self.snapshot(machineId, name)
+        if not disks_snapshots:
+            disks_snapshots = self.snapshot(machineId, name)
 
         try:
-            node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, snapshotTimestamp)
+            node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
             if node == -1:
                 raise exceptions.ServiceUnavailable("Not enough resources available to host clone")
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)

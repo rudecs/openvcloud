@@ -24,19 +24,19 @@ def action(ovs_connection, diskguids, name):
     # name: name for the snapshot
     #
     # returns None
+    snapshots = {}
 
     ovs = j.clients.openvstorage.get(ips=ovs_connection['ips'],
                                      credentials=(ovs_connection['client_id'],
                                                   ovs_connection['client_secret']))
 
-    timestamp = int(time.time())
     path = '/vdisks/{}/create_snapshot'
-    params = dict(name=name, timestamp=timestamp, sticky=True)
+    params = dict(name=name, sticky=True)
 
-    taskguids = [ovs.post(path.format(dg), params=params) for dg in diskguids]
-    for taskguid in taskguids:
+    for diskguid in diskguids:
+        taskguid = ovs.post(path.format(diskguid), params=params)
         success, result = ovs.wait_for_task(taskguid)
         if not success:
             raise Exception("Could not create snapshots:\n{}".format(result))
-
-    return timestamp
+        snapshots[diskguid] = result
+    return snapshots
