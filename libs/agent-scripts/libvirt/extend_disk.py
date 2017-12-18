@@ -42,14 +42,15 @@ def action(ovs_connection, size, diskguid, disk_info):
     if not success:
         raise Exception("Could not update disk:\n{}".format(result))
 
-    connection = LibvirtUtil()
-    domain = connection.get_domain_obj(disk_info['machineRefId'])
-    if domain:
-        domaindisks = list(connection.get_domain_disks(domain.XMLDesc()))
-        dev = connection.get_domain_disk(disk_info['referenceId'], domaindisks)
-        try:
-            domain.blockResize(dev, new_size, libvirt.VIR_DOMAIN_BLOCK_RESIZE_BYTES)
-        except:
-            res = False
+    if disk_info['machineRefId'] is not None:
+        connection = LibvirtUtil()
+        domain = connection.get_domain_obj(disk_info['machineRefId'])
+        if domain:
+            domaindisks = list(connection.get_domain_disks(domain.XMLDesc()))
+            dev = connection.get_domain_disk(disk_info['referenceId'], domaindisks)
+            try:
+                domain.blockResize(dev, new_size, libvirt.VIR_DOMAIN_BLOCK_RESIZE_BYTES)
+            except:
+                res = False
 
     return res
