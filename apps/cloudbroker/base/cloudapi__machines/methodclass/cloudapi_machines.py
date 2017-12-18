@@ -127,7 +127,9 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine
         """
-        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
+        machine = self._getMachine(machineId)
+        bootdisk = self._get_boot_disk(machine)
+        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
 
     @authenticator.auth(acl={'machine': set('X')})
     def pause(self, machineId, **kwargs):
