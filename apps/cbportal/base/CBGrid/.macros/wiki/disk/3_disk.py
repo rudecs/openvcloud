@@ -11,7 +11,14 @@ def main(j, args, params, tags, tasklet):
         args.doc.applyTemplate({})
         return params
     disk_data = disk.dump()
-    disk_data['type'] = 'Data' if disk_data['type'] == str('D') else 'Boot'
+    machine = next(iter(cbosis.vmachine.search({'disks': disk_data['id']})[1:]), None)
+    account = cbosis.account.get(disk_data['accountId'])
+    disk_data['accountName'] = account.name
+    if machine:
+        disk_data['machineId'] = machine['id']
+        disk_data['machineName'] = machine['name']
+    disktypemap = {'D': 'Data', 'B': 'Boot', 'M': 'Meta'}
+    disk_data['type'] = disktypemap.get(disk_data['type'], disk_data['type'])
     volume = j.apps.cloudapi.disks.getStorageVolume(disk, None)
     disk_data['edgehost'] = volume.edgehost
     disk_data['edgeport'] = volume.edgeport

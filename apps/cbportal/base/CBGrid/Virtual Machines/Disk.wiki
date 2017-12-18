@@ -4,6 +4,7 @@
 {% if id %}
 h2. Disk: ${name}
 
+{% if type != 'Meta' %}
 {{actions:
 - display: Limit IO
   action: '#disk_limitio_$$id'
@@ -19,6 +20,7 @@ h2. Disk: ${name}
     label: Disk size (in GiB)
 
 }}
+{% endif %}
 
 {{disk_limitio: diskid:$$id}}
 
@@ -28,12 +30,16 @@ h2. Disk: ${name}
 |*Type*| ${type}|
 |*Device name*| ${devicename}|
 |*Size*| ${sizeMax} GiB|
-|*Account*| [${accountId}|account?id=${accountId}]|
+|*Account*| [${accountName}|account?id=${accountId}]|
+{% if machineId -%}
+|*Virtual Machine*| [${machineName}|Virtual Machine?id=${machineId}]|
+{% endif -%}
 |*vDisk GUID*| ${vdiskguid}|
 |*Edge host*| ${edgehost}|
 |*Edge port*| ${edgeport}|
 |*Edge name*| ${edgename}|
 
+{% if type != 'Meta' %}
 h2. Disk tune {{action: id:'disk_limitio_$$id' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}}|
 
 |*IOPS size per sec*| ${iotune['size_iops_sec']}|
@@ -43,7 +49,7 @@ h2. Disk tune {{action: id:'disk_limitio_$$id' class:'glyphicon glyphicon-edit m
 | Bytes | ${iotune['read_bytes_sec']} | ${iotune['write_bytes_sec']} | ${iotune['total_bytes_sec']} |
 | Max IOPS | ${iotune['read_iops_sec_max']} | ${iotune['write_iops_sec_max']} | ${iotune['total_iops_sec_max']} |
 | Max Bytes | ${iotune['read_bytes_sec_max']} | ${iotune['write_bytes_sec_max']} | ${iotune['total_bytes_sec_max']} |
-
+{% endif %}
 {% else %}
 No disk found
 {% endif %}
