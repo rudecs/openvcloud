@@ -52,7 +52,7 @@ def action():
         used_ips.setdefault(cloudspace_id, [])
         for nic in machine['nics']:
             if nic['ipAddress'] in used_ips[cloudspace_id]:
-                j.errorconditionhandler.raiseOperationalWarning("Duplicate ip found {name}".format(name=machine['name']))
+                raise RuntimeError("Duplicate ip found {name}".format(name=machine['name']))
             else:
                 used_ips[cloudspace_id].append(nic['ipAddress'])
 
