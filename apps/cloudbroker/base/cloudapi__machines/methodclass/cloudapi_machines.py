@@ -418,7 +418,7 @@ class cloudapi_machines(BaseActor):
             error = False
             diskmapping = list()
             userobj = j.core.portal.active.auth.getUserInfo(user)
-            disks = self.models.disk.search({'id': {'$in': vm.disks}})[1:]
+            disks = self.models.disk.search({'id': {'$in': vm.disks}, 'type': {'$ne': 'M'}})[1:]
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
@@ -898,6 +898,7 @@ class cloudapi_machines(BaseActor):
         except:
             self.cb.machine.cleanup(clone)
             raise
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return clone.id
 
     @authenticator.auth(acl={'machine': set('R')})

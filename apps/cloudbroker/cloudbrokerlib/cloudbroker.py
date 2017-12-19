@@ -678,6 +678,7 @@ class Machine(object):
         return machine, auth, diskinfo
 
     def updateMachineFromNode(self, machine, node, stackId, psize):
+        cloudspace = models.cloudspace.get(machine.cloudspaceId)
         machine.referenceId = node.id
         machine.referenceSizeId = psize.id
         machine.stackId = stackId
@@ -728,7 +729,12 @@ class Machine(object):
             diskid = models.disk.set(disk)[0]
             machine.disks.append(diskid)
 
-        models.vmachine.set(machine)
+
+        with models.cloudspace.lock('{}_ip'.format(cloudspace.id)):
+            for nic in machine.nics:
+                if nic.type == 'bridge' and nic.ipAddress == 'Undefined':
+                    nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
+            models.vmachine.set(machine)
 
 
     def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
