@@ -89,14 +89,9 @@ def getEdgeconnection(vpoolname=VPOOLNAME):
     protocol = getEdgeProtocol()
     storagedrivers = list(StorageDriverList.get_storagedrivers())
     random.shuffle(storagedrivers)
-    if vpoolname is None:
-        if storagedrivers[0].vpool.name != VPOOLNAME:
-            storagedriver = storagedrivers[0]
-        else:
-            storagedriver = storagedrivers[1]
-        return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
     for storagedriver in storagedrivers:
-        if storagedriver.vpool.name == vpoolname:
+        if (vpoolname is not None and storagedriver.vpool.name == vpoolname) or \
+                (vpoolname is None and storagedriver.vpool.name != VPOOLNAME):
             return storagedriver.storage_ip, storagedriver.ports['edge'], protocol
     return None, None, protocol
 
@@ -121,6 +116,10 @@ def _getVPoolByUrl(url, vpoolname=None):
 
 def getVDisk(path, vpool=None, timeout=None):
     url = urlparse.urlparse(path)
+    if url.netloc == '':
+        path = path.replace('{}:'.format(url.scheme), '{}://'.format(url.scheme))
+        url = urlparse.urlparse(path)
+
     path = '/' + url.path.strip('/')
     if not path.endswith('.raw'):
         path += '.raw'
@@ -206,13 +205,13 @@ def copyImage(srcpath):
 def importVolume(srcpath, destpath, data=False):
     srcpath = getOpenvStorageURL(srcpath)
     if data:
-        dest = getUrlPath(destpath, vpoolname=None)
+        desturl = getUrlPath(destpath, vpoolname=None)
     else:
-        dest = getUrlPath(destpath, vpoolname=VPOOLNAME)
-    dest = getOpenvStorageURL(dest)
-    j.system.platform.qemu_img.convert(srcpath, None, dest, 'raw')
-    disk = getVDisk(destpath, timeout=60)
-    return disk.guid, dest
+        desturl = getUrlPath(destpath, vpoolname=VPOOLNAME)
+    ovsdest = getOpenvStorageURL(desturl)
+    j.system.platform.qemu_img.convert(srcpath, None, ovsdest, 'raw')
+    disk = getVDisk(desturl, timeout=60)
+    return disk.guid, ovsdest
 
 
 def exportVolume(srcpath, destpath):
