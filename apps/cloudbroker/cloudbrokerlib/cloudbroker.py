@@ -112,8 +112,7 @@ class CloudBroker(object):
         hrd = j.application.getAppInstanceHRD(name="portal_client", instance='cloudbroker')
         addr = hrd.get('instance.param.addr')
         port = hrd.getInt('instance.param.port')
-        secret = hrd.getStr('instance.param.secret')
-        cl = j.clients.portal.get2(ip=addr, port=port, secret=secret)
+        cl = j.clients.portal.get2(ip=addr, port=port)
         oldauth = ctx.env.get('HTTP_AUTHORIZATION', None)
         if oldauth is not None:
             cl._session.headers.update({'Authorization': oldauth})
