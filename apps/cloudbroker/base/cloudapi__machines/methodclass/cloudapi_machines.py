@@ -399,6 +399,7 @@ class cloudapi_machines(BaseActor):
             except:
                 self.cb.machine.cleanup(vm)
                 raise
+            gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
             if not callbackUrl:
                 url = j.apps.cloudapi.locations.getUrl() + '/g8vdc/#/edit/%s' % vm.id
                 [self._sendImportCompletionMail(email, url, success=True) for email in userobj.emails]
