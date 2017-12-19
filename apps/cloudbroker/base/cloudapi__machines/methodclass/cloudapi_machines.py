@@ -350,7 +350,7 @@ class cloudapi_machines(BaseActor):
             vm.name = name
             vm.descr = description
             vm.sizeId = sizeId
-            vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Unknown').id
+            vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Imported Machine').id
             vm.creationTime = int(time.time())
             vm.updateTime = int(time.time())
             vm.type = 'VIRTUAL'
