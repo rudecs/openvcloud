@@ -818,7 +818,9 @@ class CSLibvirtNodeDriver(object):
         volumes.append(self._create_metadata_iso(name, password, imagetype))
         return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
 
-    def ex_extend_disk(self, diskguid, newsize, disk_info):
+    def ex_extend_disk(self, diskguid, newsize, disk_info=None):
+        if disk_info is None:
+            disk_info = {'machineRefId': None}
         res = self._execute_agent_job('extend_disk',
                                 ovs_connection=self.ovs_connection,
                                 size=newsize,

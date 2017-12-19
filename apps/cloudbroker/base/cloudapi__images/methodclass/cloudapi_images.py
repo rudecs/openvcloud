@@ -81,7 +81,6 @@ class cloudapi_images(BaseActor):
         if images[0]:
             image = self.models.image.new()
             image.load(images[1])
-            return image
         else:
             image = self.models.image.new()
             image.name = name
@@ -91,10 +90,6 @@ class cloudapi_images(BaseActor):
             image.type = 'Linux'
             imageid = self.models.image.set(image)[0]
             image.id = imageid
-            if add_to_all_stacks:
-                # TODO: enhance
-                for stackid in self.models.stack.list():
-                    stack = self.models.stack.get(stackid)
-                    stack.images.append(imageid)
-                    self.models.stack.set(stack)
-            return image
+        if add_to_all_stacks:
+            self.models.stack.updateSearch({'images': {'$ne': image.id}}, {'$addToSet': {'images': image.id}})
+        return image
