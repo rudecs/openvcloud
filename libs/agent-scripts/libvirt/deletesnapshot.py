@@ -15,7 +15,7 @@ roles = []
 async = True
 
 
-def action(ovs_connection, diskguids, timestamp):
+def action(ovs_connection, diskguids, timestamp, name):
     # Delete snapshot
     #
     # ovs_connection: dict holding connection info for ovs restapi
@@ -34,7 +34,10 @@ def action(ovs_connection, diskguids, timestamp):
     def delete_snapshot(diskguid):
         # First lookup snapshot
         disk_details = ovs.get(path_get_disk.format(diskguid))
-        snapshot = next((x for x in disk_details['snapshots'] if int(x['timestamp']) == timestamp), None)
+        if name:
+            snapshot = next((x for x in disk_details['snapshots'] if x['label'] == name), None)
+        else:
+            snapshot = next((x for x in disk_details['snapshots'] if int(x['timestamp']) == timestamp), None)
         if snapshot is None:
             raise ValueError("Snapshot not found")
 
@@ -60,4 +63,4 @@ if __name__ == '__main__':
     options = parser.parse_args()
     scl = j.clients.osis.getNamespace('system')
     ovs_credentials = scl.grid.get(j.application.whoAmI.gid).settings['ovs_credentials']
-    print(action(ovs_credentials, [options.diskguid], options.timestamp))
+    print(action(ovs_credentials, [options.diskguid], options.timestamp, None))

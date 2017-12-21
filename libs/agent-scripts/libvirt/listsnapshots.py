@@ -31,12 +31,20 @@ def action(ovs_connection, diskguids):
                                                   ovs_connection['client_secret']))
     path = '/vdisks/{}'
 
+    for diskguid in diskguids:
+        job = gevent.spawn(ovs.get, path.format(diskguid))
+
+
+
     jobs = [gevent.spawn(ovs.get, path.format(diskguid)) for diskguid in diskguids]
     gevent.joinall(jobs)
     snapshots = set()
-    for snapshot in itertools.chain(*(job.get()['snapshots'] for job in jobs)):
-        if snapshot['is_automatic']:
-            continue
-        snapshots.add((snapshot['label'], int(snapshot['timestamp'])))
+    for job in jobs:
+        diskinfo = job.get()
+        for snapshot in diskinfo['snapshots']:
+            if snapshot['is_automatic']:
+                continue
+            snapshots.add((diskinfo['guid'], snapshot['label'], int(snapshot['timestamp']), snapshot['guid']))
 
-    return [dict(name=snapshot[0], epoch=snapshot[1]) for snapshot in snapshots]
+
+    return [dict(diskguid=snapshot[0], name=snapshot[1], epoch=snapshot[2], guid=snapshot[3]) for snapshot in snapshots]

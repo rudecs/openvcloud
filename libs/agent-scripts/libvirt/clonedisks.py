@@ -43,7 +43,7 @@ def action(ovs_connection, disks):
 
         # First create snapshot
         if snapshotguid is None:
-            params = dict(name=snapshot_name.format(clone_name), timestamp=timestamp, sticky=True)
+            params = dict(name=snapshot_name.format(clone_name), sticky=True)
             taskguid = ovs.post(snapshot_path.format(diskguid), params=params)
             success, result = ovs.wait_for_task(taskguid)
             if not success:

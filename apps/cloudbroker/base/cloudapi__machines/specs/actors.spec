@@ -127,7 +127,7 @@
         """
         var:machineId int,,id of machine to snapshot
         var:name str,, name to give snapshot @tags validator:name
-        result:str the snapshot name
+        result:dict diskguid:snapshotguid
 
     method:listSnapshots
         """
@@ -141,7 +141,8 @@
         Delete a snapshot of the machine
         """
         var:machineId int,, id of the machine
-        var:epoch int,, epoch time of snapshot
+        var:epoch int,, epoch time of snapshot @optional
+        var:name str,, name of snapshot @optional
         result:bool
 
     method:rollbackSnapshot
@@ -149,7 +150,8 @@
         Rollback a snapshot of the machine
         """
         var:machineId int,, id of the machine
-        var:epoch str,, epoch time of snapshot
+        var:epoch str,, epoch time of snapshot @optional
+        var:name str,, name of snapshot @optional
         result:str
 
     method:convertToTemplate
@@ -210,7 +212,8 @@
         var:machineId int,,id of the machine to clone
         var:name str,, name of the cloned machine @tags validator:name
         var:cloudspaceId int,, optional id of the cloudspace in which the machine should be put @optional
-        var:snapshotTimestamp int,, optional snapshot to base the clone upon @optional
+        var:snapshotTimestamp int,, optional snapshot timestap to base the clone upon @optional
+        var:snapshotname str,, optional snapshot name to base the clone upon @optional
         result:int, id of the new cloned machine
 
     method:getHistory

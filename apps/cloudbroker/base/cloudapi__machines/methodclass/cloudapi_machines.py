@@ -718,11 +718,15 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine to snapshot
         :param name: name to give snapshot
-        :return the timestamp
+        :return the dict of diskguids:snapshotguids
         """
+        snapshots = self.listSnapshots(machineId)
+        for snapshot in snapshots:
+            if snapshot.get('name', '') == name:
+                raise exceptions.BadRequest('Snapshot with the same name exists for this machine')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        snapshot = provider.client.ex_create_snapshot(node, name)
-        return snapshot
+        snapshots = provider.client.ex_create_snapshot(node, name)
+        return snapshots
 
     @authenticator.auth(acl={'machine': set('R')})
     def listSnapshots(self, machineId, **kwargs):
@@ -745,28 +749,33 @@ class cloudapi_machines(BaseActor):
         return result
 
     @authenticator.auth(acl={'machine': set('X')})
-    def deleteSnapshot(self, machineId, epoch, **kwargs):
+    def deleteSnapshot(self, machineId, epoch=None, name=None, **kwargs):
         """
         Delete a snapshot of the machine
 
         :param machineId: id of the machine
         :param epoch: epoch time of snapshot
         """
+        if not name and not epoch:
+            raise exceptions.BadRequest('Epoch or name should be passed to delete the snapshot')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        provider.client.ex_delete_snapshot(node, epoch)['state']
+        provider.client.ex_delete_snapshot(node, epoch, name)['state']
         return True
 
     @authenticator.auth(acl={'machine': set('X')})
     @RequireState(enums.MachineStatus.HALTED, 'A snapshot can only be rolled back to a stopped Machine')
-    def rollbackSnapshot(self, machineId, epoch, **kwargs):
+    def rollbackSnapshot(self, machineId, epoch=None, name=None, **kwargs):
         """
         Rollback a snapshot of the machine
 
         :param machineId: id of the machine
-        :param epoch: epoch time of snapshot
+        :param epoch: epoch time of snapshot (may get unexpected results)
+        :param name: name of the snap shot to be rolled back (recommended)
         """
+        if not epoch and not name:
+            raise exceptions.BadRequest('Epoch or name should be passed to rollback')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        return provider.client.ex_rollback_snapshot(node, epoch)
+        return provider.client.ex_rollback_snapshot(node, epoch, name)
 
     @authenticator.auth(acl={'machine': set('C')})
     def update(self, machineId, name=None, description=None, **kwargs):
@@ -804,7 +813,7 @@ class cloudapi_machines(BaseActor):
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
-    def clone(self, machineId, name, cloudspaceId=None, disks_snapshots=None, **kwargs):
+    def clone(self, machineId, name, cloudspaceId=None, snapshottimestamp=None, snapshotname=None, **kwargs):
         """
         Clone the machine
 
@@ -812,7 +821,6 @@ class cloudapi_machines(BaseActor):
         :param name: name of the cloned machine
         :return id of the new cloned machine
         """
-        disks_snapshots = disks_snapshots or {}
         machine = self._getMachine(machineId)
         if cloudspaceId is None:
             cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
@@ -880,16 +888,24 @@ class cloudapi_machines(BaseActor):
             volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
             if clonedisk.type == 'B':
                 bootdisk = clonedisk
-                name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
+                disk_name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
             else:
-                name = 'volumes/volume_{}'.format(clonediskId)
-            diskmapping.append((volume, name))
+                disk_name = 'volumes/volume_{}'.format(clonediskId)
+            diskmapping.append((volume, disk_name))
             totaldisksize += clonedisk.sizeMax
 
         clone.id = self.models.vmachine.set(clone)[0]
         size = provider.getSize(size, bootdisk)
-        if not disks_snapshots:
+        if not snapshotname and not snapshottimestamp:
             disks_snapshots = self.snapshot(machineId, name)
+        else:
+            disks_snapshots = {}
+            snapshots = self.listSnapshots(machineId)
+            for snapshot in snapshots:
+                if snapshotname and snapshot['name'] == snapshotname:
+                    disks_snapshots[snapshot['diskguid']] = snapshot['guid']
+                elif snapshottimestamp and snapshot['timestamp'] == snapshottimestamp:
+                    disks_snapshots[snapshot['diskguid']] = snapshot['guid']
 
         try:
             node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)

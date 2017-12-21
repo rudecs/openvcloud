@@ -619,14 +619,14 @@ class CSLibvirtNodeDriver(object):
         kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection}
         return self._execute_agent_job('listsnapshots', role='storagedriver', **kwargs)
 
-    def ex_delete_snapshot(self, node, timestamp):
+    def ex_delete_snapshot(self, node, timestamp=None, name=None):
         diskguids = self.get_disk_guids(node, type='disk')
-        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp}
+        kwargs = {'diskguids': diskguids, 'ovs_connection': self.ovs_connection, 'timestamp': timestamp, 'name': name}
         return self._execute_agent_job('deletesnapshot', wait=False, role='storagedriver', **kwargs)
 
-    def ex_rollback_snapshot(self, node, timestamp):
+    def ex_rollback_snapshot(self, node, timestamp, name):
         diskguids = self.get_disk_guids(node, type='disk')
-        kwargs = {'diskguids': diskguids, 'timestamp': timestamp, 'ovs_connection': self.ovs_connection}
+        kwargs = {'diskguids': diskguids, 'timestamp': timestamp, 'name': name, 'ovs_connection': self.ovs_connection}
         return self._execute_agent_job('rollbacksnapshot', role='storagedriver', **kwargs)
 
     def _get_domain_disk_file_names(self, dom, disktype='disk'):
