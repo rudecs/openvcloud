@@ -228,11 +228,11 @@ class CloudBroker(object):
         if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
             return None, None, machine
         provider = self.getProvider(machine)
-        node = None
+        vmnode = None
         drivertype = 'libvirt'
         if provider:
             drivertype = provider.client.name
-        vmnode = provider.client.ex_get_node_details(machine.referenceId)
+            vmnode = provider.client.ex_get_node_details(machine.referenceId)
         node = self.getNode(machine, provider)
         if vmnode:
             node.state = vmnode.state
