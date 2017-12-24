@@ -176,7 +176,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("Failed to get OpenVPN Config")
         return job['result']
 
-    def fw_delete(self, fwid, gid, deletemodel=True, **kwargs):
+    def fw_delete(self, fwid, gid, deletemodel=True, timeout=600, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
@@ -186,7 +186,7 @@ class NetManager(object):
         if fwobj.type == 'routeros':
             args = {'networkid': fwobj.id}
             if fwobj.nid:
-                job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
+                job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args, timeout=timeout)
                 if job['state'] != 'OK':
                     raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
                 if deletemodel:
@@ -369,7 +369,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("Failed to start vfw")
         return job['result']
 
-    def fw_check(self, fwid, **kwargs):
+    def fw_check(self, fwid, timeout=60, **kwargs):
         """
         will do some checks on firewall to see is running, is reachable over ssh, is connected to right interfaces
         param:fwid firewall id
@@ -378,7 +378,7 @@ class NetManager(object):
         fwobj = self._getVFWObject(fwid)
         args = {'networkid': fwobj.id}
         if fwobj.type == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args, timeout=timeout)
         else:
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', gid=fwobj.gid, nid=fwobj.nid, args=args)
 

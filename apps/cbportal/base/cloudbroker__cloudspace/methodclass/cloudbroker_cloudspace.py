@@ -245,7 +245,10 @@ class cloudbroker_cloudspace(BaseActor):
     def _destroyVFW(self, gid, cloudspaceId, deletemodel=True):
         fws = self.cb.netmgr.fw_list(gid=int(gid), domain=str(cloudspaceId))
         if fws:
-            self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid, deletemodel=deletemodel)
+            try:
+                self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid, deletemodel=deletemodel, timeout=20)
+            except exceptions.ServiceUnavailable:
+                return False
             return True
         return False
 

@@ -82,7 +82,7 @@ h3. Details
 |*Management IP*|${host}|
 |*Public IPs*|${pubips}|
 |*FW Node*|[${nodename}|/grid/grid node?id=${nid}&gid=${gid}]|
-|*Status*| ${"RUNNING" if running else "HALTED"} |
+|*Status*| ${running} |
 |*CloudSpace ID*|[${domain}|cloud space?id=${domain}]|
 
 h3. Port Fowardings

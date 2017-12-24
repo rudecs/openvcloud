@@ -35,7 +35,10 @@ def main(j, args, params, tags, tasklet):
     else:
         obj['nodename'] = str(obj['nid'])
     obj['pubips'] = ', '.join(obj['pubips'])
-    obj['running'] = j.apps.cloudbroker.iaas.cb.netmgr.fw_check(network.guid)
+    try:
+        obj['running'] = 'RUNNING' if j.apps.cloudbroker.iaas.cb.netmgr.fw_check(network.guid, timeout=5) else 'HALTED'
+    except:
+        obj['running'] = 'UNKNOWN'
 
     args.doc.applyTemplate(obj, True)
     return params
