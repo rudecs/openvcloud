@@ -115,10 +115,13 @@ def prepare_source(repo, force, push_target=True):
         for ref in remote.refs:
             if ref.remote_head == target.name:
                 j.console.info('Switching to existing branch {} on repo {}'.format(target.name, repo['name']))
-                client.repo.git.checkout('-B', target.name, 'origin/{}'.format(target.name))
+                origin = target.name
+                if force:
+                    origin = source.name
+                client.repo.git.checkout('-B', target.name, 'origin/{}'.format(origin))
                 break
         else:
-            j.console.info('Creathing branch {} on repo {}'.format(target.name, repo['name']))
+            j.console.info('Creating branch {} on repo {}'.format(target.name, repo['name']))
             client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
         if push_target:
             args = ['-u', 'origin', target.name]
@@ -171,6 +174,8 @@ def main(manifest, force, dry):
                 args.append('-f')
             args.append('origin')
             if target.type == 'tag':
+                if not dry:
+                    make_tag(client, target.name, force)
                 args.append('tag')
             args.append(target.name)
             if not dry:
@@ -205,18 +210,3 @@ WARNING: This command will reset all your repos.
     except KeyboardInterrupt:
         sys.exit(1)
 
-# else:
-#     for type, repos in itertools.chain(REPOS.iteritems(), AYS.iteritems()):
-#         if isinstance(repos, basestring):
-#             repos = [repos]
-#         for path in repos:
-#             branchname, tagname = getVersions(type)
-#             repo = j.clients.git.get(path)
-#             print('[+] Change repo %s/%s' % (repo.account, repo.name))
-#             print('[+]   Deleting local tag %s' % tagname)
-#             if tag_exists(repo, tagname):
-#                 if not options.dry:
-#                     repo.repo.git.tag('-d', tagname)
-#             print('[+]   Deleting remote tag %s' % tagname)
-#             if not options.dry:
-#                 repo.repo.git.push('origin', ':refs/tags/%s' % tagname)
