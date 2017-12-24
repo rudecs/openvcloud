@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 import itertools
 
 
@@ -19,6 +19,7 @@ class cloudbroker_qos(BaseActor):
         """
         raise NotImplementedError("not implemented method limitCPU")
 
+    @wrap_remote
     def limitIO(self, diskId, iops, total_bytes_sec, read_bytes_sec, write_bytes_sec, total_iops_sec,
                 read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max, 
                 write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
@@ -39,6 +40,7 @@ class cloudbroker_qos(BaseActor):
             write_iops_sec_max=write_iops_sec_max, size_iops_sec=size_iops_sec,
         )
 
+    @wrap_remote
     def resize(self, diskId, size, **kwargs):
         res = self.cb.actors.cloudapi.disks.resize(diskId=diskId, size=size)
         message = 'Online disk resize done'
