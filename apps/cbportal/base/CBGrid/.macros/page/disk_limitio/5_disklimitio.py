@@ -14,6 +14,7 @@ def main(j, args, params, tags, tasklet):
     popup = Popup(id='disk_limitio_%s' % disk.id, header='Limit disk io',
                   submit_url='/restmachine/cloudbroker/qos/limitIO', clearForm=False)
 
+    popup.addMessage("Value won't be updated if field is empty. Enter 0 to remove IO limitation.")
     popup.addText('Total iops per sec', 'total_iops_sec', type='number', value=iotune.get('total_iops_sec', ''))
     popup.addText('Read iops per sec', 'read_iops_sec', type='number', value=iotune.get('read_iops_sec', ''))
     popup.addText('Write iops per sec', 'write_iops_sec', type='number', value=iotune.get('write_iops_sec', ''))
