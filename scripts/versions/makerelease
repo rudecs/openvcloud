@@ -143,8 +143,8 @@ def main(manifest, force, dry):
         repo['info'] = get_repo_info(repo['url'])
         if j.system.fs.exists(repo['info'].path):
             repo['client'] = j.clients.git.get(repo['info'].path)
-            repo['client'].repo.git.fetch('origin', '{0}:remotes/origin/{0}'.format(source.name))
-            repo['client'].repo.git.reset('--hard', 'remotes/origin/{0}'.format(source.name))
+            repo['client'].repo.git.fetch('origin', '{0}'.format(source.name))
+            repo['client'].repo.git.checkout('-B', source.name, 'remotes/origin/{0}'.format(source.name))
         else:
             j.console.info('Cloning {}/{}'.format(repo['info'].account, repo['info'].reponame))
             j.do.pullGitRepo(repo['url'], **{target.type: target.name})
