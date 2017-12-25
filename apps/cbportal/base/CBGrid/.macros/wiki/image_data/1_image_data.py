@@ -4,13 +4,19 @@ def main(j, args, params, tags, tasklet):
     if not imageid:
         args.doc.applyTemplate({})
         return params
-    lcl = j.clients.osis.getNamespace('libvirt')
+    try:
+        imageid = int(imageid)
+    except ValueError:
+        args.doc.applyTemplate({})
+        return params
 
-    if not lcl.image.exists(imageid):
+    ccl = j.clients.osis.getNamespace('cloudbroker')
+
+    if not ccl.image.exists(imageid):
         args.doc.applyTemplate({'imageid': None}, True)
         return params
 
-    imageobj = lcl.image.get(imageid)
+    imageobj = ccl.image.get(imageid)
     image = imageobj.dump()
 
     args.doc.applyTemplate(image, True)

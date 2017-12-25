@@ -1,10 +1,7 @@
 from JumpScale import j
-from libcloud.compute.types import Provider
-from libcloud.compute.providers import get_driver
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface, NodeState
-from CloudscalerLibcloud.compute.drivers.openstack_driver import OpenStackNodeDriver
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface
 from cloudbrokerlib import enums, network
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 from CloudscalerLibcloud.utils.gridconfig import GridConfig
@@ -18,6 +15,7 @@ DEFAULTIOPS = 2000
 
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
+_providers = dict()
 
 
 def removeConfusingChars(input):
@@ -32,64 +30,21 @@ class Dummy(object):
             setattr(self, key, value)
 
 
-class CloudProvider(object):
-    _providers = dict()
+def CloudProvider(stackId):
+    if stackId not in _providers:
+        stack = models.stack.get(stackId)
+        kwargs = dict()
+        kwargs['stack'] = stack
+        driver = CSLibvirtNodeDriver(**kwargs)
+        client = None
+        if 'libcloud__libvirt' not in j.apps.system.contentmanager.getActors():
+            client = j.clients.portal.getByInstance('cloudbroker')
+        cb = CloudBrokerConnection(client)
+        driver.set_backend(cb)
+        _providers[stackId] = driver
+    return _providers[stackId]
 
-    def __init__(self, stackId):
-        if stackId not in CloudProvider._providers:
-            stack = models.stack.get(stackId)
-            providertype = getattr(Provider, stack.type)
-            kwargs = dict()
-            if stack.type == 'OPENSTACK':
-                args = [stack.login, stack.passwd]
-                kwargs['ex_force_auth_url'] = stack.apiUrl
-                kwargs['ex_force_auth_version'] = '2.0_password'
-                kwargs['ex_tenant_name'] = stack.login
-                driver = OpenStackNodeDriver(*args, **kwargs)
-                CloudProvider._providers[stackId] = driver
-            if stack.type == 'DUMMY':
-                DriverClass = get_driver(providertype)
-                args = [1, ]
-                CloudProvider._providers[stackId] = DriverClass(*args, **kwargs)
-            if stack.type == 'LIBVIRT':
-                kwargs['id'] = stack.referenceId
-                kwargs['uri'] = stack.apiUrl
-                kwargs['gid'] = stack.gid
-                driver = CSLibvirtNodeDriver(**kwargs)
-                client = None
-                if 'libcloud__libvirt' not in j.apps.system.contentmanager.getActors():
-                    client = j.clients.portal.getByInstance('cloudbroker')
-                cb = CloudBrokerConnection(client)
-                driver.set_backend(cb)
-                CloudProvider._providers[stackId] = driver
 
-        self.client = CloudProvider._providers[stackId]
-        self.stackId = stackId
-
-    def getSize(self, brokersize, firstdisk):
-        biggerdisk = None
-        providersizes = self.client.list_sizes()
-        for s in providersizes:
-            if s.ram == brokersize.memory and s.extra['vcpus'] == brokersize.vcpus:
-                if firstdisk.sizeMax == s.disk:
-                    return s
-                elif firstdisk.sizeMax < s.disk and (biggerdisk is None or biggerdisk.disk > s.disk):
-                    biggerdisk = s
-        return biggerdisk
-
-    def getSizeFromMachine(self, machine, bootdisk=None, cbsize=None):
-        if bootdisk is None:
-            bootdisk = j.apps.cloudapi.machines._get_boot_disk(machine)
-        if cbsize is None:
-            cbsize = models.size.get(machine.sizeId)
-        return self.getSize(cbsize, bootdisk)
-
-    def getImage(self, imageId):
-        iimage = models.image.get(imageId)
-        for image in self.client.ex_list_images():
-            if image.id == iimage.referenceId:
-                return image, image
-        return None, None
 
 
 class CloudBroker(object):
@@ -105,6 +60,14 @@ class CloudBroker(object):
         self.machine = Machine(self)
         self.cloudspace = CloudSpace(self)
         self.netmgr = NetManager(self)
+
+    def getImage(self, provider, imageId):
+        if imageId not in provider.stack.images:
+            provider.stack = self.stack.get(provider.stack.id)
+            if imageId not in self.stack.images:
+                return None
+
+        return models.image.get(imageId)
 
     @property
     def actors(self):
@@ -136,20 +99,16 @@ class CloudBroker(object):
             return self.getProviderByStackId(stacks[0]['id'])
         raise exceptions.ServiceUnavailable('Not enough resources available on current location')
 
-    def markProvider(self, stackId, eco):
-        stack = models.stack.get(stackId)
-        stack.error += 1
-        if stack.error >= 2:
-            stack.status = 'ERROR'
-            stack.eco = eco.guid
-        models.stack.set(stack)
+    def markProvider(self, stack, eco):
+        stack = models.stack.get(stack.id)
+        update = {'error': stack.error + 1}
+        if update['error'] >= 2:
+            update['status'] = 'ERROR'
+            update['eco'] = eco.guid
+        models.stack.updateSearch({'id': stack.id}, {'$set': update})
 
-    def clearProvider(self, stackId):
-        stack = models.stack.get(stackId)
-        stack.error = 0
-        stack.eco = None
-        stack.status = 'ENABLED'
-        models.stack.set(stack)
+    def clearProvider(self, stack):
+        models.stack.updateSearch({'id': stack.id}, {'$set': {'error': 0, 'eco': None, 'status': 'ENABLED'}})
 
     def getIdByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)
@@ -204,8 +163,8 @@ class CloudBroker(object):
             volume = j.apps.cloudapi.disks.getStorageVolume(disk, driver)
             volumes.append(volume)
 
-
-        extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes}
+        size = models.size.get(machine.sizeId)
+        extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes, 'size': size}
         node = Node(
             id=machine.referenceId,
             name=name,
@@ -231,8 +190,8 @@ class CloudBroker(object):
         vmnode = None
         drivertype = 'libvirt'
         if provider:
-            drivertype = provider.client.name
-            vmnode = provider.client.ex_get_node_details(machine.referenceId)
+            drivertype = provider.name
+            vmnode = provider.ex_get_node_details(machine.referenceId)
         node = self.getNode(machine, provider)
         if vmnode:
             node.state = vmnode.state
@@ -302,113 +261,6 @@ class CloudBroker(object):
         reservedmemory = GridConfig(grid, stack['totalmemory']/1024.).get('reserved_mem') or 0
         stack['reservedmemory'] = reservedmemory
         stack['freememory'] = stack['totalmemory'] - stack['usedmemory'] - reservedmemory
-
-    def stackImportSizes(self, stackId):
-        """
-        Import disk sizes from a provider
-
-        :param      stackId: Stack ID
-        :type       id: ``int``
-
-        :rtype: ``int``
-        """
-        provider = CloudProvider(stackId)
-        if not provider:
-            raise RuntimeError('Provider not found')
-
-        stack = models.stack.get(stackId)
-        gridId = stack.gid
-        cb_sizes = models.size.search({})[1:]  # cloudbroker sizes
-        psizes = {}  # provider sizes
-
-        # provider sizes formated as {(memory, cpu):[disks]}. i.e {(2048, 2):[10, 20, 30]}
-        for s in provider.client.list_sizes():
-            md = (s.ram, s.extra['vcpus'])
-            psizes[md] = psizes.get(md, []) + [s.disk]
-
-        for cb_size in cb_sizes:
-            record = (cb_size['memory'], cb_size['vcpus'])
-            if record not in psizes:  # obsolete sizes
-                if gridId in cb_size['gids']:
-                    cb_size['gids'].remove(gridId)  # remove gid from obsolete size
-                    if not cb_size['gids']:
-                        models.size.delete(cb_size['id'])  # delete obsolete size if having no gids
-                    else:
-                        models.size.set(cb_size)  # update obsolete size [Save without the gridId of the stack]
-            else:
-                # Update existing sizes (disks and gids)
-                if set(cb_size['disks']) == set(psizes[record]):
-                    if gridId not in cb_size['gids']:
-                        cb_size['gids'].append(gridId)
-                        models.size.set(cb_size)
-                    psizes.pop(record)  # remove from dict
-        # add new
-        for k, v in psizes.iteritems():
-            s = models.size.new()
-            s.memory = k[0]
-            s.vcpus = k[1]
-            s.gids = [gridId]
-            s.disks = v
-            models.size.set(s)
-
-        # Return length of newly added sizes
-        return len(psizes)
-
-    def stackImportImages(self, stackId):
-        """
-        Sync Provider images [Deletes obsolete images that are deleted from provider side/Add new ones]
-        """
-        provider = CloudProvider(stackId)
-        if not provider:
-            raise RuntimeError('Provider not found')
-
-        pname = provider.client.name.lower()
-        stack = models.stack.get(stackId)
-        stack.images = list()
-
-        pimages = {}
-        for image in provider.client.ex_list_images():
-            pimages[image.id] = image
-        pimages_ids = set(pimages.keys())
-
-        images_current = models.image.search({'provider_name': pname})[1:]
-        images_current_ids = set([p['referenceId'] for p in images_current])
-
-        new_images_ids = pimages_ids - images_current_ids
-        updated_images_ids = pimages_ids & images_current_ids
-
-        # Add new Images
-        for id in new_images_ids:
-            pimage = pimages[id]
-            image = models.image.new()
-            image.provider_name = pname
-            image.name = pimage.name
-            image.referenceId = pimage.id
-            image.gid = stack.gid
-            image.type = pimage.extra.get('imagetype', 'Unknown')
-            image.size = pimage.extra.get('size', 0)
-            image.username = pimage.extra.get('username', 'cloudscalers')
-            image.status = getattr(pimage, 'status', 'CREATED') or 'CREATED'
-            image.accountId = 0
-
-            imageid = models.image.set(image)[0]
-            stack.images.append(imageid)
-
-        # Update current images
-        for image in models.image.search({'referenceId': {'$in': list(updated_images_ids)}})[1:]:
-            pimage = pimages[image['referenceId']]
-            image['name'] = pimage.name
-            image['type'] = pimage.extra.get('imagetype', 'Unknown')
-            image['size'] = pimage.extra.get('size', 0)
-            image['username'] = pimage.extra.get('username', 'cloudscalers')
-            image['status'] = getattr(pimage, 'status', 'CREATED') or 'CREATED'
-            image['provider_name'] = pname
-
-            imageid = models.image.set(image)[0]
-            stack.images.append(imageid)
-
-        models.stack.set(stack)
-        return len(new_images_ids)
 
     def checkUser(self, username, activeonly=True):
         """
@@ -676,11 +528,10 @@ class Machine(object):
             machine.id = models.vmachine.set(machine)[0]
         return machine, auth, diskinfo
 
-    def updateMachineFromNode(self, machine, node, stackId, psize):
+    def updateMachineFromNode(self, machine, node, stack):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
         machine.referenceId = node.id
-        machine.referenceSizeId = psize.id
-        machine.stackId = stackId
+        machine.stackId = stack.id
         machine.status = enums.MachineStatus.RUNNING
         machine.hostName = node.name
         if 'ifaces' in node.extra:
@@ -710,7 +561,7 @@ class Machine(object):
         bootdisk = None
         for order, diskid in enumerate(machine.disks):
             disk = models.disk.get(diskid)
-            disk.stackId = stackId
+            disk.stackId = stack.id
             disk.referenceId = volumes[order].id
             models.disk.set(disk)
             if disk.type == 'B':
@@ -721,7 +572,7 @@ class Machine(object):
             disk = models.disk.new()
             disk.name = 'Metadata iso'
             disk.type = 'M'
-            disk.stackId = stackId
+            disk.stackId = stack.id
             disk.accountId = bootdisk.accountId
             disk.gid = bootdisk.gid
             disk.referenceId = cdrom.id
@@ -756,14 +607,14 @@ class Machine(object):
                 else:
                     activesessions = self.cb.getActiveSessionsKeys()
                     provider = self.cb.getProviderByStackId(newstackId)
-                    if (provider.client.gid, int(provider.client.id)) not in activesessions:
+                    if (provider.gid, provider.id) not in activesessions:
                         raise exceptions.ServiceUnavailable(
                             'Not enough resources available to provision the requested machine')
             except:
                 if volumes:
                     # we don't have a provider yet so we get a random one to cleanup
                     provider = self.cb.getProviderByGID(cloudspace.gid)
-                    provider.client.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+                    provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
                 self.cleanup(machine)
                 raise
             return provider
@@ -771,21 +622,19 @@ class Machine(object):
         node = -1
         while node == -1:
             provider = getStackAndProvider(newstackId)
-            image, pimage = provider.getImage(machine.imageId)
+            image = self.cb.getImage(provider, machine.imageId)
             if not image:
                 self.cleanup(machine)
                 raise exceptions.BadRequest("Image is not available on requested stack")
 
             firstdisk = models.disk.get(machine.disks[0])
-            psize = provider.getSize(size, firstdisk)
-            machine.cpus = psize.vcpus if hasattr(psize, 'vcpus') else None
             try:
                 if not volumes:
-                    node = provider.client.create_node(name=name, image=pimage, size=psize, auth=auth,
-                                                       networkid=cloudspace.networkId,
-                                                       datadisks=diskinfo, iotune=firstdisk.iotune)
+                    node = provider.create_node(name=name, image=image, disksize=firstdisk.sizeMax, auth=auth,
+                                                networkid=cloudspace.networkId, size=size,
+                                                datadisks=diskinfo, iotune=firstdisk.iotune)
                 else:
-                    node = provider.client.init_node(name, psize, volumes, pimage.extra['imagetype'])
+                    node = provider.init_node(name, size, volumes, image.type)
             except StorageException as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cleanup(machine)
@@ -793,7 +642,7 @@ class Machine(object):
             except NotEnoughResources as e:
                 volumes = e.volumes
                 if stackId:
-                    provider.client.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+                    provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
                     self.cleanup(machine)
                     raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
                 else:
@@ -804,12 +653,12 @@ class Machine(object):
                 raise
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cb.markProvider(provider.stackId, eco)
+                self.cb.markProvider(provider.stack, eco)
                 newstackId = 0
                 machine.status = 'ERROR'
                 models.vmachine.set(machine)
-        self.cb.clearProvider(provider.stackId)
-        self.updateMachineFromNode(machine, node, provider.stackId, psize)
+        self.cb.clearProvider(provider.stack)
+        self.updateMachineFromNode(machine, node, provider.stack)
         tags = str(machine.id)
         j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id

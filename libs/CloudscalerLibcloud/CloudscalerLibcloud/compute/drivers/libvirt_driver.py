@@ -2,13 +2,12 @@
 from JumpScale import j
 from CloudscalerLibcloud.utils import connection
 from CloudscalerLibcloud.utils.gridconfig import GridConfig
-from libcloud.compute.base import NodeImage, NodeSize, Node, NodeState, StorageVolume
+from libcloud.compute.base import Node, NodeState, StorageVolume
 from libcloud.compute.drivers.dummy import DummyNodeDriver
 from jinja2 import Environment, PackageLoader
 from JumpScale.portal.portal import exceptions
 from xml.etree import ElementTree
 import urlparse
-import json
 import uuid
 import crypt
 import random
@@ -164,16 +163,17 @@ class CSLibvirtNodeDriver(object):
         7: NodeState.UNKNOWN,  # last
     }
 
-    def __init__(self, id, gid, uri):
+    def __init__(self, stack):
         self._rndrbn_vnc = 0
-        self.id = id
-        self.gid = gid
+        self.id = int(stack.referenceId)
+        self.gid = stack.gid
         self.name = 'libvirt'
-        self.uri = uri
+        self.uri = stack.apiUrl
+        self.stack = stack
         self.env = env
         self.scl = j.clients.osis.getNamespace('system')
-        grid = self.scl.grid.get(gid)
-        self.node = self.scl.node.get(int(id))
+        grid = self.scl.grid.get(self.gid)
+        self.node = self.scl.node.get(self.id)
         self.config = GridConfig(grid, self.node.memory / 1024.)
         # preload ovs_credentials and ovs_connection
         # this is to detect erors earlier if there is
@@ -286,58 +286,6 @@ class CSLibvirtNodeDriver(object):
         """
         self.backendconnection = connection
 
-    def list_sizes(self, location=None):
-        """
-        Libvirt doesn't has a idea of sizes, because of this we are using
-        the cloudscalers internal sizes api.
-        At this moment location is always None and can be neglected
-        @param location: Optional location, not used at the moment
-        @type: C{str}
-        @rtype: C{list} of L{NodeSize}
-        """
-        sizes = self.backendconnection.listSizes()
-        return [self._to_size(size) for size in sizes]
-
-    def _to_size(self, size):
-        return NodeSize(
-            id=size['id'],
-            name=size['name'],
-            ram=size['memory'],
-            bandwidth=0,
-            price=0,
-            extra={'vcpus': size['vcpus']},
-            driver=self,
-            disk=size['disk'])
-
-    def ex_list_images(self, location=None):
-        """
-        Libvirt doesn't has a idea of images, because of this we are using
-        the cloudscalers internal images api.
-        At this moment location is always None and can be neglected
-        @param location: Optional location, not used at the moment
-        @type: C{str}
-        @rtype: C{list} of L{NodeImage}
-        """
-        providerid = "%s_%s" % (self.gid, self.id)
-        images = self.backendconnection.listImages(providerid)
-        return [self._to_image(image) for image in images]
-
-    def _to_image(self, image):
-        username = None
-        if image.get('extra'):
-            extra = json.loads(image['extra'])
-            if 'username' in extra:
-                username = extra['username']
-        return NodeImage(
-            id=image['id'],
-            name=image['name'],
-            driver=self,
-            extra={'path': image['UNCPath'],
-                   'size': image['size'],
-                   'imagetype': image['type'],
-                   'username': username}
-        )
-
     def _execute_agent_job(self, name_, id=None, wait=True, queue=None, role=None, **kwargs):
         if not id and not role:
             id = int(self.id)
@@ -362,15 +310,14 @@ class CSLibvirtNodeDriver(object):
         else:
             return job
 
-    def _create_disk(self, vm_id, size, image, disk_role='base'):
-        templateguid = str(uuid.UUID(image.id))
+    def _create_disk(self, vm_id, disksize, image, disk_role='base'):
         edgeclient = self.getNextEdgeClient('vmstor')
 
         diskname = '{0}/bootdisk-{0}'.format(vm_id)
         kwargs = {'ovs_connection': self.ovs_connection,
                   'storagerouterguid': edgeclient['storagerouterguid'],
-                  'size': size.disk,
-                  'templateguid': templateguid,
+                  'size': disksize,
+                  'templateguid': image.referenceId,
                   'diskname': diskname,
                   'pagecache_ratio': self.ovs_settings['vpool_vmstor_metadatacache']}
 
@@ -380,7 +327,7 @@ class CSLibvirtNodeDriver(object):
             raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
-        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=size, driver=self)
+        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self)
 
     def create_volume(self, size, name):
         volumes = [{'name': name, 'size': size, 'dev': ''}]
@@ -470,7 +417,7 @@ class CSLibvirtNodeDriver(object):
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
 
-    def create_node(self, name, size, image, location=None, auth=None, networkid=None, datadisks=None, iotune=None):
+    def create_node(self, name, size, image, disksize, auth=None, networkid=None, datadisks=None, iotune=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -482,14 +429,10 @@ class CSLibvirtNodeDriver(object):
 
         @keyword    size:   The size of resources allocated to this node.
                         (required)
-        @type       size:   L{NodeSize}
+        @type       size:   L{Size}
 
         @keyword    image:  OS Image to boot on node. (required)
-        @type       image:  L{NodeImage}
-
-        @keyword    location: Which data center to create a node in. If empty,
-                             undefined behavoir will be selected. (optional)
-        @type       location: L{NodeLocation}
+        @type       image:  L{Image}
 
         @keyword    auth:   Initial authentication information for the node
                            (optional)
@@ -499,7 +442,7 @@ class CSLibvirtNodeDriver(object):
         @rtype: L{Node}
         """
         volumes = []
-        imagetype = image.extra['imagetype']
+        imagetype = image.type
         iotune = iotune or {}
 
         try:
@@ -507,7 +450,7 @@ class CSLibvirtNodeDriver(object):
                 # At this moment we handle only NodeAuthPassword
                 volumes.append(self._create_metadata_iso(name, auth.password, imagetype))
 
-            volume = self._create_disk(name, size, image)
+            volume = self._create_disk(name, disksize, image)
             volume.dev = 'vda'
             volume.iotune = iotune
             volumes.append(volume)
@@ -538,7 +481,6 @@ class CSLibvirtNodeDriver(object):
 
     def init_node(self, name, size, networkid=None, volumes=None, imagetype=''):
         volumes = volumes or []
-        machinetemplate = self.env.get_template("machine.xml")
         macaddress = self.backendconnection.getMacAddress(self.gid)
 
         result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
@@ -546,10 +488,9 @@ class CSLibvirtNodeDriver(object):
             raise NotEnoughResources("Failed to create network", volumes)
 
         networkname = result['networkname']
-        hostmemory = self.get_host_memory()
         nodeid = str(uuid.uuid4())
         interfaces = [NetworkInterface(macaddress, '{}-{:04x}'.format(name, networkid), 'bridge', networkname)]
-        extra = {'volumes': volumes, 'ifaces': interfaces, 'imagetype': imagetype}
+        extra = {'volumes': volumes, 'ifaces': interfaces, 'imagetype': imagetype, 'size': size}
         node = Node(
             id=nodeid,
             name=name,
@@ -559,9 +500,7 @@ class CSLibvirtNodeDriver(object):
             driver=self,
             extra=extra
         )
-        machinexml = machinetemplate.render({'node': node, 'size': size,
-                                             'hostmemory': hostmemory,
-                                             })
+        machinexml = self.get_xml(node)
 
         # 0 means default behaviour, e.g machine is auto started.
         result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
@@ -657,7 +596,7 @@ class CSLibvirtNodeDriver(object):
         return self._get_domain_disk_file_names(domain)
 
     def destroy_node(self, node):
-        xml = self.get_xml(node, None)
+        xml = self.get_xml(node)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
         diskguids = self._get_domain_disk_file_names(xml, 'disk') + self._get_domain_disk_file_names(xml, 'cdrom')
         self.destroy_volumes_by_guid(diskguids)
@@ -717,16 +656,16 @@ class CSLibvirtNodeDriver(object):
         machineid = node.id
         return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid=machineid)
 
-    def ex_soft_reboot_node(self, node, size):
+    def ex_soft_reboot_node(self, node):
         if self._ensure_network(node) == -1:
             return -1
-        xml = self.get_xml(node, size)
+        xml = self.get_xml(node)
         return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
-    def ex_hard_reboot_node(self, node, size):
+    def ex_hard_reboot_node(self, node):
         if self._ensure_network(node) == -1:
             return -1
-        xml = self.get_xml(node, size)
+        xml = self.get_xml(node)
         return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
     def _ensure_network(self, node):
@@ -739,18 +678,18 @@ class CSLibvirtNodeDriver(object):
                 self._execute_agent_job('create_external_network', queue='hypervisor', vlan=interface.networkId)
         return True
 
-    def get_xml(self, node, size):
+    def get_xml(self, node):
         machinetemplate = self.env.get_template("machine.xml")
         hostmemory = self.get_host_memory()
-        machinexml = machinetemplate.render({'node': node, 'size': size,
+        machinexml = machinetemplate.render({'node': node,
                                              'hostmemory': hostmemory,
                                              })
         return machinexml
 
-    def ex_start_node(self, node, size):
+    def ex_start_node(self, node):
         if self._ensure_network(node) == -1:
             return -1
-        machinexml = self.get_xml(node, size)
+        machinexml = self.get_xml(node)
         self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml)
         return True
 
@@ -935,8 +874,8 @@ class CSLibvirtNodeDriver(object):
             return False
         return True
 
-    def ex_migrate(self, node, size, sourceprovider, force=False):
-        domainxml = self.get_xml(node, size)
+    def ex_migrate(self, node, sourceprovider, force=False):
+        domainxml = self.get_xml(node)
         self._execute_agent_job('vm_livemigrate',
                                 vm_id=node.id,
                                 sourceurl=sourceprovider.uri,

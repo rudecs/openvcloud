@@ -2,12 +2,6 @@
     """
     iaas manager
     """
-    method:syncAvailableImagesToCloudbroker
-        """
-        synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
-        """
-        result:boolean
-
     method:addExternalNetwork
         """
         Adds a external network range to be used for cloudspaces
@@ -83,8 +77,3 @@
         var:externalnetworkId int,, the id of the external network
         var:freeips list,, list of ips to mark as free in the subnet
 
-    method:syncAvailableSizesToCloudbroker
-        """
-        synchronize IaaS Sizes/flavors from the libcloud model to the cloudbroker model
-        """
-        result:boolean

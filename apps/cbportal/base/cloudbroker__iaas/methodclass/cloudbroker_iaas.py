@@ -198,18 +198,13 @@ class cloudbroker_iaas(BaseActor):
         locations = self.models.location.search({"$query": {}, "$fields": ['gid']})
         size['gids'] = [location['gid'] for location in locations[1:]]
         size['name'] = name
-        for disk in disks:
-            if self.lcl.size.count({"vcpus": vcpus, "memory": memory, "disk": disk}) >= 1:
-                raise exceptions.BadRequest('Size with disk memory vcpu combination already exists.')
-            for gid in size['gids']:
-                name = '%s-%s-%s-%s' % (vcpus, memory, disk, gid)
-                self.lcl.size.set({"disk": disk, "memory": memory, "vcpus": vcpus, 'name': name, "gid": gid})
         cloudbroker_size = next(iter(self.models.size.search({"vcpus": vcpus, "memory": memory})[1:]), None)
 
         if not cloudbroker_size:
             self.models.size.set(size)
         else:
-            cloudbroker_size['disks'].extend(disks)
+            update = {'$addToSet': {'disks': {'$each': disks}}}
+            self.models.size.updateSearch({'id': cloudbroker_size['id']}, update)
             self.models.size.set(cloudbroker_size)
 
         return True
@@ -221,34 +216,7 @@ class cloudbroker_iaas(BaseActor):
 
         @param size_id: int id if size to be deleted.
         """
-        cb_size = self.models.size.get(size_id)
-        disks = cb_size.disks
-        memory = cb_size.memory
-        vcpus = cb_size.vcpus
         if self.models.vmachine.count({"sizeId": size_id}) == 0:
             self.models.size.delete(size_id)
-            self.lcl.size.deleteSearch({"disk": {"$in": disks}, "memory": memory, "vcpus": vcpus})
         return True
 
-
-    @auth(['level1', 'level2', 'level3'])
-    def syncAvailableImagesToCloudbroker(self, **kwargs):
-        """
-        synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
-        result boolean
-        """
-        stacks = self.models.stack.list()
-        for stack in stacks:
-            self.cb.stackImportImages(stack)
-        return True
-
-    @auth(['level1', 'level2', 'level3'])
-    def syncAvailableSizesToCloudbroker(self, **kwargs):
-        """
-        synchronize IaaS Images from the libcloud model and cpunodes to the cloudbroker model
-        result boolean
-        """
-        stacks = self.models.stack.list()
-        for stack in stacks:
-            self.cb.stackImportSizes(stack)
-        return True

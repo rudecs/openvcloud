@@ -27,7 +27,7 @@ def main(j, args, params, tags, tasklet):
     fields = [
         {'name': 'Name',
          'id': 'name',
-         'value': "<a href='/cbgrid/image?id=%(referenceId)s'>%(name)s</a>"
+         'value': "<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>"
          },
         {'name': 'Location',
          'id': 'gid',

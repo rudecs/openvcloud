@@ -2,14 +2,14 @@
         <name>{{node.name}}</name>
         <uuid>{{node.id}}</uuid>
         <maxMemory slots='16' unit='MiB'>{{hostmemory}}</maxMemory>
-        {% if size %}
-        <currentMemory unit='MiB'>{{size.ram}}</currentMemory>
+        {% if node.extra.size %}
+        <currentMemory unit='MiB'>{{node.extra.size.memory}}</currentMemory>
         <cpu>
           <numa>
-              <cell id='0' cpus='0-{{size.extra.vcpus - 1}}' memory='{{size.ram}}' unit='MiB'/>
+              <cell id='0' cpus='0-{{node.extra.size.vcpus - 1}}' memory='{{node.extra.size.memory}}' unit='MiB'/>
           </numa>
         </cpu>
-        <vcpu placement='static' current='{{size.extra.vcpus}}'>255</vcpu>
+        <vcpu placement='static' current='{{node.extra.size.vcpus}}'>255</vcpu>
         {% endif %}
         <os>
             <type arch='x86_64' machine='ubuntu'>hvm</type>

@@ -27,12 +27,9 @@ class cloudapi_disks(BaseActor):
         if disk['type'] == 'M':
             volumeclass = OpenvStorageISO
 
-        driver = None
-        if provider:
-            driver = provider.client
         volume = volumeclass(id=disk['referenceId'],
                              name=disk['name'], size=disk['sizeMax'],
-                             driver=driver,
+                             driver=provider,
                              extra={'node': node},
                              iotune=disk['iotune'],
                              order=disk['order'])
@@ -72,7 +69,7 @@ class cloudapi_disks(BaseActor):
         disk = self.models.disk.get(diskid)
         try:
             provider = self.cb.getProviderByGID(gid)
-            volume = provider.client.create_volume(disk.sizeMax, disk.id)
+            volume = provider.create_volume(disk.sizeMax, disk.id)
             volume.iotune = disk.iotune
             disk.referenceId = volume.id
         except:
@@ -118,7 +115,7 @@ class cloudapi_disks(BaseActor):
         self.models.disk.set(disk)
         provider, node, machine = self.cb.getProviderAndNode(machine['id'])
         volume = self.getStorageVolume(disk, provider, node)
-        return provider.client.ex_limitio(volume)
+        return provider.ex_limitio(volume)
 
     @authenticator.auth(acl={'account': set('R')})
     def get(self, diskId, **kwargs):
@@ -177,7 +174,7 @@ class cloudapi_disks(BaseActor):
             j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
-        provider.client.destroy_volume(volume)
+        provider.destroy_volume(volume)
         disk.status = 'DESTROYED'
         self.models.disk.set(disk)
         return True
@@ -215,7 +212,7 @@ class cloudapi_disks(BaseActor):
         volume = self.getStorageVolume(disk, provider)
         disk.sizeMax = size
         disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine_id}
-        res = provider.client.ex_extend_disk(volume.vdiskguid, size, disk_info)
+        res = provider.ex_extend_disk(volume.vdiskguid, size, disk_info)
         self.models.disk.set(disk)
         if not res:
             raise exceptions.Accepted(False)

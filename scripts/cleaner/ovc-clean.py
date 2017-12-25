@@ -12,7 +12,6 @@ class CleanerOVC():
         self.pcl = j.clients.portal.getByInstance('main')
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.scl = j.clients.osis.getNamespace('system')
-        self.lcl = j.clients.osis.getNamespace('libvirt')
         self.acl = j.clients.agentcontroller.get()
 
 
@@ -25,9 +24,6 @@ class CleanerOVC():
         self.ccl.cloudspace.deleteSearch({})
         self.ccl.account.deleteSearch({})
         self.scl.user.deleteSearch({})
-        
-        print("[+] cleanning libvirt model")
-        self.lcl.image.deleteSearch({})
         
         print("[+] cleanning system model")
         self.scl.audit.deleteSearch({})

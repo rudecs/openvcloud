@@ -44,7 +44,7 @@ class cloudapi_machines(BaseActor):
         self.netmgr = self.cb.netmgr
         self.acl = self.cb.agentcontroller
 
-    def _action(self, machineId, actiontype, newstatus=None, bootdisk=None, **kwargs):
+    def _action(self, machineId, actiontype, newstatus=None, **kwargs):
         """
         Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME, REBOOT
         param:machineId id of the machine
@@ -59,12 +59,9 @@ class cloudapi_machines(BaseActor):
             if node.extra.get('locked', False):
                 raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
             actionname = "%s_node" % actiontype.lower()
-            if bootdisk:
-                size = self.models.size.get(machine.sizeId)
-                kwargs['size'] = provider.getSize(size, bootdisk)
-            method = getattr(provider.client, actionname, None)
+            method = getattr(provider, actionname, None)
             if not method:
-                method = getattr(provider.client, "ex_%s" % actionname.lower(), None)
+                method = getattr(provider, "ex_%s" % actionname.lower(), None)
                 if not method:
                     raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             result = method(node, **kwargs)
@@ -98,7 +95,7 @@ class cloudapi_machines(BaseActor):
         if machine.status not in ['RUNNING', 'PAUSED']:
             self.cb.chooseProvider(machine)
 
-        return self._action(machineId, 'start', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
+        return self._action(machineId, 'start', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
     def stop(self, machineId, force=False, **kwargs):
@@ -116,9 +113,7 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine
         """
-        machine = self._getMachine(machineId)
-        bootdisk = self._get_boot_disk(machine)
-        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
+        return self._action(machineId, 'soft_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
     def reset(self, machineId, **kwargs):
@@ -127,9 +122,7 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine
         """
-        machine = self._getMachine(machineId)
-        bootdisk = self._get_boot_disk(machine)
-        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING, bootdisk=bootdisk)
+        return self._action(machineId, 'hard_reboot', enums.MachineStatus.RUNNING)
 
     @authenticator.auth(acl={'machine': set('X')})
     def pause(self, machineId, **kwargs):
@@ -193,7 +186,7 @@ class cloudapi_machines(BaseActor):
         if disk.type == "B":
             raise exceptions.BadRequest("Cannot detach boot disks")
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
-        provider.client.detach_volume(volume)
+        provider.detach_volume(volume)
         machine.disks.remove(diskId)
         self.models.vmachine.set(machine)
         return True
@@ -237,7 +230,7 @@ class cloudapi_machines(BaseActor):
 
         disk.order = diskorder
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
-        provider.client.attach_volume(node, volume)
+        provider.attach_volume(node, volume)
         self.models.disk.updateSearch({'id': disk.id}, {'$set': {'order': diskorder}})
         machine.disks.append(disk.id)
         self.models.vmachine.set(machine)
@@ -280,7 +273,7 @@ class cloudapi_machines(BaseActor):
         image.id = imageid
         image.gid = cloudspace.gid
         try:
-            referenceId = provider.client.ex_create_template(node, templatename)
+            referenceId = provider.ex_create_template(node, templatename)
         except:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
@@ -393,8 +386,8 @@ class cloudapi_machines(BaseActor):
             try:
                 # TODO: custom disk sizes doesn't work
                 sizeobj = provider.getSize(size, bootdisk)
-                provider.client.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk)
-                node = provider.client.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
+                provider.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk)
+                node = provider.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
                 self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
             except:
                 self.cb.machine.cleanup(vm)
@@ -424,7 +417,7 @@ class cloudapi_machines(BaseActor):
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
             disks_snapshots = self.snapshot(vm.id, vm.name)
-            volumes = provider.client.ex_clone_disks(diskmapping, disks_snapshots)
+            volumes = provider.ex_clone_disks(diskmapping, disks_snapshots)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
             size = self.models.size.get(vm.sizeId)
@@ -447,7 +440,7 @@ class cloudapi_machines(BaseActor):
             export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid,
                                                     role='storagedriver', timeout=3600, args=jobargs)
             # TODO: the url to be sent to the user
-            provider.client.ex_delete_disks(diskguids)
+            provider.ex_delete_disks(diskguids)
             if export_job['state'] == 'ERROR':
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
@@ -601,7 +594,7 @@ class cloudapi_machines(BaseActor):
             j.errorconditionhandler.processPythonExceptionObject(
                 berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
-            provider.client.destroy_node(node)
+            provider.destroy_node(node)
         for disk in self.models.disk.search({'id': {'$in': vmachinemodel.disks}})[1:]:
             disk['status'] = 'DESTROYED'
             self.models.disk.set(disk)
@@ -725,7 +718,7 @@ class cloudapi_machines(BaseActor):
             if snapshot.get('name', '') == name:
                 raise exceptions.BadRequest('Snapshot with the same name exists for this machine')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        snapshots = provider.client.ex_create_snapshot(node, name)
+        snapshots = provider.ex_create_snapshot(node, name)
         return snapshots
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -740,7 +733,7 @@ class cloudapi_machines(BaseActor):
         if machine.status in ['DESTROYED', 'DESTROYING']:
             raise exceptions.NotFound('Machine %s not found' % machineId)
         node.name = 'vm-%s' % machineId
-        snapshots = provider.client.ex_list_snapshots(node)
+        snapshots = provider.ex_list_snapshots(node)
         result = []
         for snapshot in snapshots:
             snapshot['name'] = j.tools.text.toStr(snapshot['name'])
@@ -759,7 +752,7 @@ class cloudapi_machines(BaseActor):
         if not name and not epoch:
             raise exceptions.BadRequest('Epoch or name should be passed to delete the snapshot')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        provider.client.ex_delete_snapshot(node, epoch, name)['state']
+        provider.ex_delete_snapshot(node, epoch, name)['state']
         return True
 
     @authenticator.auth(acl={'machine': set('X')})
@@ -781,7 +774,7 @@ class cloudapi_machines(BaseActor):
             else:
                 raise exceptions.BadRequest('No snapshots found with this name %s' % name)
         provider, node, machine = self.cb.getProviderAndNode(machineId)
-        return provider.client.ex_rollback_snapshot(node, epoch, name)
+        return provider.ex_rollback_snapshot(node, epoch, name)
 
     @authenticator.auth(acl={'machine': set('C')})
     def update(self, machineId, name=None, description=None, **kwargs):
@@ -815,7 +808,7 @@ class cloudapi_machines(BaseActor):
             raise exceptions.NotFound('Machine %s not found' % machineId)
         if machine.status != enums.MachineStatus.RUNNING:
             return None
-        return provider.client.ex_get_console_url(node)
+        return provider.ex_get_console_url(node)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
     @RequireState(enums.MachineStatus.HALTED, 'A clone can only be taken from a stopped Virtual Machine')
@@ -914,7 +907,7 @@ class cloudapi_machines(BaseActor):
                     disks_snapshots[snapshot['diskguid']] = snapshot['guid']
 
         try:
-            node = provider.client.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
+            node = provider.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
             if node == -1:
                 raise exceptions.ServiceUnavailable("Not enough resources available to host clone")
             self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
@@ -1111,7 +1104,7 @@ class cloudapi_machines(BaseActor):
         nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway, 'externalnetworkId': str(pool.id)})
         nic.type = 'PUBLIC'
         try:
-            iface = provider.client.attach_public_network(node, pool.vlan, nic.ipAddress)
+            iface = provider.attach_public_network(node, pool.vlan, nic.ipAddress)
         except:
             self._detachExternalNetworkFromModel(vmachine)
             raise
@@ -1146,7 +1139,7 @@ class cloudapi_machines(BaseActor):
             newcpucount = size.vcpus
         success = True
         if vmachine.status != 'HALTED':
-            success = provider.client.ex_resize(node=node, extramem=deltamemorymb, vcpus=newcpucount)
+            success = provider.ex_resize(node=node, extramem=deltamemorymb, vcpus=newcpucount)
         self.models.vmachine.updateSearch({'id': machineId}, {'$set': {'sizeId': sizeId}})
         if not success:
             raise exceptions.Accepted(False)
@@ -1167,7 +1160,7 @@ class cloudapi_machines(BaseActor):
             if 'type' not in nicdict or nicdict['type'] != 'PUBLIC':
                 continue
 
-            provider.client.detach_public_network(node)
+            provider.detach_public_network(node)
         self._detachExternalNetworkFromModel(vmachine)
         return True
 

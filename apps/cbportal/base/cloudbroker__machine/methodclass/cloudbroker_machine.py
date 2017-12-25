@@ -202,19 +202,19 @@ class cloudbroker_machine(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def snapshot(self, machineId, snapshotName, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId)
+        self._validateMachineRequest(machineId)
         self.cb.actors.cloudapi.machines.snapshot(machineId=machineId, name=snapshotName)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def rollbackSnapshot(self, machineId, epoch, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId)
+        self._validateMachineRequest(machineId)
         self.cb.actors.cloudapi.machines.rollbackSnapshot(machineId=machineId, epoch=epoch)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def deleteSnapshot(self, machineId, epoch, reason, **kwargs):
-        vmachine = self._validateMachineRequest(machineId)
+        self._validateMachineRequest(machineId)
         self.cb.actors.cloudapi.machines.deleteSnapshot(machineId=machineId, epoch=epoch)
 
     @auth(['level1', 'level2', 'level3'])
@@ -235,17 +235,16 @@ class cloudbroker_machine(BaseActor):
             targetStackId = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId, memory=size.memory)['id']
 
         target_provider = self.cb.getProviderByStackId(targetStackId)
-        if target_provider.client.gid != source_stack.gid:
-            raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.client.uri)
+        if target_provider.gid != source_stack.gid:
+            raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.uri)
 
         if vmachine.status != 'HALTED':
             # create network on target node
             self.acl.executeJumpscript('greenitglobe', 'createnetwork', args={'networkid': cloudspace.networkId},
-                                       gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
+                                       gid=target_provider.gid, nid=target_provider.id, wait=True)
 
             node = self.cb.getNode(vmachine, target_provider)
-            size = target_provider.getSizeFromMachine(vmachine)
-            target_provider.client.ex_migrate(node, size, self.cb.getProviderByStackId(vmachine.stackId).client, force)
+            target_provider.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId), force)
         vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 

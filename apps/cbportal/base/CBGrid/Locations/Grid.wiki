@@ -31,17 +31,6 @@ h3. Location: ${name}
   input:
    - age
 
-- display: Sync Available Images
-  action: /restmachine/cloudbroker/iaas/syncAvailableImagesToCloudbroker
-  data:
-   gid: ${gid}
-
-- display: Sync Available Sizes
-  action: /restmachine/cloudbroker/iaas/syncAvailableSizesToCloudbroker
-  data:
-   gid: ${gid}
-
-
 - display: Add New VM Size
   action: /restmachine/cloudbroker/iaas/addSize
   data:

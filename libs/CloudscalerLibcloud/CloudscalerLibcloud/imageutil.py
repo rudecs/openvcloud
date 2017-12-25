@@ -11,23 +11,9 @@ def registerImage(service, name, type, disksize, username=None):
 
     templateguid, imagepath = openvstorage.copyImage(imagepath)
     # register image on cloudbroker
-    lcl = j.clients.osis.getNamespace('libvirt')
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
-    installed_images = lcl.image.list()
-    if templateguid not in installed_images:
-        image = dict()
-        image['name'] = name
-        image['id'] = templateguid
-        image['gid'] = j.application.whoAmI.gid
-        image['UNCPath'] = imagepath
-        image['type'] = type
-        image['size'] = disksize
-        image['username'] = username
-        lcl.image.set(image)
-
-    images = ccl.image.search({'referenceId': templateguid})[1:]
-    if not images:
+    if ccl.image.count({'referenceId': templateguid}) == 0:
         image = ccl.image.new()
         image.name = name
         image.referenceId = templateguid
@@ -36,7 +22,9 @@ def registerImage(service, name, type, disksize, username=None):
         image.username = username
         image.gid = j.application.whoAmI.gid
         image.provider_name = 'libvirt'
+        image.UNCPath = imagepath
         image.status = 'CREATED'
-        ccl.image.set(image)
+        imageId, _, _ = ccl.image.set(image)
+        ccl.stack.updateSearch({'gid': image.gid}, {'$addToSet': {'images': imageId}})
 
     return True

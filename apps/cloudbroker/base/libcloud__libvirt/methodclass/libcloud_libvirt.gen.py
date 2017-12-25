@@ -32,61 +32,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method getFreeNetworkId")
 
-    def getNode(self, id, **kwargs):
-        """
-        Get a node
-        param:id id of the node
-        result str
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method getNode")
-
-    def linkImage(self, imageid, resourceprovider, **kwargs):
-        """
-        Link a image to a resource provider
-        param:imageid unique id of the image
-        param:resourceprovider unique id of the resourceprovider
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method linkImage")
-
-    def listImages(self, resourceid, **kwargs):
-        """
-        List the available images.
-        If no resourceid is provided, all the images are listed.
-        resourceid is the id of the resourceprovider and is a md5sum of the uri. md5.new(uri).hexdigest()
-        param:resourceid optional resourceproviderid.
-        result 
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listImages")
-
-    def listNodes(self, **kwargs):
-        """
-        List all nodes
-        result list
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listNodes")
-
-    def listResourceProviders(self, gid, **kwargs):
-        """
-        List all registered resource providers
-        param:gid Grid id
-        result list
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listResourceProviders")
-
-    def listSizes(self, **kwargs):
-        """
-        List the available sizes, a size is a combination of compute capacity(memory, cpu) and the disk capacity.
-        result 
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method listSizes")
-
     def listVNC(self, gid, **kwargs):
         """
         list vnc urls
@@ -95,19 +40,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method listVNC")
-
-    def registerImage(self, name, category, imageid, size, gid, **kwargs):
-        """
-        Register image in model
-        param:name name of the image
-        param:category catergory of the image
-        param:imageid id of the image
-        param:size size of the image
-        param:gid grid id
-        result str
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method registerImage")
 
     def registerNetworkIdRange(self, gid, start, end, **kwargs):
         """
@@ -119,17 +51,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method registerNetworkIdRange")
-
-    def registerNode(self, id, macaddress, networkid, **kwargs):
-        """
-        Register some basic node information E.g ipaddress
-        param:id id of the node
-        param:macaddress macaddress of the node
-        param:networkid id of the network
-        result str
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method registerNode")
 
     def registerVNC(self, url, gid, **kwargs):
         """
@@ -151,16 +72,6 @@ class libcloud_libvirt(j.code.classGetBase()):
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method releaseNetworkId")
 
-    def removeImage(self, imageid, gid, **kwargs):
-        """
-        remove image from model
-        param:imageid id of the image
-        param:gid grid id
-        result str
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method removeImage")
-
     def retreiveInfo(self, key, reset, **kwargs):
         """
         get info
@@ -180,22 +91,3 @@ class libcloud_libvirt(j.code.classGetBase()):
         """
         #put your code here to implement this method
         raise NotImplementedError ("not implemented method storeInfo")
-
-    def unLinkImage(self, imageid, resourceprovider, **kwargs):
-        """
-        Unlink a image from a resource provider
-        param:imageid unique id of the image
-        param:resourceprovider unique id of the resourceprovider
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method unLinkImage")
-
-    def unregisterNode(self, id, **kwargs):
-        """
-        Unregister a node.
-        param:id id of the node to unregister
-        result bool
-        """
-        #put your code here to implement this method
-        raise NotImplementedError ("not implemented method unregisterNode")
