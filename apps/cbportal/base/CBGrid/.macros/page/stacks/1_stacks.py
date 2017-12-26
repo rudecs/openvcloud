@@ -14,13 +14,10 @@ def main(j, args, params, tags, tasklet):
 
     if imageid:
         args.tags.tags.pop('imageid')
-        imageid = str(imageid)
-        ccl = j.clients.osis.getNamespace('cloudbroker')
-        images = ccl.image.search({'referenceId': imageid})[1:]
-        if images:
-            filters['images'] = images[0]['id']
-        else:
-            filters['images'] = imageid
+        try:
+            filters['images'] = int(imageid)
+        except ValueError:
+            pass
 
     for tag, val in args.tags.tags.iteritems():
         val = args.getTag(tag)
