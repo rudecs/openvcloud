@@ -49,3 +49,20 @@
         var:publicIp str,, port forwarding public ip
         var:publicPort int,, port forwarding public port
         var:proto str,, port forwarding protocol @optional
+
+    method:updateByPort
+        """
+        Shorthand method for delete and add
+        update a specific port forwarding rule by public port details
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:sourcePublicIp str,, port forwarding public ip
+        var:sourcePublicPort int,, port forwarding public port
+        var:sourceProtocol str,, port forwarding protocol
+        var:machineId int,, id of the virtual machine
+        var:publicIp str,, port forwarding public ip
+        var:publicPort int,, port forwarding public port
+        var:localPort int,, local port
+        var:protocol str,, port forwarding protocol @optional
+
+

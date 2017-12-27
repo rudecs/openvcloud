@@ -172,6 +172,11 @@ class cloudapi_portforwarding(BaseActor):
         return self._process_list(forwards, cloudspaceId)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
+    def updateByPort(self, cloudspaceId, sourcePublicIp, sourcePublicPort, sourceProtocol, publicIp, publicPort, machineId, localPort, protocol=None, **kwargs):
+        self._deleteByPort(cloudspaceId, sourcePublicIp, sourcePublicPort, sourceProtocol)
+        return self.create(cloudspaceId, publicIp, publicPort, machineId, localPort, protocol)
+
+    @authenticator.auth(acl={'cloudspace': set('C')})
     def update(self, cloudspaceId, id, publicIp, publicPort, machineId, localPort, protocol, **kwargs):
         """
         Update a port forwarding rule
