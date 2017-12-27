@@ -22,9 +22,9 @@ vi branch.sh
 In **branch.sh** you have to set the environment version variables, specifying the versions for JS, AYS and OVC, like this:
 
 ```
-export JSBRANCH="7.1.5"
-export AYSBRANCH="7.1.5"
-export OVCBRANCH="2.1.5"
+export JSBRANCH="production"
+export AYSBRANCH="production"
+export OVCBRANCH="production"
 ```
 
 In order to make sure that you can reach the outside from node you might need to update the ***resolv.conf*** file:
@@ -42,7 +42,7 @@ nameserver 8.8.8.8
 Next you need to get the **06-node-connect.sh** script on the node:
 
 ```
-wget https://raw.githubusercontent.com/0-complexity/openvcloud/2.1.5/scripts/install/06-node-connect.sh?token=AH6Oj867ydVQOHUgTJzuXMve6p--gqtfks5YGwcowA%3D%3D -O connect.sh
+wget https://raw.githubusercontent.com/0-complexity/openvcloud/master/scripts/install/06-node-connect.sh
 ```
 
 Or:
