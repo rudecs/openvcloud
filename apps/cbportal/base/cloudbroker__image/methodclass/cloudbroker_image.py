@@ -31,7 +31,7 @@ class cloudbroker_image(BaseActor):
         image = self._checkimage(imageId)
         if image.status == 'DESTROYED':
             raise exceptions.BadRequest('Can not enable a destroyed image')
-        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'ENABLED'}})
+        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'CREATED'}})
 
     @auth(['level1', 'level2', 'level3'])
     def disable(self, imageId, **kwargs):
