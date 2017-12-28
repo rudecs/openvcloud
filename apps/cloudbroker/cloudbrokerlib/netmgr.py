@@ -239,6 +239,7 @@ class NetManager(object):
         param:destip adr where we forward to e.g. a ssh server in DMZ
         param:destport port where we forward to e.g. a ssh server in DMZ
         """
+        protocol = protocol or 'tcp'
         with self.osisvfw.lock(fwid):
             fwobj = self._getVFWObject(fwid)
             for tcprule in fwobj.tcpForwardRules:
