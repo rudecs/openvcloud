@@ -291,9 +291,9 @@ def updateNodes():
     applyOnServices(nodeservices, update, msg="\t[{status}] {name}")
 
 
-def updateOpenvcloud(repository):
+def updateOpenvcloud():
     j.console.info('Updating local openvcloud repository')
-    j.do.execute("cd %s; git pull" % repository)
+    j.do.execute(_get_update_cmd('0-complexity', 'openvcloud', options.branch_ovc, options.tag_ovc))
 
 
 def updateCloudspace():
@@ -410,7 +410,7 @@ allStep = True
 if options.self:
     allStep = False
     j.console.notice('starting self-update')
-    updateOpenvcloud(openvcloud)
+    updateOpenvcloud()
     j.console.notice('self-update successful')
 
 if options.update:
