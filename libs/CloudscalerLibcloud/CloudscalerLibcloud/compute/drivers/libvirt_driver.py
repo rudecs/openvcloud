@@ -822,7 +822,7 @@ class CSLibvirtNodeDriver(object):
             if macelement is not None:
                 mac = macelement.attrib['address']
             target = nic.find('target').attrib['dev']
-            bridgename = source.attrib['network']
+            bridgename = source.attrib['bridge'] if source.attrib.get('bridge') else source.attrib['network'] 
             if bridgename.startswith(('ext-', 'public')):
                 bridgetype = 'PUBLIC'
             else:
