@@ -120,7 +120,7 @@ class CloudBroker(object):
         else:
             return None
 
-    def getBestProvider(self, gid, imageId=None, excludelist=[], memory=None):
+    def getBestStack(self, gid, imageId=None, excludelist=[], memory=None):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
             return -1
@@ -207,7 +207,7 @@ class CloudBroker(object):
     def chooseProvider(self, machine):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
         size = models.size.get(machine.sizeId)
-        newstack = self.getBestProvider(cloudspace.gid, machine.imageId, memory=size.memory)
+        newstack = self.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
         if newstack == -1:
             raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
         machine.stackId = newstack['id']
@@ -598,7 +598,7 @@ class Machine(object):
             provider = None
             try:
                 if not newstackId:
-                    stack = self.cb.getBestProvider(cloudspace.gid, imageId, excludelist, size.memory)
+                    stack = self.cb.getBestStack(cloudspace.gid, imageId, excludelist, size.memory)
                     if stack == -1:
                         self.cleanup(machine)
                         raise exceptions.ServiceUnavailable(

@@ -373,7 +373,7 @@ class cloudapi_machines(BaseActor):
                                                                        size.memory / 1024.0, totaldisksize)
 
             vm.id = self.models.vmachine.set(vm)[0]
-            stack = self.cb.getBestProvider(cloudspace.gid, vm.imageId, memory=size.memory)
+            stack = self.cb.getBestStack(cloudspace.gid, vm.imageId, memory=size.memory)
             provider = self.cb.getProviderByStackId(stack['id'])
 
             machine['id'] = vm.id
@@ -869,13 +869,14 @@ class cloudapi_machines(BaseActor):
         diskmapping = []
 
         _, node, machine = self.cb.getProviderAndNode(machineId)
-        stack = self.cb.getBestProvider(cloudspace.gid, machine.imageId, memory=size.memory)
+        stack = self.cb.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
         provider = self.cb.getProviderByStackId(stack['id'])
 
         totaldisksize = 0
-        bootdisk = None
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
+            if origdisk.type == 'M':
+                continue
             clonedisk = self.models.disk.new()
             clonedisk.name = origdisk.name
             clonedisk.gid = origdisk.gid
@@ -888,7 +889,6 @@ class cloudapi_machines(BaseActor):
             clone.disks.append(clonediskId)
             volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
             if clonedisk.type == 'B':
-                bootdisk = clonedisk
                 disk_name = 'vm-{0}/bootdisk-vm-{0}'.format(clone.id)
             else:
                 disk_name = 'volumes/volume_{}'.format(clonediskId)
@@ -896,7 +896,6 @@ class cloudapi_machines(BaseActor):
             totaldisksize += clonedisk.sizeMax
 
         clone.id = self.models.vmachine.set(clone)[0]
-        size = provider.getSize(size, bootdisk)
         if not snapshotname and not snapshottimestamp:
             disks_snapshots = self.snapshot(machineId, name)
         else:
@@ -912,7 +911,7 @@ class cloudapi_machines(BaseActor):
             node = provider.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
             if node == -1:
                 raise exceptions.ServiceUnavailable("Not enough resources available to host clone")
-            self.cb.machine.updateMachineFromNode(clone, node, stack['id'], size)
+            self.cb.machine.updateMachineFromNode(clone, node, provider.stack)
         except:
             self.cb.machine.cleanup(clone)
             raise

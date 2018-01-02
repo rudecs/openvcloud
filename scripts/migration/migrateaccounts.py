@@ -150,13 +150,13 @@ class Migrator(object):
             stack = self.source_ccl.stack.search({'referenceId': str(lvfw.nid)})[1]
             excludelist.append(stack['id'])
 
-        provider = self.rcb.getBestProvider(self.rgid, excludelist=excludelist)
-        self.info('Migrating routeros to {}'.format(provider['name']), 2)
+        stack = self.rcb.getBestStack(self.rgid, excludelist=excludelist)
+        self.info('Migrating routeros to {}'.format(stack['name']), 2)
         if not self.dryrun:
             job = self.acl.executeJumpscript(
                 'jumpscale',
                 'vfs_migrate_routeros',
-                nid=int(provider['referenceId']),
+                nid=int(stack['referenceId']),
                 queue='hypervisor',
                 gid=self.rgid,
                 args=args)
@@ -166,7 +166,7 @@ class Migrator(object):
         newvfw.gid = self.rgid
         newvfw.id = lvfw.id
         newvfw.domain = str(newspace.id)
-        newvfw.nid = int(provider['referenceId'])
+        newvfw.nid = int(stack['referenceId'])
         if not self.dryrun:
             self.vfw.virtualfirewall.set(newvfw)
 
@@ -317,7 +317,7 @@ class Migrator(object):
         excludelist = []
         if sourcestack.gid == self.rgid:
             excludelist.append(sourcestack.id)
-        deststack = self.rcb.getBestProvider(self.rgid, excludelist=excludelist)
+        deststack = self.rcb.getBestStack(self.rgid, excludelist=excludelist)
         newvm.stackId = deststack['id']
         if not self.dryrun:
             self.ccl.vmachine.set(newvm)

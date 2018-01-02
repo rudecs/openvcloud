@@ -232,7 +232,7 @@ class cloudbroker_machine(BaseActor):
         source_stack = self.models.stack.get(vmachine.stackId)
         if not targetStackId:
             size = self.models.size.get(vmachine.sizeId)
-            targetStackId = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId, memory=size.memory)['id']
+            targetStackId = self.cb.getBestStack(cloudspace.gid, vmachine.imageId, memory=size.memory)['id']
 
         target_provider = self.cb.getProviderByStackId(targetStackId)
         if target_provider.gid != source_stack.gid:
