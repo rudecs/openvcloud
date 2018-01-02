@@ -14,18 +14,16 @@ roles = []
 async = True
 
 
-def action(name, metadata, userdata, type):
+def action(ovspath, metadata, userdata, type):
     from CloudscalerLibcloud.utils.iso import ISO
     from CloudscalerLibcloud import openvstorage
     import urlparse
-    imagepath = openvstorage.getUrlPath('%s/cloud-init-%s' % (name, name))
-    ovspath = openvstorage.getOpenvStorageURL(imagepath)
     iso = ISO()
     iso.create_meta_iso(ovspath, metadata, userdata, type)
     parsedurl = urlparse.urlparse(ovspath)
     if parsedurl.netloc == '':
         ovspath = ovspath.replace('{}:'.format(parsedurl.scheme), '{}://'.format(parsedurl.scheme))
-    return "{}@{}".format(ovspath, openvstorage.getVDisk(imagepath, timeout=60).guid)
+    return "{}@{}".format(ovspath, openvstorage.getVDisk(ovspath, timeout=60).guid)
 
 
 if __name__ == '__main__':

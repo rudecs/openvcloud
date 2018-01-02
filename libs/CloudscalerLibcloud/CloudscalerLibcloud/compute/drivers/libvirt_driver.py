@@ -113,6 +113,13 @@ class OpenvStorageVolume(StorageVolume):
         self.bus = 'virtio'
         self.dev = 'vd{}'.format(convertnumber(order))
 
+    @property
+    def ovsurl(self):
+        ovsurl = "openvstorage+{}:{}:{}/{}".format(self.edgetransport, self.edgehost, self.edgeport, self.name)
+        if self.username:
+            ovsurl += ":username={}:password={}".format(self.username, self.password)
+        return ovsurl
+
     def __str__(self):
         template = env.get_template("ovsdisk.xml")
         return template.render(self.__dict__)
@@ -377,7 +384,7 @@ class CSLibvirtNodeDriver(object):
         self._execute_agent_job('detach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
         return node
 
-    def _create_metadata_iso(self, name, password, type):
+    def _create_metadata_iso(self, bootvolume, name, password, type):
         if type not in ['WINDOWS', 'Windows']:
             memrule = 'SUBSYSTEM=="memory", ACTION=="add", TEST=="state", ATTR{state}=="offline", ATTR{state}="online"'
             cpurule = 'SUBSYSTEM=="cpu", ACTION=="add", TEST=="online", ATTR{online}=="0", ATTR{online}="1"'
@@ -400,8 +407,9 @@ class CSLibvirtNodeDriver(object):
         else:
             userdata = {}
             metadata = {'admin_pass': password, 'hostname': name}
+        ovsurl = bootvolume.ovsurl.replace('bootdisk', 'cloud-init')
         volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
-                                           name=name, metadata=metadata, userdata=userdata, type=type)
+                                           ovspath=ovsurl, metadata=metadata, userdata=userdata, type=type)
         isovolume = OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
         isovolume.username = self.ovs_credentials.get('edgeuser')
         isovolume.password = self.ovs_credentials.get('edgepassword')
@@ -446,14 +454,14 @@ class CSLibvirtNodeDriver(object):
         iotune = iotune or {}
 
         try:
-            if auth:
-                # At this moment we handle only NodeAuthPassword
-                volumes.append(self._create_metadata_iso(name, auth.password, imagetype))
-
             volume = self._create_disk(name, disksize, image)
             volume.dev = 'vda'
             volume.iotune = iotune
             volumes.append(volume)
+            if auth:
+                # At this moment we handle only NodeAuthPassword
+                volumes.append(self._create_metadata_iso(volume, name, auth.password, imagetype))
+
             if datadisks:
                 datavolumes = []
                 for idx, (diskname, disksize) in enumerate(datadisks):
@@ -754,7 +762,7 @@ class CSLibvirtNodeDriver(object):
         disks_snapshots = disks_snapshots or {}
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, disks_snapshots)
-        volumes.append(self._create_metadata_iso(name, password, imagetype))
+        volumes.append(self._create_metadata_iso(volumes[0], name, password, imagetype))
         return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
 
     def ex_extend_disk(self, diskguid, newsize, disk_info=None):
