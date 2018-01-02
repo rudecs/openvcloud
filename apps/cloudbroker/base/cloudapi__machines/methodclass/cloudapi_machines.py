@@ -881,6 +881,8 @@ class cloudapi_machines(BaseActor):
         bootdisk = None
         for diskId in machine.disks:
             origdisk = self.models.disk.get(diskId)
+            if origdisk.type == 'M':
+                continue
             clonedisk = self.models.disk.new()
             clonedisk.name = origdisk.name
             clonedisk.gid = origdisk.gid
