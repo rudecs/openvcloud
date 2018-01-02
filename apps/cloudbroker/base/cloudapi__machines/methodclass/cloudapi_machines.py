@@ -291,7 +291,7 @@ class cloudapi_machines(BaseActor):
 
         return imageid
 
-    def _sendImportCompletionMail(self, emailaddress, link, success=True, error=False):
+    def _sendImportCompletionMail(self, name, emailaddress, link, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
@@ -304,6 +304,7 @@ class cloudapi_machines(BaseActor):
             'success': success,
             'email': emailaddress,
             'link': link,
+            'name': name,
         }
 
         message = j.core.portal.active.templates.render('cloudbroker/email/users/import_completion.html', **args)
@@ -311,7 +312,7 @@ class cloudapi_machines(BaseActor):
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
-    def _sendExportCompletionMail(self, emailaddress, success=True, error=False):
+    def _sendExportCompletionMail(self, name, emailaddress, success=True, error=False):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
             toaddrs = emailaddress
@@ -323,6 +324,7 @@ class cloudapi_machines(BaseActor):
             'error': error,
             'success': success,
             'email': emailaddress,
+            'name': name,
         }
 
         message = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.html', **args)
@@ -395,7 +397,7 @@ class cloudapi_machines(BaseActor):
             gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
             if not callbackUrl:
                 url = j.apps.cloudapi.locations.getUrl() + '/g8vdc/#/edit/%s' % vm.id
-                [self._sendImportCompletionMail(email, url, success=True) for email in userobj.emails]
+                [self._sendImportCompletionMail(name, email, url, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
         except Exception as e:
@@ -403,7 +405,7 @@ class cloudapi_machines(BaseActor):
             eco.process()
             error = True
             if not callbackUrl:
-                [self._sendImportCompletionMail(email, '', success=False, error=error) for email in userobj.emails]
+                [self._sendImportCompletionMail(name, email, '', success=False, error=error) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
 
@@ -444,7 +446,7 @@ class cloudapi_machines(BaseActor):
             if export_job['state'] == 'ERROR':
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
-                [self._sendExportCompletionMail(email, success=True) for email in userobj.emails]
+                [self._sendExportCompletionMail(vm.name, email, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
         except Exception as e:
@@ -452,7 +454,7 @@ class cloudapi_machines(BaseActor):
             eco.process()
             error = True
             if not callbackUrl:
-                [self._sendExportCompletionMail(email, success=False, error=error) for email in userobj.emails]
+                [self._sendExportCompletionMail(vm.name, email, success=False, error=error) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
             raise
