@@ -6,7 +6,7 @@ import time
 
 parser = ArgumentParser()
 parser.add_argument("-n", "--node", dest="node", help="node id", required=True)
-parser.add_argument("-v", "--vlan", dest="vlan", help="public vlan id", default='2312')
+parser.add_argument("-s", "--skip-proxy-config", dest="skip_proxy_config", help="skip proxy configuration", default=False, action='store_true')
 parser.add_argument("-g", "--grid-id", dest="gid", type=int, help="Grid ID to join")
 options = parser.parse_args()
 
@@ -45,11 +45,9 @@ scaleout network data configuration
 """
 j.console.info('building network configuration')
 
-public_vlan = '2312' if options.vlan is None else options.vlan
 mgmt_vlan = '2314'
 vxbackend_vlan = '2313'
 
-j.console.info('public vlan: %s' % public_vlan)
 j.console.info('management vlan: %s' % mgmt_vlan)
 j.console.info('vxbackend vlan: %s' % vxbackend_vlan)
 
@@ -57,7 +55,6 @@ data_net = {
     'instance.netconfig.public_backplane.interfacename': 'backplane1',
     'instance.netconfig.gw_mgmt_backplane.interfacename': 'backplane1',
     'instance.netconfig.vxbackend.interfacename': 'backplane1',
-    'instance.netconfig.public.vlanid': public_vlan,
     'instance.netconfig.gw_mgmt.vlanid': mgmt_vlan,
     'instance.netconfig.vxbackend.vlanid': vxbackend_vlan,
     'instance.netconfig.gw_mgmt.ipaddr': '10.199.0.%s/22' % lastipbyte,
@@ -88,15 +85,16 @@ temp = j.atyourservice.new(name='cb_cpunode_aio', args=data_cpu, parent=node)
 temp.consume('node', node.instance)
 temp.install(deps=True)
 
-openvcloud.configureNginxProxy(node, settings)
-
 j.console.notice('restarting some services')
 node.execute('ays restart -n nginx')
 
-j.console.notice('updating proxy')
-j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/proxy/update-config.py', True, True)
+if not options.skip_proxy_config:
+    openvcloud.configureNginxProxy(node, settings)
 
-j.console.notice('commit changes')
-j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/update-ays.py --commit')
+    j.console.notice('updating proxy')
+    j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/proxy/update-config.py', True, True)
+
+    j.console.notice('commit changes')
+    j.system.process.execute('jspython /opt/code/github/0-complexity/openvcloud/scripts/updates/update-ays.py --commit')
 
 j.console.success('node installed, backplane ip address was: %s' % backplane1)

@@ -4,11 +4,6 @@ import os
 os.environ.pop('TMUX', None)  # allow install inside tmux
 
 parser = ArgumentParser()
-parser.add_argument("-g", "--gateway", dest="gateway", help="gateway ip address", required=True)
-parser.add_argument("-s", "--start", dest="ipstart", help="public start ip address", required=True)
-parser.add_argument("-e", "--end", dest="ipend", help="public env ip address", required=True)
-parser.add_argument("-n", "--netmask", dest="netmask",
-                    help="public env ip netmask (default 255.255.255.0)", default="255.255.255.0")
 parser.add_argument("-G", "--gid", dest="gid", help="grid id", required=True, type=int)
 parser.add_argument("-S", "--ssl", dest="ssl", help="set ssl keys method: wildcard or split", required=True)
 parser.add_argument("-c", "--client_id", dest="client_id", help="Itsyouonline organization", required=True)
@@ -29,26 +24,19 @@ repopath = settings.getStr('instance.ovc.path')
 domain = settings.getStr('instance.ovc.domain')
 
 # settings ssl keys
-ssl = {'root': '', 'ovs': '', 'defense': '', 'novnc': ''}
+ssl = {'root': '', 'ovs': '', 'novnc': ''}
 
 if options.ssl == 'wildcard':
     ssl['root'] = domain
     ssl['ovs'] = domain
-    ssl['defense'] = domain
     ssl['novnc'] = domain
 
 if options.ssl == 'split':
     ssl['root'] = '%s.%s' % (environment, domain)
     ssl['ovs'] = 'ovs-%s.%s' % (environment, domain)
-    ssl['defense'] = 'defense-%s.%s' % (environment, domain)
     ssl['novnc'] = 'novnc-%s.%s' % (environment, domain)
 
 data = {
-    'instance.publicip.gateway': options.gateway,
-    'instance.publicip.start': options.ipstart,
-    'instance.publicip.end': options.ipend,
-    'instance.publicip.netmask': options.netmask,
-
     'instance.param.override': True,
     'instance.param.quiet': False,
     'instance.param.repo.path': repopath,
@@ -66,7 +54,6 @@ data = {
     'instance.dcpm.servername': 'auto',
     'instance.bootstrapp.servername': 'auto',
     'instance.ovs.servername': 'auto',
-    'instance.defense.servername': 'auto',
     'instance.novnc.servername': 'auto',
     'instance.grafana.servername': 'auto',
 
@@ -77,7 +64,6 @@ data = {
     # ssl keys
     'instance.ssl.root': ssl['root'],
     'instance.ssl.ovs': ssl['ovs'],
-    'instance.ssl.defense': ssl['defense'],
     'instance.ssl.novnc': ssl['novnc'],
 
     'instance.smtp.login': 'support@mothership1.com',
