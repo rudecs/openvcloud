@@ -1,13 +1,11 @@
-from JumpScale import j
 import argparse
 import os
 import xlwt
 import pprint
 import capnp
-import CloudscalerLibcloud
 from datetime import datetime
 from os import listdir
-
+from os import environ
 
 def main(options):
     now = datetime.utcnow()
@@ -17,9 +15,8 @@ def main(options):
     year = now.year
 
     capnp.remove_import_hook()
-    schemapath = os.path.join(os.path.dirname(CloudscalerLibcloud.__file__), 'schemas', 'resourcemonitoring.capnp')
-    resources_capnp = capnp.load(schemapath)
-    root_path = "/opt/jumpscale7/var/resourcetracking"
+    resources_capnp = capnp.load("resourcemonitoring.capnp")
+    root_path = environ["DESTINATION_FOLDER"]
     accounts = listdir(root_path)
 
     book = xlwt.Workbook(encoding='utf-8')

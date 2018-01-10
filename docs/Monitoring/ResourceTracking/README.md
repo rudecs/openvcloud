@@ -79,29 +79,50 @@ JWT=`curl -d "grant_type=client_credentials&client_id=${APP_ID}&client_secret=${
 BASE_URL="https://be-gen-1.demo.greenitglobe.com"
 ACCOUNT_ID=<...>
 
-# Specify the start and end time in epoch format
+# Specify the start and end time in epoch format, see https://www.epochconverter.com/ for a converter
 START=1211507665
-END=1511517665
+END=$(date +%s)
 
-curl -X GET --header 'Accept: application/octet-stream'  -H "Authorization: bearer $JWT" ${BASE_URL}'/restmachine/cloudapi/accounts/getConsumption?accountId='${ACCOUNT_ID}'&start='${START}'&end='${END} -o "${ACCOUNT_ID}_${START}.zip"
+curl -X GET -L --header 'Accept: application/octet-stream'  -H "Authorization: bearer $JWT" ${BASE_URL}'/restmachine/cloudapi/accounts/getConsumption?accountId='${ACCOUNT_ID}'&start='${START}'&end='${END} -o "${ACCOUNT_ID}_${START}.zip"
 ```
 
 <a id="process-files"></a>
 ## Process the consumption data files
 
-As an example you can check the [export_accounts_xls.py](export_accounts_xls.py) demo script that processes all cpnp files it find in `account/year/month/day/hour` and converts it into an Excel document.
+In case the unzip command isn't yet available on your system, first install it:
+```bash
+sudo apt-get install unzip
+```
+
+Unzip the consumption file:
+```bash
+export DESTINATION_FOLDER="/tmp/data"
+mkdir ${DESTINATION_FOLDER}
+unzip ${ACCOUNT_ID}_${START}.zip -d ${DESTINATION_FOLDER}
+```
+
+As an example you can check the [export_accounts_xls.py](export_accounts_xls.py) demo script that processes all capnp files it finds in `account/year/month/day/hour` and converts it into an Excel document.
 
 
 - First make sure you have the **python-xlwt** package installed:
   ```shell
-  sudo apt-get update
-  sudo apt-get install python-xlwt
+  pip install xlwt
   ```  
+
+- Get the `export_accounts_xls.py` script - requires access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) repository:
+  ```bash
+  curl https://raw.githubusercontent.com/0-complexity/openvcloud/master/docs/Monitoring/ResourceTracking/export_accounts_xls.py?$RANDOM > ${destination_folder}/export_accounts_xls.py
+  ```
+
+- Get the `resourcemonitoring.capnp` schema - requires access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) repository:
+```bash
+  curl https://raw.githubusercontent.com/0-complexity/openvcloud/master/libs/CloudscalerLibcloud/CloudscalerLibcloud/schemas/resourcemonitoring.capnp?$RANDOM > ${DESTINATION_FOLDER}/resourcemonitoring.capnp
+```
 
 - Then execute the script:
   ```shell
-  cd /opt/code/github/0-complexity/openvcloud/scripts/demo
-  jspython export_accounts_xls.py
+  cd ${DESTINATION_FOLDER}
+  ipython export_accounts_xls.py
   ```
 
 This will generate an Excel document containing a tab for each account with the resource tracking details per cloud space:
