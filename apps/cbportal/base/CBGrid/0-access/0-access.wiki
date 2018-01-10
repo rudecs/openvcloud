@@ -1,0 +1,10 @@
+@usedefault
+
+h2. Grid Nodes
+
+
+
+h2. Sessions
+{{datatables_use}}
+{{0access}}
+{{accesssessions remote:$$remote}}

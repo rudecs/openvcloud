@@ -1,0 +1,4 @@
+h2. Info $$node
+{{0accessnode}}
+h2. Sessions
+{{accesssessions remote:$$ip }}

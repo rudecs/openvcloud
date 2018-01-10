@@ -10,4 +10,5 @@ Users:/cbgrid/users
 Groups:/cbgrid/groups
 Virtual Machines:/cbgrid/Virtual Machines
 Storage Routers:/cbgrid/Storage Routers
+0-access:/cbgrid/0-access
 Software Versions:/cbgrid/Version
