@@ -1,4 +1,4 @@
-h2. Info $$node
-{{0accessnode}}
-h2. Sessions
+{{datatables_use}}
+below are the sessions for $$name if you want to provision a session click [here|/cbgrid/provision?ip=$$ip&node=$$node]
+h2. Sessions for $$name
 {{accesssessions remote:$$ip }}
