@@ -27,19 +27,18 @@ def main(j, args, params, tags, tasklet):
             sessions = resp.json()['page']['sessions']
             aaData = list()
             for session in sessions:
-                session_id = session['href'].split('/')[-1]
-                itemdata = ['<a href="/cbgrid/Session Player?sessionid={sessionid}">{sessionid}</a>'.format(sessionid=session_id)]
-                itemdata.append(session['user']['username'])
-                if session['remote'] in nodes:
-                    name = '<a href="/cbgrid/0-access Node?node={name}&ip={ip}">{name}</a>'.format(name=nodes[session['remote']], ip=session['remote'])
-                    itemdata.append(name)
-                else:    
-                    itemdata.append(session['remote'])
-                if session['start']:
+                if session['start'] and session['end']:
+                    session_id = session['href'].split('/')[-1]
+                    itemdata = ['<a href="/cbgrid/Session Player?sessionid={sessionid}">{sessionid}</a>'.format(sessionid=session_id)]
+                    itemdata.append(session['user']['username'])
+                    if session['remote'] in nodes:
+                        name = '<a href="/cbgrid/0-access Node?node={name}&ip={ip}">{name}</a>'.format(name=nodes[session['remote']], ip=session['remote'])
+                        itemdata.append(name)
+                    else:    
+                        itemdata.append(session['remote'])
                     itemdata.append(datetime.datetime.fromtimestamp(session['start']).strftime('%Y-%m-%d %H:%M:%S'))
-                if session['end']:
                     itemdata.append(datetime.datetime.fromtimestamp(session['end']).strftime('%Y-%m-%d %H:%M:%S'))    
-                aaData.append(itemdata)
+                    aaData.append(itemdata)
         else:
             aaData = [['Can not get data from 0-access server jwt may be expired please logout and login again', '', '', '', '']]
     else:
