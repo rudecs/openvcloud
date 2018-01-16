@@ -1,5 +1,8 @@
 import requests
 import json
+import datetime
+from jose import jwt as jose_jwt
+import ast
 
 def main(j, args, params, tags, tasklet):
     page = args.page
@@ -20,6 +23,17 @@ var interval = setInterval(function() {
     remote = args.requestContext.params.get('ip')
     jwt = args.requestContext.env['beaker.session'].get('jwt')
     if jwt:
+        jwt_data = jose_jwt.get_unverified_claims(jwt)
+        jwt_data = ast.literal_eval(jwt_data)
+        exp_date = datetime.datetime.fromtimestamp(jwt_data["exp"])
+        now = datetime.datetime.now()
+        if now > exp_date:
+            url = 'https://itsyou.online/v1/oauth/jwt/refresh'
+            headers = {'Authorization': 'bearer {0}'.format(jwt)}
+            resp = requests.get(url, headers=headers)
+            jwt = ""
+            if resp.status_code == 200:
+                jwt = resp.content
         resp = requests.get('http://0access:5001/server/config', headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
         if resp.status_code == 200:
             session_init_time = resp.json()['session_init_time']
