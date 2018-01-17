@@ -121,6 +121,7 @@ def getVDisk(path, vpool=None, timeout=None):
         url = urlparse.urlparse(path)
 
     path = '/' + url.path.strip('/')
+    path = path.split(':')[0] # cause yeah putting nonestandard url params 
     if not path.endswith('.raw'):
         path += '.raw'
     elif not url.scheme:
