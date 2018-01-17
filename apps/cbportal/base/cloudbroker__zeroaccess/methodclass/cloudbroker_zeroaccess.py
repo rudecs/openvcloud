@@ -12,7 +12,7 @@ class cloudbroker_zeroaccess(BaseActor):
     """
     def __init__(self):
         super(cloudbroker_zeroaccess, self).__init__()
-        self.zeroaccessurl = 'http://172.17.0.1:5000'
+        self.zeroaccessurl = 'http://zero-access:5000'
 
     def listSessions(self, query='', page=None, user='', remote='', **kwargs):
         """
