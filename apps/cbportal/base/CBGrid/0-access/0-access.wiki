@@ -1,10 +1,21 @@
 @usedefault
 
 h2. Grid Nodes
-
-
-
-h2. Sessions
 {{datatables_use}}
 {{0access}}
+
+h2. Sessions
+
+{{html:
+<div class="form-inline">
+  <div class="form-group">
+    <div class="input-group">
+      <input type="text" class="form-control" id="search-sessions-txt" placeholder="Filter by data in session">
+    </div>
+  </div>
+  <button class="btn" id="search-sessions-btn" onclick="testClick()" style="background-color:#345d78;color: #fff;">Search</button>
+</div>
+}}
+
+
 {{accesssessions remote:$$remote}}
