@@ -14,7 +14,7 @@ class cloudbroker_zeroaccess(BaseActor):
         self.iyoinstance = j.clients.oauth.get(instance='itsyouonline')
 
     def _get_jwt(self, ctx):
-        return self.iyoinstance.get_active_jwt(session=ctx['beaker.session'])
+        return self.iyoinstance.get_active_jwt(session=ctx.env['beaker.session'])
 
     def listSessions(self, query='', page=None, user='', remote='', **kwargs):
         """
