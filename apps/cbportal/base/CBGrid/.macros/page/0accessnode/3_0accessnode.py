@@ -1,4 +1,3 @@
-import socket
 def main(j, args, params, tags, tasklet):
     page = args.page
     counter = """
@@ -26,10 +25,6 @@ var interval = setInterval(function() {
         else:
             session_init_time = 60
         counter = counter % (session_init_time)
-        try:
-            socket.inet_aton(remote)
-        except socket.error:
-            remote = socket.gethostbyname(remote)
         session_data = j.apps.cloudbroker.zeroaccess.provision(remote=remote, ctx=args.requestContext)
         if session_data:
             username=session_data['username']

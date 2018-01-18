@@ -3,6 +3,7 @@ from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
 import requests
 import datetime
+import socket
 
 class cloudbroker_zeroaccess(BaseActor):
     """
@@ -32,7 +33,8 @@ class cloudbroker_zeroaccess(BaseActor):
             """
             get dict returnig  necessary nodes information
             """
-            nodes = {'management-ssh': {'name': 'management', 'guid': "0"}}
+            mgmt_ip = socket.gethostbyname("management-ssh")
+            nodes = {mgmt_ip: {'name': 'management', 'guid': "0"}}
             for node_id in self.ocl.node.list():
                 node = self.ocl.node.get(node_id)
                 if 'master' in node.roles:
@@ -105,7 +107,7 @@ class cloudbroker_zeroaccess(BaseActor):
 
     def _get_node_info(self, node_id):
         if node_id == '0':
-            return 'management', 'management-ssh'
+            return 'management', socket.gethostbyname("management-ssh")
         remote = None
         node = self.ocl.node.get(node_id)
         node_name = node.name
