@@ -1,6 +1,3 @@
-import requests
-import json
-
 def main(j, args, params, tags, tasklet):
     page = args.page
     counter = """
@@ -33,10 +30,22 @@ var interval = setInterval(function() {
             ip=session_data['ssh_ip']
             port=session_data['ssh_port']
             link = "chrome-extension://pnhechapfaindjhompbnflcldabbghjo/html/nassh.html#{username}@{ip}:{port}".format(username=username, ip=ip, port=port)
-            ssh_command2 = '<h4><span id="counter"></span></h4> You can click this link if you have secure shell plugin installed <a href="{link}">connect with secure shell</a> \
-            <br /> or use the following info to connect from terminal'.format(link=link)
+            accesstext = """
+<h4><span id="counter"></span></h4>
+Two ways to connect to {node}:
+
+<h3>1. In browser:</h3>
+
+Via the Secure Shell browser plugin in your Chrome browser. You can install it from <a target="blank" href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo?utm_source=chrome-app-launcher-info-dialog" target="blank">here</a>.
+You can click this link if you have secure shell plugin installed <a href="{link}">connect with secure shell</a>
+
+<strong>Important</strong>
+Before you actually install it, make sure you loaded your private key into the Secure Shell browser plugin.
+
+<h3>2. Via your own terminal:</h3>
+""".format(link=link, node=remote)
+            page.addHTML(accesstext)
             ssh_command = "ssh {username}@{ip} -p {port}".format(username=username, ip=ip, port=port)
-            page.addHTML(ssh_command2)
             page.addCodeBlock(ssh_command, template='bash')
             page.addHTML(counter)
         else:
