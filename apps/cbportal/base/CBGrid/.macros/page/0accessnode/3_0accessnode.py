@@ -35,12 +35,14 @@ var interval = setInterval(function() {
 Two ways to connect to {node}:
 
 <h3>1. In browser:</h3>
-
+<p>
 Via the Secure Shell browser plugin in your Chrome browser. You can install it from <a target="blank" href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo?utm_source=chrome-app-launcher-info-dialog" target="blank">here</a>.
-You can click this link if you have secure shell plugin installed <a href="{link}">connect with secure shell</a>
-
-<strong>Important</strong>
-Before you actually install it, make sure you loaded your private key into the Secure Shell browser plugin.
+You can click this link if you have secure shell plugin installed <a target="blank" href="{link}">connect with secure shell</a>
+</p>
+<p>
+<strong>Important</strong><br/>
+Before using the secure shell plugin integration with 0-access, make sure you loaded your private key into the Secure Shell browser plugin.
+</p>
 
 <h3>2. Via your own terminal:</h3>
 """.format(link=link, node=remote)
