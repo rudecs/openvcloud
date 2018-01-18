@@ -6,16 +6,111 @@ h2. Grid Nodes
 
 h2. Sessions
 
-{{html:
-<div class="form-inline">
-  <div class="form-group">
-    <div class="input-group">
-      <input type="text" class="form-control" id="search-sessions-txt" placeholder="Filter by data in session">
-    </div>
-  </div>
-  <button class="btn" id="search-sessions-btn" onclick="testClick()" style="background-color:#345d78;color: #fff;">Search</button>
-</div>
-}}
-
-
 {{accesssessions remote:$$remote}}
+
+
+h2. Full text search on 0-access sessions
+
+{{html::
+    <style>
+        input#query {
+            width: 30em;
+        }
+        div.hit {
+            margin-top: 1em;
+        }
+        div.highlight > span {
+            background-color: lightgray;
+        }
+        div#pages {
+            margin-top: 1em;
+        }
+        span.page, a.page {
+            margin-right: 0.5em;
+        }
+    </style>
+<div>
+    <div class="form-inline">
+        <div class="form-group">
+            <div class="input-group">
+                <input id="query" type="input" placeholder="Enter search query" class="form-control">
+            </div>
+        </div>
+        <button id="search" class="btn" style="background-color:#345d78;color: #fff;">Search</button>
+    </div>
+    <div id="results">
+        <div id="stats"></div>
+        <div id="page"></div>
+        <div id="pages"></div>
+    </div>
+</div>
+<script type="text/javascript">
+var query = document.getElementById("query");
+var search = document.getElementById("search");
+var searchResult = document.getElementById("results");
+var stats = document.getElementById("stats");
+var page = document.getElementById("page");
+var pages = document.getElementById("pages");
+var currentPage = 0;
+var results = null;
+query.focus();
+search.onclick = function () {search(1)}
+var search = function (page) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            searchResult = JSON.parse(this.responseText);
+            stats.innerHTML = searchResult.stats;
+            renderResults();
+            updatePages(page);
+        }
+    };
+    xhttp.open("POST", "/restmachine/cloudbroker/zeroaccess/sessionTextSearch", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("page="+page+"&query="+encodeURI(query.value));
+};
+var renderResults = function() {
+    while (page.firstChild) {
+        page.removeChild(page.firstChild);
+    }
+    var i;
+    for (i in searchResult.page) {
+        var hit = searchResult.page[i];
+        var div = document.createElement("div");
+        div.setAttribute("class", "hit");
+        var link = document.createElement("a");
+        link.setAttribute("href", "/cbgrid/Session%20Player?sessionid="+hit.session);
+        link.innerText = "Session by " + hit.username + " on " + new Date(hit.start*1000).toDateString() + " for " + new Date(hit.end*1000-hit.start*1000).getMinutes() + "' matched on " + hit.terms.join(", ");
+        div.appendChild(link);
+        var highlight = document.createElement("div");
+        highlight.setAttribute("class", "highlight");
+        highlight.innerHTML = "<span>" + hit.highlights + "</span>";
+        div.appendChild(highlight);
+        page.appendChild(div);
+    }
+}
+var updatePages = function(page) {
+    while (pages.firstChild) {
+        pages.removeChild(pages.firstChild);
+    }
+    var i;
+    for (i = 1; i <= searchResult.total_pages; i++) {
+        var elem = null;
+        if (i == page) {
+            elem = document.createElement("span");
+        } else {
+            elem = document.createElement("a");
+            elem.setAttribute("href", "#");
+            elem.onclick = function (pageNum) {
+                return function() {
+                    search(pageNum);
+                }
+            }(i);
+        }
+        elem.setAttribute("class", "page");
+        elem.innerText = page;
+        pages.appendChild(elem);
+    }
+};
+</script>
+}}
