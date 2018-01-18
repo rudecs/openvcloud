@@ -16,6 +16,9 @@ def main(j, args, params, tags, tasklet):
 
         name = '<a href="/cbgrid/0-access Node?node={id}">{name}</a>'.format(name=node.name, id=node_id)
         nodes.append([node.id, name, ip])
+    mgmt_name, mgmt_ip = j.apps.cloudbroker.zeroaccess._get_node_info("0")
+    name = '<a href="/cbgrid/0-access Node?node={id}">{name}</a>'.format(name=mgmt_name, id="0")
+    nodes.append(["0", name, mgmt_ip])
 
     fieldnames = ['ID', 'Name', 'IP']
     if nodes:
