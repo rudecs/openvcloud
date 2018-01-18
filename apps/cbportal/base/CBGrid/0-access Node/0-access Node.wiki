@@ -1,4 +1,15 @@
+
 {{datatables_use}}
-below are the sessions for $$name if you want to provision a session click [here|/cbgrid/provision?ip=$$ip&node=$$node]
-h2. Sessions for $$name
-{{accesssessions remote:$$ip }}
+below are the sessions for ${name} if you want to provision a session click [here|/cbgrid/provision?node=$$node]
+h2. Sessions for ${name}
+{{accesssessions id:$$node}}
+
+||Session ID||Username||Remote||Start||End||
+{% for table in tables -%}
+|${table[0]}|${table[1]}|${table[2]}|${table[3]}|${table[4]}|
+{% endfor %}
+
+{{breadcrumb:
+- 0-access: /cbgrid/0-access
+- 0-access node ${name}: /cbgrid/0-access Node?node=$$node
+}}

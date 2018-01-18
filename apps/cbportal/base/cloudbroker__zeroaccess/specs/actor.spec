@@ -24,7 +24,7 @@
         Download session information for playback
         """
         var:session_id string,, session id
-        result:str
+        result:json
     
     method:getSessionInitTime
         """
@@ -37,6 +37,7 @@
         Full text search on session activity
         """
         var:query string,, string to search for
+        var:page int,, page number for search
         result:json
 
     

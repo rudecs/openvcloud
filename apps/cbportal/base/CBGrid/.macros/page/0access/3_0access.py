@@ -10,14 +10,11 @@ def main(j, args, params, tags, tasklet):
         if 'master' in node.roles:
             continue
         else:
-            for addr in node.netaddr:
-                if addr['name'] == "backplane1":
-                    ip = addr['ip'][0]
-                    break
-            else:
+            _, ip = j.apps.cloudbroker.zeroaccess._get_node_info(node_id)
+            if not ip:
                 continue
 
-        name = '<a href="/cbgrid/0-access Node?node={name}&ip={ip}">{name}</a>'.format(name=node.name, ip=ip)
+        name = '<a href="/cbgrid/0-access Node?node={id}">{name}</a>'.format(name=node.name, id=node_id)
         nodes.append([node.id, name, ip])
 
     fieldnames = ['ID', 'Name', 'IP']

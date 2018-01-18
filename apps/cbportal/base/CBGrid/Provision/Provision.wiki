@@ -1,2 +1,8 @@
+{{breadcrumb:
+- 0-access: /cbgrid/0-access
+- 0-access node: /cbgrid/0-access Node?node=$$node
+- 0-access node player: /cbgrid/provision?node=$$node
+}}
+
 h2. Info $$node
 {{0accessnode}}

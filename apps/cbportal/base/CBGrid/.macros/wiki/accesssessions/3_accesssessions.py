@@ -1,5 +1,11 @@
 def main(j, args, params, tags, tasklet):
-    remote = args.requestContext.params.get('ip')
+    params.result = (args.doc, args.doc)
+    node_id = args.requestContext.params.get('node')
+    remote = None
+    data =  {}
+    if node_id:
+        node_name, remote = j.apps.cloudbroker.zeroaccess._get_node_info(node_id)
+        data['name'] = node_name
     oauth = j.clients.oauth.get(instance='itsyouonline')
     jwt = oauth.get_active_jwt(session=args.requestContext.env['beaker.session'])
     if jwt:
@@ -7,13 +13,11 @@ def main(j, args, params, tags, tasklet):
     else:
         table_data = [['No jwt found please login and out', '', '', '', '']]
 
-    page = args.page
-
-    fieldnames = ['Session ID', 'Username', 'Remote', 'Start', 'End']
     if not table_data:
         table_data = [['No sessions for this node', '', '', '', '']]
-    page.addList(table_data, fieldnames)
-    params.result = page
+    
+    data['tables'] = table_data
+    args.doc.applyTemplate(data, False)
     return params
 
 

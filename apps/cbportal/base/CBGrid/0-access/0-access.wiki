@@ -8,6 +8,11 @@ h2. Sessions
 
 {{accesssessions remote:$$remote}}
 
+||Session ID||Username||Remote||Start||End||
+{% for table in tables -%}
+|${table[0]}|${table[1]}|${table[2]}|${table[3]}|${table[4]}|
+{% endfor %}
+
 
 h2. Full text search on 0-access sessions
 
