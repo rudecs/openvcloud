@@ -1,8 +1,6 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
-from JumpScale.baselib.http_client.HttpClient import HTTPError
 import requests
 import datetime
 
@@ -13,6 +11,10 @@ class cloudbroker_zeroaccess(BaseActor):
     def __init__(self):
         super(cloudbroker_zeroaccess, self).__init__()
         self.zeroaccessurl = 'http://zero-access:5000'
+        self.iyoinstance = j.clients.oauth.get(instance='itsyouonline')
+
+    def _get_jwt(self, ctx):
+        return self.iyoinstance.get_active_jwt(session=ctx['beaker.session'])
 
     def listSessions(self, query='', page=None, user='', remote='', **kwargs):
         """
@@ -45,7 +47,7 @@ class cloudbroker_zeroaccess(BaseActor):
             return nodes
 
         ctx = kwargs['ctx']
-        jwt = ctx.env['beaker.session'].get('jwt')
+        jwt = self._get_jwt(ctx)
         resp = requests.get('{}/sessions'.format(self.zeroaccessurl), params=params, headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
         result = resp.json()
         if resp.status_code != 200:
@@ -64,45 +66,41 @@ class cloudbroker_zeroaccess(BaseActor):
                     if session['remote'] in nodes:
                         name = '<a href="/cbgrid/0-access Node?node={name}&ip={ip}">{name}</a>'.format(name=nodes[session['remote']], ip=session['remote'])
                         itemdata.append(name)
-                    else:    
+                    else:
                         itemdata.append(session['remote'])
                     itemdata.append(datetime.datetime.fromtimestamp(session['start']).strftime('%Y-%m-%d %H:%M:%S'))
-                    itemdata.append(datetime.datetime.fromtimestamp(session['end']).strftime('%Y-%m-%d %H:%M:%S'))    
+                    itemdata.append(datetime.datetime.fromtimestamp(session['end']).strftime('%Y-%m-%d %H:%M:%S'))
                     result_data.append(itemdata)
         return result_data
 
     def provision(self, remote, **kwargs):
         ctx = kwargs['ctx']
-        jwt = ctx.env['beaker.session'].get('jwt')
-        result = {}
+        jwt = self._get_jwt(ctx)
         resp = requests.get('{0}/provision/{1}'.format(self.zeroaccessurl, remote), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code == 200:
-            result = resp.json()
-        return result
+        if resp.status_code != 200:
+            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
+        return resp.json()
 
     def downloadSession(self, session_id, **kwargs):
         ctx = kwargs['ctx']
-        result = ""
-        jwt = ctx.env['beaker.session'].get('jwt')
-        resp = requests.get('{0}sessions/{1}'.format(self.zeroaccessurl, session_id), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code == 200:
-            result = resp.content
-        return result
-        
+        jwt = self._get_jwt(ctx)
+        resp = requests.get('{0}/sessions/{1}'.format(self.zeroaccessurl, session_id), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
+        if resp.status_code != 200:
+            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
+        return resp.json()
+
     def getSessionInitTime(self, **kwargs):
         ctx = kwargs['ctx']
-        result = ""
-        jwt = ctx.env['beaker.session'].get('jwt')
+        jwt = self._get_jwt(ctx)
         resp = requests.get('{}/server/config'.format(self.zeroaccessurl), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code == 200:
-            result = resp.json()
-        return result
+        if resp.status_code != 200:
+            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
+        return resp.json()
 
     def sessionTextSearch(self, query, **kwargs):
         ctx = kwargs['ctx']
-        result = ""
-        jwt = ctx.env['beaker.session'].get('jwt')
+        jwt = self._get_jwt(ctx)
         resp = requests.get('{}/sessions'.format(self.zeroaccessurl), params={'query': query}, headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code == 200:
-            result = resp.json()
-        return result
+        if resp.status_code != 200:
+            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
+        return resp.json()
