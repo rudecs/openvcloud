@@ -32,7 +32,7 @@ class cloudbroker_zeroaccess(BaseActor):
             """
             get dict returnig  necessary nodes information
             """
-            nodes = {}
+            nodes = {'management-ssh': {'name': 'management', 'guid': "0"}}
             for node_id in self.ocl.node.list():
                 node = self.ocl.node.get(node_id)
                 if 'master' in node.roles:
@@ -40,7 +40,7 @@ class cloudbroker_zeroaccess(BaseActor):
                 else:
                     for addr in node.netaddr:
                         if addr['name'] == "backplane1":
-                            nodes[addr['ip'][0]] = node
+                            nodes[addr['ip'][0]] = {'guid': node.guid, 'name': node.name}
                             break
                     else:
                         continue
@@ -62,7 +62,7 @@ class cloudbroker_zeroaccess(BaseActor):
                     itemdata = ['[{sessionid}|/cbgrid/Session Player?sessionid={sessionid}]'.format(sessionid=session_id)]
                     itemdata.append(session['user']['username'])
                     if session['remote'] in nodes:
-                        name = '[{name}|/cbgrid/0-access Node?node={id}]'.format(name=nodes[session['remote']].name, id=nodes[session['remote']].guid)
+                        name = '[{name}|/cbgrid/0-access Node?node={id}]'.format(name=nodes[session['remote']]['name'], id=nodes[session['remote']]['guid'])
                         itemdata.append(name)
                     else:
                         itemdata.append(session['remote'])
@@ -104,6 +104,8 @@ class cloudbroker_zeroaccess(BaseActor):
         return resp.json()
 
     def _get_node_info(self, node_id):
+        if node_id == '0':
+            return 'management', 'management-ssh'
         remote = None
         node = self.ocl.node.get(node_id)
         node_name = node.name
