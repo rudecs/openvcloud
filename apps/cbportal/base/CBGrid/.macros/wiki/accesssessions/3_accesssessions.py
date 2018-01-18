@@ -14,7 +14,7 @@ def main(j, args, params, tags, tasklet):
         table_data = [['No jwt found please login and out', '', '', '', '']]
 
     if not table_data:
-        table_data = [['No sessions for this node', '', '', '', '']]
+        table_data = [['No sessions found', '', '', '', '']]
     
     data['tables'] = table_data
     args.doc.applyTemplate(data, False)

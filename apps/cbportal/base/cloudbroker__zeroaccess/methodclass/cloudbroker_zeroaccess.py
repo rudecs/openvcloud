@@ -111,3 +111,4 @@ class cloudbroker_zeroaccess(BaseActor):
             if addr['name'] == "backplane1":
                 remote = addr['ip'][0]
                 return node_name, remote
+        return node_name, remote
