@@ -1,12 +1,9 @@
-import requests
-import json
-import datetime
-
 def main(j, args, params, tags, tasklet):
     remote = args.requestContext.params.get('ip')
     remote_data = ', "remote": %s' % remote if remote else ''
     oauth = j.clients.oauth.get(instance='itsyouonline')
     jwt = oauth.get_active_jwt(session=args.requestContext.env['beaker.session'])
+    html = ""
     if jwt:
         table_data = j.apps.cloudbroker.zeroaccess.listSessions(remote=remote, ctx=args.requestContext)
         html = """
@@ -37,6 +34,8 @@ def main(j, args, params, tags, tasklet):
     page = args.page
 
     fieldnames = ['Session ID', 'Username', 'Remote', 'Start', 'End']
+    if not table_data:
+        table_data = [['No sessions for this node', '', '', '', '']]
     page.addList(table_data, fieldnames)
     page.addHTML(html)
     params.result = page
