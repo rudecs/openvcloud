@@ -122,7 +122,10 @@ def prepare_source(repo, force, push_target=True):
                 break
         else:
             j.console.info('Creating branch {} on repo {}'.format(target.name, repo['name']))
-            client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
+            if source.type == 'tag':
+                client.repo.git.checkout('-B', target.name, 'tags/{}'.format(source.name))
+            else:
+                client.repo.git.checkout('-B', target.name, 'origin/{}'.format(source.name))
         if push_target:
             args = ['-u', 'origin', target.name]
             if force:
@@ -143,8 +146,13 @@ def main(manifest, force, dry):
         repo['info'] = get_repo_info(repo['url'])
         if j.system.fs.exists(repo['info'].path):
             repo['client'] = j.clients.git.get(repo['info'].path)
-            repo['client'].repo.git.fetch('origin', '{0}'.format(source.name))
-            repo['client'].repo.git.checkout('-B', source.name, 'remotes/origin/{0}'.format(source.name))
+            if source.type != 'tag':
+                repo['client'].repo.git.fetch('origin', '{0}'.format(source.name))
+                repo['client'].repo.git.checkout('-B', source.name, 'remotes/origin/{0}'.format(source.name))
+            else:
+                repo['client'].repo.git.fetch('origin', '--tags')
+                repo['client'].repo.git.checkout('-B', source.name, 'tags/{}'.format(source.name))
+
         else:
             j.console.info('Cloning {}/{}'.format(repo['info'].account, repo['info'].reponame))
             j.do.pullGitRepo(repo['url'], **{target.type: target.name})
