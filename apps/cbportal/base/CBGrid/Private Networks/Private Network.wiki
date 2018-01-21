@@ -7,7 +7,7 @@ h2. Private Network: ${id} (${'%04x' % id})
 
 {{actions:
 
-{% if not running %}
+{% if running == 'HALTED' %}
 - display: Start VFW
   action: /restmachine/cloudbroker/cloudspace/startVFW
   input:
