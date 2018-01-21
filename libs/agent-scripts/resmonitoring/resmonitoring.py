@@ -93,11 +93,7 @@ def action():
     import CloudscalerLibcloud
     import os
     import capnp
-    import netaddr
     redises = {}
-
-    mgmtip = j.system.net.getIpAddress('mgmt')[0]
-    mgmtnet = netaddr.IPNetwork('{0}/{1}'.format(*mgmtip))
 
     now = datetime.utcnow()
     month = now.month
@@ -134,7 +130,7 @@ def action():
         redis = redises.get(node['id'])
         if redis is not None:
             for nicinfo in node['netaddr']:
-                if nicinfo['ip'][0] in mgmtnet:
+                if nicinfo['name'] == 'backplane1':
                     ip = nicinfo['ip'][0]
                     break
             else:
