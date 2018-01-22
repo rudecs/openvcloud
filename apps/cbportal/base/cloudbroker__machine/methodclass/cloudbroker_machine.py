@@ -235,7 +235,7 @@ class cloudbroker_machine(BaseActor):
             targetStackId = self.cb.getBestProvider(cloudspace.gid, vmachine.imageId, memory=size.memory)['id']
 
         stack = self.models.stack.get(targetStackId)
-        if not stack.status=="ENABLED":
+        if not stack.status == "ENABLED":
             raise exceptions.BadRequest("Target Stack is not active")
 
         target_provider = self.cb.getProviderByStackId(targetStackId)
