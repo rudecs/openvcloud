@@ -284,7 +284,8 @@ class LibvirtUtil(object):
             nic = {}
             nic['mac'] = interface.find('mac').attrib['address']
             nic['name'] = interface.find('target').attrib['dev']
-            nic['bridge'] = interface.find('source').attrib['bridge']
+            source = interface.find('source')
+            nic['bridge'] = source.attrib['bridge'] if source.attrib.get('bridge') else source.attrib['network']
             yield nic
 
 
