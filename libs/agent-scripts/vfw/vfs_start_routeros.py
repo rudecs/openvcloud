@@ -64,7 +64,7 @@ def action(fwobject):
 
             dom = con.defineXML(xmlsource)
             dom.create()
-            protect_interfaces(network, domain)
+            protect_interfaces(network, dom)
             return True
     finally:
         network.close()

@@ -240,9 +240,6 @@ class cloudbroker_machine(BaseActor):
 
         if vmachine.status != 'HALTED':
             # create network on target node
-            self.acl.executeJumpscript('greenitglobe', 'createnetwork', args={'networkid': cloudspace.networkId},
-                                       gid=target_provider.client.gid, nid=target_provider.client.id, wait=True)
-
             node = self.cb.getNode(vmachine, target_provider)
             size = target_provider.getSizeFromMachine(vmachine)
             target_provider.client.ex_migrate(node, size, self.cb.getProviderByStackId(vmachine.stackId).client, force)
