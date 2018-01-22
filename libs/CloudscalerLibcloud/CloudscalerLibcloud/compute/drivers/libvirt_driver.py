@@ -31,7 +31,7 @@ class StorageException(Exception):
         return "{}, {}".format(self.message, self.origexception)
 
 
-class NotEnoughResources(Exception):
+class NotEnoughResources(exceptions.ServiceUnavailable):
     def __init__(self, message, volumes=None):
         super(NotEnoughResources, self).__init__(message)
         self.volumes = volumes
@@ -665,14 +665,12 @@ class CSLibvirtNodeDriver(object):
         return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid=machineid)
 
     def ex_soft_reboot_node(self, node):
-        if self._ensure_network(node) == -1:
-            return -1
+        self._ensure_network(node)
         xml = self.get_xml(node)
         return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
     def ex_hard_reboot_node(self, node):
-        if self._ensure_network(node) == -1:
-            return -1
+        self._ensure_network(node)
         xml = self.get_xml(node)
         return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
 
@@ -681,7 +679,7 @@ class CSLibvirtNodeDriver(object):
             if interface.type == 'private':
                 result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=interface.networkId)
                 if not result or result == -1:
-                    return -1
+                    raise NotEnoughResources("Failed to create network")
             else:
                 self._execute_agent_job('create_external_network', queue='hypervisor', vlan=interface.networkId)
         return True
@@ -695,8 +693,7 @@ class CSLibvirtNodeDriver(object):
         return machinexml
 
     def ex_start_node(self, node):
-        if self._ensure_network(node) == -1:
-            return -1
+        self._ensure_network(node)
         machinexml = self.get_xml(node)
         self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml)
         return True
@@ -884,6 +881,7 @@ class CSLibvirtNodeDriver(object):
 
     def ex_migrate(self, node, sourceprovider, force=False):
         domainxml = self.get_xml(node)
+        self._ensure_network(node)
         self._execute_agent_job('vm_livemigrate',
                                 vm_id=node.id,
                                 sourceurl=sourceprovider.uri,
