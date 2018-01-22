@@ -30,7 +30,7 @@ def action(vm_id, sourceurl, domainxml, force):
         targeturl = "tcp://{}".format(localip)
         domain = source_con.lookupByUUIDString(vm_id)
 
-        if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+        if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
             flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE
             try:
                 domain.migrate2(target_con, flags=flags, uri=targeturl)
