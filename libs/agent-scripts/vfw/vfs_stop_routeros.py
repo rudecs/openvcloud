@@ -28,7 +28,7 @@ def action(networkid):
             domain = con.lookupByName(name)
             network.cleanup_gwmgmt(domain)
             network.cleanup_external(domain)
-            if domain.state()[1] == libvirt.VIR_DOMAIN_RUNNING:
+            if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
                 domain.shutdown()
                 return True
             else:
