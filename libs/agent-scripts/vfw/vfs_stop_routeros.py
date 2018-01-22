@@ -22,13 +22,13 @@ def action(networkid):
 
     con = libvirtutil.connection
     try:
-        networkidHex = '%04x' % int(networkid)
-        name = 'routeros_%s' % networkidHex
+        network_id_hex = '%04x' % int(networkid)
+        name = 'routeros_%s' % network_id_hex
         try:
             domain = con.lookupByName(name)
-            network.cleanup_gwmgmt(domain)
-            network.cleanup_external(domain)
-            if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+            if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
+                network.cleanup_gwmgmt(domain)
+                network.cleanup_external(domain)
                 domain.shutdown()
                 return True
             else:
