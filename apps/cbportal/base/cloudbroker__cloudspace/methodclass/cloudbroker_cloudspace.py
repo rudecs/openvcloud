@@ -110,7 +110,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         node = self.syscl.node.get(targetNid)
         if not node.active:
-            raise RuntimeError("Node is not active")
+            raise exceptions.BadRequest("Node is not active")
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         if not self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid)):
