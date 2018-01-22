@@ -32,7 +32,7 @@ def main(j, args, params, tags, tasklet):
     vfw = vcl.virtualfirewall.get(key)
     dropnodes = list()
     for node in vfwnodes:
-        if node['id'] != vfw.nid or node['gid'] != vfw.gid:
+        if (node['id'] != vfw.nid or node['gid'] != vfw.gid) and node['active']:
             dropnodes.append(("FW Node %(name)s" % node, "%(id)s" % node))
 
     popup.addDropdown("FW Node to move to", 'targetNid', dropnodes)
