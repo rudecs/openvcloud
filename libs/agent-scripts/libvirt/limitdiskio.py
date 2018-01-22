@@ -26,7 +26,7 @@ def action(machineid, disks, iotune):
     flags = []
     if domain.isPersistent():
         flags.append('--config')
-    if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
+    if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
         flags.append('--live')
 
     for diskurl in disks:

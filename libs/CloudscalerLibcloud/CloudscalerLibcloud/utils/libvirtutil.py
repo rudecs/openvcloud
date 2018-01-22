@@ -119,7 +119,7 @@ class LibvirtUtil(object):
             raise Exception("Can't start a locked machine")
         domain = self._get_domain(id)
         if domain:
-            state = domain.state(0)[0]
+            state = domain.state()[0]
             if state == libvirt.VIR_DOMAIN_RUNNING:
                 return domain.XMLDesc()
             elif state == libvirt.VIR_DOMAIN_PAUSED:
@@ -137,7 +137,7 @@ class LibvirtUtil(object):
             isPersistent = domain.isPersistent()
             networkid = self._get_domain_networkid(domain)
             bridges = list(self._get_domain_bridges(domain))
-            if domain.state(0)[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+            if domain.state()[0] not in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 if force:
                     domain.destroy()
                 else:
@@ -186,7 +186,7 @@ class LibvirtUtil(object):
             raise Exception("Can't reboot a locked machine")
         domain = self._get_domain(id)
         if domain:
-            if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+            if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 domain.create()
             else:
                 domain.reboot()
@@ -198,7 +198,7 @@ class LibvirtUtil(object):
         if isLocked(id):
             raise Exception("Can't suspend a locked machine")
         domain = self._get_domain(id)
-        if domain.state(0)[0] == libvirt.VIR_DOMAIN_PAUSED:
+        if domain.state()[0] == libvirt.VIR_DOMAIN_PAUSED:
             return True
         return domain.suspend() == 0
 
@@ -206,7 +206,7 @@ class LibvirtUtil(object):
         if isLocked(id):
             raise Exception("Can't resume a locked machine")
         domain = self._get_domain(id)
-        if domain.state(0)[0] == libvirt.VIR_DOMAIN_RUNNING:
+        if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
             return True
         return domain.resume() == 0
 
@@ -223,7 +223,7 @@ class LibvirtUtil(object):
         networkid = self._get_domain_networkid(xml)
         bridges = self._get_domain_bridges(xml)
         if domain:
-            if domain.state(0)[0] != libvirt.VIR_DOMAIN_SHUTOFF:
+            if domain.state()[0] != libvirt.VIR_DOMAIN_SHUTOFF:
                 domain.destroy()
             try:
                 domain.undefine()
@@ -669,7 +669,7 @@ class LibvirtUtil(object):
             raise Exception("Can't reboot a locked machine")
         domain = self._get_domain(id)
         if domain:
-            if domain.state(0)[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
+            if domain.state()[0] in [libvirt.VIR_DOMAIN_SHUTDOWN, libvirt.VIR_DOMAIN_SHUTOFF, libvirt.VIR_DOMAIN_CRASHED]:
                 domain.create()
             else:
                 domain.reset()
