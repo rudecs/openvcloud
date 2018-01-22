@@ -108,6 +108,10 @@ class cloudbroker_cloudspace(BaseActor):
         if cloudspace.status != 'DEPLOYED':
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
+        node = self.syscl.node.get(targetNid)
+        if not node.active:
+            raise RuntimeError("Node is not active")
+
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         if not self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid)):
             # fw_move returned false this mains clean migration failed we will deploy from scratch on new node instead
