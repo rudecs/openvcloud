@@ -63,8 +63,8 @@ class CloudBroker(object):
 
     def getImage(self, provider, imageId):
         if imageId not in provider.stack.images:
-            provider.stack = self.stack.get(provider.stack.id)
-            if imageId not in self.stack.images:
+            provider.stack = models.stack.get(provider.stack.id)
+            if imageId not in provider.stack.images:
                 return None
 
         return models.image.get(imageId)
