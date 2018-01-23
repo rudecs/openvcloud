@@ -69,7 +69,11 @@ class cloudapi_machines(BaseActor):
                     raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             result = method(node, **kwargs)
             if newstatus and newstatus != machine.status:
-                self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'status': newstatus}})
+                update = {
+                    'status': newstatus,
+                    'updateTime': int(time.time()),
+                }
+                self.models.vmachine.updateSearch({'id': machine.id}, {'$set': update})
             return result
 
     def _get_boot_disk(self, machine):

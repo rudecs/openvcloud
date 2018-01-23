@@ -1,42 +1,42 @@
 from JumpScale import j
+import time
 import libvirt
 
 
 def main():
     ccl = j.clients.osis.getNamespace('cloudbroker')
+    scl = j.clients.osis.getNamespace('system')
+    pcl = j.clients.portal.getByInstance('main')
 
     libvirt.virEventRegisterDefaultImpl()
     rocon = libvirt.open()
+    def get_vm_tags(vm):
+        vm = ccl.vmachine.get(vm['id'])
+        cloudspace = ccl.cloudspace.get(vm.cloudspaceId)
+        return 'machineId:{} cloudspaceId:{} accountId:{}'.format(vm.id, cloudspace.id, cloudspace.accountId)
 
     def callback(con, domain, event, detail, opaque):
         name = domain.name()
-        print('State change for {}'.format(name))
+        print('State change for {} {} {}'.format(name, event, detail))
         vm = next(iter(ccl.vmachine.search({'referenceId': domain.UUIDString()})[1:]), None)
+        tags = ''
         if vm:
-            try:
-                domainstate, reason = domain.state()
-                name = domain.name()
-            except libvirt.libvirtError:
-                # vm was removed
-                return
-            if domainstate == libvirt.VIR_DOMAIN_SHUTOFF and reason == libvirt.VIR_DOMAIN_SHUTOFF_CRASHED:
-                tags = ''
+            if event == libvirt.VIR_DOMAIN_EVENT_STOPPED and detail in [libvirt.VIR_DOMAIN_EVENT_STOPPED_FAILED, libvirt.VIR_DOMAIN_EVENT_STOPPED_CRASHED]:
                 msg = ''
                 if name.startswith('vm-'):
-                    machineId = int(domain.name().split('-')[-1])
+                    machineId = int(name.split('-')[-1])
                     msg = "VM {} has crashed".format(machineId)
-                    vm = ccl.vmachine.get(machineId)
-                    cloudspace = ccl.cloudspace.get(vm.cloudspaceId)
-                    tags = 'machineId:{} cloudspaceId:{} accountId:{}'.format(machineId, cloudspace.id, cloudspace.accountId)
+                    tags = get_vm_tags(vm)
+                    pcl.actors.cloudapi.machines.start(machineId)
                 elif name.startswith('routeros_'):
                     networkid = int(name.split('_')[-1], 16)
                     cloudspaces = ccl.cloudspace.search({'networkId': networkid})[1:]
                     if not cloudspaces:
                         return  # orphan vm we dont care
                     tags = 'cloudspaceId:{}'.format(cloudspaces[0]['id'])
+                    domain.create()
 
-                print('VM crashed, starting it again')
-                domain.create()
+                print('VM {} crashed, starting it again'.format(name))
                 j.errorconditionhandler.raiseOperationalWarning(msg, 'selfhealing', tags=tags)
                 return
             newstate = None
@@ -47,7 +47,23 @@ def main():
             if newstate is not None:
                 print('Updating state for vm {} to {}'.format(name, newstate))
                 # update the state if its not destroyed already
-                ccl.vmachine.updateSearch({'id': vm['id'], 'status': {'$ne': 'DESTROYED'}}, {'$set': {'status': newstate}})
+                update = ccl.vmachine.updateSearch({'id': vm['id'], 'status': {'$ne': 'DESTROYED'}}, {'$set': {'status': newstate}})
+                if newstate == 'HALTED' and update['nModified'] == 1:
+                    # check if lock exists on vm
+                    lockname = 'cloudbroker_vmachine_{}'.format(vm['id'])
+                    if not scl.lock.exists(lockname):
+                        # no action lock and we change status we should create and audit for this case
+                        audit = scl.audit.new()
+                        audit.user = 'Operation System Action'
+                        audit.tags = get_vm_tags(vm)
+                        audit.statuscode = 200
+                        audit.call = '/restmachine/cloudapi/machines/stop'
+                        audit.timestamp = time.time()
+                        audit.responsetime = 0
+                        audit.args = 'null'
+                        audit.kwargs = 'null'
+                        audit.result = 'null'
+                        scl.audit.set(audit)
 
     rocon.domainEventRegisterAny(None, libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
                                  callback, rocon)
