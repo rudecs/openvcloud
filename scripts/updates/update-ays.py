@@ -55,7 +55,7 @@ if options.branch_ovc_selfhealing is None:
 
 openvcloud = '/opt/code/github/0-complexity/openvcloud'
 hosts = ['ovc_master', 'ovc_proxy', 'ovc_reflector', 'ovc_dcpm']
-nodeprocs = ['redis', 'statsd-collector', 'nginx', 'vncproxy']
+nodeprocs = ['redis', 'libvirtlistener', 'nginx', 'vncproxy']
 
 # Loading nodes list
 sshservices = j.atyourservice.findServices(name='node.ssh')
