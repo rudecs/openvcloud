@@ -78,7 +78,7 @@ if len(refsrv) > 0:
 else:
     autossh = False
     print('[-] reflector not found')
-    mgmtip = node.execute("ip -4 -o addr show dev mgmt | awk '{ print $4 }' | cut -d'/' -f 1")
+    mgmtip = node.execute("ip -4 -o addr show dev mgmt | awk 'NR==1 { print $4 }' | cut -d'/' -f 1")
     dashboard_data = {'instance.datasource.ip': mgmtip,
                       'instance.datasource.port': 8086,
                       }
