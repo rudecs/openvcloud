@@ -111,12 +111,21 @@ class CloudBroker(object):
         models.stack.updateSearch({'id': stack.id}, {'$set': {'error': 0, 'eco': None, 'status': 'ENABLED'}})
 
     def getIdByReferenceId(self, objname, referenceId):
+        obj = self.getObjectByReferenceId(objname, referenceId)
+        if obj:
+            return obj.id
+        else:
+            return None
+
+    def getObjectByReferenceId(self, objname, referenceId):
         model = getattr(models, '%s' % objname)
         queryapi = getattr(model, 'search')
         query = {'referenceId': referenceId}
         ids = queryapi(query)[1:]
         if ids:
-            return ids[0]['id']
+            obj = model.new()
+            obj.load(ids[0])
+            return obj
         else:
             return None
 
