@@ -4,7 +4,6 @@ def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     ccl = j.clients.osis.getNamespace('cloudbroker')
     vcl = j.clients.osis.getNamespace('vfw')
-    scl = j.clients.osis.getNamespace('system')
     cloudspaceId = args.getTag('cloudspaceId')
     cloudspace = ccl.cloudspace.get(int(cloudspaceId))
 
@@ -13,11 +12,6 @@ def main(j, args, params, tags, tasklet):
         popup.write_html(page)
         return params
 
-    vfwnodes = scl.node.search({'roles': 'fw', 'gid': cloudspace.gid})[1:]
-    if len(vfwnodes) < 2:
-        popup = Popup(id='movevfw', header='No other Firewall node available', submit_url='#')
-        popup.write_html(page)
-        return params
 
     popup = Popup(id='movevfw', header='Move Virtual Firewall',
                   submit_url='/restmachine/cloudbroker/cloudspace/moveVirtualFirewallToFirewallNode',
@@ -30,10 +24,16 @@ def main(j, args, params, tags, tasklet):
         return params
 
     vfw = vcl.virtualfirewall.get(key)
+    query = {'status': 'ENABLED', 'gid': cloudspace.gid, 'referenceId': {'$ne': str(vfw.nid)}}
+    vfwnodes = ccl.stack.search(query)[1:]
+    if not vfwnodes:
+        popup = Popup(id='movevfw', header='No other Firewall node available', submit_url='#')
+        popup.write_html(page)
+        return params
+
     dropnodes = list()
     for node in vfwnodes:
-        if (node['id'] != vfw.nid or node['gid'] != vfw.gid) and node['active']:
-            dropnodes.append(("FW Node %(name)s" % node, "%(id)s" % node))
+        dropnodes.append(("FW Node %(name)s" % node, "%(id)s" % node))
 
     popup.addDropdown("FW Node to move to", 'targetNid', dropnodes)
     popup.addHiddenField('cloudspaceId', cloudspaceId)

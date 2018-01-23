@@ -108,9 +108,9 @@ class cloudbroker_cloudspace(BaseActor):
         if cloudspace.status != 'DEPLOYED':
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
-        node = self.syscl.node.get(targetNid)
-        if not node.active:
-            raise exceptions.BadRequest('Node is not active')
+        stack = self.cb.getObjectByReferenceId('stack', str(targetNid))
+        if stack.status != 'ENABLED':
+            raise exceptions.BadRequest('Stack is not enabled')
 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         if not self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid)):
