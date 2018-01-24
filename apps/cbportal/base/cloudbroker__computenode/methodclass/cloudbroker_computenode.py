@@ -3,8 +3,6 @@ from JumpScale.portal.portal.auth import auth
 import functools
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
-import random
-
 
 class cloudbroker_computenode(BaseActor):
     """
@@ -191,9 +189,11 @@ class cloudbroker_computenode(BaseActor):
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
         for vfw in vfws:
-            randomnode = random.choice(othernodes)
+            nid = int(self.cb.getBestProvider(stack['gid'], memory=128)['referenceId'])
             ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
-            self.cb.netmgr.fw_move(vfw['guid'], randomnode['id'])
+            if not self.cb.netmgr.fw_move(vfw['guid'], nid):
+                self.cb.netmgr.fw_delete(fwid=vfw['guid'], deletemodel=False, timeout=20)
+                self.cb.netmgr.fw_start(vfw['guid'], targetNid=nid)
 
     @auth(['level2', 'level3'], True)
     @wrap_remote

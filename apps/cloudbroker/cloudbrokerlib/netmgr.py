@@ -179,7 +179,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("Failed to get OpenVPN Config")
         return job['result']
 
-    def fw_delete(self, fwid, gid, deletemodel=True, timeout=600, **kwargs):
+    def fw_delete(self, fwid, deletemodel=True, timeout=600, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
