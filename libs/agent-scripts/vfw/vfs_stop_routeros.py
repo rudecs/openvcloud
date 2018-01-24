@@ -21,15 +21,18 @@ def action(networkid):
     network = Network(libvirtutil)
 
     con = libvirtutil.connection
+    destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
     try:
         network_id_hex = '%04x' % int(networkid)
         name = 'routeros_%s' % network_id_hex
         try:
             domain = con.lookupByName(name)
-            if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
+            if domain:
                 network.cleanup_gwmgmt(domain)
                 network.cleanup_external(domain)
                 domain.shutdown()
+                domain.undefine()
+                j.system.process.execute('btrfs subvol delete {}'.format(destination), dieOnNonZeroExitCode=False)
                 return True
             else:
                 return True

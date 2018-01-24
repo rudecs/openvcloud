@@ -275,7 +275,7 @@ class cloudapi_cloudspaces(BaseActor):
             publiccidr = externalipaddress.prefixlen
 
             try:
-                self.netmgr.fw_create(cs.gid, str(cloudspaceId), 'admin', password,
+                self.netmgr.fw_create(cs.gid, str(cloudspaceId), password,
                                       str(externalipaddress.ip),
                                       'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
             except:
