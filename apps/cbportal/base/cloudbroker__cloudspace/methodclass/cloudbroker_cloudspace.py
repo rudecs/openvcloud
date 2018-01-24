@@ -161,6 +161,7 @@ class cloudbroker_cloudspace(BaseActor):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+
         if resettype not in ['factory', 'restore']:
             raise exceptions.BadRequest("Invalid value {} for resettype".format(resettype))
 
@@ -169,27 +170,10 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.BadRequest('Can not reset VFW which is not deployed please deploy instead.')
 
         self._destroyVFW(cloudspace.gid, cloudspaceId, deletemodel=False)
-
-        pool = self.models.externalnetwork.get(cloudspace.externalnetworkId)
-
-        if cloudspace.externalnetworkip is None:
-            raise exceptions.BadRequest('Can not reset VFW which has no external network IP please deploy instead.')
-
-        externalipaddress = netaddr.IPNetwork(cloudspace.externalnetworkip)
-        networkid = cloudspace.networkId
-        password = str(uuid.uuid4())
-        publicgw = pool.gateway
-        publiccidr = externalipaddress.prefixlen
-        fwid = '{}_{}'.format(cloudspace.gid, networkid)
+        fwid = '{}_{}'.format(cloudspace.gid, cloudspace.networkId)
 
         # redeploy vfw
-        if resettype == 'restore':
-            restored = self.cb.netmgr.fw_restore(fwid, targetNid)
-        if resettype == 'factory' or not restored:
-            self.cb.netmgr.fw_create(cloudspace.gid, str(cloudspaceId), 'admin', password,
-                                     str(externalipaddress.ip),
-                                     'routeros', networkid, publicgwip=publicgw,
-                                     publiccidr=publiccidr, vlan=pool.vlan, targetNid=targetNid)
+        self.cb.netmgr.fw_start(fwid, resettype, targetNid)
 
 
     @auth(['level1', 'level2', 'level3'])

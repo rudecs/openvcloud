@@ -1,6 +1,8 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import time
+import uuid
+import netaddr
 
 
 class NetManager(object):
@@ -12,6 +14,7 @@ class NetManager(object):
         self.client = j.clients.osis.getByInstance('main')
         self.osisvfw = j.clients.osis.getCategory(self.client, 'vfw', 'virtualfirewall')
         self.nodeclient = j.clients.osis.getCategory(self.client, 'system', 'node')
+        self.cbmodel = j.clients.osis.getNamespace('cloudbroker')
         self.gridclient = j.clients.osis.getCategory(self.client, 'system', 'grid')
         self.json = j.db.serializers.getSerializerType('j')
         self._ovsdata = {}
@@ -45,7 +48,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
-    def fw_create(self, gid, domain, login, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, **kwargs):
+    def fw_create(self, gid, domain, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)
         param:gid grid id
@@ -95,7 +98,7 @@ class NetManager(object):
                 if job['state'] != 'OK':
                     raise exceptions.ServiceUnavailable("Failed to remove vfw with volume %s" % networkid)
 
-                raise exceptions.ServiceUnavailable("Failed to create create fw for domain %s job was %s" % (domain, result['id']))
+                raise exceptions.ServiceUnavailable("Failed to create fw for domain %s job was %s" % (domain, result['id']))
             data = result['result']
             fwobj.host = data['internalip']
             fwobj.username = data['username']
@@ -212,10 +215,7 @@ class NetManager(object):
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_routeros_restore', nid=fwobj.nid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to restore vfw")
-        result = job['result']
-        if result:
-            self.fw_start(fwid)
-        return result
+        return job['result']
 
     def fw_destroy(self, fwid):
         self.osisvfw.delete(fwid)
@@ -337,12 +337,30 @@ class NetManager(object):
             result.append(vfwdict)
         return result
 
-    def fw_start(self, fwid, **kwargs):
+    def fw_start(self, fwid, resettype='restore', targetNid=None, **kwargs):
         """
         param:fwid firewall id
         param:gid grid id
         """
+        if resettype not in ['factory', 'restore']:
+            raise exceptions.BadRequest("Invalid value {} for resettype".format(resettype))
         fwobj = self._getVFWObject(fwid)
+        cloudspace = self.cbmodel.cloudspace.get(int(fwobj.domain))
+        if cloudspace.externalnetworkip is None:
+                raise exceptions.BadRequest('Can not reset VFW which has no external network IP please deploy instead.')
+        if resettype == 'restore':
+            restored = self.fw_restore(fwid, targetNid)
+        if resettype == 'factory' or not restored:
+            pool = self.cbmodel.externalnetwork.get(cloudspace.externalnetworkId)
+            externalipaddress = netaddr.IPNetwork(cloudspace.externalnetworkip)
+            password = str(uuid.uuid4())
+            publicgw = pool.gateway
+            publiccidr = externalipaddress.prefixlen
+            password = str(uuid.uuid4())
+            self.fw_create(fwobj.gid, fwobj.domain, password,
+                           fwobj.pubips[0], 'routeros', fwobj.id, publicgw,
+                           publiccidr, pool.vlan, targetNid)
+        fwobj = self._getVFWObject(fwid) # to get updated model
         args = {'fwobject': fwobj.obj2dict()}
         if fwobj.type == 'routeros':
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
@@ -367,7 +385,7 @@ class NetManager(object):
             job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
         if job['state'] != 'OK':
-            raise exceptions.ServiceUnavailable("Failed to start vfw")
+            raise exceptions.ServiceUnavailable("Failed to stop vfw")
         return job['result']
 
     def fw_check(self, fwid, timeout=60, **kwargs):
