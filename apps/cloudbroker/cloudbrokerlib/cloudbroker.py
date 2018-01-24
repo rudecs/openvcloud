@@ -547,7 +547,7 @@ class CloudSpace(object):
             stack = next(iter(models.stack.search({'referenceId': str(fw.nid), 'gid': fw.gid})[1:]), None)
             if stack and stack['status'] != 'DECOMISSIONED':
                 # destroy vm and model
-                self.cb.netmgr.fw_delete(fwguid, cloudspace.gid)
+                self.cb.netmgr.fw_delete(fwguid)
             else:
                 # destroy model only
                 self.cb.netmgr.fw_destroy(fwguid)

@@ -27,9 +27,6 @@ def action(networkid):
     print('Restoring {} to {}'.format(ovslocation, localfile))
     destination = '/var/lib/libvirt/images/routeros/'
     networkidHex = '%04x' % int(networkid)
-    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
-        j.system.btrfs.subvolumeDelete(destination, networkidHex)
-    j.system.btrfs.subvolumeCreate(destination, networkidHex)
     try:
         j.system.platform.qemu_img.info(ovslocation)
     except RuntimeError as e:
@@ -37,9 +34,13 @@ def action(networkid):
             return False
         j.errorconditionhandler.processPythonExceptionObject(e)
         return False
+    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
+        j.system.btrfs.subvolumeDelete(destination, networkidHex)
+    j.system.btrfs.subvolumeCreate(destination, networkidHex)
     try:
         j.system.platform.qemu_img.convert(ovslocation, 'raw', localfile, 'qcow2')
     except Exception as e:
+        j.system.btrfs.subvolumeDelete(destination, networkidHex)
         j.errorconditionhandler.processPythonExceptionObject(e)
         return False
     return True

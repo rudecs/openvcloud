@@ -25,7 +25,7 @@ def _release_resources(cloudspaceId):
     # delete routeros
     fws = netmgr.fw_list(gridid, str(cloudspace.id))
     if fws:
-        netmgr.fw_delete(fws[0]['guid'], gridid)
+        netmgr.fw_delete(fws[0]['guid'])
     if cloudspace.networkId:
         libvirt_actor.releaseNetworkId(cloudspace.networkId)
     if cloudspace.publicipaddress:

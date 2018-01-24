@@ -39,34 +39,38 @@ def action(networkid, sourceip, vlan, externalip):
     if source_con:
         templatepath = '/var/lib/libvirt/images/routeros/template/'
         destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
-        domain = source_con.lookupByName(name)
-        if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-            if not j.system.fs.exists(destination):
-                print 'Creating image snapshot %s -> %s' % (templatepath, destination)
-            localip = j.system.net.getReachableIpAddress(sourceip, 22)
-            targeturl = "tcp://{}".format(localip)
-            j.system.btrfs.snapshot(templatepath, destination)
-            xmldom = ElementTree.fromstring(domain.XMLDesc())
-            seclabel = xmldom.find('seclabel')
-            if seclabel is not None:
-                xmldom.remove(seclabel)
-            xml = ElementTree.tostring(xmldom)
-            flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
-            try:
-                domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
-            except:
+        try:
+            domain = source_con.lookupByName(name)
+        except libvirt.libvirtError:
+            domain = None
+        if domain:
+            if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+                if not j.system.fs.exists(destination):
+                    print 'Creating image snapshot %s -> %s' % (templatepath, destination)
+                localip = j.system.net.getReachableIpAddress(sourceip, 22)
+                targeturl = "tcp://{}".format(localip)
+                j.system.btrfs.snapshot(templatepath, destination)
+                xmldom = ElementTree.fromstring(domain.XMLDesc())
+                seclabel = xmldom.find('seclabel')
+                if seclabel is not None:
+                    xmldom.remove(seclabel)
+                xml = ElementTree.tostring(xmldom)
+                flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
                 try:
-                    target_domain = target_con.lookupByName(name)
-                    target_domain.undefine()
+                    domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
                 except:
-                    pass  # vm wasn't created on target
-                raise
-            domain = target_con.lookupByName(name)
-            network.protect_external(domain, externalip)
-            network.protect_gwmgmt(domain, internalip)
-        else:
-            domain.undefine()
-            return False
+                    try:
+                        target_domain = target_con.lookupByName(name)
+                        target_domain.undefine()
+                    except:
+                        pass  # vm wasn't created on target
+                    raise
+                domain = target_con.lookupByName(name)
+                network.protect_external(domain, externalip)
+                network.protect_gwmgmt(domain, internalip)
+            else:
+                domain.undefine()
+                return False
         # remove disk from source
         con = j.remote.cuisine.connect(sourceip, 22)
         con.run('btrfs subvol delete {} || true'.format(destination))
