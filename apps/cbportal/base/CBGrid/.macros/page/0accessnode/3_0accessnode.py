@@ -15,7 +15,8 @@ var interval = setInterval(function() {
 </script>
     """
     node_id = args.requestContext.params.get('node')
-    _, remote = j.apps.cloudbroker.zeroaccess._get_node_info(node_id)
+    node_name, remote = j.apps.cloudbroker.zeroaccess._get_node_info(node_id)
+    page.addHTML('<h2 class="title">Access info for node: {}</h2>'.format(node_name))
     oauth = j.clients.oauth.get(instance='itsyouonline')
     jwt = oauth.get_active_jwt(session=args.requestContext.env['beaker.session'])
     if jwt:
