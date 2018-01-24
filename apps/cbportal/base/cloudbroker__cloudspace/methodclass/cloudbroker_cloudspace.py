@@ -234,7 +234,7 @@ class cloudbroker_cloudspace(BaseActor):
         fws = self.cb.netmgr.fw_list(gid=int(gid), domain=str(cloudspaceId))
         if fws:
             try:
-                self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], gid=gid, deletemodel=deletemodel, timeout=20)
+                self.cb.netmgr.fw_delete(fwid=fws[0]['guid'], deletemodel=deletemodel, timeout=20)
             except exceptions.ServiceUnavailable:
                 return False
             return True
