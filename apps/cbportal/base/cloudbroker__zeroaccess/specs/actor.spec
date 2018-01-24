@@ -28,7 +28,7 @@
     
     method:getSessionInitTime
         """
-        List available 0-access sessions
+        Returns 0-access session duration
         """
         result:json
 

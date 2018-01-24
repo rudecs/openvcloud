@@ -4,5 +4,5 @@
 - 0-access node player: /cbgrid/provision?node=$$node
 }}
 
-h2. Info $$node
+
 {{0accessnode}}

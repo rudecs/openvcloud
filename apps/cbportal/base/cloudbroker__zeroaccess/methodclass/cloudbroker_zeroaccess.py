@@ -31,7 +31,7 @@ class cloudbroker_zeroaccess(BaseActor):
 
         def get_nodes_dict():
             """
-            get dict returnig  necessary nodes information
+            get dict with necessary 0-access nodes information
             """
             mgmt_ip = socket.gethostbyname("management-ssh")
             nodes = {mgmt_ip: {'name': 'management', 'guid': "0"}}
