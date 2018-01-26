@@ -49,7 +49,7 @@ def action(ovs_connection, vpoolguid, storagerouterguid, diskname, size, pagecac
     if total and (used * 100.0 / total) >= 80:
         raise Exception("Used capacity on {backend_name} >= 80%".format(backend_name=backend_name))
 
-    data = dict(name=diskname, size=size * 1024**3, storagerouter_guid=storagerouterguid,
+    data = dict(name=diskname, size=int(size * 1024**3), storagerouter_guid=storagerouterguid,
                 vpool_guid=vpoolguid, pagecache_ratio=pagecache_ratio / 100.0)
 
     taskguid = ovs.post(path, data=json.dumps(data))

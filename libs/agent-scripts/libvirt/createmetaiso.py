@@ -19,11 +19,9 @@ def action(ovspath, metadata, userdata, type):
     from CloudscalerLibcloud import openvstorage
     import urlparse
     iso = ISO()
-    iso.create_meta_iso(ovspath, metadata, userdata, type)
-    parsedurl = urlparse.urlparse(ovspath)
-    if parsedurl.netloc == '':
-        ovspath = ovspath.replace('{}:'.format(parsedurl.scheme), '{}://'.format(parsedurl.scheme))
-    return "{}@{}".format(ovspath, openvstorage.getVDisk(ovspath, timeout=60).guid)
+    ovspath = ovspath.replace('://', ':').split('@')[0]
+    iso.create_meta_iso(ovspath, metadata, userdata, type, volume_exists=True)
+    return True
 
 
 if __name__ == '__main__':

@@ -23,9 +23,10 @@ class LibvirtState:
 
 
 class StorageException(Exception):
-    def __init__(self, message, e):
+    def __init__(self, message, e, volumes=None):
         super(StorageException, self).__init__(message)
         self.origexception = e
+        self.volumes = volumes or []
 
     def __str__(self):
         return "{}, {}".format(self.message, self.origexception)
@@ -334,7 +335,7 @@ class CSLibvirtNodeDriver(object):
             raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
-        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self)
+        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self), edgeclient
 
     def create_volume(self, size, name):
         volumes = [{'name': name, 'size': size, 'dev': ''}]
@@ -384,7 +385,7 @@ class CSLibvirtNodeDriver(object):
         self._execute_agent_job('detach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
         return node
 
-    def _create_metadata_iso(self, bootvolume, name, password, type):
+    def _create_metadata_iso(self, edgeclient, name, password, type):
         if type not in ['WINDOWS', 'Windows']:
             memrule = 'SUBSYSTEM=="memory", ACTION=="add", TEST=="state", ATTR{state}=="offline", ATTR{state}="online"'
             cpurule = 'SUBSYSTEM=="cpu", ACTION=="add", TEST=="online", ATTR{online}=="0", ATTR{online}="1"'
@@ -407,12 +408,26 @@ class CSLibvirtNodeDriver(object):
         else:
             userdata = {}
             metadata = {'admin_pass': password, 'hostname': name}
-        ovsurl = bootvolume.ovsurl.replace('bootdisk', 'cloud-init')
-        volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
-                                           ovspath=ovsurl, metadata=metadata, userdata=userdata, type=type)
-        isovolume = OpenvStorageISO(id=volumeid, size=0, name='N/A', driver=self)
-        isovolume.username = self.ovs_credentials.get('edgeuser')
-        isovolume.password = self.ovs_credentials.get('edgepassword')
+
+        diskpath = "{0}/cloud-init-{0}".format(name)
+        kwargs = {'ovs_connection': self.ovs_connection,
+                  'vpoolguid': edgeclient['vpoolguid'],
+                  'storagerouterguid': edgeclient['storagerouterguid'],
+                  'diskname': diskpath,
+                  'size': 0.1,
+                  'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
+        try:
+            vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
+        except Exception as ex:
+            raise StorageException(ex.message, ex)
+
+        volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskpath)
+        isovolume = OpenvStorageISO(id=volumeid, name='Metadata ISO', size=0, driver=self)
+        try:
+            volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
+                                               ovspath=volumeid, metadata=metadata, userdata=userdata, type=type)
+        except Exception as ex:
+            raise StorageException(ex.message, ex, volumes=[isovolume])
         return isovolume
 
     def generate_password_hash(self, password):
@@ -454,13 +469,13 @@ class CSLibvirtNodeDriver(object):
         iotune = iotune or {}
 
         try:
-            volume = self._create_disk(name, disksize, image)
+            volume, edgeclient = self._create_disk(name, disksize, image)
             volume.dev = 'vda'
             volume.iotune = iotune
             volumes.append(volume)
             if auth:
                 # At this moment we handle only NodeAuthPassword
-                volumes.append(self._create_metadata_iso(volume, name, auth.password, imagetype))
+                volumes.append(self._create_metadata_iso(edgeclient, name, auth.password, imagetype))
 
             if datadisks:
                 datavolumes = []
@@ -471,6 +486,8 @@ class CSLibvirtNodeDriver(object):
                 for volume in volumes:
                     volume.iotune = iotune
         except Exception as e:
+            if isinstance(e, StorageException):
+                volumes.extend(e.volumes)
             if len(volumes) > 0:
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise StorageException('Failed to create some volumes', e)
@@ -746,6 +763,7 @@ class CSLibvirtNodeDriver(object):
             volumeid = self.getVolumeId(newdiskguid, edgeclient, diskinfo['clone_name'])
             volume = OpenvStorageVolume(id=volumeid, name='N/A', size=-1, driver=self)
             volume.dev = 'vd%s' % convertnumber(idx)
+            volume.edgeclient = edgeclient
             volumes.append(volume)
         return volumes
 
@@ -759,7 +777,7 @@ class CSLibvirtNodeDriver(object):
         disks_snapshots = disks_snapshots or {}
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, disks_snapshots)
-        volumes.append(self._create_metadata_iso(volumes[0], name, password, imagetype))
+        volumes.append(self._create_metadata_iso(volumes[0].edgeclient, name, password, imagetype))
         return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
 
     def ex_extend_disk(self, diskguid, newsize, disk_info=None):

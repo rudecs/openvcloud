@@ -87,7 +87,7 @@ class ISO(object):
                    )
 
 
-    def create_meta_iso(self, output, meta_data, user_data, type):
+    def create_meta_iso(self, output, meta_data, user_data, type, volume_exists=False):
         with tempfile.TemporaryFile() as iso:
             if type not in ['WINDOWS', 'Windows', 'windows']:
                 self.generate_meta_iso(
@@ -103,8 +103,11 @@ class ISO(object):
             iso.seek(0)
             length = os.fstat(iso.fileno()).st_size
             assert length > 0
-            proc = subprocess.Popen(['qemu-img', 'convert', '-O', 'raw', '/dev/stdin', output],
-                                    stdin=iso, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            cmd = ['qemu-img', 'convert', '-0', 'raw']
+            if volume_exists:
+                cmd.append('-n')
+            cmd.extend(['/dev/stdin', output])
+            proc = subprocess.Popen(cmd, stdin=iso, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             proc.wait()
             if proc.returncode != 0:
                 raise RuntimeError("Failed to create metadata iso. Error: %s / %s" % (proc.stdout.read(), proc.stderr.read()))

@@ -431,12 +431,15 @@ class Machine(object):
         self.cb = cb
         self.acl = self.cb.agentcontroller
 
-    def cleanup(self, machine):
+    def cleanup(self, machine, gid=None, volumes=None):
         for diskid in machine.disks:
             if models.disk.exists(diskid):
                 models.disk.delete(diskid)
         if models.vmachine.exists(machine.id):
             models.vmachine.delete(machine.id)
+        if volumes and gid:
+            provider = self.cb.getProviderByGID(gid)
+            provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):
         self.assertName(cloudspace.id, name)
@@ -609,7 +612,6 @@ class Machine(object):
                 if not newstackId:
                     stack = self.cb.getBestStack(cloudspace.gid, imageId, excludelist, size.memory)
                     if stack == -1:
-                        self.cleanup(machine)
                         raise exceptions.ServiceUnavailable(
                             'Not enough resources available to provision the requested machine')
                     provider = self.cb.getProviderByStackId(stack['id'])
@@ -620,11 +622,7 @@ class Machine(object):
                         raise exceptions.ServiceUnavailable(
                             'Not enough resources available to provision the requested machine')
             except:
-                if volumes:
-                    # we don't have a provider yet so we get a random one to cleanup
-                    provider = self.cb.getProviderByGID(cloudspace.gid)
-                    provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
-                self.cleanup(machine)
+                self.cleanup(machine, cloudspace.gid, volumes)
                 raise
             return provider
 
@@ -633,7 +631,7 @@ class Machine(object):
             provider = getStackAndProvider(newstackId)
             image = self.cb.getImage(provider, machine.imageId)
             if not image:
-                self.cleanup(machine)
+                self.cleanup(machine, cloudspace.gid, volumes)
                 raise exceptions.BadRequest("Image is not available on requested stack")
 
             firstdisk = models.disk.get(machine.disks[0])
@@ -646,19 +644,18 @@ class Machine(object):
                     node = provider.init_node(name, size, volumes, image.type)
             except StorageException as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cleanup(machine)
+                self.cleanup(machine, cloudspace.gid, volumes)
                 raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
             except NotEnoughResources as e:
                 volumes = e.volumes
                 if stackId:
-                    provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
-                    self.cleanup(machine)
+                    self.cleanup(machine, cloudspace.gid, volumes)
                     raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
                 else:
                     newstackId = 0
                     excludelist.append(provider.stackId)
             except exceptions.ServiceUnavailable:
-                self.cleanup(machine)
+                self.cleanup(machine, cloudspace.gid, volumes)
                 raise
             except Exception as e:
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
@@ -668,6 +665,4 @@ class Machine(object):
                 models.vmachine.set(machine)
         self.cb.clearProvider(provider.stack)
         self.updateMachineFromNode(machine, node, provider.stack)
-        tags = str(machine.id)
-        j.logger.log('Created', category='machine.history.ui', tags=tags)
         return machine.id
