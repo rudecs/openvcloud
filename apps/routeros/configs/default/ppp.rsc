@@ -8,7 +8,7 @@ remove [/interface pptp-server find name=pptp-in1]
 add name=pptp-in1 user=admin
 
 /ppp profile
-set 0 bridge=cloudspace-bridge local-address=192.168.103.1 \
+set 0 bridge=cloudspace-bridge local-address=$privateip \
     remote-address=dhcpppp use-encryption=required
 
 /interface ovpn-server server

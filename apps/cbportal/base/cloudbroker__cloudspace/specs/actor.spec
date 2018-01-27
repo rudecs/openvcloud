@@ -79,6 +79,7 @@
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
         var:externalnetworkId int,, Id of external network to connect to @optional
         var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
+        var:privatenetwork str,192.168.103.0/24,private network to use for cloudspace eg. 192.168.103.0/24 @optional
 
     method:update
         """

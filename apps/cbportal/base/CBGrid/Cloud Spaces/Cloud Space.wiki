@@ -175,6 +175,7 @@ h3. Details
 |*Location Code*|${location}|
 |*Description*|${descr}|
 |*External IP Address*|[${externalnetworkip or 'Unassigned'}|External Network?networkid=${externalnetworkId}]|
+|*Private Network*| ${privatenetwork}|
 
 h3. Cloud Resource Limits
 

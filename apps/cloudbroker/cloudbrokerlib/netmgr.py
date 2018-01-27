@@ -4,6 +4,8 @@ import time
 import uuid
 import netaddr
 
+DEFAULTCIDR = '192.168.103.0/24'
+
 
 class NetManager(object):
     """
@@ -48,7 +50,7 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
-    def fw_create(self, gid, domain, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, **kwargs):
+    def fw_create(self, gid, domain, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, privatenetwork=DEFAULTCIDR, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)
         param:gid grid id
@@ -77,6 +79,7 @@ class NetManager(object):
                     'password': password,
                     'publicip': publicip,
                     'publicgwip': publicgwip,
+                    'privatenetwork': privatenetwork,
                     'vlan': vlan,
                     'publiccidr': publiccidr,
                     }
@@ -359,7 +362,7 @@ class NetManager(object):
             password = str(uuid.uuid4())
             self.fw_create(fwobj.gid, fwobj.domain, password,
                            fwobj.pubips[0], 'routeros', fwobj.id, publicgw,
-                           publiccidr, pool.vlan, targetNid)
+                           publiccidr, pool.vlan, targetNid, cloudspace.privatenetwork)
         fwobj = self._getVFWObject(fwid) # to get updated model
         args = {'fwobject': fwobj.obj2dict()}
         if fwobj.type == 'routeros':

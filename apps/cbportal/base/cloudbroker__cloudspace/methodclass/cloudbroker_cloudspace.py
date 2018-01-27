@@ -3,10 +3,8 @@ from cloudbrokerlib import authenticator
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
-from cloudbrokerlib import network
+from cloudbrokerlib import network, netmgr
 from JumpScale.portal.portal import exceptions
-import netaddr
-import uuid
 
 
 class cloudbroker_cloudspace(BaseActor):
@@ -277,7 +275,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
-               maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, allowedVMSizes=[], **kwargs):
+               maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, allowedVMSizes=[], privatenetwork=netmgr.DEFAULTCIDR, **kwargs):
         """
         Create a cloudspace
 
@@ -289,6 +287,7 @@ class cloudbroker_cloudspace(BaseActor):
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
         :param allowedVMSizes: alowed sizes for a cloudspace
+        :param private network: private network
         :return: True if update was successful
         """
         user = self.syscl.user.search({'id': access})[1:]
@@ -312,7 +311,7 @@ class cloudbroker_cloudspace(BaseActor):
                                                           maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
                                                           maxNetworkPeerTransfer=maxNetworkPeerTransfer,
                                                           maxNumPublicIP=maxNumPublicIP, externalnetworkId=externalnetworkId,
-                                                          allowedVMSizes=allowedVMSizes)
+                                                          allowedVMSizes=allowedVMSizes, privatenetwork=privatenetwork)
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]

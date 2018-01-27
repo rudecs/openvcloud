@@ -176,6 +176,7 @@
     prop:creationTime int,, epoch time of creation, in seconds @index
     prop:updateTime int,, epoch time of creation, in seconds @index
     prop:deletionTime int,, epoch time of destruction, in seconds @index
+    prop:privatenetwork str,,Private network cidr eg. 192.168.103.0/24
 
 [rootmodel:externalnetwork] @dbtype:osis
     """

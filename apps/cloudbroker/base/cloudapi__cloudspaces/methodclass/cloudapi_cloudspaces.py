@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator, network
+from cloudbrokerlib import authenticator, network, netmgr
 from cloudbrokerlib.baseactor import BaseActor
 import netaddr
 import uuid
@@ -150,7 +150,7 @@ class cloudapi_cloudspaces(BaseActor):
     @authenticator.auth(acl={'account': set('C')})
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1,
-               externalnetworkId=None, allowedVMSizes=[], **kwargs):
+               externalnetworkId=None, allowedVMSizes=[], privatenetwork=netmgr.DEFAULTCIDR, **kwargs):
         """
         Create an extra cloudspace
 
@@ -164,6 +164,7 @@ class cloudapi_cloudspaces(BaseActor):
         :param maxNetworkPeerTransfer: max sent/received network transfer peering
         :param maxNumPublicIP: max number of assigned public IPs
         :param externalnetworkId: Id of externalnetwork
+        :param privatenetwork: Private network CIDR
         :return: True if update was successful
         :return int with id of created cloudspace
         """
@@ -174,6 +175,13 @@ class cloudapi_cloudspaces(BaseActor):
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
             raise exceptions.BadRequest('Location %s does not exists' % location)
+        try:
+            privatenetwork = netaddr.IPNetwork(privatenetwork)
+        except netaddr.AddrFormatError:
+            raise exceptions.BadRequest("Invalid private network {} expecting network CIDR format eg. {}".format(privatenetwork, netmgr.DEFAULTCIDR))
+        if str(privatenetwork) != str(privatenetwork.cidr):
+            raise exceptions.BadRequest("Private network should be network address (not IP Address) in CIDR format, did you mean {}".format(privatenetwork.cidr))
+
         location = locations[0]
         if externalnetworkId:
             if self.models.externalnetwork.count({'id': externalnetworkId,
@@ -191,6 +199,7 @@ class cloudapi_cloudspaces(BaseActor):
         cs.name = name
         cs.accountId = accountId
         cs.externalnetworkId = externalnetworkId
+        cs.privatenetwork = str(privatenetwork)
         cs.allowedVMSizes = allowedVMSizes or []
         cs.location = location['locationCode']
         cs.gid = location['gid']
@@ -277,7 +286,9 @@ class cloudapi_cloudspaces(BaseActor):
             try:
                 self.netmgr.fw_create(cs.gid, str(cloudspaceId), password,
                                       str(externalipaddress.ip),
-                                      'routeros', networkid, publicgwip=publicgw, publiccidr=publiccidr, vlan=pool.vlan)
+                                      'routeros', networkid, publicgwip=publicgw,
+                                      publiccidr=publiccidr, vlan=pool.vlan,
+                                      privatenetwork=cs.privatenetwork)
             except:
                 self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
                 self.models.cloudspace.updateSearch({'id': cs.id},

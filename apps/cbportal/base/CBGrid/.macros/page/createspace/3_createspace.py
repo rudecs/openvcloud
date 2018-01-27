@@ -26,6 +26,7 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Username to grant access', 'access', required=True)
     popup.addDropdown('Choose Location', 'location', locations)
     popup.addDropdown('Choose External Network', 'externalnetworkId', externalnetworks)
+    popup.addText('Private Network', 'privatenetwork', value='192.168.103.0/24')
     popup.addText('Max Memory Capacity (GB)', 'maxMemoryCapacity', placeholder=culimitplaceholder, type='float')
     popup.addText('Max VDisk Capacity (GB)', 'maxVDiskCapacity', placeholder=culimitplaceholder, type='number')
     popup.addText('Max Number of CPU Cores', 'maxCPUCapacity', placeholder=culimitplaceholder, type='number')

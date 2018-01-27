@@ -18,6 +18,7 @@
         var:maxNumPublicIP int,-1, max number of assigned public IPs @optional
         var:externalnetworkId int,, id of externalnetwork to connect to @optional
         var:allowedVMSizes list(int),, allowed sizes per cloudspace @optional
+        var:privatenetwork str,192.168.103.0/24,Private network CIDR eg. 192.168.103.0/24 @optional
         result:int, id of created cloudspace
 
     method:deploy

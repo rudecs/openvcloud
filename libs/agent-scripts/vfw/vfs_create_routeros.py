@@ -52,7 +52,7 @@ def createVM(xml):
         con.close()
 
 
-def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
+def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privatenetwork):
     from CloudscalerLibcloud.utils import libvirtutil
     from CloudscalerLibcloud.utils.network import Network
     import pexpect
@@ -79,6 +79,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
+    privatenet = netaddr.IPNetwork(privatenetwork)
     name = 'routeros_%s' % networkidHex
 
     j.clients.redisworker.execFunction(cleanup, _queue='hypervisor', name=name,
@@ -166,11 +167,16 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan):
         ro.uploadFilesFromDir("skins", "/skins")
 
         pubip = "%s/%s" % (publicip, publiccidr)
-        privateip = "192.168.103.1/24"
-        ro.uploadExecuteScript("basicnetwork", vars={'$pubip': pubip, '$privateip': privateip})
+        ro.uploadExecuteScript("basicnetwork", vars={'$pubip': pubip,
+                                                     '$privateip': str(privatenet.ip + 1),
+                                                     '$startpoolip': str(privatenet.ip + 2),
+                                                     '$endpoolip': str(privatenet.ip + 10),
+                                                     '$netmask': str(privatenet.netmask),
+                                                     '$prefix': str(privatenet.prefixlen),
+                                                     '$cidr': str(privatenet)})
         ro.uploadExecuteScript("route", vars={'$gw': publicgwip})
         ro.uploadExecuteScript("certificates")
-        ro.uploadExecuteScript("ppp", vars={'$vpnpassword': vpnpassword})
+        ro.uploadExecuteScript("ppp", vars={'$vpnpassword': vpnpassword, '$privateip': str(privatenet.ip + 1)})
         ro.uploadExecuteScript("systemscripts")
         ro.uploadExecuteScript("services")
 
@@ -239,6 +245,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-n', '--networkid', type=int, required=True)
     parser.add_argument('-p', '--public-ip', dest='publicip', required=True)
+    parser.add_argument('-pn', '--private-net', dest='privatenet', default='192.168.104.0/24')
     parser.add_argument('-pg', '--public-gw', dest='publicgw', required=True)
     parser.add_argument('-pc', '--public-cidr', dest='publiccidr', required=True, type=int)
     parser.add_argument('-v', '--vlan', dest='vlan', required=True, type=int)
@@ -246,4 +253,4 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--cleanup', action='store_true', default=False, help='Cleanup in case of failure')
     options = parser.parse_args()
     docleanup = options.cleanup
-    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password, options.vlan)
+    action(options.networkid, options.publicip, options.publicgw, options.publiccidr, options.password, options.vlan, options.privatenet)

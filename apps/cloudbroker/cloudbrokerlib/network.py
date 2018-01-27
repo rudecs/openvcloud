@@ -1,6 +1,4 @@
 import netaddr
-DEFAULTCIDR = '192.168.103.0/24'
-
 
 class Network(object):
     def __init__(self, models):
@@ -32,7 +30,7 @@ class Network(object):
             '$fields': ['nics.ipAddress', 'nics.type', 'nics.networkId']
         }
         machines = self.models.vmachine.search(q, size=0)[1:]
-        network = netaddr.IPNetwork(DEFAULTCIDR)
+        network = netaddr.IPNetwork(cloudspace.privatenetwork)
         usedips = [netaddr.IPAddress(nic['ipAddress']) for vm in machines for nic in vm['nics'] if nic['type'] == 'bridge'and nic['ipAddress'] != 'Undefined']
         usedips.append(network.ip)
         ip = network.broadcast - 1

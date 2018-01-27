@@ -19,13 +19,13 @@ add bridge=cloudspace-bridge interface=cloudspace
 /ip pool
 remove [/ip pool find name=dhcp]
 # add name=dhcp ranges=192.168.103.11-192.168.103.254
-add name=dhcpppp ranges=192.168.103.2-192.168.103.10
+add name=dhcpppp ranges=$startpoolip-$endpoolip
 
 /ip dns set allow-remote-requests=no
 
 /ip dhcp-server network
 remove [/ip dhcp-server network find]
-add address=192.168.103.0/24 gateway=192.168.103.1 netmask=255.255.255.0 dns-server=8.8.8.8
+add address=$cidr gateway=$privateip netmask=$netmask dns-server=8.8.8.8
 
 /ip dhcp-server
 remove [/ip dhcp-server find name=server1]
@@ -39,7 +39,7 @@ remove [find]
 remove numbers=[/ip address find interface=public]
 remove numbers=[/ip address find interface=cloudspace-bridge]
 add interface=public address=$pubip
-add interface=cloudspace-bridge address=$privateip
+add interface=cloudspace-bridge address=$privateip/$prefix
 
 /ip neighbor
 discovery set [ /interface ethernet find name=public ] discover=no

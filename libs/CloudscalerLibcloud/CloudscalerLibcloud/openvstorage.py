@@ -157,7 +157,7 @@ def getCredentials():
     if not CREDENTIALS:
         scl = j.clients.osis.getNamespace('system')
         grid = scl.grid.get(j.application.whoAmI.gid)
-        settings = grid.settings.get('ovs_credentials')
+        settings = grid.settings.get('ovs_credentials', {})
         CREDENTIALS.extend([settings.get('edgeuser'), settings.get('edgepassword')])
     return CREDENTIALS
 
