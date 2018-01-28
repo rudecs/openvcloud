@@ -135,6 +135,41 @@ class cloudbroker_cloudspace(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    def getVFW(self, cloudspaceId, **kwargs):
+        """
+        Get VFW info
+        param:cloudspaceId id of the cloudspace
+        """
+        cloudspaceId = int(cloudspaceId)
+        if not self.models.cloudspace.exists(cloudspaceId):
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+
+        if not self.vfwcl.virtualfirewall.exists(fwid):
+            raise exceptions.BadRequest('Can\'t get VFW of %s cloudspace' % (cloudspace.status))
+
+        network = self.vfwcl.virtualfirewall.get(fwid)
+        network_obj = network.dump()
+
+        if self.syscl.node.exists(network.nid):
+            network_obj['nodename'] = self.syscl.node.get(network.nid).name
+        else:
+            network_obj['nodename'] = str(network.nid)
+
+
+        try:
+            if self.cb.netmgr.fw_check(network.guid, timeout=5):
+                network_obj['status'] = 'RUNNING'
+            else:
+                network_obj['status'] = 'HALTED'
+        except:
+            network_obj['status'] = 'UNKNOWN'
+
+        return network_obj
+
+    @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):

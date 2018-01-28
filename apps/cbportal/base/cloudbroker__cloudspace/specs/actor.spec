@@ -31,6 +31,12 @@
         """
         var:cloudspaceId int,, id of the cloudspace
 
+    method:getVFW
+        """
+        Get VFW info
+        """
+        var:cloudspaceId int,, id of the cloudspace
+
     method:deployVFW
         """
         Deploy VFW
