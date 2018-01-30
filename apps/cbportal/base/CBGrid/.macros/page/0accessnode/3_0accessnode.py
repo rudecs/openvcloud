@@ -55,7 +55,7 @@ Before using the secure shell plugin integration with 0-access, make sure you lo
         else:
             page.addCodeBlock("Can not get provisioning data may be jwt has expired", template='bash')
     else:
-        page.addCodeBlock("No jwt found in your session please logout and in again", template='bash')
+        page.addCodeBlock("No jwt found in your session please logout and login again", template='bash')
 
     params.result = page
     return params

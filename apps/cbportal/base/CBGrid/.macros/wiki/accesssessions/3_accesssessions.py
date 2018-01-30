@@ -11,7 +11,7 @@ def main(j, args, params, tags, tasklet):
     if jwt:
         table_data = j.apps.cloudbroker.zeroaccess.listSessions(remote=remote, ctx=args.requestContext)
     else:
-        table_data = [['No jwt found please login and out', '', '', '', '']]
+        table_data = [['No jwt found please logout and login again', '', '', '', '']]
 
     if not table_data:
         table_data = [['No sessions found', '', '', '', '']]
