@@ -13,6 +13,9 @@
         {% endif %}
         <os>
             <type arch='x86_64' machine='ubuntu'>hvm</type>
+            {% if node.extra.boottype == 'uefi' %}
+                <loader readonly='yes' type='rom'>/usr/share/ovmf/OVMF.fd</loader>
+            {% endif %}
             <boot dev='hd'/>
         </os>
         <features>

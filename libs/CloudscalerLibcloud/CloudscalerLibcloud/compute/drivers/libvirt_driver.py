@@ -466,6 +466,7 @@ class CSLibvirtNodeDriver(object):
         """
         volumes = []
         imagetype = image.type
+        boottype = image.bootType or 'bios'
         iotune = iotune or {}
 
         try:
@@ -492,7 +493,7 @@ class CSLibvirtNodeDriver(object):
                 self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
             raise StorageException('Failed to create some volumes', e)
         try:
-            return self.init_node(name, size, networkid, volumes, imagetype)
+            return self.init_node(name, size, networkid, volumes, imagetype, boottype)
         except NotEnoughResources:
             raise
         except:
@@ -504,7 +505,7 @@ class CSLibvirtNodeDriver(object):
     def get_host_memory(self):
         return self.node.memory - self.config.get('reserved_mem')
 
-    def init_node(self, name, size, networkid=None, volumes=None, imagetype=''):
+    def init_node(self, name, size, networkid=None, volumes=None, imagetype='', boottype='bios'):
         volumes = volumes or []
         macaddress = self.backendconnection.getMacAddress(self.gid)
 
@@ -515,7 +516,7 @@ class CSLibvirtNodeDriver(object):
         networkname = result['networkname']
         nodeid = str(uuid.uuid4())
         interfaces = [NetworkInterface(macaddress, '{}-{:04x}'.format(name, networkid), 'bridge', networkname)]
-        extra = {'volumes': volumes, 'ifaces': interfaces, 'imagetype': imagetype, 'size': size}
+        extra = {'volumes': volumes, 'ifaces': interfaces, 'imagetype': imagetype, 'size': size, 'boottype': boottype}
         node = Node(
             id=nodeid,
             name=name,

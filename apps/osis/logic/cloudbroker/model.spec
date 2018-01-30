@@ -81,6 +81,7 @@
     prop:username str,, specific username for this image
     prop:password str,, specific password for this image
     prop:provider_name str,, provider name for this image openstack/libvirt, ...
+    prop:bootType str,, image boot type e.g bios, uefi
 
 
 

@@ -2,7 +2,7 @@ from JumpScale import j
 from CloudscalerLibcloud import openvstorage
 
 
-def registerImage(service, name, type, disksize, username=None):
+def registerImage(service, name, type, disksize, username=None, bootType='bios'):
     imagepath = None
     for export in service.hrd.getListFromPrefix('service.web.export'):
         imagepath = export['dest']
@@ -24,6 +24,7 @@ def registerImage(service, name, type, disksize, username=None):
         image.provider_name = 'libvirt'
         image.UNCPath = imagepath
         image.status = 'CREATED'
+        image.bootType = bootType
         imageId, _, _ = ccl.image.set(image)
         ccl.stack.updateSearch({'gid': image.gid}, {'$addToSet': {'images': imageId}})
 

@@ -173,7 +173,7 @@ class CloudBroker(object):
             volumes.append(volume)
 
         size = models.size.get(machine.sizeId)
-        extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes, 'size': size}
+        extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes, 'size': size, 'boottype': image.bootType}
         node = Node(
             id=machine.referenceId,
             name=name,
