@@ -103,7 +103,7 @@ class ISO(object):
             iso.seek(0)
             length = os.fstat(iso.fileno()).st_size
             assert length > 0
-            cmd = ['qemu-img', 'convert', '-0', 'raw']
+            cmd = ['qemu-img', 'convert', '-O', 'raw']
             if volume_exists:
                 cmd.append('-n')
             cmd.extend(['/dev/stdin', output])
