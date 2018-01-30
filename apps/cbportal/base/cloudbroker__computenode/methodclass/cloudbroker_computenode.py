@@ -189,7 +189,7 @@ class cloudbroker_computenode(BaseActor):
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
         for vfw in vfws:
-            nid = int(self.cb.getBestProvider(stack['gid'], memory=128)['referenceId'])
+            nid = int(self.cb.getBestStack(stack['gid'], memory=128)['referenceId'])
             ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
             if not self.cb.netmgr.fw_move(vfw['guid'], nid):
                 self.cb.netmgr.fw_delete(fwid=vfw['guid'], deletemodel=False, timeout=20)
