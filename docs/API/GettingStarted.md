@@ -2,7 +2,8 @@
 
 - [Swagger UI](#swagger)
 - [Command Line](#curl)
-- [Using JumpScale](#jumpscale)
+- [Python](#python)
+- [Jumpscale](#jumpscale)
 
 <a id="swagger"></a>
 ## Swagger UI
@@ -79,15 +80,8 @@ List all cloud spaces using the OpenvcCoud Cloud API, passing the session key in
 curl -X POST $URL/restmachine/cloudapi/cloudspaces/list?authkey=$SESSION_KEY
 ```
 
-<a id="jumpscale"></a>
-## Using the JumpScae Interactive Shell
-
-You need an environment with JumpScale9, see https://github.com/Jumpscale/bash for instructions on how to set this up.
-
-The below code uses **JavaScript Object Signing and Encryption** (JOSE), requiring installation of the **python-jose** module:
-```bash
-pip3 install python-jose
-```
+<a id="python"></a>
+## Using python
 
 Make sure you've exported your client ID and secret:
 ```bash
@@ -111,7 +105,15 @@ url = 'https://itsyou.online/v1/oauth/access_token'
 resp = requests.post(url, params=params)
 resp.raise_for_status()
 JWT = resp.content.decode('utf8')
-
-url= "dc-1.demo.greenitglobe.com"
-cl = j.clients.openvcloud.get(url, jwt=JWT)
+headers = {'Authorization': 'bearer %s' % JWT}
+url= "https://dc-1.demo.greenitglobe.com/restmachine/cloudapi/locations/getUrl"
+resp = requests.post(url, headers=headers)
 ```
+<a id="jumpscale"></a>
+## Using Jumpscale
+
+To install jumpscale follow docs [here](https://github.com/Jumpscale/bash)
+
+It is possible to connect to the api using the jumpscale openvcloud client.
+
+# TODO
