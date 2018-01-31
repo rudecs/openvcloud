@@ -738,11 +738,14 @@ class cloudapi_machines(BaseActor):
             raise exceptions.NotFound('Machine %s not found' % machineId)
         node.name = 'vm-%s' % machineId
         snapshots = provider.ex_list_snapshots(node)
-        result = []
+        snap_dict = {}
         for snapshot in snapshots:
             snapshot['name'] = j.tools.text.toStr(snapshot['name'])
             if snapshot['name'] and not snapshot['name'].endswith('_DELETING'):
-                result.append(snapshot)
+                if snapshot['name'] not in snap_dict:
+                    snap_dict[snapshot['name']] = snapshot
+        result = snap_dict.values()
+        result.sort(key=lambda snapshot: snapshot['epoch'])
         return result
 
     @authenticator.auth(acl={'machine': set('X')})
