@@ -106,11 +106,18 @@ class cloudbroker_cloudspace(BaseActor):
         if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
+        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        network = self.vfwcl.virtualfirewall.get(fwid)
+        if targetNid and network.nid == targetNid:
+            raise exceptions.BadRequest('Can not move VFW to the node it is running on')
+
+        if targetNid is None:
+            currentstack = self.cb.getObjectByReferenceId('stack', str(network.nid))
+            targetNid = int(self.cb.getBestStack(cloudspace.gid, excludelist=[currentstack.id], memory=128)['referenceId'])
         stack = self.cb.getObjectByReferenceId('stack', str(targetNid))
         if stack.status != 'ENABLED':
             raise exceptions.BadRequest('Stack is not enabled')
 
-        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         if not self.cb.netmgr.fw_move(fwid=fwid, targetNid=int(targetNid)):
             # fw_move returned false this mains clean migration failed we will deploy from scratch on new node instead
             self.resetVFW(cloudspaceId, resettype='restore', targetNid=targetNid)

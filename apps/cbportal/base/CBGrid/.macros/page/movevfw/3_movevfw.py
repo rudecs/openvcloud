@@ -31,9 +31,9 @@ def main(j, args, params, tags, tasklet):
         popup.write_html(page)
         return params
 
-    dropnodes = list()
-    for node in vfwnodes:
-        dropnodes.append(("FW Node %(name)s" % node, "%(id)s" % node))
+    dropnodes = [('Choose Automaticly', 'null')]
+    for stack in vfwnodes:
+        dropnodes.append(("FW Node %(name)s" % stack,  stack['referenceId']))
 
     popup.addDropdown("FW Node to move to", 'targetNid', dropnodes)
     popup.addHiddenField('cloudspaceId', cloudspaceId)

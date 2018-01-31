@@ -16,7 +16,7 @@
         move the virtual firewall of a cloudspace to a different firewall node
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:targetNid int,, name of the firewallnode the virtual firewall has to be moved to
+        var:targetNid int,, name of the firewallnode the virtual firewall has to be moved to @optional
 
     method:resetVFW
         """

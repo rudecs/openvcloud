@@ -49,7 +49,8 @@ def action(networkid, sourceip, vlan, externalip):
                     print 'Creating image snapshot %s -> %s' % (templatepath, destination)
                 localip = j.system.net.getReachableIpAddress(sourceip, 22)
                 targeturl = "tcp://{}".format(localip)
-                j.system.btrfs.snapshot(templatepath, destination)
+                if not j.system.fs.exists(destination):
+                    j.system.btrfs.snapshot(templatepath, destination)
                 xmldom = ElementTree.fromstring(domain.XMLDesc())
                 seclabel = xmldom.find('seclabel')
                 if seclabel is not None:
