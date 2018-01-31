@@ -1,4 +1,5 @@
 import netaddr
+from cloudbrokerlib import resourcestatus
 
 class Network(object):
     def __init__(self, models):
@@ -23,7 +24,7 @@ class Network(object):
 
     def getFreeIPAddress(self, cloudspace):
         query = {'cloudspaceId': cloudspace.id,
-                 'status': {'$nin': ['ERROR', 'DESTROYED']},
+                 'status': {'$nin': resourcestatus.Machine.INVALID_STATES},
                 }
         q = {
             '$query': query,
@@ -31,7 +32,7 @@ class Network(object):
         }
         machines = self.models.vmachine.search(q, size=0)[1:]
         network = netaddr.IPNetwork(cloudspace.privatenetwork)
-        usedips = [netaddr.IPAddress(nic['ipAddress']) for vm in machines for nic in vm['nics'] if nic['type'] == 'bridge'and nic['ipAddress'] != 'Undefined']
+        usedips = [netaddr.IPAddress(nic['ipAddress']) for vm in machines for nic in vm['nics'] if nic['type'] == 'bridge' and nic['ipAddress'] != 'Undefined']
         usedips.append(network.ip)
         ip = network.broadcast - 1
         while ip in network:

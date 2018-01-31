@@ -624,8 +624,6 @@ class CSLibvirtNodeDriver(object):
     def destroy_node(self, node):
         xml = self.get_xml(node)
         self._execute_agent_job('deletemachine', queue='hypervisor', machineid=node.id, machinexml=xml)
-        diskguids = self._get_domain_disk_file_names(xml, 'disk') + self._get_domain_disk_file_names(xml, 'cdrom')
-        self.destroy_volumes_by_guid(diskguids)
         return True
 
     def ex_limitio(self, volume):

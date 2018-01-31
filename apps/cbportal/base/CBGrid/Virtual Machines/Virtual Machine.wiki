@@ -25,7 +25,7 @@ h2. Virtual Machine: ${name}
 |*Cloud Space*| [${spacename}|cloud space?id=${cloudspaceId}]|
 |*Creation Time*|{{ts: ${creationTime}}}|
 |*Update Time*|{{ts: ${updateTime}}}|
-|*Deletion Time*| ${deleteTime}|
+|*Deletion Time*|{{ts: ${deletionTime}}}|
 {% if accounts -%}
 |*Initial Credentials*| {{html: <span class="margin-right-xlarge"><strong>Login:</strong> ${accounts[0].login}</span> <strong>Password:</strong> ${accounts[0].password}}}|
 {% endif -%}

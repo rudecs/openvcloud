@@ -219,7 +219,6 @@ class LibvirtUtil(object):
         except:
             domain = None
             xml = ElementTree.fromstring(machinexml)
-        diskfiles = self._get_domain_disk_file_names(xml)
         networkid = self._get_domain_networkid(xml)
         bridges = self._get_domain_bridges(xml)
         if domain:
@@ -231,24 +230,8 @@ class LibvirtUtil(object):
                 pass  # none persistant vms dont need to be undefined
         if networkid or bridges:
             self.cleanupNetwork(networkid, bridges)
-        for diskfile in diskfiles:
-            if os.path.exists(diskfile):
-                try:
-                    vol = self.connection.storageVolLookupByPath(diskfile)
-                    vol.delete(0)
-                except:
-                    continue
-            if os.path.exists(diskfile):
-                os.remove(diskfile)
         name = xml.find('name').text
         poolpath = os.path.join(self.basepath, name)
-        try:
-            diskpool = self.connection.storagePoolLookupByName(name)
-            diskpool.destroy()
-        except:
-            pass
-        if os.path.exists(poolpath):
-            shutil.rmtree(poolpath)
         return True
 
     def get_domain_disks(self, dom):

@@ -35,9 +35,6 @@ class MapEnum(BaseEnum):
             if value == num:
                 return name
 
-class MachineStatus(BaseEnum):
-    _ENUMS = ['RUNNING', 'HALTED', 'PAUSED']
-
 class MachineStatusMap(MapEnum):
     _ENUMS = {'libvirt':{'RUNNING': 1,
                          'HALTED': 5,
@@ -50,5 +47,4 @@ class MachineStatusMap(MapEnum):
                         'PENDING':3}
               }
 
-MachineStatus._init()
 MachineStatusMap._init()

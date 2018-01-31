@@ -1,5 +1,5 @@
 from JumpScale import j
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, resourcestatus
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
@@ -44,19 +44,19 @@ class cloudbroker_cloudspace(BaseActor):
     def _destroy(self, cloudspace, reason, ctx):
         with self.models.cloudspace.lock(cloudspace['id']):
             cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
-            if cloudspace['status'] == 'DEPLOYING':
+            if cloudspace['status'] == resourcestatus.Cloudspace.DEPLOYING:
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
         status = cloudspace['status']
-        cloudspace['status'] = 'DESTROYING'
+        cloudspace['status'] = resourcestatus.Cloudspace.DESTROYING
         self.models.cloudspace.set(cloudspace)
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             # delete machines
             machines = self.models.vmachine.search(
-                {'cloudspaceId': cloudspace['id'], 'status': {'$ne': 'DESTROYED'}})[1:]
+                {'cloudspaceId': cloudspace['id'], 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}})[1:]
             for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
                 machineId = machine['id']
-                if machine['status'] != 'DESTROYED':
+                if machine['status'] != resourcestatus.Cloudspace.DESTROYED:
                     ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
                     j.apps.cloudbroker.machine.destroy(machineId, reason)
         except:
@@ -69,7 +69,7 @@ class cloudbroker_cloudspace(BaseActor):
         ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
         self._destroyVFW(cloudspace['gid'], cloudspace['id'])
         cloudspace = self.models.cloudspace.get(cloudspace['id'])
-        cloudspace.status = 'DESTROYED'
+        cloudspace.status = resourcestatus.Cloudspace.DESTROYED
         self.cb.cloudspace.release_resources(cloudspace)
         self.models.cloudspace.set(cloudspace)
         return True
@@ -103,7 +103,7 @@ class cloudbroker_cloudspace(BaseActor):
         param:targetNode name of the firewallnode the virtual firewall has to be moved to
         """
         cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        if cloudspace.status != 'DEPLOYED':
+        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
         stack = self.cb.getObjectByReferenceId('stack', str(targetNid))
@@ -199,7 +199,7 @@ class cloudbroker_cloudspace(BaseActor):
             raise exceptions.BadRequest("Invalid value {} for resettype".format(resettype))
 
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        if cloudspace.status != 'DEPLOYED':
+        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.BadRequest('Can not reset VFW which is not deployed please deploy instead.')
 
         self._destroyVFW(cloudspace.gid, cloudspaceId, deletemodel=False)
@@ -215,7 +215,7 @@ class cloudbroker_cloudspace(BaseActor):
         if not self.models.cloudspace.exists(cloudspaceId):
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        if cloudspace.status != 'DEPLOYED':
+        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.BadRequest('Can not reset VFW which is not deployed please deploy instead.')
         # restore portforwards and leases
         self.cb.cloudspace.update_firewall(cloudspace)
@@ -259,7 +259,7 @@ class cloudbroker_cloudspace(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self._destroyVFW(cloudspace.gid, cloudspaceId)
         self.cb.cloudspace.release_resources(cloudspace, False)
-        cloudspace.status = 'VIRTUAL'
+        cloudspace.status = resourcestatus.Cloudspace.VIRTUAL
         self.models.cloudspace.set(cloudspace)
         return True
 
