@@ -3,6 +3,7 @@ try:
 except Exception:
     import json
 from JumpScale.portal.portal import exceptions
+from cloudbrokerlib import resourcestatus
 
 
 def generateUsersList(sclient, objdict, accessUserType, users):
@@ -69,7 +70,7 @@ def main(j, args, params, tags, tasklet):
         args.doc.applyTemplate({})
         return params
 
-    if obj.status not in ['DESTROYED', 'ERROR']:
+    if obj.status not in resourcestatus.Machine.INVALID_STATES:
         with gevent.Timeout(15, False):
             # refresh from reality + get snapshots
             try:

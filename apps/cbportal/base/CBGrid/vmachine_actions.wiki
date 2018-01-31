@@ -1,4 +1,5 @@
 
+{% if status != "DELETED" %}
 {{actions:
 - display: Start
   input:
@@ -232,14 +233,6 @@
     type: password
     label: Password of the export server
 
-# - display: Restore
-#   action: ./
-#   data:
-#    machineId: $$id
-#   input:
-#   - exportName
-
-
 
 - display: Move to another CPU node
   action: "#movemachine"
@@ -301,3 +294,13 @@
 
 {{movemachine: machineId:$$id}}
 {{resizemachine: machineId:$$id}}
+{% else %}
+{{actions:
+- display: Restore
+  action: /restmachine/cloudbroker/machine/restore
+  data:
+   machineId: $$id
+  input:
+  - reason
+}}
+{% endif %}

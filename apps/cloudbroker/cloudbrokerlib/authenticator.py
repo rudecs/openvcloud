@@ -105,7 +105,7 @@ class auth(object):
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
             ctx.env['JS_AUDIT'] = True
-            tags = j.core.tags.getObject(ctx.env['beaker.session']['tags'])
+            tags = j.core.tags.getObject(ctx.env['tags'])
             user = ctx.env['beaker.session']['user']
             account = None
             cloudspace = None
@@ -133,7 +133,7 @@ class auth(object):
                 if value is not None:
                     tags.tagSet(key, str(value.id))
 
-            ctx.env['beaker.session']['tags'] = str(tags)
+            ctx.env['tags'] = str(tags)
             if self.isAuthorized(user, account, cloudspace, machine):
                 return func(*args, **kwargs)
             else:

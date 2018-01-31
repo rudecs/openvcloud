@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator, network, netmgr
+from cloudbrokerlib import authenticator, network, netmgr, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor
 import netaddr
 import uuid
@@ -220,7 +220,7 @@ class cloudapi_cloudspaces(BaseActor):
             raise exceptions.BadRequest("Cloudspace must have reserve at least 1 Public IP "
                                         "address for its VFW")
 
-        cs.status = 'VIRTUAL'
+        cs.status = resourcestatus.Cloudspace.VIRTUAL
         networkid = self.libvirt_actor.getFreeNetworkId(cs.gid)
         if not networkid:
             raise exceptions.ServiceUnavailable("Failed to get networkid")
@@ -236,6 +236,7 @@ class cloudapi_cloudspaces(BaseActor):
                                                 maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
         cs.id = self.models.cloudspace.set(cs)[0]
 
+        kwargs['ctx'].env['tags'] += " cloudspaceId:{}".format(cs.id)
         networkid = cs.networkId
         netinfo = self.network.getExternalIpAddress(cs.gid, cs.externalnetworkId)
         if netinfo is None:
@@ -266,9 +267,9 @@ class cloudapi_cloudspaces(BaseActor):
             password = str(uuid.uuid4())
             with self.models.cloudspace.lock(cloudspaceId):
                 cs = self.models.cloudspace.get(cloudspaceId)
-                if cs.status != 'VIRTUAL':
+                if cs.status != resourcestatus.Cloudspace.VIRTUAL:
                     return
-                cs.status = 'DEPLOYING'
+                cs.status = resourcestatus.Cloudspace.DEPLOYING
                 self.models.cloudspace.set(cs)
             pool = self.models.externalnetwork.get(cs.externalnetworkId)
 
@@ -293,13 +294,13 @@ class cloudapi_cloudspaces(BaseActor):
                 self.network.releaseExternalIpAddress(pool.id, str(externalipaddress))
                 self.models.cloudspace.updateSearch({'id': cs.id},
                                                     {'$set': {'externalnetworkip': None,
-                                                              'status': 'VIRTUAL'}})
+                                                              'status': resourcestatus.Cloudspace.VIRTUAL}})
                 raise
 
             self.models.cloudspace.updateSearch({'id': cs.id},
                                                 {'$set': {'updateTime': int(time.time()),
-                                                          'status': 'DEPLOYED'}})
-            return 'DEPLOYED'
+                                                          'status': resourcestatus.Cloudspace.DEPLOYED}})
+            return resourcestatus.Cloudspace.DEPLOYED
         except Exception as e:
             j.errorconditionhandler.processPythonExceptionObject(e, message="Cloudspace deploy aysnc call exception.")
             raise
@@ -314,7 +315,7 @@ class cloudapi_cloudspaces(BaseActor):
         """
         cloudspaceId = int(cloudspaceId)
         # A cloudspace may not contain any resources any more
-        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': 'DESTROYED'}}
+        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}}
         results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
             raise exceptions.Conflict(
@@ -322,13 +323,13 @@ class cloudapi_cloudspaces(BaseActor):
         # The last cloudspace in a space may not be deleted
         with self.models.cloudspace.lock(cloudspaceId):
             cloudspace = self.models.cloudspace.get(cloudspaceId)
-            if cloudspace.status == 'DEPLOYING':
+            if cloudspace.status == resourcestatus.Cloudspace.DEPLOYING:
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
 
-        cloudspace.status = "DESTROYING"
+        cloudspace.status = resourcestatus.Cloudspace.DESTROYING
         self.models.cloudspace.set(cloudspace)
         cloudspace = self.cb.cloudspace.release_resources(cloudspace)
-        cloudspace.status = 'DESTROYED'
+        cloudspace.status = resourcestatus.Cloudspace.DESTROYED
         cloudspace.deletionTime = int(time.time())
         cloudspace.updateTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
@@ -345,12 +346,12 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         vmachines = self.models.vmachine.search({'cloudspaceId': cloudspaceId,
-                                                 'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                 'status': {'$in': resourcestatus.Machine.UP_STATES}
                                                  })[1:]
         for vmachine in vmachines:
             self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
         self.netmgr.fw_stop(cloudspace.networkId)
-        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': 'DISABLED'}})
+        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': resourcestatus.Cloudspace.DISABLED}})
         return True
 
     @authenticator.auth(acl={'account': set('A')})
@@ -364,7 +365,7 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.netmgr.fw_start(cloudspace.networkId)
-        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': 'DEPLOYED'}})
+        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': resourcestatus.Cloudspace.DEPLOYED}})
         return True
 
     @authenticator.auth(acl={'cloudspace': set('R')})
@@ -454,7 +455,7 @@ class cloudapi_cloudspaces(BaseActor):
                   'location', 'gid', 'creationTime', 'updateTime']
         q = {"$or": [{"acl.userGroupId": user},
                      {"id": {"$in": list(cloudspaceaccess)}}],
-             "status": {"$ne": "DESTROYED"}}
+             "status": {"$ne": resourcestatus.Cloudspace.DESTROYED}}
         query = {'$query': q, '$fields': fields}
         cloudspaces = self.models.cloudspace.search(query)[1:]
 
@@ -510,7 +511,7 @@ class cloudapi_cloudspaces(BaseActor):
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
                                                            'status': {
-                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                                               '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
 
         cpusizes = {s['id']: s['vcpus'] for s in
@@ -533,7 +534,7 @@ class cloudapi_cloudspaces(BaseActor):
         machines = self.models.vmachine.search({'$fields': ['id', 'disks'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
                                                            'status': {
-                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                                               '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
 
         diskids = list()
@@ -568,7 +569,7 @@ class cloudapi_cloudspaces(BaseActor):
         # Add the number of machines in cloudspace that have public IPs attached to them
         numpublicips += self.models.vmachine.count({'cloudspaceId': cloudspaceId,
                                                     'nics.type': 'PUBLIC',
-                                                    'status': {'$nin': ['DESTROYED', 'ERROR']}})
+                                                    'status': {'$nin': resourcestatus.Machine.INVALID_STATES}})
 
         return numpublicips
 
@@ -945,7 +946,7 @@ class cloudapi_cloudspaces(BaseActor):
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                 '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
-                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                                               '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
         memsizes = {s['id']: s['memory'] for s in
                     self.models.size.search({'$fields': ['id', 'memory']})[1:]}
@@ -967,7 +968,7 @@ class cloudapi_cloudspaces(BaseActor):
         machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
                                                 '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
-                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                                               '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
 
         cpusizes = {s['id']: s['vcpus'] for s in
@@ -995,7 +996,7 @@ class cloudapi_cloudspaces(BaseActor):
         # Add the number of machines in cloudspace that have public IPs attached to them
         numpublicips += self.models.vmachine.count({'cloudspaceId': {'$in': cloudspacesIds},
                                                     'nics.type': 'PUBLIC',
-                                                    'status': {'$nin': ['DESTROYED', 'ERROR']}})
+                                                    'status': {'$nin': resourcestatus.Machine.INVALID_STATES}})
         return numpublicips
 
     @authenticator.auth(acl={'cloudspace': set('X')})
@@ -1004,7 +1005,7 @@ class cloudapi_cloudspaces(BaseActor):
         from cStringIO import StringIO
         ctx = kwargs['ctx']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        if cloudspace.status != 'DEPLOYED':
+        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.NotFound('Can not get openvpn config for a cloudspace which is not deployed')
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         config = self.cb.netmgr.fw_get_openvpn_config(fwid)
@@ -1020,7 +1021,7 @@ class cloudapi_cloudspaces(BaseActor):
     @authenticator.auth(acl={'cloudspace': set('A')})
     def executeRouterOSScript(self, cloudspaceId, script, **kwargs):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        if cloudspace.status != 'DEPLOYED':
+        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.NotFound('Can not get openvpn config for a cloudspace which is not deployed')
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         self.cb.netmgr.fw_executescript(fwid, script)

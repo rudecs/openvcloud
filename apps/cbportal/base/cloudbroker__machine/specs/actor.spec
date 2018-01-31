@@ -52,6 +52,14 @@
         var:machineId int,,Machine id
         var:reason str,,Reason
 
+    method:restore
+        """
+        Restore a deleted machine
+        """
+        var:machineId int,, id of the machine
+        var:reason str,,Reason
+        result:bool
+    
     method:reboot
         """
         Reboots a deployed machine
@@ -142,17 +150,6 @@
         """
         var:machineId int,, id of the machine to tag
         var:tagName str,, tag
-
-#    method:restore
-#        """
-#        Import a existing backup on a cpu node
-#        """
-#        var:vmexportId int,, id of the exportd to backup
-#        var:nid int,, node on which the bakcup is imported
-#        var:destinationpath str,, location where the backup should be located
-#        var:aws_access_key str,,s3 access key @tags: optional
-#        var:aws_secret_key str,,s3 secret key @tags: optional
-#        result:jobid
 
     method:untag
         """

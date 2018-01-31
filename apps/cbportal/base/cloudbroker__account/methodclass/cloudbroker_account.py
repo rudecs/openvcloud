@@ -5,6 +5,7 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import Validators
+from cloudbrokerlib import resourcestatus
 
 
 def _send_signup_mail(hrd, **kwargs):
@@ -48,13 +49,13 @@ class cloudbroker_account(BaseActor):
         """
         account = self._checkAccount(accountId)
         account['deactivationTime'] = time.time()
-        account['status'] = 'DISABLED'
+        account['status'] = resourcestatus.Account.DISABLED
         self.models.account.set(account)
         # stop all account's machines
         cloudspaces = self.models.cloudspace.search({'accountId': account['id']})[1:]
         for cs in cloudspaces:
             vmachines = self.models.vmachine.search({'cloudspaceId': cs['id'],
-                                                     'status': {'$in': ['RUNNING', 'PAUSED']}
+                                                     'status': {'$in': resourcestatus.Machine.UP_STATES}
                                                      })[1:]
             for vmachine in vmachines:
                 self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
@@ -70,7 +71,7 @@ class cloudbroker_account(BaseActor):
                 sendAccessEmails = True
             elif sendAccessEmails == 0:
                 sendAccessEmails = False
-            accounts = self.models.account.search({'name': name, 'status': {'$ne': 'DESTROYED'}})[1:]
+            accounts = self.models.account.search({'name': name, 'status': {'$ne': resourcestatus.Account.DESTROYED}})[1:]
             if accounts:
                 raise exceptions.Conflict('Account name is already in use.')
 
@@ -100,7 +101,7 @@ class cloudbroker_account(BaseActor):
             account.updateTime = now
             account.company = ''
             account.companyurl = ''
-            account.status = 'CONFIRMED'
+            account.status = resourcestatus.Account.CONFIRMED
             account.sendAccessEmails = sendAccessEmails
 
             resourcelimits = {'CU_M': maxMemoryCapacity,
@@ -151,10 +152,10 @@ class cloudbroker_account(BaseActor):
         result
         """
         account = self._checkAccount(accountId)
-        if account['status'] != 'DISABLED':
+        if account['status'] != resourcestatus.Account.DISABLED:
             raise exceptions.BadRequest('Account is not disabled')
 
-        account['status'] = 'CONFIRMED'
+        account['status'] = resourcestatus.Account.CONFIRMED
         self.models.account.set(account)
         return True
 
@@ -230,9 +231,9 @@ class cloudbroker_account(BaseActor):
         ctx = kwargs['ctx']
         account = self.models.account.get(accountId)
         title = 'Deleting Account %s' % account.name
-        account.status = 'DESTROYING'
+        account.status = resourcestatus.Account.DESTROYING
         self.models.account.set(account)
-        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
+        query = {'accountId': accountId, 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}}
 
         # first delete all images and dependant vms
         images = self.models.image.search({'accountId': accountId})[1:]
@@ -246,7 +247,7 @@ class cloudbroker_account(BaseActor):
         for cloudspace in cloudspaces:
             j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
         account = self.models.account.get(accountId)
-        account.status = 'DESTROYED'
+        account.status = resourcestatus.Account.DESTROYED
         self.models.account.set(account)
         return True
 

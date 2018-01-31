@@ -2,7 +2,7 @@ from JumpScale import j
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface
-from cloudbrokerlib import enums, network
+from cloudbrokerlib import enums, network, resourcestatus
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 from CloudscalerLibcloud.utils.gridconfig import GridConfig
 from .netmgr import NetManager
@@ -193,7 +193,7 @@ class CloudBroker(object):
     def getProviderAndNode(self, machineId):
         machineId = int(machineId)
         machine = models.vmachine.get(machineId)
-        if machine.status in ['ERROR', 'DESTROYED', 'DESTROYING']:
+        if machine.status in resourcestatus.Machine.INVALID_STATES:
             return None, None, machine
         provider = self.getProvider(machine)
         vmnode = None
@@ -207,8 +207,8 @@ class CloudBroker(object):
 
         realstatus = enums.MachineStatusMap.getByValue(node.state, drivertype) or machine.status
         if realstatus != machine.status:
-            if realstatus == 'DESTROYED':
-                realstatus = 'HALTED'
+            if realstatus == resourcestatus.Machine.DESTROYED:
+                realstatus = resourcestatus.Machine.HALTED
             machine.status = realstatus
             models.vmachine.set(machine)
         return provider, node, machine
@@ -253,7 +253,7 @@ class CloudBroker(object):
         # search for all vms running on the stacks
         usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
                                           '$query': {'stackId': stack['id'],
-                                                     'status': {'$nin': ['HALTED', 'ERROR', 'DESTROYED']}}
+                                                     'status': {'$nin': resourcestatus.Machine.NON_CONSUMING_STATES}}
                                           }
                                          )[1:]
         stack['usedvms'] = len(usedvms)
@@ -413,7 +413,7 @@ class CloudSpace(object):
 
     def get_leases(self, cloudspaceId):
         leases = []
-        for vm in models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]:
+        for vm in models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': resourcestatus.Machine.INVALID_STATES}})[1:]:
             for nic in vm['nics']:
                 if nic['ipAddress'] != 'Undefined' and nic['type'] != 'PUBLIC' and nic['macAddress']:
                     leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
@@ -450,7 +450,7 @@ class Machine(object):
             if datadisksize > 2000:
                 raise exceptions.BadRequest("Invalid data disk size {}GB max size is 2000GB".format(datadisksize))
 
-        if cloudspace.status == 'DESTROYED':
+        if cloudspace.status == resourcestatus.Cloudspace.DESTROYED:
             raise exceptions.BadRequest('Can not create machine on destroyed Cloud Space')
 
         image = models.image.get(imageId)
@@ -460,7 +460,7 @@ class Machine(object):
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
-        if models.vmachine.count({'status': {'$ne': 'DESTROYED'}, 'cloudspaceId': cloudspace.id}) >= 250:
+        if models.vmachine.count({'status': {'$ne': resourcestatus.Machine.DESTROYED}, 'cloudspaceId': cloudspace.id}) >= 250:
             raise exceptions.BadRequest("Can not create more than 250 Virtual Machines per Cloud Space")
 
         sizes = j.apps.cloudapi.sizes.list(cloudspace.id)
@@ -475,7 +475,7 @@ class Machine(object):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name,
-                                          'status': {'$nin': ['DESTROYED', 'ERROR']}})[1:]
+                                          'status': {'$nin': [resourcestatus.Machine.DESTROYED, resourcestatus.Machine.ERROR]}})[1:]
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
@@ -544,7 +544,7 @@ class Machine(object):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
         machine.referenceId = node.id
         machine.stackId = stack.id
-        machine.status = enums.MachineStatus.RUNNING
+        machine.status = resourcestatus.Machine.RUNNING
         machine.hostName = node.name
         if 'ifaces' in node.extra:
             for iface in node.extra['ifaces']:
@@ -661,7 +661,7 @@ class Machine(object):
                 eco = j.errorconditionhandler.processPythonExceptionObject(e)
                 self.cb.markProvider(provider.stack, eco)
                 newstackId = 0
-                machine.status = 'ERROR'
+                machine.status = resourcestatus.Machine.ERROR
                 models.vmachine.set(machine)
         self.cb.clearProvider(provider.stack)
         self.updateMachineFromNode(machine, node, provider.stack)

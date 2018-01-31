@@ -3,7 +3,7 @@ from psutil import virtual_memory
 
 # for thin provisioning
 TOTAL_MEM = int(virtual_memory().total >> 30)
-
+DELETE_RETENTION_PERIOD = 3600 * 24 * 7 # one week
 
 def get_reserved_memory_default(total_mem):
     if total_mem <= 64:
@@ -20,6 +20,7 @@ class GridConfig(object):
         self._scl = None
         self.default = {
             "reserved_mem": get_reserved_memory_default(total_mem),
+            "delete_retention_period": DELETE_RETENTION_PERIOD
         }
         if grid is None:
             self.gid = j.application.whoAmI.gid

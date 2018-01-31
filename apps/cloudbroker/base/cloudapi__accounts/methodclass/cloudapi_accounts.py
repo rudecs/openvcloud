@@ -1,5 +1,5 @@
 from JumpScale import j
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
 
@@ -192,7 +192,7 @@ class cloudapi_accounts(BaseActor):
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         fields = ['id', 'name', 'acl', 'creationTime', 'updateTime']
-        q = {'acl.userGroupId': user, 'status': {'$in': ['DISABLED', 'CONFIRMED']}}
+        q = {'acl.userGroupId': user, 'status': {'$in': [resourcestatus.Account.DISABLED, resourcestatus.Account.CONFIRMED]}}
         query = {'$query': q, '$fields': fields}
         accounts = self.models.account.search(query)[1:]
         return accounts
@@ -342,7 +342,7 @@ class cloudapi_accounts(BaseActor):
 
         cloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId}})[1:]
         deployedcloudspaces = self.models.cloudspace.search({'@fields': ['id'], '$query': {'accountId': accountId,
-                                                                                           'status': 'DEPLOYED'}})[1:]
+                                                                                           'status': resourcestatus.Cloudspace.DEPLOYED}})[1:]
         cloudspacesIds = [x['id'] for x in cloudspaces]
         deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
         consumedcudict = j.apps.cloudapi.cloudspaces.getConsumedCloudUnitsInCloudspaces(
@@ -389,7 +389,7 @@ class cloudapi_accounts(BaseActor):
         elif cutype == 'CU_I':
             # for calculating consumed ips we should consider only deployed cloudspaces
             deployedcloudspaces = self.models.cloudspace.search({'$fields': ['id'], '$query': {'accountId': accountId,
-                                                                                               'status': 'DEPLOYED'}})[1:]
+                                                                                               'status': resourcestatus.Cloudspace.DEPLOYED}})[1:]
             deployedcloudspacesIds = [x['id'] for x in deployedcloudspaces]
             consumedamount = j.apps.cloudapi.cloudspaces.getConsumedPublicIPsInCloudspaces(deployedcloudspacesIds)
         else:
@@ -423,7 +423,7 @@ class cloudapi_accounts(BaseActor):
         # Aggregate the total consumed cloud units for all cloudspaces in the account
         for cloudspace in self.models.cloudspace.search({'$fields': ['id', 'resourceLimits'],
                                                          '$query': {'accountId': accountId,
-                                                                    'status': {'$ne': 'DESTROYED'}}})[1:]:
+                                                                    'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}}})[1:]:
             if excludecloudspaceid is not None and cloudspace['id'] == excludecloudspaceid:
                 continue
 

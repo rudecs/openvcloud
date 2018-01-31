@@ -1,11 +1,12 @@
 from JumpScale import j
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import exceptions
 import gevent
 import ujson
+import time
 
 
 class cloudbroker_machine(BaseActor):
@@ -64,7 +65,7 @@ class cloudbroker_machine(BaseActor):
 
         vmachine = self.models.vmachine.get(machineId)
 
-        if vmachine.status == 'DESTROYED' or not vmachine.status:
+        if vmachine.status == resourcestatus.Machine.DESTROYED or not vmachine.status:
             raise exceptions.BadRequest('Machine %s is invalid' % machineId)
 
         return vmachine
@@ -102,6 +103,32 @@ class cloudbroker_machine(BaseActor):
         if "start" in vmachine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(vmachine.id, "start")
         self.cb.actors.cloudapi.machines.start(machineId=machineId)
+
+    @auth(['level1', 'level2', 'level3'])
+    def restore(self, machineId, reason, **kwargs):
+        """
+        Restore a deleted machine
+
+        :param machineId: id of the machine
+        """
+        ctx = kwargs['ctx']
+        ctx.env['JS_AUDIT'] = True
+        ctx.env['tags'] += " machineId:{}".format(machineId)
+        machine = self._validateMachineRequest(machineId)
+        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+        if machine.status != resourcestatus.Machine.DELETED:
+            raise exceptions.BadRequest("Can't restore a non deleted machine")
+        with self.models.cloudspace.lock('{}_ip'.format(machine.cloudspaceId)):
+            nic = machine.nics[0]
+            nic.type = 'bridge'
+            nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
+            machine.status = resourcestatus.Machine.HALTED
+            machine.updateTime = int(time.time())
+            machine.deletionTime = 0
+            self.models.vmachine.set(machine)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        self.models.disk.updateSearch({'id' : {'$in': machine.disks}}, {'$set': {'status': 'CREATED'}})
+        return True
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
@@ -146,7 +173,7 @@ class cloudbroker_machine(BaseActor):
         for machineId in machineIds:
             try:  # BULK ACTION
                 vmachine = self._validateMachineRequest(machineId)
-                if vmachine.status in ['RUNNING', 'PAUSED']:
+                if vmachine.status in resourcestatus.Machine.UP_STATES:
                     runningMachineIds.append(machineId)
             except exceptions.BadRequest:
                 pass
@@ -242,7 +269,7 @@ class cloudbroker_machine(BaseActor):
         if target_provider.gid != source_stack.gid:
             raise exceptions.BadRequest('Target stack %s is not on some grid as source' % target_provider.uri)
 
-        if vmachine.status != 'HALTED':
+        if vmachine.status != resourcestatus.Machine.HALTED:
             # create network on target node
             node = self.cb.getNode(vmachine, target_provider)
             target_provider.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId), force)
@@ -276,35 +303,6 @@ class cloudbroker_machine(BaseActor):
         guid = self.acl.executeJumpscript(
             'cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
         return guid
-
-    @auth(['level1', 'level2', 'level3'])
-    def restore(self, vmexportId, nid, destinationpath, aws_access_key, aws_secret_key, **kwargs):
-        vmexportId = int(vmexportId)
-        nid = int(nid)
-        vmexport = self.models.vmexport.get(vmexportId)
-        if not vmexport:
-            raise exceptions.NotFound('Export definition with id %s not found' % vmexportId)
-        storageparameters = {}
-
-        if vmexport.storagetype == 'S3':
-            if not aws_access_key or not aws_secret_key:
-                raise exceptions.BadRequest('S3 parameters are not provided')
-            storageparameters['aws_access_key'] = aws_access_key
-            storageparameters['aws_secret_key'] = aws_secret_key
-            storageparameters['host'] = vmexport.server
-            storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = vmexport.storagetype
-        storageparameters['bucket'] = vmexport.bucket
-        storageparameters['mdbucketname'] = vmexport.bucket
-
-        metadata = ujson.loads(vmexport.files)
-
-        args = {'path': destinationpath, 'metadata': metadata, 'storageparameters': storageparameters, 'nid': nid}
-
-        id = self.acl.executeJumpscript(
-            'cloudscalers', 'cloudbroker_import', j.application.whoAmI.nid, args=args, wait=False)['result']
-        return id
 
     @auth(['level1', 'level2', 'level3'])
     def listExports(self, status, machineId, **kwargs):
