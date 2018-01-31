@@ -14,6 +14,7 @@ This can be applied to the following configuration settings:
 - [Log Archive](LogArchive.md)
 - [Open vStorage settings](OpenvStorage.md)
 - [Reservation of Host Memory](ReservedHostMemory.md)
+- [Virtual machines retention period](vmretention.md)
 
 
 <a id="set"></a>
