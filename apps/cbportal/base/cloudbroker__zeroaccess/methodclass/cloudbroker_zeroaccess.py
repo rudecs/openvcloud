@@ -51,60 +51,51 @@ class cloudbroker_zeroaccess(BaseActor):
         ctx = kwargs['ctx']
         jwt = self._get_jwt(ctx)
         resp = requests.get('{}/sessions'.format(self.zeroaccessurl), params=params, headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        result = resp.json()
         result_data = list()
         if resp.status_code != 200:
             result_data = [['Can not get data from 0-access server jwt may be expired please logout and login again', '', '', '', '']]
-        elif result['total_pages'] != 0:
-            sessions = result['page']['sessions']
-            nodes = get_nodes_dict()
-            for session in sessions:
-                if session['start'] and session['end']:
-                    session_id = session['href'].split('/')[-1]
-                    itemdata = ['[{sessionid}|/cbgrid/Session Player?sessionid={sessionid}]'.format(sessionid=session_id)]
-                    itemdata.append(session['user']['username'])
-                    if session['remote'] in nodes:
-                        name = '[{name}|/cbgrid/0-access Node?node={id}]'.format(name=nodes[session['remote']]['name'], id=nodes[session['remote']]['guid'])
-                        itemdata.append(name)
-                    else:
-                        itemdata.append(session['remote'])
-                    itemdata.append(datetime.datetime.fromtimestamp(session['start']).strftime('%Y-%m-%d %H:%M:%S'))
-                    itemdata.append(datetime.datetime.fromtimestamp(session['end']).strftime('%Y-%m-%d %H:%M:%S'))
-                    result_data.append(itemdata)
+        else:
+            result = resp.json()
+            if result['total_pages'] != 0:
+                sessions = result['page']['sessions']
+                nodes = get_nodes_dict()
+                for session in sessions:
+                    if session['start'] and session['end']:
+                        session_id = session['href'].split('/')[-1]
+                        itemdata = ['[{sessionid}|/cbgrid/Session Player?sessionid={sessionid}]'.format(sessionid=session_id)]
+                        itemdata.append(session['user']['username'])
+                        if session['remote'] in nodes:
+                            name = '[{name}|/cbgrid/0-access Node?node={id}]'.format(name=nodes[session['remote']]['name'], id=nodes[session['remote']]['guid'])
+                            itemdata.append(name)
+                        else:
+                            itemdata.append(session['remote'])
+                        itemdata.append(datetime.datetime.fromtimestamp(session['start']).strftime('%Y-%m-%d %H:%M:%S'))
+                        itemdata.append(datetime.datetime.fromtimestamp(session['end']).strftime('%Y-%m-%d %H:%M:%S'))
+                        result_data.append(itemdata)
         return result_data
 
-    def provision(self, remote, **kwargs):
-        ctx = kwargs['ctx']
+    def _zero_access_request(self, ctx, url, params=None):
         jwt = self._get_jwt(ctx)
-        resp = requests.get('{0}/provision/{1}'.format(self.zeroaccessurl, remote), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
+        resp = requests.get(url, headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)}, params=params)
         if resp.status_code != 200:
-            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
+            headers = []
+            for name, value in resp.headers.items():
+                if name.lower() not in ('connection', 'content-length'):
+                    headers.append((name, value))
+            raise exceptions.BaseError(resp.status_code, headers, j.tools.text.toStr(resp.text))
         return resp.json()
+
+    def provision(self, remote, **kwargs):
+        return self._zero_access_request(kwargs['ctx'], '{0}/provision/{1}'.format(self.zeroaccessurl, remote))
 
     def downloadSession(self, session_id, **kwargs):
-        ctx = kwargs['ctx']
-        jwt = self._get_jwt(ctx)
-        resp = requests.get('{0}/sessions/{1}'.format(self.zeroaccessurl, session_id), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code != 200:
-            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
-        return resp.json()
+        return self._zero_access_request(kwargs['ctx'], '{0}/sessions/{1}'.format(self.zeroaccessurl, session_id))
 
     def getSessionInitTime(self, **kwargs):
-        ctx = kwargs['ctx']
-        jwt = self._get_jwt(ctx)
-        resp = requests.get('{}/server/config'.format(self.zeroaccessurl), headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code != 200:
-            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
-        return resp.json()
+        return self._zero_access_request(kwargs['ctx'], '{}/server/config'.format(self.zeroaccessurl))
 
     def sessionTextSearch(self, query, page, **kwargs):
-        ctx = kwargs['ctx']
-        jwt = self._get_jwt(ctx)
-        resp = requests.get('{}/sessions'.format(self.zeroaccessurl), params={'query': query, 'page': page}, headers={'Authorization': 'Bearer {jwt}'.format(jwt=jwt)})
-        if resp.status_code != 200:
-            raise exceptions.BaseError(resp.status_code, resp.text, resp.headers)
-        return resp.json()
-
+        return self._zero_access_request(kwargs['ctx'], '{}/sessions'.format(self.zeroaccessurl), params={'query': query, 'page': page})
     def _get_node_info(self, node_id):
         if node_id == '0':
             return 'management', socket.gethostbyname("management-ssh")
