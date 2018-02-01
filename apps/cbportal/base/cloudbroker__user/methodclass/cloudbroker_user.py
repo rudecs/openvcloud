@@ -15,26 +15,6 @@ class cloudbroker_user(BaseActor):
         super(cloudbroker_user, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
 
-    def generateAuthorizationKey(self, username, **kwargs):
-        """
-        Generates a valid authorizationkey in the context of a specific user.
-        This key can be used in a webbrowser to browse the cloud portal from the perspective of that specific user or to use the api in his/her authorization context
-        param:username name of the user an authorization key is required for
-        """
-        user = self.cb.checkUser(username)
-        if not user:
-            raise exceptions.NotFound("User with name %s does not exists" % username)
-        return self.cb.actors.cloudapi.users.authenticate(username=username, password=user['passwd'])
-
-    @auth(['level1', 'level2', 'level3'])
-    def updatePassword(self, username, password, **kwargs):
-        user = self.cb.checkUser(username)
-        if not user:
-            raise exceptions.NotFound("User with name %s does not exists" % username)
-        user['passwd'] = hashlib.md5(password).hexdigest()
-        self.syscl.user.set(user)
-        return True
-
     @auth(['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, groups, **kwargs):
         groups = groups or []
@@ -47,15 +27,6 @@ class cloudbroker_user(BaseActor):
             self.cb.updateResourceInvitations(username, primaryemailaddress)
 
         return True
-
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
-    def sendResetPasswordLink(self, username, **kwargs):
-        user = self.cb.checkUser(username)
-        if not user:
-            raise exceptions.NotFound("User with name %s does not exists" % username)
-        email = user['emails']
-        return self.cb.actors.cloudapi.users.sendResetPasswordLink(emailaddress=email)
 
     @auth(['level1', 'level2', 'level3'])
     def deleteUsers(self, userIds, **kwargs):

@@ -93,7 +93,6 @@
 * [Testing](Testing/Testing.md)
 * [Branding](Branding/Branding.md)
   * [How to Change Logo on Portals](Branding/change_logo.md)
-  * [Customize the Body of the Resend Password e-mail](Branding/customize_reset_password_email.md)
 * [API](API/README.md)
   * [Getting started with the OpenvCloud Cloud API](API/GettingStarted.md)
   * [Create Static API Documentation Site](API/GettingStarted.md)

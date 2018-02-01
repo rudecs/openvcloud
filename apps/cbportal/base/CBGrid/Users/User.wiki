@@ -15,11 +15,6 @@ h2. User: ${id}
   action: /restmachine/cloudbroker/user/delete?username=$$id
   navigateback: true
 
-- display: Send Reset Password Link
-  action: /restmachine/cloudbroker/user/sendResetPasswordLink
-  data:
-   username: ${id}
-   email: ${emails}
 }}
 {{user_edit: guid:$$id}}
 

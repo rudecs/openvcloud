@@ -5,19 +5,6 @@
 h2. VMExport: ${id}
 
 {{actions:
-- display: Update Password
-  action: /restmachine/cloudbroker/user/updatePassword
-  data:
-   username: ${id}
-  input:
-  - password
-
-- display: Send Reset Password Link
-  action: /restmachine/cloudbroker/user/sendResetPasswordLink
-  data:
-   username: ${id}
-   email: ${emails}
-
 - display: Delete
   action: /restmachine/cloudbroker/user/delete
   data:
