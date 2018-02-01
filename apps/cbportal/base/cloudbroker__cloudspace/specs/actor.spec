@@ -23,7 +23,7 @@
         Reset VFW
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:resettype str,,either reset or restore
+        var:resettype str,,either factory or restore
     
     method:applyConfig
         """
