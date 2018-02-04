@@ -75,7 +75,6 @@ class cloudbroker_account(BaseActor):
             if accounts:
                 raise exceptions.Conflict('Account name is already in use.')
 
-            created = False
             if j.core.portal.active.auth.userExists(username):
                 if emailaddress and not self.syscl.user.search({'id': username,
                                                                 'emails': emailaddress})[1:]:
@@ -90,7 +89,6 @@ class cloudbroker_account(BaseActor):
 
                 password = j.base.idgenerator.generateGUID()
                 j.apps.cloudbroker.user.create(username=username, emailaddress=[emailaddress], password=password, groups=['user'])
-                created = True
 
             now = int(time.time())
             locationurl = self.cb.actors.cloudapi.locations.getUrl().strip('/')
@@ -125,18 +123,6 @@ class cloudbroker_account(BaseActor):
                 'email': emailaddress,
                 'portalurl': locationurl
             }
-
-            if created:
-                # new user.
-                validation_token = self.models.resetpasswordtoken.new()
-                validation_token.id = j.base.idgenerator.generateGUID()
-                validation_token.creationTime = int(time.time())
-                validation_token.username = username
-
-                self.models.resetpasswordtoken.set(validation_token)
-                mail_args.update({
-                    'token': validation_token.id
-                })
 
             if emailaddress:
                 _send_signup_mail(hrd=self.hrd, **mail_args)

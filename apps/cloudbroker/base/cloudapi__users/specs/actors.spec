@@ -3,7 +3,7 @@
 	User management
 	"""
 
-	method:authenticate @noauth
+    method:authenticate @noauth
 	    """
 	    The function evaluates the provided username and password and returns a session key.
 	    The session key can be used for doing api requests. E.g this is the authkey parameter in every actor request.
@@ -28,44 +28,6 @@
         var:data str,,data to set to user in json format
         result:True
 
-	method:updatePassword
-	    """
-	    Change user password
-	    """
-        var:oldPassword str,,oldPassword of the user
-        var:newPassword str,,newPassword of the user
-        result:dict,,user information.
-
-    method:sendResetPasswordLink @noauth
-	    """
-	    Sends a reset password link to the supplied email address
-	    """
-	    var:emailaddress str,,unique emailaddress for the account
-	    result:bool
-
-    method:getResetPasswordInformation @noauth
-        """
-        Retrieve information about a password reset token (if still valid)
-        """
-        var:resettoken str,, password reset token
-        result:bool
-
-    method:resetPassword @noauth
-        """
-        Resets a password
-        """
-        var:resettoken str,, password reset token
-        var:newpassword str,, new password
-        result:bool
-
-    method:validate @noauth
-        """
-        Validates user email and sets his password
-        """
-        var:validationtoken str,, Validation token
-        var:password str,, User password
-        result:bool
-
     method:getMatchingUsernames
         """
         Get a list of the matching usernames for a given string
@@ -80,15 +42,4 @@
         """
         var:inviteusertoken str,,the token that was previously sent to the invited user email
         var:emailaddress str,,email address for the user
-        result:bool
-
-    method:registerInvitedUser @noauth
-        """
-        Registers an invited user
-        """
-        var:inviteusertoken str,, user invitation token
-        var:emailaddress str,, email address
-        var:username str,, username to be assigned to user
-        var:password str,, password
-        var:confirmpassword str,, password confirmation
         result:bool
