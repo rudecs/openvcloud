@@ -34,7 +34,7 @@ class Network(object):
 
     def get_port(self, interface):
         portcmd = 'ovs-vsctl -f table -d bare --no-heading -- --columns=ofport list Interface {}'.format(interface)
-        exitcode, port = j.system.process.execute(portcmd)
+        exitcode, port = j.system.process.execute(portcmd, dieOnNonZeroExitCode=False)
         return port.strip()
 
     def cleanup_external(self, domain):
@@ -43,7 +43,8 @@ class Network(object):
         except LookupError:
             return
         port = self.get_port(interface)
-        self.cleanup_flows(bridge, port, mac)
+        if port:
+            self.cleanup_flows(bridge, port, mac)
 
     def protect_external(self, domain, ipaddress):
         try:
@@ -74,4 +75,5 @@ class Network(object):
     def cleanup_gwmgmt(self, domain):
         interface, mac = self.get_gwmgmt_interface(domain)
         port = self.get_port(interface)
-        self.cleanup_flows('gw_mgmt', port, mac)
+        if port:
+            self.cleanup_flows('gw_mgmt', port, mac)
