@@ -537,7 +537,7 @@ class cloudapi_machines(BaseActor):
         return self._export(machineId, backupName, storageparameters)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
+    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, userdata=None, **kwargs):
         """
         Create a machine based on the available sizes, in a certain cloud space
         The user needs write access rights on the cloud space
@@ -562,7 +562,7 @@ class cloudapi_machines(BaseActor):
                                                                    size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(
             name, description, cloudspace, imageId, sizeId, disksize, datadisks)
-        machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None)
+        machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None, userdata)
         kwargs['ctx'].env['tags'] += " machineId:{}".format(machineId)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId

@@ -599,7 +599,7 @@ class Machine(object):
             models.vmachine.set(machine)
 
 
-    def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId):
+    def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId, userdata=None):
         excludelist = []
         name = 'vm-%s' % machine.id
         newstackId = stackId
@@ -639,7 +639,7 @@ class Machine(object):
                 if not volumes:
                     node = provider.create_node(name=name, image=image, disksize=firstdisk.sizeMax, auth=auth,
                                                 networkid=cloudspace.networkId, size=size,
-                                                datadisks=diskinfo, iotune=firstdisk.iotune)
+                                                datadisks=diskinfo, iotune=firstdisk.iotune, userdata=userdata)
                 else:
                     node = provider.init_node(name, size, volumes, image.type)
             except StorageException as e:

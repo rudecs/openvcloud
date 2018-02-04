@@ -47,6 +47,7 @@ def main(j, args, params, tags, tasklet):
     popup.addDropdown('Choose Image', 'imageId', dropimages)
     popup.addDropdown('Choose Size', 'sizeId', dropsizes)
     popup.addDropdown('Choose Disk Size', 'disksize', dropdisksizes)
+    popup.addText('User data for cloud-init', 'userdata')
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)
 

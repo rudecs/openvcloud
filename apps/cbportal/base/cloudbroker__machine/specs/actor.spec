@@ -36,6 +36,7 @@
         var:disksize int,, size of base volume
         var:stackid int,, id of the stack
         var:datadisks list(int),, list of data disk sizes in gigabytes @optional
+        var:userdata obj,,Object or string @optional
         result:bool
 
     method:stop

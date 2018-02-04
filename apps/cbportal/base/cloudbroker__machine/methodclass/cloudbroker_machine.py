@@ -33,7 +33,7 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, datadisks, **kwargs):
+    def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, datadisks, userdata=None, **kwargs):
         """
         Create a machine on a specific stackid
         param:cloudspaceId id of space in which we want to create a machine
@@ -54,7 +54,7 @@ class cloudbroker_machine(BaseActor):
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
                                                                    size.memory / 1024.0, totaldisksize)
         machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
-        machineId =  self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid)
+        machineId =  self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid, userdata)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
 

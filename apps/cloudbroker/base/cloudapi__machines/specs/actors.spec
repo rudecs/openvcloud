@@ -15,6 +15,7 @@
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:datadisks list(int),, list of extra data disks in gigabytes  @optional
+        var:userdata obj,,Object or string @optional
         result:bool
 
 

@@ -12,6 +12,7 @@ import uuid
 import crypt
 import random
 import string
+import yaml
 
 baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
@@ -385,7 +386,10 @@ class CSLibvirtNodeDriver(object):
         self._execute_agent_job('detach_device', queue='hypervisor', xml=str(volume), machineid=node.id)
         return node
 
-    def _create_metadata_iso(self, edgeclient, name, password, type):
+    def _create_metadata_iso(self, edgeclient, name, password, type, userdata=None):
+        customuserdata = userdata or {}
+        if isinstance(customuserdata, basestring):
+            customuserdata = yaml.load(customuserdata)
         if type not in ['WINDOWS', 'Windows']:
             memrule = 'SUBSYSTEM=="memory", ACTION=="add", TEST=="state", ATTR{state}=="offline", ATTR{state}="online"'
             cpurule = 'SUBSYSTEM=="cpu", ACTION=="add", TEST=="online", ATTR{online}=="0", ATTR{online}="1"'
@@ -405,6 +409,10 @@ class CSLibvirtNodeDriver(object):
                         'manage_etc_hosts': True,
                         'chpasswd': {'expire': False}}
             metadata = {'local-hostname': name}
+            if 'users' in customuserdata:
+                users = customuserdata.pop('users')
+                userdata.extend(users)
+            userdata.update(customuserdata)
         else:
             userdata = {}
             metadata = {'admin_pass': password, 'hostname': name}
@@ -440,7 +448,7 @@ class CSLibvirtNodeDriver(object):
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
 
-    def create_node(self, name, size, image, disksize, auth=None, networkid=None, datadisks=None, iotune=None):
+    def create_node(self, name, size, image, disksize, auth=None, networkid=None, datadisks=None, iotune=None, userdata=None):
         """
         Creation in libcloud is based on sizes and images, libvirt has no
         knowledge of sizes and images.
@@ -476,7 +484,7 @@ class CSLibvirtNodeDriver(object):
             volumes.append(volume)
             if auth:
                 # At this moment we handle only NodeAuthPassword
-                volumes.append(self._create_metadata_iso(edgeclient, name, auth.password, imagetype))
+                volumes.append(self._create_metadata_iso(edgeclient, name, auth.password, imagetype, userdata))
 
             if datadisks:
                 datavolumes = []
