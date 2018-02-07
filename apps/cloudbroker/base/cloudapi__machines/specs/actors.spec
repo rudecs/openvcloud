@@ -155,12 +155,13 @@
         var:name str,, name of snapshot @optional
         result:str
 
-    method:convertToTemplate
+    method:createTemplate
         """
-        Convert a machine to a template
+        Create a template form a machine
         """
         var:machineId int,, id of the machine
-        var:templatename str,, name of the template
+        var:templateName str,, name of the template
+        var:callbackUrl str,, callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion. @optional
         result:bool, True if template was created
 
     method:importOVF

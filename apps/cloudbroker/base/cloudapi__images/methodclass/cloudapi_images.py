@@ -66,7 +66,7 @@ class cloudapi_images(BaseActor):
         if not gid:
             raise exceptions.Error("Could not find image template")
 
-        provider.client.ex_delete_template(image.referenceId)
+        provider.ex_delete_template(image.referenceId)
 
         for stack in stacks:
             if imageId in stack['images']:

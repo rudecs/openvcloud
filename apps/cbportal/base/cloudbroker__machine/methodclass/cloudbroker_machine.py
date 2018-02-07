@@ -481,9 +481,9 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def convertToTemplate(self, machineId, templateName, reason, **kwargs):
+    def createTemplate(self, machineId, templateName, callbackUrl, reason, **kwargs):
         self._validateMachineRequest(machineId)
-        self.cb.actors.cloudapi.machines.convertToTemplate(machineId=machineId, templatename=templateName)
+        self.cb.actors.cloudapi.machines.createTemplate(machineId=machineId, templatename=templateName, callbackUrl=callbackUrl)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

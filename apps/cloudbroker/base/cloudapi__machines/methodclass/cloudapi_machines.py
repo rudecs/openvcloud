@@ -241,8 +241,18 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'account': set('C')})
-    # @RequireState(resourcestatus.Machine.HALTED, 'Can only convert a stopped machine.')
-    def convertToTemplate(self, machineId, templatename, **kwargs):
+    @RequireState(resourcestatus.Machine.HALTED, 'A template can only be created for a stopped Machine')
+    def createTemplate(self, machineId, templateName, callbackUrl, **kwargs):
+        """
+        Create a template from a machine
+        param:machineId id of the machine to export
+        param:templateName name of the template to be created
+        param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
+        """ 
+        gevent.spawn(self.syncCreateTemplate, machineId, templateName, callbackUrl, **kwargs)
+        return True
+
+    def syncCreateTemplate(self, machineId, templateName, callbackUrl, **kwargs):
         """
         Create a template from the active machine
 
@@ -251,47 +261,51 @@ class cloudapi_machines(BaseActor):
         :param basename: snapshot id on which the template is based
         :return True if template was created
         """
-        raise exceptions.NotImplemented("convertToTemplate has been disabled in this release")
         machine = self._getMachine(machineId)
         origimage = self.models.image.get(machine.imageId)
-        if origimage.accountId:
-            raise exceptions.Conflict("Can not make template from a machine which was created from a custom template.")
-
-        provider = self.cb.getProvider(machine)
-        node = self.cb.getNode(machine.referenceId, provider)
+        ctx = kwargs['ctx']
+        user = ctx.env['beaker.session']['user']
+        userobj = j.core.portal.active.auth.getUserInfo(user)
+        provider, node, _ = self.cb.getProviderAndNode(machineId)
+        firstdisk = self.models.disk.get(machine.disks[0])
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         image = self.models.image.new()
-        image.name = templatename
+        image.name = templateName
         image.type = 'Custom Templates'
         image.username = machine.accounts[0].login
         image.password = machine.accounts[0].password
-        m = {}
-        m['stackId'] = machine.stackId
-        m['disks'] = machine.disks
-        m['sizeId'] = machine.sizeId
-        firstdisk = self.models.disk.get(machine.disks[0])
         image.size = firstdisk.sizeMax
         image.accountId = cloudspace.accountId
         image.status = 'CREATING'
+        image.gid = cloudspace.gid
+        image.bootType = origimage.bootType
+        image.provider_name = origimage.provider_name
         imageid = self.models.image.set(image)[0]
         image.id = imageid
-        image.gid = cloudspace.gid
         try:
-            referenceId = provider.ex_create_template(node, templatename)
-        except:
+            volume = provider.create_volume(image.size, 'templates/{}_{}'.format(machineId, templateName), data=False)
+            image_path = provider.ex_create_template(node, templateName, volume.vdiskguid)
+        except Exception as e:
             image = self.models.image.get(imageid)
             if image.status == 'CREATING':
                 image.status = 'ERROR'
                 self.models.image.set(image)
+            eco = j.errorconditionhandler.processPythonExceptionObject(e)
+            eco.process()
+            if not callbackUrl:
+                [self._sendCreateTemplateCompletionMail(node.name, email, success=False, eco=eco.guid) for email in userobj.emails]
+            else:
+                requests.get(callbackUrl)
             raise
-        image.referenceId = referenceId
+        image.UNCPath = image_path
+        image.referenceId = volume.vdiskguid
         image.status = 'CREATED'
         self.models.image.set(image)
-        for stack in self.models.stack.search({'gid': cloudspace.gid})[1:]:
-            stack.setdefault('images', []).append(imageid)
-            self.models.stack.set(stack)
-        machine.type = 'TEMPLATE'
-        self.models.vmachine.set(machine)
+        self.models.stack.updateSearch({'gid': cloudspace.gid}, {'$addToSet': {'images': imageid}})
+        if not callbackUrl:
+            [self._sendCreateTemplateCompletionMail(node.name, email, success=True) for email in userobj.emails]
+        else:
+            requests.get(callbackUrl)
 
         return imageid
 
@@ -333,6 +347,26 @@ class cloudapi_machines(BaseActor):
 
         message = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.html', **args)
         subject = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.subject.txt', **args)
+
+    def _sendCreateTemplateCompletionMail(self, name, emailaddress, success=True, error=False, eco=""):
+        fromaddr = self.hrd.get('instance.openvcloud.supportemail')
+        if isinstance(emailaddress, list):
+            toaddrs = emailaddress
+        else:
+            toaddrs = [emailaddress]
+
+        success = "successfully" if success else "not successfully"
+        args = {
+            'error': error,
+            'success': success,
+            'email': emailaddress,
+            'name': name,
+            'eco': eco,
+        }
+
+        subject = j.core.portal.active.templates.render('cloudbroker/email/users/template_creation_subject.txt', **args)
+        message = j.core.portal.active.templates.render('cloudbroker/email/users/template_creation_completion.html', **args)
+
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 

@@ -337,30 +337,34 @@ class CSLibvirtNodeDriver(object):
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self), edgeclient
-
-    def create_volume(self, size, name):
-        volumes = [{'name': name, 'size': size, 'dev': ''}]
-        return self.create_volumes(volumes)[0]
-
+    
+    def create_volume(self, size, name, data=True, dev=''):
+        if data:
+            vpoolname, edgeclients = self.getBestDataVpool()
+            edgeclient = self.getNextEdgeClient(vpoolname, edgeclients)
+            diskname = 'volumes/volume_{}'.format(name)
+        else:
+            edgeclient = self.getNextEdgeClient('vmstor')
+            diskname = name
+        kwargs = {'ovs_connection': self.ovs_connection,
+                    'vpoolguid': edgeclient['vpoolguid'],
+                    'storagerouterguid': edgeclient['storagerouterguid'],
+                    'diskname': diskname,
+                    'size': size,
+                    'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
+        try:
+            vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
+        except Exception as ex:
+            raise StorageException(ex.message, ex)
+        volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
+        stvol = OpenvStorageVolume(id=volumeid, size=size, name=diskname, driver=self)
+        stvol.dev = dev
+        return stvol
+        
     def create_volumes(self, volumes):
         stvolumes = []
         for volume in volumes:
-            vpoolname, edgeclients = self.getBestDataVpool()
-            edgeclient = self.getNextEdgeClient(vpoolname, edgeclients)
-            diskname = 'volumes/volume_{}'.format(volume['name'])
-            kwargs = {'ovs_connection': self.ovs_connection,
-                      'vpoolguid': edgeclient['vpoolguid'],
-                      'storagerouterguid': edgeclient['storagerouterguid'],
-                      'diskname': diskname,
-                      'size': volume['size'],
-                      'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
-            try:
-                vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
-            except Exception as ex:
-                raise StorageException(ex.message, ex)
-            volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
-            stvol = OpenvStorageVolume(id=volumeid, size=volume['size'], name=diskname, driver=self)
-            stvol.dev = volume['dev']
+            stvol = self.create_volume(volume['size'], volume['name'], volume.get('data', True), volume.get('dev', ''))
             stvolumes.append(stvol)
         return stvolumes
 
@@ -548,17 +552,18 @@ class CSLibvirtNodeDriver(object):
         node = self._from_agent_to_node(result, volumes=volumes)
         return node
 
-    def ex_create_template(self, node, name):
+    def ex_create_template(self, node, name, new_vdiskguid):
         bootvolume = node.extra['volumes'][0]
         kwargs = {'ovs_connection': self.ovs_connection,
-                  'diskguid': bootvolume.vdiskguid}
-        templateguid = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
-        return self.backendconnection.registerImage(name, 'Custom Template', templateguid, 0, self.gid)
+                  'diskguid': bootvolume.vdiskguid,
+                  'new_vdiskguid': new_vdiskguid,
+                  'template_name': name}
+        image_path = self._execute_agent_job('createtemplate', queue='io', role='storagedriver', **kwargs)
+        return image_path
 
     def ex_delete_template(self, templateid):
         kwargs = {'ovs_connection': self.ovs_connection, 'diskguid': str(uuid.UUID(templateid))}
         self._execute_agent_job('deletetemplate', queue='io', role='storagedriver', **kwargs)
-        return self.backendconnection.removeImage(templateid, self.gid)
 
     def ex_get_node_details(self, node_id):
         driver = DummyNodeDriver(0)
