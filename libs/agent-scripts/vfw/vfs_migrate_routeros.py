@@ -59,13 +59,13 @@ def action(networkid, sourceip, vlan, externalip):
                 flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
                 try:
                     domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
-                except:
+                except Exception as e:
                     try:
                         target_domain = target_con.lookupByName(name)
                         target_domain.undefine()
                     except:
                         pass  # vm wasn't created on target
-                    raise
+                    raise e
                 domain = target_con.lookupByName(name)
                 network.protect_external(domain, externalip)
                 network.protect_gwmgmt(domain, internalip)

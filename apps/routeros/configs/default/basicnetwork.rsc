@@ -50,4 +50,5 @@ discovery set [ /interface ethernet find name=public ] discover=no
 
 /ip firewall nat
 add action=masquerade chain=srcnat out-interface=public
+add action=masquerade chain=srcnat out-interface=cloudspace-bridge src-address=$cidr dst-address=$cidr
 
