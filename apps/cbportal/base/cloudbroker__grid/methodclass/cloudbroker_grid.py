@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
+import gevent
 
 class cloudbroker_grid(object):
 
@@ -43,3 +44,8 @@ class cloudbroker_grid(object):
         location.name = name
         self.models.location.set(location)
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
+        
+    @auth(['level1', 'level2', 'level3'])
+    def upgrade(self, **kwargs):
+        self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode', wait=False)
+        raise exceptions.redirect('/upgrade')

@@ -68,6 +68,8 @@ h3. Location: ${name}
 
 }}
 
+{{action id:'upgradecluster'  label:'Upgrade Cluster'}}
+
 {{ deletesize }}
 
 @row
@@ -120,6 +122,8 @@ h3. Firewall Nodes
 
 h3. Virtual Machines
 {{vmachines gid:$$gid}}
+
+
 
 {% else %}
 No Grid provided
