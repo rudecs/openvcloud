@@ -61,8 +61,10 @@ class NetManager(object):
         """
         fwid = '{}_{}'.format(gid, networkid)
         if not self.osisvfw.exists(fwid):
+            isnew = True
             fwobj = self.osisvfw.new()
         else:
+            isnew = False
             fwobj = self.osisvfw.get(fwid)
         fwobj.domain = domain
         fwobj.id = networkid
@@ -90,14 +92,8 @@ class NetManager(object):
             result = self.agentcontroller.waitJumpscript(job=job)
 
             if result['state'] != 'OK':
-                self.osisvfw.delete(key)
-                args = {'ovs_connection': self.get_ovs_connection(gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
-
-                job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
-
-                if job['state'] != 'OK':
-                    raise exceptions.ServiceUnavailable("Failed to remove vfw with volume %s" % networkid)
-
+                if isnew:
+                    self.osisvfw.delete(key)
                 raise exceptions.ServiceUnavailable("Failed to create fw for domain %s job was %s" % (domain, result['id']))
             data = result['result']
             fwobj.host = data['internalip']
@@ -344,6 +340,12 @@ class NetManager(object):
         """
         if resettype not in ['factory', 'restore']:
             raise exceptions.BadRequest("Invalid value {} for resettype".format(resettype))
+        try:
+            running = self.fw_check(fwid)
+        except:
+            running = False
+        if running:
+            return True
         fwobj = self._getVFWObject(fwid)
         cloudspace = self.cbmodel.cloudspace.get(int(fwobj.domain))
         if cloudspace.externalnetworkip is None:
@@ -353,7 +355,6 @@ class NetManager(object):
         if resettype == 'factory' or not restored:
             pool = self.cbmodel.externalnetwork.get(cloudspace.externalnetworkId)
             externalipaddress = netaddr.IPNetwork(cloudspace.externalnetworkip)
-            password = str(uuid.uuid4())
             publicgw = pool.gateway
             publiccidr = externalipaddress.prefixlen
             password = str(uuid.uuid4())
