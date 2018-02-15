@@ -31,6 +31,9 @@ h3. Location: ${name}
   input:
    - age
 
+- display: Upgrade Location
+  action: /restmachine/cloudbroker/grid/upgrade
+  
 - display: Add New VM Size
   action: /restmachine/cloudbroker/iaas/addSize
   data:
@@ -67,8 +70,6 @@ h3. Location: ${name}
   action: "#deletesize"
 
 }}
-
-{{action id:'upgradecluster'  label:'Upgrade Cluster'}}
 
 {{ deletesize }}
 
