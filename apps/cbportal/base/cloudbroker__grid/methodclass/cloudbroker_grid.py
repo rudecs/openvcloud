@@ -48,4 +48,4 @@ class cloudbroker_grid(object):
     @auth(['level1', 'level2', 'level3'])
     def upgrade(self, gid, **kwargs):
         self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
-        raise exceptions.redirect('/updating')
+        raise exceptions.Redirect('/updating')
