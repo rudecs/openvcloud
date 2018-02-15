@@ -2,7 +2,7 @@ from JumpScale import j
 
 
 descr = """
-gather statistics about OVS backends
+Runs the upgrade pod from the openvcloud_installer repo that upgrades the location.
 """
 
 organization = "greenitglobe"
@@ -31,7 +31,7 @@ def action():
         j.system.process.execute(
             'cd %s && git clone https://github.com/0-complexity/openvcloud_installer.git' % zero_complexity_path)
 
-    j.system.process.execute('kubectl apply -f %s/scripts/kubernetes/upgrader' % repo_path, outputToStdout=True)
+    j.system.process.execute('kubectl --kubeconfig /etc/kubernetes/admin.conf apply -f %s/scripts/kubernetes/upgrader' % repo_path, outputToStdout=True)
 
 
 if __name__ == '__main__':

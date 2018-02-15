@@ -41,4 +41,3 @@
         upgrade the grid to the latest
         """
         var:gid int,, id of the grid
-        result: bool
