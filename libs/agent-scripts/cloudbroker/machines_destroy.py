@@ -1,6 +1,6 @@
 import time
 from JumpScale import j
-from CloudscalerLibcloud.utils.gridconfig import GridConfig
+
 
 descr = """
 Permanently removes machines with status deleted if the configured period for this grid has passed since deletion. (Empties the trash can)
@@ -20,6 +20,7 @@ enable = True
 period = 3600 * 24
 
 def action():
+    from CloudscalerLibcloud.utils.gridconfig import GridConfig
     ccl = j.clients.osis.getNamespace('cloudbroker')
     current_time = time.time()
     machines = ccl.vmachine.search({'status': 'DELETED'}, size=0)[1:]

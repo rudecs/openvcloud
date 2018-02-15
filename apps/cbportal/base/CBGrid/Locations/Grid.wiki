@@ -33,6 +33,8 @@ h3. Location: ${name}
 
 - display: Upgrade Location
   action: /restmachine/cloudbroker/grid/upgrade
+  data:
+   gid: ${gid}
   
 - display: Add New VM Size
   action: /restmachine/cloudbroker/iaas/addSize

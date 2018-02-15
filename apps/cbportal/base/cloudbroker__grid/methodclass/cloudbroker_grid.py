@@ -46,6 +46,6 @@ class cloudbroker_grid(object):
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
         
     @auth(['level1', 'level2', 'level3'])
-    def upgrade(self, **kwargs):
-        self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode', wait=False)
+    def upgrade(self, gid, **kwargs):
+        self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
         raise exceptions.redirect('/updating')
