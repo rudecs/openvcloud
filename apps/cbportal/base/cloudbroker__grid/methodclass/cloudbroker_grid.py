@@ -1,7 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
-import gevent
 
 class cloudbroker_grid(object):
 
