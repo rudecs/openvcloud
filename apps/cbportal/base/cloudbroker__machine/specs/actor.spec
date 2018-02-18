@@ -52,6 +52,7 @@
         """
         var:machineId int,,Machine id
         var:reason str,,Reason
+        var:diskId int,,CD-ROM diskId to boot from @optional
 
     method:restore
         """

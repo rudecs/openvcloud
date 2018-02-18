@@ -16,7 +16,7 @@
             {% if node.extra.boottype == 'uefi' %}
                 <loader readonly='yes' type='rom'>/usr/share/ovmf/OVMF.fd</loader>
             {% endif %}
-            <boot dev='hd'/>
+            <boot dev='{{node.extra.bootdev}}'/>
         </os>
         <features>
             <acpi/>

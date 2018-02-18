@@ -44,7 +44,7 @@ class cloudapi_machines(BaseActor):
         self.netmgr = self.cb.netmgr
         self.acl = self.cb.agentcontroller
 
-    def _action(self, machineId, actiontype, newstatus=None, **kwargs):
+    def _action(self, machineId, actiontype, newstatus=None, provider=None, node=None, **kwargs):
         """
         Perform a action on a machine, supported types are STOP, START, PAUSE, RESUME, REBOOT
         param:machineId id of the machine
@@ -53,7 +53,10 @@ class cloudapi_machines(BaseActor):
 
         """
         with self.models.vmachine.lock(machineId):
-            provider, node, machine = self.cb.getProviderAndNode(machineId)
+            if provider is None or node is None:
+                provider, node, machine = self.cb.getProviderAndNode(machineId)
+            else:
+                machine = self.models.vmachine.get(machineId)
             if machine.type != 'VIRTUAL':
                 raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             if node.extra.get('locked', False):
@@ -84,7 +87,7 @@ class cloudapi_machines(BaseActor):
         return bootdisk
 
     @authenticator.auth(acl={'machine': set('X')})
-    def start(self, machineId, **kwargs):
+    def start(self, machineId, diskId=None, **kwargs):
         """
         Start the machine
 
@@ -98,8 +101,21 @@ class cloudapi_machines(BaseActor):
             j.apps.cloudbroker.machine.untag(machineId=machine.id, tagName="start")
         if machine.status not in resourcestatus.Machine.UP_STATES:
             self.cb.chooseProvider(machine)
+        provider, node, machine = self.cb.getProviderAndNode(machineId)
+        if diskId is not None:
+            if not self.models.disk.exists(diskId):
+                raise exceptions.BadRequest("Rescue disk with id {} does not exist".format(diskId))
+            for volume in node.extra['volumes'][:]:
+                if volume.type == 'cdrom':
+                    node.extra['volumes'].remove(volume)
+            disk = self.models.disk.get(diskId)
+            if disk.type != 'C':
+                raise exceptions.BadRequest("diskId is not of type CD-ROM")
+            volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
+            node.extra['volumes'].append(volume)
+            node.extra['bootdev'] = 'cdrom'
 
-        return self._action(machineId, 'start', resourcestatus.Machine.RUNNING)
+        return self._action(machineId, 'start', resourcestatus.Machine.RUNNING, provider=provider, node=node)
 
     @authenticator.auth(acl={'machine': set('X')})
     def stop(self, machineId, force=False, **kwargs):

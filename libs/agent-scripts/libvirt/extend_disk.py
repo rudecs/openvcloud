@@ -13,7 +13,7 @@ roles = []
 async = True
 
 
-def action(ovs_connection, size, diskguid, disk_info):
+def action(ovs_connection, size, diskguid, disk_info=None):
     import json
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
     import libvirt
@@ -42,7 +42,7 @@ def action(ovs_connection, size, diskguid, disk_info):
     if not success:
         raise Exception("Could not update disk:\n{}".format(result))
 
-    if disk_info['machineRefId'] is not None:
+    if disk_info is not None and disk_info['machineRefId'] is not None:
         connection = LibvirtUtil()
         domain = connection.get_domain_obj(disk_info['machineRefId'])
         if domain:

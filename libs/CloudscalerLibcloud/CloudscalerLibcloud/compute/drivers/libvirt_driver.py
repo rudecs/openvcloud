@@ -295,7 +295,7 @@ class CSLibvirtNodeDriver(object):
         """
         self.backendconnection = connection
 
-    def _execute_agent_job(self, name_, id=None, wait=True, queue=None, role=None, **kwargs):
+    def _execute_agent_job(self, name_, id=None, wait=True, queue=None, role=None, timeout=600, **kwargs):
         if not id and not role:
             id = int(self.id)
 
@@ -337,7 +337,7 @@ class CSLibvirtNodeDriver(object):
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self), edgeclient
-    
+
     def create_volume(self, size, name, data=True, dev=''):
         if data:
             vpoolname, edgeclients = self.getBestDataVpool()
@@ -360,7 +360,7 @@ class CSLibvirtNodeDriver(object):
         stvol = OpenvStorageVolume(id=volumeid, size=size, name=diskname, driver=self)
         stvol.dev = dev
         return stvol
-        
+
     def create_volumes(self, volumes):
         stvolumes = []
         for volume in volumes:
@@ -528,7 +528,12 @@ class CSLibvirtNodeDriver(object):
         networkname = result['networkname']
         nodeid = str(uuid.uuid4())
         interfaces = [NetworkInterface(macaddress, '{}-{:04x}'.format(name, networkid), 'bridge', networkname)]
-        extra = {'volumes': volumes, 'ifaces': interfaces, 'imagetype': imagetype, 'size': size, 'boottype': boottype}
+        extra = {'volumes': volumes,
+                 'ifaces': interfaces,
+                 'imagetype': imagetype,
+                 'size': size,
+                 'bootdev': 'hd',
+                 'boottype': boottype}
         node = Node(
             id=nodeid,
             name=name,
@@ -857,14 +862,15 @@ class CSLibvirtNodeDriver(object):
             if macelement is not None:
                 mac = macelement.attrib['address']
             target = nic.find('target').attrib['dev']
-            bridgename = source.attrib['bridge'] if source.attrib.get('bridge') else source.attrib['network'] 
+            bridgename = source.attrib['bridge'] if source.attrib.get('bridge') else source.attrib['network']
             if bridgename.startswith(('ext-', 'public')):
                 bridgetype = 'PUBLIC'
             else:
                 bridgetype = 'bridge'
             ifaces.append(NetworkInterface(mac=mac, target=target, type=bridgetype, bridgename=bridgename))
         name = dom.find('name').text
-        extra = {'volumes': volumes, 'ifaces': ifaces}
+        bootdev = dom.find('os/boot').attrib['dev']
+        extra = {'volumes': volumes, 'ifaces': ifaces, 'bootdev': bootdev}
         if node is None:
             id = dom.find('uuid').text
             node = Node(id=id, name=name, state=state,

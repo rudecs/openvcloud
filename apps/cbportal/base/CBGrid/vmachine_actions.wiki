@@ -4,12 +4,10 @@
 - display: Start
   input:
   - reason
-  action: /restmachine/cloudbroker/machine/start
+  action: "#startmachine"
   hideon:
   - RUNNING
   hideonInput: ${status}
-  data:
-   machineId: $$id
 
 - display: Stop
   action: /restmachine/cloudbroker/machine/stop
@@ -294,6 +292,7 @@
 }}
 
 {{movemachine: machineId:$$id}}
+{{startmachine: machineId:$$id}}
 {{resizemachine: machineId:$$id}}
 {% else %}
 {{actions:

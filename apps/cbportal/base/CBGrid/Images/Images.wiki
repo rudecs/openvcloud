@@ -1,5 +1,13 @@
 @usedefaults
 
-h3. Images:
+h3. Template Images:
+{{createimage}}
+{{action id:'createimage' class:'glyphicon glyphicon-plus' label:'Add Image'}}
 
 {{images}}
+
+h3. CD-ROM Images:
+{{createcdrom}}
+
+{{action id:'createcdrom' class:'glyphicon glyphicon-plus' label:'Add CD-ROM Image'}}
+{{disks: type:C}}

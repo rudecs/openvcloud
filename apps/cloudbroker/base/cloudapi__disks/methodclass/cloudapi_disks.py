@@ -24,7 +24,7 @@ class cloudapi_disks(BaseActor):
             disk = disk.dump()
 
         volumeclass = OpenvStorageVolume
-        if disk['type'] == 'M':
+        if disk['type'] in ('M', 'C'):
             volumeclass = OpenvStorageISO
 
         volume = volumeclass(id=disk['referenceId'],
@@ -65,8 +65,7 @@ class cloudapi_disks(BaseActor):
         disk.gid = gid
         disk.iotune = {'total_iops_sec': iops}
         disk.accountId = accountId
-        diskid = self.models.disk.set(disk)[0]
-        disk = self.models.disk.get(diskid)
+        disk.id = self.models.disk.set(disk)[0]
         try:
             provider = self.cb.getProviderByGID(gid)
             volume = provider.create_volume(disk.sizeMax, disk.id)
@@ -138,9 +137,7 @@ class cloudapi_disks(BaseActor):
         :param type: type of type of the disks
         :return: list with every element containing details of a disk as a dict
         """
-        query = {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}}
-        if type:
-            query['type'] = type
+        query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': 'DESTROYED'}}
         disks = self.models.disk.search(query)[1:]
         diskids = [disk['id'] for disk in disks]
         query = {'disks': {'$in': diskids}}

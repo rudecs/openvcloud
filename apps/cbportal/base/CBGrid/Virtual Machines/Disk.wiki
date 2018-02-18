@@ -4,7 +4,7 @@
 {% if id %}
 h2. Disk: ${name}
 
-{% if type != 'Meta' %}
+{% if type not in ['Meta', 'CD-ROM'] %}
 {{actions:
 - display: Limit IO
   action: '#disk_limitio_$$id'
@@ -39,7 +39,7 @@ h2. Disk: ${name}
 |*Edge port*| ${edgeport}|
 |*Edge name*| ${edgename}|
 
-{% if type != 'Meta' %}
+{% if type not in ['Meta', 'CD-ROM'] %}
 h2. Disk tune {{action: id:'disk_limitio_$$id' class:'glyphicon glyphicon-edit margin-bottom-medium margin-left-medium' label:''}}|
 
 |*IOPS size per sec*| ${iotune['size_iops_sec']}|

@@ -55,6 +55,7 @@
         Start the machine
         """
         var:machineId int,, id of the machine
+        var:diskId int,, Disk id of CD-ROM to boot @optional
         result:bool
 
     method:stop

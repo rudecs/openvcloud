@@ -98,11 +98,11 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def start(self, machineId, reason, **kwargs):
+    def start(self, machineId, reason, diskId=None, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
         if "start" in vmachine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(vmachine.id, "start")
-        self.cb.actors.cloudapi.machines.start(machineId=machineId)
+        self.cb.actors.cloudapi.machines.start(machineId=machineId, diskId=diskId)
 
     @auth(['level1', 'level2', 'level3'])
     def restore(self, machineId, reason, **kwargs):

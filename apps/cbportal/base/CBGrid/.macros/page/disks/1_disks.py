@@ -5,14 +5,10 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
-    stackid = args.getTag('stackid')
-    filters = dict()
-    if stackid:
-        stackid = int(stackid)
-        stack = ccl.stack.get(stackid)
-        images = ccl.image.search({'id': {'$in': stack.images}})[1:]
-        imageids = [image['id'] for image in images]
-        filters['id'] = {'$in': imageids}
+    disktype = args.getTag('type')
+    filters = dict(status='CREATED')
+    if disktype:
+        filters['type'] = disktype
 
     locations = ccl.location.search({'$query': {}, '$fields': ['gid', 'name']})[1:]
     locationmap = {loc['gid']: loc['name'] for loc in locations}
@@ -27,7 +23,7 @@ def main(j, args, params, tags, tasklet):
     fields = [
         {'name': 'Name',
          'id': 'name',
-         'value': "<a href='/cbgrid/image?id=%(id)s'>%(name)s</a>"
+         'value': "<a href='/cbgrid/disk?id=%(id)s'>%(name)s</a>"
          },
         {'name': 'Location',
          'id': 'gid',
@@ -39,12 +35,12 @@ def main(j, args, params, tags, tasklet):
          'value': 'status'
          },
         {'name': 'Size',
-         'id': 'size',
+         'id': 'sizeMax',
          'type': 'int',
-         'value': '%(size)s GiB'
+         'value': '%(sizeMax)s GiB'
          },
     ]
-    tableid = modifier.addTableFromModel('cloudbroker', 'image', fields, filters)
+    tableid = modifier.addTableFromModel('cloudbroker', 'disk', fields, filters)
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page
