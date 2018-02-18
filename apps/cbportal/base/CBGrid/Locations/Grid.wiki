@@ -113,7 +113,6 @@ h5. Running Windows VMs
 @colend
 @rowend
 
-
 h3. Stacks
 {{stacks gid:$$gid}}
 
@@ -125,8 +124,6 @@ h3. Firewall Nodes
 
 h3. Virtual Machines
 {{vmachines gid:$$gid}}
-
-
 
 {% else %}
 No Grid provided
