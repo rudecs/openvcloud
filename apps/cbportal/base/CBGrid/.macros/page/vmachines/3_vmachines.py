@@ -52,6 +52,10 @@ def main(j, args, params, tags, tasklet):
 
     fields = [
         {
+            'name': 'ID',
+            'value': nameLinkify,
+            'id': 'id',
+        }, {
             'name': 'Name',
             'value': nameLinkify,
             'id': 'name',

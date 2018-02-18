@@ -5,7 +5,7 @@ from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import exceptions
 import gevent
-import ujson
+import netaddr
 import time
 
 
@@ -69,6 +69,99 @@ class cloudbroker_machine(BaseActor):
             raise exceptions.BadRequest('Machine %s is invalid' % machineId)
 
         return vmachine
+
+    @auth(['level1', 'level2', 'level3'])
+    def prepareForMigration(self, cloudspaceId, machine, **kwargs):
+        if not self.models.cloudspace.exists(cloudspaceId):
+            raise exceptions.BadRequest("Target cloudspace {} does not exists".format(cloudspaceId))
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        totaldisksize = 0
+        # pop all extra data
+        vcpus = machine.pop('vcpus')
+        memory = machine.pop('memory')
+        networkId = machine.pop('networkId')
+        sourcedisks = machine.pop('disks')
+        for disk in sourcedisks:
+            totaldisksize += disk['sizeMax']
+
+        size = self.models.size.searchOne({'vcpus': vcpus, 'memory': memory})
+        if size is None:
+            raise exceptions.BadRequest("No size to match {} vcpus and {} memory".format(vcpus, memory))
+        image = self.models.image.searchOne({'name': machine['imagename']})
+        if image is None:
+            raise exceptions.BadRequest("Could not find image with name {}".format(machine['imagename']))
+        if networkId != cloudspace.networkId:
+            raise exceptions.BadRequest("NetworkId does not match vm")
+
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vcpus,
+                                                                   memory / 1024.0, totaldisksize)
+
+        externalnetworks = self.models.externalnetwork.search({'$fields': ['network', 'id', 'subnetmask']})[1:]
+        # check external networks of vm
+        for nic in machine['nics']:
+            if nic['type'] == 'PUBLIC':
+                ipAddress = nic['ipAddress']
+                for extnetwork in externalnetworks:
+                    network = netaddr.IPNetwork('{network}/{subnetmask}'.format(**extnetwork))
+                    if ipAddress in network:
+                        break
+                else:
+                    raise exceptions.BadRequest("Could not migrate VM in external network {} which does not exist")
+                tags = j.core.tags.getObject(nic['params'], casesensitive=True)
+                tags.tags['externalnetworkId'] = str(network['id'])
+                nic['params'] = str(tags)
+
+        diskids = []
+        disks = []
+        for diskdata in sourcedisks:
+            disk = self.models.disk.new()
+            disk.load(diskdata)
+            disk.id = None
+            disk.guid = None
+            disk.referenceId = None
+            disk.gid = cloudspace.gid
+            disk.id, _, _ = self.models.disk.set(disk)
+            diskids.append(disk.id)
+            disks.append(disk)
+
+        vm = self.models.vmachine.new()
+        vm.load(machine)
+        vm.cloudspaceId = cloudspace.id
+        vm.sizeId = size['id']
+        vm.imageId = image['id']
+        vm.status = resourcestatus.Machine.MIGRATING
+        vm.id = None
+        vm.guid = None
+        vm.disks = diskids
+        vm.id, _, _ = self.models.vmachine.set(vm)
+
+        # now lets create empty volumes
+        provider = self.cb.getProviderByGID(cloudspace.gid)
+        for disk in disks:
+            name = ""
+            data = False
+            size = disk.sizeMax
+            if disk.type == 'B':
+                name = 'vm-{0}/bootdisk-vm-{0}'.format(vm.id)
+            elif disk.type == 'M':
+                name = 'vm-{0}/cloud-init-vm-{0}'.format(vm.id)
+                size = 0.1
+            elif disk.type == 'D':
+                name = str(disk.id)
+                data = True
+            volume = provider.create_volume(size, name, data)
+            disk.referenceId = volume.id
+            self.models.disk.set(disk)
+
+        # prepare network on target node
+        self.cb.chooseProvider(vm)
+        provider, node, machine = self.cb.getProviderAndNode(vm.id)
+        # set status back to migrating
+        self.models.vmachine.updateSearch({'id': vm.id}, {'$set': {'status': resourcestatus.Machine.MIGRATING}})
+        provider._ensure_network(node)
+        # return data needed for migration
+        xml = provider.get_xml(node)
+        return {'id': vm.id, 'xml': xml, 'stackId': machine.stackId}
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

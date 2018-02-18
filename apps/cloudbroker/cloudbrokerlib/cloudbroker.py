@@ -385,7 +385,6 @@ class CloudSpace(object):
 
     def __init__(self, cb):
         self.cb = cb
-        self.libvirt_actor = j.apps.libcloud.libvirt
         self.network = network.Network(models)
 
     def release_resources(self, cloudspace, releasenetwork=True):
@@ -404,7 +403,7 @@ class CloudSpace(object):
                 # destroy model only
                 self.cb.netmgr.fw_destroy(fwguid)
         if cloudspace.networkId and releasenetwork:
-            self.libvirt_actor.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
+            j.apps.libcloud.libvirt.releaseNetworkId(cloudspace.gid, cloudspace.networkId)
             cloudspace.networkId = None
         if cloudspace.externalnetworkip:
             self.network.releaseExternalIpAddress(cloudspace.externalnetworkId, cloudspace.externalnetworkip)

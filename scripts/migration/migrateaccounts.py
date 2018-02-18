@@ -1,53 +1,120 @@
-from gevent import monkey
-monkey.patch_all()
-
 from JumpScale import j
+import multiprocessing
+import time
+import json
+from collections import namedtuple
 from xml.etree import ElementTree
-from gevent.pool import Pool
 import urlparse
-import subprocess
-import os
-import sys
-sys.path.append('/opt/code/github/0-complexity/openvcloud/apps/cloudbroker')
-j.db.serializers.getSerializerType('j')
 
 IMAGEMAP = {
     'New Windows 2012r2 Standard': 'Windows 2012r2 Standard'
 }
 
+Job = namedtuple('Job', "process intervalcheck args kwargs")
 
-class MaskClass(object):
-    def __init__(self, *args, **kwargs):
-        pass
+class ProcessPool(object):
+    def __init__(self, nworkers, interval=5):
+        """
+        Process Pool that executes n amount of workers defined by nworkers
+        Interval is the sleeptime between the status updates
+        """
+        self.nworkers = nworkers
+        # prepopulate worker jobs by amount of workers
+        self.activejobs = [None] * self.nworkers
+        self.queuedjobs = [] # list of jobs that are still queued
+        self.finishedjobs = 0
+        self.interval = interval
+
+    def run(self):
+        """
+        Schedule and run all queued jobs
+        """
+        statcheck = 0
+        j.console.messages([""] * min(self.nworkers + 1, len(self.queuedjobs) + 1))
+        while self.queuedjobs or [x for x in self.activejobs if x]:
+            # freeup workers for finished jobs
+            for idx, job in enumerate(self.activejobs):
+                if job and not job.process.is_alive():
+                    if job.process.exitcode != 0:
+                        print('Failed to migrate vm {}!!!'.format(job.args[0]))
+                    self.activejobs[idx] = None
+                    self.finishedjobs += 1
+            if self.queuedjobs:
+                # schedule queues jobs in workers
+                emptyslots = []
+                # find free slots
+                for idx, job in enumerate(self.activejobs):
+                    if job is None:
+                        emptyslots.append(idx)
+
+                # put work in free slots
+                for emptyslot in emptyslots:
+                    work = self.queuedjobs.pop(0)
+                    process = multiprocessing.Process(target=work[0], args=work[2], kwargs=work[3])
+                    process.start()
+                    job = Job(process, *work[1:])
+                    self.activejobs[emptyslot] = job
+                    if not self.queuedjobs:
+                        break
+
+            # update status messages if needed
+            remainingtime = (statcheck + self.interval) - time.time()
+            queuedjobs = len(self.queuedjobs)
+            runningjobs = len([x for x in self.activejobs if x])
+            totaljobs = queuedjobs + runningjobs + self.finishedjobs
+            refreshtime = int(self.interval if remainingtime < 0 else remainingtime)
+            statusline = "Queued/Running/Finished/Total {}/{}/{}/{} Jobs ({}s)".format(queuedjobs, runningjobs, self.finishedjobs, totaljobs, refreshtime)
+            if remainingtime < 0:
+                messages = [statusline]
+                for job in self.activejobs:
+                    if job and job.intervalcheck:
+                        messages.append(job.intervalcheck(*job.args, **job.kwargs))
+                statcheck = time.time()
+            else:
+                messages[0] = statusline
+            j.console.messages(messages, True)
+            time.sleep(5)
+
+    def add_job(self, func, intervalcheck, *args, **kwargs):
+        """
+        Add a job to the queue
+        param func: function to execute takes *args and **kwargs
+        param intervalcheck: function that should return a status line for this job takes *args and **kwargs
+        param *args: Args passed to func and intervalcheck
+        param *kwargs: kwargs passed to func and intervalcheck
+        """
+        self.queuedjobs.append((func, intervalcheck, args, kwargs))
+
+
+# helper method for multiprocessing
+def migrate_vm(vmid, newspace, debug=False, dryrun=False):
+    migrator = Migrator(debug, dryrun)
+    space = migrator.ccl.cloudspace.new()
+    space.load(newspace)
+    return migrator.migrate_vm(vmid, space)
 
 
 class Migrator(object):
-    def __init__(self, debug=False, dryrun=False, concurrency=1, cloudspaces=None, oldedgenode=None):
+    def __init__(self, debug=False, dryrun=False, concurrency=1, cloudspaces=None):
         self.acl = j.clients.agentcontroller.getByInstance('main')
+        self.pcl = j.clients.portal.getByInstance('main')
         self.source_osis = j.clients.osis.getByInstance('source')
         self.osis = j.clients.osis.getByInstance('main')
         self.source_ccl = j.clients.osis.getNamespace('cloudbroker', self.source_osis)
-        self.source_lcl = j.clients.osis.getNamespace('libcloud', self.source_osis)
         self.souce_scl = j.clients.osis.getNamespace('system', self.source_osis)
         self.source_vfw = j.clients.osis.getNamespace('vfw', self.source_osis)
         self.ccl = j.clients.osis.getNamespace('cloudbroker', self.osis)
         self.scl = j.clients.osis.getNamespace('system', self.osis)
+        self._rgid = None
+        ovs = self.scl.grid.get(self.rgid).settings['ovs_credentials']
+        self.ovscl = j.clients.openvstorage.get(ovs['ips'], (ovs['client_id'], ovs['client_secret']))
         self.vfw = j.clients.osis.getNamespace('vfw', self.osis)
         self.lcl = j.clients.osis.getNamespace('libvirt', self.osis)
         self.cloudspaces = cloudspaces
-        self.oldedgenode = oldedgenode
         self.concurrency = concurrency
         self.debug = debug
         self.dryrun = dryrun
-        self._rgid = None
-        from cloudbrokerlib import cloudbroker
-        cloudbroker.models = self.ccl
-        cloudbroker.CloudSpace = MaskClass
-        j.apps = MaskClass()
-        j.apps.system = MaskClass()
-        j.apps.system.contentmanager = MaskClass()
-        j.apps.system.contentmanager.getActors = lambda *a: ['libloud_libvirt']
-        self.rcb = cloudbroker.CloudBroker()
+        self.vmdiskguids = {}
 
     def info(self, msg, depth=0):
         if depth:
@@ -88,47 +155,59 @@ class Migrator(object):
 
     def migrate_space(self, cloudspace, newaccount):
         self.info('Migrating space {}'.format(cloudspace.name), 1)
-        cloudspaces = self.ccl.cloudspace.search({
-            'name': cloudspace.name,
-            'status': {'$ne': 'DESTROYED'},
-            'accountId': newaccount.id,
-            'networkId': cloudspace.networkId,
-            'gid': self.rgid
-        })[1:]
-        needsmigration = True
-        if not cloudspaces:
-            if self.ccl.cloudspace.count({'networkId': cloudspace.networkId, 'gid': self.rgid}) > 0:
-                raise RuntimeError("Can not migrate cloudspace {} networkId {} is already in use!".format(cloudspace.name, cloudspace.networkId))
-            newcloudspace = self.empty(cloudspace, self.ccl.cloudspace.new)
-        else:
-            newcloudspace = self.ccl.cloudspace.get(cloudspaces[0]['id'])
-            if newcloudspace.status == 'DEPLOYED':
-                needsmigration = False
-        newcloudspace.accountId = newaccount.id
-        newcloudspace.gid = self.rgid
-        if not self.dryrun:
-            newcloudspace.id, _, _ = self.ccl.cloudspace.set(newcloudspace)
-            res = self.lcl.networkids.updateSearch({'id': self.rgid},
-                                                   {'$pull': {'networkids': cloudspace.networkId}})
-        if needsmigration:
-            self.migrate_routeros(cloudspace, newcloudspace)
+        cloudspacedata = cloudspace.dump()
+        vfwdata = self.source_vfw.virtualfirewall.searchOne({'id': cloudspace['networkId']})
+        sourceip = self.get_source_ip(vfwdata['nid'])
+        newcloudspaceId = self.pcl.actors.cloudbroker.cloudspace.migrateCloudspace(newaccount['id'], cloudspacedata, vfwdata, sourceip, self.rgid)
+        newcloudspace = self.ccl.cloudbroker.searchOne({'id': newcloudspaceId})
         vms = self.source_ccl.vmachine.search({
-            'status': {'$nin': ['ERROR', 'DESTROYED']},
+            'status': {'$nin': ['ERROR', 'DESTROYED', 'DELETED']},
             'cloudspaceId': cloudspace.id
         })[1:]
-        pool = Pool(self.concurrency)
-        jobs = []
-        for vm in vms:
-            vm = self.source_ccl.vmachine.get(vm['id'])
-            jobs.append(pool.apply_async(self.migrate_vm, (vm, newcloudspace)))
-        for job in jobs:
-            job.join()
-        for job in jobs:
-            job.get()
+        if self.concurrency > 1:
+            pool = ProcessPool(self.concurrency, interval=60)
+            for vm in vms:
+                pool.add_job(migrate_vm, self.vm_status, vm['id'], newcloudspace, self.debug, self.dryrun)
+            pool.run()
+        else:
+            for vm in vms:
+                migrate_vm(vm['id'], newcloudspace, self.debug, self.dryrun)
 
         cloudspace.status = 'DESTROYED'
         if not self.dryrun:
             self.source_ccl.cloudspace.set(cloudspace)
+
+    def vm_status(self, vmid, cloudspace, *args):
+        try:
+            if vmid not in self.vmdiskguids:
+                oldvm = self.source_ccl.vmachine.get(vmid)
+                newvm = self.ccl.vmachine.searchOne({
+                    'name': oldvm.name,
+                    'status': 'MIGRATING',
+                    'cloudspaceId': cloudspace['id']
+                })
+                if not newvm:
+                    return "VM {} is being prepared for migration".format(vmid)
+                vmdisks = self.ccl.disk.search({'id': {'$in': newvm['disks']}})[1:]
+                vmdiskguids = [disk['referenceId'].split('@')[-1] for disk in vmdisks if disk['referenceId']]
+                if not vmdiskguids:
+                    return "VM {} is being prepared for migration".format(vmid)
+                self.vmdiskguids[vmid] = vmdiskguids
+            vmdiskguids = self.vmdiskguids[vmid]
+            items = []
+            for vmdiskguid in vmdiskguids:
+                items.append(('guid', 'EQUALS', vmdiskguid))
+            query = json.dumps({'type': 'OR', 'items': items})
+            params = {'contents': 'name,size,info', 'query': query}
+            data = self.ovscl.get('/vdisks', params=params)
+            totalsize = 0.
+            usedsize = 0.
+            for disk in data['data']:
+                totalsize += disk['size']
+                usedsize += disk['info']['stored']
+            return "VM {} is being migrated disk at {:.2f}%".format(vmid, (usedsize/totalsize) * 100)
+        except Exception as e:
+            return "Failed get status of migration for VM {}: {}".format(vmid, e)
 
     def get_source_ip(self, nid):
         node = self.souce_scl.node.get(nid)
@@ -136,215 +215,95 @@ class Migrator(object):
             if net['name'] == 'backplane1':
                 return net['ip'][0]
 
-    def migrate_routeros(self, originalspace, newspace):
-        vfwid = '{}_{}'.format(originalspace.gid, originalspace.networkId)
-        lvfw = self.source_vfw.virtualfirewall.get(vfwid)
-        sourceip = self.get_source_ip(lvfw.nid)
-        args = {
-            'sourceip': sourceip,
-            'vlan': lvfw.vlan,
-            'networkid': lvfw.id
-        }
-        excludelist = []
-        if originalspace.gid == self.rgid:
-            stack = self.source_ccl.stack.search({'referenceId': str(lvfw.nid)})[1]
-            excludelist.append(stack['id'])
+    def transform_xml(self, sourcexml, newxml):
+        srcdom = ElementTree.fromstring(sourcexml)
+        newdom = ElementTree.fromstring(newxml)
+        newdisks = {}
+        newnics = {}
+        for disk in newdom.findall('devices/disk'):
+            target = disk.find('target')
+            newdisks[target.attrib['dev']] = disk
+        for nic in newdom.findall('devices/interface'):
+            mac = nic.find('mac')
+            newnics[mac.attrib['address']] = nic
 
-        stack = self.rcb.getBestStack(self.rgid, excludelist=excludelist)
-        self.info('Migrating routeros to {}'.format(stack['name']), 2)
-        if not self.dryrun:
-            job = self.acl.executeJumpscript(
-                'jumpscale',
-                'vfs_migrate_routeros',
-                nid=int(stack['referenceId']),
-                queue='hypervisor',
-                gid=self.rgid,
-                args=args)
-            if job['state'] != 'OK':
-                raise RuntimeError("Could not execute live migrate for ros, error was:%s" % (job['result']))
-        newvfw = self.empty(lvfw, self.vfw.virtualfirewall.new)
-        newvfw.gid = self.rgid
-        newvfw.id = lvfw.id
-        newvfw.domain = str(newspace.id)
-        newvfw.nid = int(stack['referenceId'])
-        if not self.dryrun:
-            self.vfw.virtualfirewall.set(newvfw)
-
-    def create_metaiso(self, vm, provider):
-        self.info('Creating metaiso for vm {}'.format(vm.name), 3)
-        name = 'vm-{}'.format(vm.id) 
-        image = self.ccl.image.get(vm.imageId)
-        vmpassword = 'Unknown'
-        for account in vm.accounts:
-            vmpassword = account.password
-        if not self.dryrun:
-            volume = provider._create_metadata_iso(name, vmpassword, image.type)
-        else:
-            volume = MaskClass()
-            volume.name = 'something'
-            volume.edgehost = 'something'
-            volume.edgeport = 'something'
-        return volume
-
-    def create_disk(self, disk, vmid, provider):
-        self.info('Creating disk {} {}'.format(disk.name, vmid), 3)
-        if disk.type == 'B':
-            client = provider.getNextEdgeClient('vmstor')
-            diskname = 'vm-{0}/bootdisk-vm-{0}'.format(vmid)
-            kwargs = {'ovs_connection': provider.ovs_connection,
-                      'vpoolguid': client['vpoolguid'],
-                      'storagerouterguid': client['storagerouterguid'],
-                      'diskname': diskname,
-                      'size': disk.sizeMax,
-                      'pagecache_ratio': provider.ovs_settings['vpool_data_metadatacache']}
-            if not self.dryrun:
-                vdiskguid = provider._execute_agent_job('createdisk', role='storagedriver', **kwargs)
-                disk.referenceId = provider.getVolumeId(vdiskguid=vdiskguid, edgeclient=client, name=diskname)
-                self.ccl.disk.set(disk)
-            else:
-                disk.referenceId = 'openvstorage+tcp://127.0.0.1:23022/{}@uuuid'.format(diskname)
-        else:
-            if not self.dryrun:
-                volume = provider.create_volume(disk.sizeMax, disk.id)
-                disk.referenceId = volume.id
-                self.ccl.disk.set(disk)
-            else:
-                disk.referenceId = 'openvstorage+tcp://127.0.0.1:23022/{}@uuuid'.format(disk.name)
-
-    def get_volume_from_xml(self, xmldom, name):
-        devices = xmldom.find('devices')
-        for disk in devices.iterfind('disk'):
+        for disk in srcdom.findall('devices/disk'):
+            target = disk.find('target')
+            newdisk = newdisks[target.attrib['dev']]
             source = disk.find('source')
-            if source.attrib.get('dev', source.attrib.get('name')) == name:
-                return devices, disk
-        return None, None
+            newsource = newdisk.find('source')
+            source.attrib['name'] = newsource.attrib['name']
+            sourcehost = source.find('host')
+            newhost = newsource.find('host')
+            if 'username' in source.attrib:
+                # if source has username/password this means source is OVS EE lets just overwirte username password
+                if 'username' in newsource:
+                    source.attrib['username'] = newsource.attrib['username']
+                    source.attrib['passwd'] = newsource.attrib['passwd']
+                else:
+                    source.attrib.pop('username')
+                    source.attrib.pop('passwd')
+            else:
+                # check if destination has password if so we need to insert username password in hakish way
+                if 'username' in newsource.attrib:
+                    source.attrib['name'] += ":username={username}:password={passwd}".format(**newsource.attrib)
+            sourcehost.attrib['name'] = newhost.attrib['name']
+            sourcehost.attrib['port'] = newhost.attrib['port']
+            sourcehost.attrib['transport'] = newhost.attrib['transport']
 
-    def qemu_img(self, args, silent=False, sync=True):
-        stdout = None
-        if silent:
-            stdout = open(os.devnull, 'rw')
-        else:
-            stdout = sys.stdout
-        command = []
-        if self.oldedgenode:
-            command.extend(['ssh', self.oldedgenode])
-        command.append('qemu-img')
-        command.extend(args)
-        proc = subprocess.Popen(command, stdout=stdout)
-        if sync:
-            proc.wait()
-            if proc.returncode != 0:
-                raise RuntimeError("Failed to executed {}".format(args))
-        return proc
-    
-    def migrate_vm(self, vm, newspace):
+        for nic in srcdom.findall('devices/interface'):
+            mac = nic.find('mac').attrib['address']
+            newnic = newnics[mac]
+            target = nic.find('target')
+            newtarget = newnic.find('target')
+            target.attrib['dev'] = newtarget.attrib['dev']
+
+        return ElementTree.tostring(srcdom)
+
+
+    def migrate_vm(self, vmid, newspace):
         import libvirt
-        self.info(u'Migrating vm {}'.format(vm.name), 2)
-        provider = self.rcb.getProviderByGID(self.rgid).client
+        vm = self.source_ccl.vmachine.get(vmid)
+        vmdata = vm.dump()
+        # update imageid
+        oldimage = self.source_ccl.image.get(vm.imageId)
+        imagename = IMAGEMAP.get(oldimage.name, oldimage.name)
+        vmdata['imagename'] = imagename
+        oldsize = self.source_ccl.size.get(vm.sizeId)
+        vmdata['memory'] = oldsize.memory
+        vmdata['vcpus'] = oldsize.vcpus
+        vmdata['networkId'] = newspace.networkId
+        vmdata['disks'] = []
+        for diskid in vm.disks:
+            disk = self.source_ccl.disk.get(diskid)
+            vmdata['disks'].append(disk.dump())
+        if self.dryrun:
+            data = {'xml': 'xml', 'stackId': self.ccl.stack.list()[0], 'id': self.ccl.vmachine.list()[0]}
+        else:
+            data = self.pcl.actors.cloudbroker.machine.prepareForMigration(newspace.id, vmdata)
+        newvm = self.ccl.vmachine.get(data['id'])
+        targetStack = self.ccl.stack.get(data['stackId'])
+
+        # now we migrate
         sourcestack = self.source_ccl.stack.get(vm.stackId)
-        sourcecon = libvirt.open(sourcestack.apiUrl.replace('ssh', 'tcp'))
+        sourcecon = libvirt.open(sourcestack.apiUrl)
         try:
             domain = sourcecon.lookupByUUIDString(vm.referenceId)
         except:
             domain = None
-        newvm = self.empty(vm, self.ccl.vmachine.new)
-        newvm.cloudspaceId = newspace.id
-        # update imageid
-        oldimage = self.source_ccl.image.get(vm.imageId)
-        imagename = IMAGEMAP.get(oldimage.name, oldimage.name)
-        images = self.ccl.image.search({'name': imagename})[1:]
-        if not images:
-            raise LookupError("Could not find image matching {}".format(oldimage.name))
-        newvm.imageId = images[0]['id']
-        # update sizeid
-        oldsize = self.source_ccl.size.get(vm.sizeId)
-        sizes = self.ccl.size.search({'memory': oldsize.memory, 'vcpus': oldsize.vcpus})[1:]
-        if not sizes:
-            raise LookupError("Could not find size matchin vcpu: {} memory: {} disks: {}".format(oldsize.vcpus, oldsize.memory, oldsize.disks))
-        newvm.sizeId = sizes[0]['id']
-        newvm.disks = []
-        disks = []
-        for diskid in vm.disks:
-            disk = self.source_ccl.disk.get(diskid)
-            newdisk = self.empty(disk, self.ccl.disk.new)
-            newdisk.referenceId = None
-            newdisk.gid = self.rgid
-            if not self.dryrun:
-                newdisk.id, _, _ = self.ccl.disk.set(newdisk)
-            newvm.disks.append(newdisk.id)
-            disks.append((disk, newdisk))
-        
-        if not self.dryrun:
-            newvm.id, _, _ = self.ccl.vmachine.set(newvm)
-        metavolume = self.create_metaiso(newvm, provider)
-        if domain:
-            sourcexml = domain.XMLDesc()
-        else:
-            sourcexml = self.source_lcl.libvirtdomain.get('domain_{}'.format(vm.referenceId)) 
-        xmldom = ElementTree.fromstring(sourcexml)
-        # lets create the disks
-        for sourcedisk, disk in disks:
-            self.create_disk(disk, newvm.id, provider)
-            parsedurl = urlparse.urlparse(sourcedisk.referenceId)
-            diskname = parsedurl.path.strip('/').split('@', 1)[0]
-            newurl = urlparse.urlparse(disk.referenceId)
-            newdiskname, _, vidskguid = newurl.path.strip('/').partition('@')
-            _, xmldisk = self.get_volume_from_xml(xmldom, diskname)
-            source = xmldisk.find('source')
-            source.attrib['name'] = newdiskname
-            source.attrib['vdiskguid'] = vidskguid
-            host = source.find('host')
-            host.attrib['name'] = newurl.hostname
-            host.attrib['port'] = str(newurl.port)
-            sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
-            desturl = disk.referenceId.split('@')[0].replace('://', ':')
-            self.info("{} {}".format(sourceurl, desturl), 3)
-        # lets update cloudinit aswell
-        metaname = 'vm-{0}/cloud-init-vm-{0}'.format(vm.id)
-        _, xmldisk = self.get_volume_from_xml(xmldom, metaname)
-        if xmldisk is not None:
-            source = xmldisk.find('source')
-            source.attrib['name'] = metavolume.name
-            host = source.find('host')
-            host.attrib['name'] = metavolume.edgehost
-            host.attrib['port'] = str(metavolume.edgeport)
-        # lets kick out seclabel as not all nodes support this
-        seclabel = xmldom.find('seclabel')
-        if seclabel is not None:
-            xmldom.remove(seclabel)
-
-        newxml = ElementTree.tostring(xmldom)
-        excludelist = []
-        if sourcestack.gid == self.rgid:
-            excludelist.append(sourcestack.id)
-        deststack = self.rcb.getBestStack(self.rgid, excludelist=excludelist)
-        newvm.stackId = deststack['id']
-        if not self.dryrun:
-            self.ccl.vmachine.set(newvm)
-            provider._set_persistent_xml(self.rcb.Dummy(id=vm.referenceId), newxml)
-
-        # create libvirt node model
-        node = self.lcl.node.new()
-        node.id = newvm.referenceId
-        node.guid = newvm.referenceId
-        node.networkid = newspace.networkId
-        self.lcl.node.set(node)
-
-        # now re migrate
         if domain and domain.info()[0] == libvirt.VIR_DOMAIN_RUNNING:
             # create network
-            if not self.dryrun:
-                provider._execute_agent_job('createnetwork', id=int(deststack['referenceId']), networkid=newspace.networkId)
-
-            destcon = libvirt.open(deststack['apiUrl'].replace('ssh', 'tcp'))
+            destcon = libvirt.open(targetStack.apiUrl)
+            xml = domain.XMLDesc(libvirt.VIR_DOMAIN_XML_MIGRATABLE)
+            newxml = self.transform_xml(xml, data['xml'])
             flags = libvirt.VIR_MIGRATE_COMPRESSED | libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_NON_SHARED_DISK | \
-                    libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_PEER2PEER
-            uri = 'tcp://{}'.format(urlparse.urlparse(deststack['apiUrl']).hostname)
-            self.info('Running migrate to {}'.format(deststack['name']), 3)
+                    libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_PEER2PEER
+            uri = 'tcp://{}'.format(urlparse.urlparse(targetStack.apiUrl).hostname)
             if not self.dryrun:
                 domain.migrate2(destcon, flags=flags, dxml=newxml, dname='vm-{}'.format(newvm.id), uri=uri)
         else:
             # we copy over the data
+            # not supported just yet!!!
             qemujobs = []
             for sourcedisk, disk in disks:
                 sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
@@ -357,13 +316,11 @@ class Migrator(object):
             for qemujob in qemujobs:
                 qemujob.wait()
 
-        vm.status = 'DESTROYED'
         if not self.dryrun:
-            self.source_ccl.vmachine.set(vm)
-        for sourcedisk, disk in disks:
-            sourcedisk.status = 'DESTROYED'
-            if not self.dryrun:
-                self.source_ccl.disk.set(sourcedisk)
+            update = {'status': 'DELETED', 'deletionTime': int(time.time())}
+            self.source_ccl.vmachine.updateSearch({'id': vm.id}, {'$set': update})
+            self.source_ccl.disk.updateSearch({'id': {'$in': vm.disks}}, {'$set': {'status': 'DELETED'}})
+            self.ccl.vmachine.updateSearch({'id': newvm.id}, {'$set': {'status': 'RUNNING'}})
 
 
 if __name__ == '__main__':
@@ -371,7 +328,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--accounts', help='Comma seperated accountids that require migration', required=True)
     parser.add_argument('-c', '--cloudspaces', dest='cloudspaces', default=None, help='Failter for cloudspaces to migrate')
-    parser.add_argument('-e', '--oldedgenode', dest='oldedgenode', default=None, help='If passed this node will perform the qemu-img commands')
     parser.add_argument('-d', '--dry-run', dest='dry', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('-n', '--concurrency', dest='concurrency', type=int, default=1, help='Amount of VMs to migrate at once')
@@ -379,6 +335,6 @@ if __name__ == '__main__':
     cloudspaces = None
     if options.cloudspaces:
         cloudspaces = [int(cs) for cs in options.cloudspaces.split(',')]
-    migrator = Migrator(options.debug, options.dry, options.concurrency, cloudspaces, options.oldedgenode)
+    migrator = Migrator(options.debug, options.dry, options.concurrency, cloudspaces)
     for accountid in options.accounts.split(','):
         migrator.migrate_account(int(accountid))

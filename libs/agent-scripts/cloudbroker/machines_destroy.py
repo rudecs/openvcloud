@@ -6,7 +6,6 @@ descr = """
 Permanently removes machines with status deleted if the configured period for this grid has passed since deletion. (Empties the trash can)
 """
 
-name = "mchines_destroy"
 category = "cloudbroker"
 organization = "cloudscalers"
 author = "chaddada@greenitglobe.com"
@@ -51,3 +50,6 @@ def action():
         args = {'diskguids': grid['diskguids'], 'ovs_connection': grid['ovs_connection']}
         acl.executeJumpscript(organization='greenitglobe', name='deletedisks', role='storagedriver', gid=gid, args=args)
 
+
+if __name__ == '__main__':
+    action()

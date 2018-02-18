@@ -122,10 +122,13 @@ class NetManager(object):
                 if nicinfo['name'] == 'backplane1':
                     return nicinfo['ip'][0]
         srcip = get_backplane_ip(srcnode)
+        return self.fw_migrate(fwobj, srcip, targetNid, **kwargs)
+
+    def fw_migrate(self, fwobj, sourceip, targetNid, **kwargs):
         args = {'networkid': fwobj.id,
                 'vlan': fwobj.vlan,
                 'externalip': fwobj.pubips[0],
-                'sourceip': srcip}
+                'sourceip': sourceip}
         job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to move routeros check job %(guid)s" % job)

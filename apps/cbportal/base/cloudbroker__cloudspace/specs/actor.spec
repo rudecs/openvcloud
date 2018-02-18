@@ -18,6 +18,17 @@
         var:cloudspaceId int,, id of the cloudspace
         var:targetNid int,, name of the firewallnode the virtual firewall has to be moved to @optional
 
+
+    method:migrateCloudspace
+        """
+        Migrate vfw from another grid
+        """
+        var:accountId int,,Account the cloudspace should be migrated in
+        var:cloudspace obj,,Sourcecloudspace you want to migrate
+        var:vfw obj,, Source VFW
+        var:sourceip str,,sourceip ip from where to migrate
+        var:gid int,,Grid id cloudspace belongs to
+
     method:resetVFW
         """
         Reset VFW

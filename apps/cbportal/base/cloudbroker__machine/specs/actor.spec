@@ -38,6 +38,15 @@
         var:datadisks list(int),, list of data disk sizes in gigabytes @optional
         var:userdata obj,,Object or string @optional
         result:bool
+    
+    method:prepareForMigration
+        """
+        Prepate a target vm for migrating to
+        """
+        var:cloudspaceId int,,id of space in which we want to migrate the vm in
+        var:machine obj,,Machine object containing info for target
+        result:obj
+
 
     method:stop
         """
