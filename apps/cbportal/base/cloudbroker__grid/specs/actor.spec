@@ -35,3 +35,9 @@
         var:name str,, Name of the location @validator:name
         var:locationcode str,, Location code typicly used in dns names
         result: str
+
+    method:upgrade
+        """
+        upgrade the grid to the latest
+        """
+        var:gid int,, id of the grid

@@ -31,6 +31,11 @@ h3. Location: ${name}
   input:
    - age
 
+- display: Upgrade Location
+  action: /restmachine/cloudbroker/grid/upgrade
+  data:
+   gid: ${gid}
+  
 - display: Add New VM Size
   action: /restmachine/cloudbroker/iaas/addSize
   data:
@@ -107,7 +112,6 @@ h5. Running Windows VMs
 {{nrwinvmgauge id:2 gid:$$gid width:100 height:100}}
 @colend
 @rowend
-
 
 h3. Stacks
 {{stacks gid:$$gid}}
