@@ -184,7 +184,10 @@ class cloudbroker_computenode(BaseActor):
 
         for machine in stackmachines:
             ctx.events.sendMessage(title, 'Moving Virtual Machine %s' % machine['name'])
-            machines_actor.moveToDifferentComputeNode(machine['id'], reason='Disabling source', force=True)
+            try:
+                machines_actor.moveToDifferentComputeNode(machine['id'], reason='Disabling source', force=True)
+            except Exception as e:
+                j.errorconditionhandler.processPythonExceptionObject(e)
 
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
