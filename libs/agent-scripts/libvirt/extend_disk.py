@@ -15,8 +15,6 @@ async = True
 
 def action(ovs_connection, size, diskguid, disk_info=None):
     import json
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
-    import libvirt
     # Creates a disk from a disk template
     #
     # ovs_connection: dict holding connection info for ovs restapi
@@ -43,6 +41,9 @@ def action(ovs_connection, size, diskguid, disk_info=None):
         raise Exception("Could not update disk:\n{}".format(result))
 
     if disk_info is not None and disk_info['machineRefId'] is not None:
+        # leave import here as this is only relevant when execute on cpu node
+        from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+        import libvirt
         connection = LibvirtUtil()
         domain = connection.get_domain_obj(disk_info['machineRefId'])
         if domain:
