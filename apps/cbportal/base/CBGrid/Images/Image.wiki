@@ -14,7 +14,7 @@ h3. Image: ${name}
    imageId: $$id
   input:
   - name: accountId 
-    label: NodeId 
+    label: AccountId 
     placeholder: set to 0 to expose to all accounts
     type: number
   - name: name
