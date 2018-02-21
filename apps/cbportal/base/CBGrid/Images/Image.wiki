@@ -8,6 +8,28 @@ h3. Image: ${name}
 - display: Image Availability
   action: '#image_update_cpu_nodes'
 
+- display: Edit
+  action: /restmachine/cloudbroker/image/edit
+  data:
+   imageId: $$id
+  input:
+  - name: accountId 
+    label: NodeId 
+    placeholder: set to 0 to expose to all accounts
+    type: number
+  - name: name
+    label: Name
+    placeholder: leave empty if you want to remain unchanged
+    type: text
+  - name: username
+    label: Username
+    placeholder: leave empty if you want to remain unchanged
+    type: text
+  - name: password
+    label: Password
+    placeholder: leave empty if you want to remain unchanged
+    type: text
+
 - display: Delete
   input:
   - reason

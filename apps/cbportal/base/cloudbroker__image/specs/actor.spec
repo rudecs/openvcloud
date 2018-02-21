@@ -53,3 +53,13 @@
         var:password str,,Optional password for the image @optional
         var:accountId int,,AccountId to make the image exclusive @optional
         result:bool
+
+    method:edit
+        """
+        edit a Image with id 
+        """
+        var:imageId int,,id of the image to edit
+        var:name str,,name for the image @optional
+        var:username str,,username for the image @optional
+        var:password str,,password for the image @optional
+        var:accountId int,,AccountId to make the image exclusive @optional

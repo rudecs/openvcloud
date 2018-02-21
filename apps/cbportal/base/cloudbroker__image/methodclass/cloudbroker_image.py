@@ -94,6 +94,17 @@ class cloudbroker_image(BaseActor):
         )
         return True
 
+    @auth(['level1', 'level2', 'level3'])
+    def edit(self, imageId, name=None, username=None, password=None, accountId=None, **kwargs):
+        if accountId and not self.models.account.exists(accountId):
+            raise exceptions.BadRequest("Specified accountId does not exists")
+        image = self.models.image.get(imageId)
+        image.name = name if name else image.name 
+        image.username = username if username else image.username  
+        image.password = password if password else image.password
+        image.accountId = accountId if accountId else image.accountId
+        self.models.image.set(image)
+
     def _createImage(self, name, url, gid, imagetype, bytesize, username, password, accountId, kwargs):
         ctx = kwargs['ctx']
         gbsize = int(math.ceil(j.tools.units.bytes.toSize(bytesize, '', 'G')))
