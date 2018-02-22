@@ -441,11 +441,11 @@ class cloudapi_machines(BaseActor):
                                        timeout=3600,
                                        args=jobargs)
             try:
-                # TODO: custom disk sizes doesn't work
-                sizeobj = provider.getSize(size, bootdisk)
-                provider.ex_extend_disk(machine['disks'][0]['guid'], sizeobj.disk)
-                node = provider.ex_import(sizeobj, vm.id, cloudspace.networkId, machine['disks'])
-                self.cb.machine.updateMachineFromNode(vm, node, stack['id'], sizeobj)
+                provider.ex_extend_disk(machine['disks'][0]['guid'], bootdisk.sizeMax)
+                node = provider.ex_import(size, vm.id, cloudspace.networkId, machine['disks'])
+                stack_model = self.models.cb.stack.new()
+                stack_model.load(stack)
+                self.cb.machine.updateMachineFromNode(vm, node, stack_model)
             except:
                 self.cb.machine.cleanup(vm)
                 raise
