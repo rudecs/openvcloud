@@ -24,4 +24,9 @@ def action():
             stack = ccl.stack.searchOne({'referenceId': str(node.id)})
             if stack:
                 node.status = stack['status']
-                ocl.node.set(node)
+            else:
+                node.status = 'ENABLED'
+        ocl.node.set(node)
+
+if __name__ == '__main__':
+    action()
