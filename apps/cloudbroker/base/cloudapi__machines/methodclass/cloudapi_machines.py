@@ -443,7 +443,7 @@ class cloudapi_machines(BaseActor):
             try:
                 provider.ex_extend_disk(machine['disks'][0]['guid'], bootdisk.sizeMax)
                 node = provider.ex_import(size, vm.id, cloudspace.networkId, machine['disks'])
-                stack_model = self.models.cb.stack.new()
+                stack_model = self.models.stack.new()
                 stack_model.load(stack)
                 self.cb.machine.updateMachineFromNode(vm, node, stack_model)
             except:
