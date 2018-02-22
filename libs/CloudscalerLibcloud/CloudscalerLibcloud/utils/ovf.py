@@ -33,11 +33,13 @@ def ovf_to_model(ovf):
     files = dict((file.get('{%(ovf)s}id' % namespaces), file.get('{%(ovf)s}href' % namespaces))
                  for file in envelope.findall('ovf:References/ovf:File', namespaces))
     disksobjs = (ds.find('ovf:Disk', namespaces) for ds in envelope.findall('ovf:DiskSection', namespaces))
-    disks = dict((obj.get('{%(ovf)s}diskId' % namespaces), {
-        'size': int(obj.get('{%(ovf)s}capacity' % namespaces)),
-        # 'format': obj.get('{%(ovf)s}format' % namespaces),
-        'file': files[obj.get('{%(ovf)s}fileRef' % namespaces)]
-    }) for obj in disksobjs)
+    disks = {}
+    for obj in disksobjs:
+        disks[obj.get('{%(ovf)s}diskId' % namespaces)] = {
+            'size': int(obj.get('{%(ovf)s}capacity' % namespaces)),
+            'name': obj.get('{%(ovf)s}diskId' % namespaces),
+            'file': files[obj.get('{%(ovf)s}fileRef' % namespaces)]
+        }
     hw = envelope.find('ovf:VirtualSystem/ovf:VirtualHardwareSection', namespaces)
     itemobjs = hw.findall('ovf:Item', namespaces)
     itemobjsdict = {}
