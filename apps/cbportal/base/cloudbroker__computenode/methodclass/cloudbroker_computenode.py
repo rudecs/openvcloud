@@ -53,7 +53,7 @@ class cloudbroker_computenode(BaseActor):
             nodes = self.scl.node.search({'id': int(stack['referenceId']), 'gid': stack['gid']})[1:]
             if len(nodes) > 0:
                 node = nodes[0]
-                node['active'] = True if status == 'ENABLED' else False
+                node['status'] = status
                 self.scl.node.set(node)
         return stack['status']
 
@@ -178,7 +178,7 @@ class cloudbroker_computenode(BaseActor):
         stackmachines = self.models.vmachine.search({'stackId': stack['id'],
                                                      'status': {'$nin': ['DESTROYED', 'ERROR']}
                                                      })[1:]
-        othernodes = self.scl.node.search({'gid': stack['gid'], 'active': True, 'roles': 'fw'})[1:]
+        othernodes = self.scl.node.search({'gid': stack['gid'], 'status': 'ENABLED', 'roles': 'fw'})[1:]
         if not othernodes:
             raise exceptions.ServiceUnavailable('There is no other Firewall node available to move the Virtual Firewall to')
 

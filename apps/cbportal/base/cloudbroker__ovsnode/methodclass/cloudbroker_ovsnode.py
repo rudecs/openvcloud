@@ -12,7 +12,7 @@ class cloudbroker_ovsnode(BaseActor):
         self.lcl = j.clients.osis.getNamespace('libcloud')
 
     def activateNodes(self, nids, **kwargs):
-        return self.scl.node.updateSearch({'id': {'$in': nids}}, {'$set': {'active': True}})
+        return self.scl.node.updateSearch({'id': {'$in': nids}}, {'$set': {'status': 'ENABLED'}})
 
     def deactivateNodes(self, nids, **kwargs):
         if len(nids) != 1:
@@ -20,7 +20,7 @@ class cloudbroker_ovsnode(BaseActor):
         nid = nids[0]
         ctx = kwargs['ctx']
         node = self.scl.node.get(nid)
-        node.active = False
+        node.status = 'MAINTENANCE'
         self.scl.node.set(node)
         edgeinfo = None
         myips = []

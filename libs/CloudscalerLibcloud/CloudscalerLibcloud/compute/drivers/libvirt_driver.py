@@ -247,7 +247,7 @@ class CSLibvirtNodeDriver(object):
         edgeclients = self.all_edgeclients
 
         activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
-        activenodes = self.scl.node.search({'active': True, 'gid': self.gid, 'roles': 'storagedriver'})[1:]
+        activenodes = self.scl.node.search({'status': 'ENABLED', 'gid': self.gid, 'roles': 'storagedriver'})[1:]
 
         def get_active_node(storageip):
             for activenode in activenodes:
