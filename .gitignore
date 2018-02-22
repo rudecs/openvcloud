@@ -10,5 +10,7 @@ apps/osis/logic/libvirt/*
 apps/osis/logic/cryptopayment
 .pydevproject
 .project
+.ropeproject
 .idea
+.vscode
 node_modules/
