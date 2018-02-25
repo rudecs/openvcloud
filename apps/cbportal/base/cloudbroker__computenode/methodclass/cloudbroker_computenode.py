@@ -40,7 +40,7 @@ class cloudbroker_computenode(BaseActor):
             return self.decommission(id, gid, '')
 
         elif status == 'MAINTENANCE':
-            return self.maintenance(id, gid)
+            return self.maintenance(id, gid, vmaction='move')
         else:
             return self._changeStackStatus(stack, status)
 
@@ -106,6 +106,7 @@ class cloudbroker_computenode(BaseActor):
                                       success='Successfully started all Virtual Firewalls',
                                       error='Failed to Start Virtual Firewalls',
                                       errorcb=errorcb)
+        self.scheduleJumpscripts(id, gid, category='monitor.healthcheck')
         return status
 
     def _get_stack_machines(self, stackId, fields=None):
@@ -157,7 +158,20 @@ class cloudbroker_computenode(BaseActor):
                                           success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
+        self.scl.health.deleteSearch({'nid': id})
+        self.unscheduleJumpscripts(id, gid, category='monitor.healthcheck')
         return True
+
+    def unscheduleJumpscripts(self, nid, gid, name=None, category=None):
+        self.acl.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0, cmdname="unscheduleJumpscripts",
+                             args={'name': name, 'category': category},
+                             queue="internal", log=False, timeout=120, roles=[])
+
+    def scheduleJumpscripts(self, nid, gid, name=None, category=None):
+        self.acl.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0, cmdname="scheduleJumpscripts",
+                        args={'name': name, 'category': category},
+                        queue="internal", log=False, timeout=120, roles=[])
+
 
     def _stop_vfws(self, stack, title, ctx):
         vfws = self._vcl.search({'gid': stack['gid'],
