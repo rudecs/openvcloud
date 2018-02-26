@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 import functools
+import time
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
@@ -13,6 +14,7 @@ class cloudbroker_computenode(BaseActor):
         self.scl = j.clients.osis.getNamespace('system')
         self._vcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'vfw', 'virtualfirewall')
         self.acl = j.clients.agentcontroller.get()
+        self.node = j.apps.cloudbroker.node
 
     def _getStack(self, id, gid):
         stacks = self.models.stack.search({'id': int(id), 'gid': int(gid)})[1:]
@@ -40,7 +42,7 @@ class cloudbroker_computenode(BaseActor):
             return self.decommission(id, gid, '')
 
         elif status == 'MAINTENANCE':
-            return self.maintenance(id, gid)
+            return self.maintenance(id, gid, vmaction='move')
         else:
             return self._changeStackStatus(stack, status)
 
@@ -106,6 +108,7 @@ class cloudbroker_computenode(BaseActor):
                                       success='Successfully started all Virtual Firewalls',
                                       error='Failed to Start Virtual Firewalls',
                                       errorcb=errorcb)
+        self.node.scheduleJumpscripts(int(stack['referenceId']), gid, category='monitor.healthcheck')
         return status
 
     def _get_stack_machines(self, stackId, fields=None):
@@ -157,7 +160,23 @@ class cloudbroker_computenode(BaseActor):
                                           success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
+        self.node.unscheduleJumpscripts(int(stack['referenceId']), gid, category='monitor.healthcheck')
+        time.sleep(5)
+        self.scl.health.deleteSearch({'nid': int(stack['referenceId'])})
         return True
+
+    def unscheduleJumpscripts(self, stack_id, gid, name=None, category=None):
+        stack = self._getStack(stack_id, gid)
+        self.acl.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
+                             cmdname="unscheduleJumpscripts", args={'name': name, 'category': category},
+                             queue="internal", log=False, timeout=120, roles=[])
+
+    def scheduleJumpscripts(self, stack_id, gid, name=None, category=None):
+        stack = self._getStack(stack_id, gid)
+        self.acl.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
+                             cmdname="scheduleJumpscripts", args={'name': name, 'category': category},
+                             queue="internal", log=False, timeout=120, roles=[])
+
 
     def _stop_vfws(self, stack, title, ctx):
         vfws = self._vcl.search({'gid': stack['gid'],

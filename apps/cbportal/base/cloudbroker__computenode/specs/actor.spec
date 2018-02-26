@@ -56,7 +56,6 @@
         var:message str,,message. Must be less than 30 characters
         result: str
 
-
     method:decommission
         """
         Migrates all machines to different computes
