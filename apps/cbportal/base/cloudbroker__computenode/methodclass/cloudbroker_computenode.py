@@ -14,6 +14,7 @@ class cloudbroker_computenode(BaseActor):
         self.scl = j.clients.osis.getNamespace('system')
         self._vcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'vfw', 'virtualfirewall')
         self.acl = j.clients.agentcontroller.get()
+        self.node = j.apps.cloudbroker.node
 
     def _getStack(self, id, gid):
         stacks = self.models.stack.search({'id': int(id), 'gid': int(gid)})[1:]
@@ -107,7 +108,7 @@ class cloudbroker_computenode(BaseActor):
                                       success='Successfully started all Virtual Firewalls',
                                       error='Failed to Start Virtual Firewalls',
                                       errorcb=errorcb)
-        self.scheduleJumpscripts(id, gid, category='monitor.healthcheck')
+        self.node.scheduleJumpscripts(int(stack['refrenceId']), gid, category='monitor.healthcheck')
         return status
 
     def _get_stack_machines(self, stackId, fields=None):
@@ -159,7 +160,7 @@ class cloudbroker_computenode(BaseActor):
                                           success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
-        self.unscheduleJumpscripts(id, gid, category='monitor.healthcheck')
+        self.node.unscheduleJumpscripts(int(stack['refrenceId']), gid, category='monitor.healthcheck')
         time.sleep(5)
         self.scl.health.deleteSearch({'nid': int(stack['referenceId'])})
         return True

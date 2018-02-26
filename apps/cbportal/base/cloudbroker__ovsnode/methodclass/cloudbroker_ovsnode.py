@@ -1,8 +1,8 @@
+import time
 from JumpScale import j
 from xml.etree import ElementTree
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
-
 
 class cloudbroker_ovsnode(BaseActor):
     def __init__(self):
@@ -10,8 +10,11 @@ class cloudbroker_ovsnode(BaseActor):
         self.scl = j.clients.osis.getNamespace('system')
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.lcl = j.clients.osis.getNamespace('libcloud')
+        self.node = j.apps.cloudbroker.node
 
     def activateNodes(self, nids, **kwargs):
+        for nid in nids:
+            self.node.scheduleJumpscripts(nid, node.gid, category='monitor.healthcheck')        
         return self.scl.node.updateSearch({'id': {'$in': nids}}, {'$set': {'status': 'ENABLED'}})
 
     def deactivateNodes(self, nids, **kwargs):
@@ -41,7 +44,7 @@ class cloudbroker_ovsnode(BaseActor):
 
         if edgeinfo is None:
             raise exceptions.Error("Could not find storage IP on node %s" % nid)
-
+        
         def get_vpool_name(host, port):
             for edgeclient in alledgeclients:
                 if edgeclient['storageip'] == host and edgeclient['edgeport'] == port:
@@ -79,6 +82,10 @@ class cloudbroker_ovsnode(BaseActor):
             if not hasworked:
                 break
             diskguids = driver.client.list_vdisks(edgeinfo['storagerouterguid'])
+
+        self.node.unscheduleJumpscripts(nid, node.gid, category='monitor.healthcheck')
+        time.sleep(5)
+        self.scl.health.deleteSearch({'nid': nid})
 
         ctx.events.sendMessage("Deactivate Storagerouter", 'Finished moving all vdisks', 'success')
         return "Finished Deactivating Storagerouter"
