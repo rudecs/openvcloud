@@ -73,6 +73,8 @@ class cloudbroker_image(BaseActor):
                 bytesize = con.headers.getheader('content-length')
             except:
                 raise exceptions.BadRequest('Failed to get url size')
+        except requests.exceptions.MissingSchema:
+                raise exceptions.BadRequest('Invalid url passed')
         try:
             bytesize = int(bytesize)
         except:
