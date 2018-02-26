@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 import functools
+import time
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
@@ -159,6 +160,7 @@ class cloudbroker_computenode(BaseActor):
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
         self.unscheduleJumpscripts(id, gid, category='monitor.healthcheck')
+        time.sleep(5)
         self.scl.health.deleteSearch({'nid': int(stack['referenceId'])})
         return True
 
