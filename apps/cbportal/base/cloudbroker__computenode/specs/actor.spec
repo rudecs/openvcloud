@@ -60,7 +60,7 @@
         """
         unschedules periodic jumpscripts.
         """
-        var:nid int,, id of the computenode
+        var:stack_id int,, id of the computenode
         var:gid int,, the grid this computenode belongs to
         var:category str,, name of the category of jumpscripts to unschedule @optional
         var:name str,,name of the jumpscript to unschedule @optional
@@ -69,7 +69,7 @@
         """
         schedules  jumpscripts for periodic execution
         """
-        var:nid int,, id of the computenode
+        var:stack_id int,, id of the computenode
         var:gid int,, the grid this computenode belongs to
         var:category str,, name of the category of jumpscripts to schedule @optional
         var:name str,,name of the jumpscript to schedule @optional
