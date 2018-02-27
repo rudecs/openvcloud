@@ -8,6 +8,7 @@ import itertools
 import re
 import requests
 import gevent
+import urlparse
 
 
 class RequireState(object):
@@ -514,6 +515,21 @@ class cloudapi_machines(BaseActor):
                 requests.get(callbackUrl)
             raise
 
+    def _validate_links(self, **kwargs):
+        """
+        Validate link & callbackUrl arguments to be proper https links to prevent SSRF attacks
+        """
+        for name, url in kwargs.iteritems():
+            parsed = urlparse.urlparse(url)
+            if parsed.scheme != "https":
+                raise exceptions.BadRequest("{} parameter only supports https links".format(name))
+            if ':' in parsed.netloc or '@' in parsed.netloc:
+                raise exceptions.BadRequest("Non standard ports or embedded authentication is not supported for the {} parameter".format(name))
+            if '..' in parsed.path:
+                raise exceptions.BadRequest("'..' character sequence is not supported in the {} parameter".format(name))
+            if '.'  not in parsed.netloc:
+                raise exceptions.BadRequest("Local hostnames are not supported in the {} parameter".format(name))
+
     @authenticator.auth(acl={'cloudspace': set('C')})
     def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, **kwargs):
         """
@@ -528,6 +544,7 @@ class cloudapi_machines(BaseActor):
         param:sizeId the size id of the machine
         param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
         """
+        self._validate_links(link=link, callbackUrl=callbackUrl)
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
@@ -555,9 +572,10 @@ class cloudapi_machines(BaseActor):
         param:machineId id of the machine to export
         param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
         """
+        self._validate_links(link=link, callbackUrl=callbackUrl)
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        provider, node, vm = self.cb.getProviderAndNode(machineId)
+        provider, _, vm = self.cb.getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
         uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
         job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export_readme', gid=cloudspace.gid,
