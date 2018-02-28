@@ -23,3 +23,15 @@ In order to change the availability, you select **Image availability** from the 
 In the last section all virtual machines are listed that use this image:
 
 ![[]](VirtualMachineswichUsethisImage.png)
+
+One can add an Image by pressing the **+ Add Image** button.
+
+## CD-ROM Images
+
+CD-ROM Images can be used to temporarily boot a VM from a CD-ROM image.
+This can be used for either manually reinstalling a VM (not recommended better to use a template) or to recover a VM which has troubles.
+
+![[]](CDImages.png)
+
+One can add an CD-ROM Image by pressing the **+ Add CD-ROM Image** button.  
+CD-ROM images are always available for all CPU nodes
