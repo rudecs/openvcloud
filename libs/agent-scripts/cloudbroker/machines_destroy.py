@@ -16,7 +16,7 @@ queue = "hypervisor"
 async = True
 log = True
 enable = True
-period = 3600 * 24
+period = 3600
 
 def action():
     from CloudscalerLibcloud.utils.gridconfig import GridConfig
