@@ -1,11 +1,15 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
+from cloudbrokerlib.baseactor import BaseActor
+import requests
+import time
 
-class cloudbroker_grid(object):
+class cloudbroker_grid(BaseActor):
 
     def __init__(self):
-        self.models = j.clients.osis.getNamespace('cloudbroker')
+        super(cloudbroker_grid, self).__init__()
+        self.sysmodels = j.clients.osis.getNamespace('system')
         self.acl = j.clients.agentcontroller.get()
 
     @auth(['level1', 'level2', 'level3'])
@@ -45,7 +49,26 @@ class cloudbroker_grid(object):
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
         
     @auth(['level1', 'level2', 'level3'])
-    def upgrade(self, gid, **kwargs):
-        self.acl.executeJumpscript('greenitglobe', 'delete_file', role='controllernode', gid=gid, wait=True, all=True, args={'path': '/var/ovc/updatelogs/update_env.log'})
-        self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
+    def upgrade(self, version, **kwargs):
+        manifest = requests.get('https://raw.githubusercontent.com/0-complexity/home/master/manifests/{}.yml'.format(version)).content
+        versionmodel = self.sysmodels.version.new()
+        versionmodel.name = version
+        versionmodel.manifest = manifest
+        versionmodel.status = 'INSTALLING'
+        self.sysmodels.version.set(versionmodel)
+        gids = [ x['gid'] for x in self.models.location.search({'$fields': ['gid']})[1:]]
+        for gid in gids:
+            self.acl.executeJumpscript('greenitglobe', 'delete_file', role='controllernode', gid=gid, wait=True, all=True, args={'path': '/var/ovc/updatelogs/update_env.log'})
+            self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
         return {'redirect_url': '/updating'}
+
+    @auth(['level1', 'level2', 'level3'])
+    def run_upgrade_script(self, **kwargs):
+        upgrade_version = self.sysmodels.version.searchOne({'status': 'INSTALLING'})['name']
+        current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
+        job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='controllernode', gid=j.application.whoAmI.gid,
+                                        wait=True, args={'upgrade_version': upgrade_version, 'current_version': current_version})
+        if job['state'] != 'OK':
+            raise exceptions.Error("Couldn't execute upgrade script")
+        self.sysmodels.updateSearch({'status': 'INSTALLING'}, {'$set': {'status': 'CURRENT', 'creationTime': int(time.time())}})
+        return 'Upgrade script ran successfully'

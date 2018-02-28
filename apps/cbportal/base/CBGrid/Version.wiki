@@ -1,5 +1,10 @@
 @usedefault
 @@title Software Versions
+{{versionselect}}
+{{actions:
+- display: Update environment
+  action: '#updateenv'
+}}
 h3. JumpScale
    * Core: {{repoversion: account:jumpscale7 repo:jumpscale_core7 provider:github}}
    * Portal: {{repoversion: account:jumpscale7 repo:jumpscale_portal provider:github}}

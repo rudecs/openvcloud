@@ -40,4 +40,11 @@
         """
         upgrade the grid to the latest
         """
-        var:gid int,, id of the grid
+        var:version str,, Version to update to
+    
+    method:run_upgrade_script
+        """
+        Run version migration scripts
+        """
+        result: str
+        
