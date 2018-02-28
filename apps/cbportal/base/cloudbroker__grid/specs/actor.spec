@@ -40,7 +40,7 @@
         """
         upgrade the grid to the latest
         """
-        var:version str,, Version to update to
+        var:url str,, Version to update to
     
     method:run_upgrade_script
         """

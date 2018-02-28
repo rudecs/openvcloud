@@ -31,7 +31,7 @@ def action():
             break
 
     j.system.process.execute('kubectl delete configmap manifest-version', dieOnNonZeroExitCode=False)
-    j.system.process.execute('kubectl create configmap manifest-version --from-literal=software.version={version}'.format(version=versionmodel['name']))
+    j.system.process.execute('kubectl create configmap manifest-version --from-literal=version.url={url}'.format(url=versionmodel['url']))
     j.do.pullGitRepo('https://github.com/0-complexity/openvcloud_installer/', ignorelocalchanges=True, reset=True, tag=tag)
     j.system.process.execute('kubectl apply -f %s/scripts/kubernetes/upgrader/upgrader-job.yaml' % repo_path, outputToStdout=True)
 

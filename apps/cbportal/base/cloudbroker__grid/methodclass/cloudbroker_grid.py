@@ -3,6 +3,8 @@ from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
 import requests
+from urlparse import urlparse
+from os import path as os_path 
 import time
 
 class cloudbroker_grid(BaseActor):
@@ -49,10 +51,12 @@ class cloudbroker_grid(BaseActor):
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
         
     @auth(['level1', 'level2', 'level3'])
-    def upgrade(self, version, **kwargs):
-        manifest = requests.get('https://raw.githubusercontent.com/0-complexity/home/master/manifests/{}.yml'.format(version)).content
+    def upgrade(self, url, **kwargs):
+        manifest = requests.get(url).json
+        version = os_path.basename(urlparse.urlparse('url')).strip('.yaml')
         versionmodel = self.sysmodels.version.new()
         versionmodel.name = version
+        versionmodel.url = url
         versionmodel.manifest = manifest
         versionmodel.status = 'INSTALLING'
         self.sysmodels.version.set(versionmodel)
