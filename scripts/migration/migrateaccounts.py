@@ -257,6 +257,9 @@ class Migrator(object):
             target = nic.find('target')
             newtarget = newnic.find('target')
             target.attrib['dev'] = newtarget.attrib['dev']
+        seclabel = srcdom.find('seclabel')
+        if seclabel is not None:
+            srcdom.remove(seclabel)
 
         return ElementTree.tostring(srcdom)
 
