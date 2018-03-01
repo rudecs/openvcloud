@@ -52,8 +52,8 @@ class cloudbroker_grid(BaseActor):
         
     @auth(['level1', 'level2', 'level3'])
     def upgrade(self, url, **kwargs):
-        manifest = requests.get(url).json
-        version = os_path.basename(urlparse.urlparse('url')).strip('.yaml')
+        manifest = requests.get(url).content
+        version = os_path.splitext(os_path.basename(urlparse(url).path))[0]
         versionmodel = self.sysmodels.version.new()
         versionmodel.name = version
         versionmodel.url = url
