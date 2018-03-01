@@ -5,8 +5,8 @@ from pkg_resources import parse_version
 def main(j, args, params, tags, tasklet):
     scl = j.clients.osis.getNamespace('system')
     params.result = page = args.page
-    url = scl.grid.search(j.application.whoAmI).get('manifest_url')
-    if scl.grid.search(j.application.whoAmI).get('manifest_url'):
+    url = scl.grid.search({"id":j.application.whoAmI.gid}).get('manifestUrl')
+    if url:
         contents = requests.get(url).json()
     else:
         contents = requests.get('https://api.github.com/repos/0-complexity/home/contents/manifests').json()
