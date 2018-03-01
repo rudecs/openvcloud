@@ -25,13 +25,19 @@ def action():
     scl = j.clients.osis.getNamespace('system')
     versionmodel = scl.version.searchOne({'status': 'INSTALLING'})
     manifest = yaml.load(versionmodel['manifest'])
+    manifest['version'] = versionmodel['name']
+    manifest['url'] = versionmodel['url']
     for repo in manifest['repos']:
         if repo['url'] == 'https://github.com/0-complexity/openvcloud_installer':
             tag = repo['target']['tag']
             break
 
-    j.system.process.execute('kubectl delete configmap manifest-version', dieOnNonZeroExitCode=False)
-    j.system.process.execute('kubectl create configmap manifest-version --from-literal=version.url={url}'.format(url=versionmodel['url']))
+    try:
+        yaml.dump(manifest, '/tmp/versions-manifest.yaml')
+    finally:
+        j.system.fs.remove('/tmp/versions-manifest.yaml')
+        
+    j.system.process.execute('kubectl create configmap --dry-run -o yaml --from-file=/tmp/versions-manifest.yaml versions-manifest |  kubectl apply -f -')
     j.do.pullGitRepo('https://github.com/0-complexity/openvcloud_installer/', ignorelocalchanges=True, reset=True, tag=tag)
     j.system.process.execute('kubectl apply -f %s/scripts/kubernetes/upgrader/upgrader-job.yaml' % repo_path, outputToStdout=True)
 
