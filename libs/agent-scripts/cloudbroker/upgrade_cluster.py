@@ -29,18 +29,20 @@ def action():
     manifest['url'] = versionmodel['url']
     for repo in manifest['repos']:
         if repo['url'] == 'https://github.com/0-complexity/openvcloud_installer':
-            tag = repo['target']['tag']
+            tag = repo['target'].get('tag')
+            branch = repo['target'].get('branch')
             break
 
     try:
-        yaml.dump(manifest, '/tmp/versions-manifest.yaml')
+        with open('/tmp/versions-manifest.yaml', 'w+') as file_descriptor:
+            yaml.dump(manifest, file_descriptor)        
+            j.system.process.execute('kubectl --kubeconfig /root/.kube/config create configmap --dry-run -o yaml --from-file=/tmp/versions-manifest.yaml versions-manifest |  kubectl --kubeconfig /root/.kube/config apply -f -')
     finally:
         j.system.fs.remove('/tmp/versions-manifest.yaml')
-        
-    j.system.process.execute('kubectl create configmap --dry-run -o yaml --from-file=/tmp/versions-manifest.yaml versions-manifest |  kubectl apply -f -')
-    j.do.pullGitRepo('https://github.com/0-complexity/openvcloud_installer/', ignorelocalchanges=True, reset=True, tag=tag)
-    j.system.process.execute('kubectl apply -f %s/scripts/kubernetes/upgrader/upgrader-job.yaml' % repo_path, outputToStdout=True)
-
+    
+    j.do.pullGitRepo('https://github.com/0-complexity/openvcloud_installer/', ignorelocalchanges=True, reset=True,
+                     tag=tag, branch=branch)
+    j.system.process.execute('kubectl apply --kubeconfig /root/.kube/config -f %s/scripts/kubernetes/upgrader/upgrader-job.yaml' % repo_path, outputToStdout=True)
 
 
 if __name__ == '__main__':

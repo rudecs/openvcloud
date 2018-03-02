@@ -16,7 +16,8 @@ async = True
 
 
 def action(path):
-    j.system.fs.remove(path)
+    if j.system.fs.exists(path):
+        j.system.fs.remove(path)
 
 if __name__ == '__main__':
     action()
