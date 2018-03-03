@@ -32,7 +32,13 @@ def action():
             edgetransport, edgeip, edgeport, devicename
         )
         print('Backing up {} to {}'.format(sourcefile, destinationfile))
-        j.system.platform.qemu_img.convert(sourcefile, 'qcow2', destinationfile.replace('://', ':'), 'raw')
+        destination = destinationfile.replace('://', ':')
+        try:
+            j.system.platform.qemu_img.info(destination)
+            create = False
+        except:
+            create = True
+        j.system.platform.qemu_img.convert(sourcefile, 'qcow2', destination, 'raw', createTarget=create)
 
 
 if __name__ == '__main__':
