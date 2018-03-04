@@ -1,4 +1,3 @@
-
 from JumpScale import j
 
 descr = """
@@ -17,6 +16,11 @@ queue = 'hypervisor'
 
 def action(networkid):
     acl = j.clients.agentcontroller.get()
+    scl = j.clients.osis.getNamespace('system')
+    grid = scl.grid.get(j.application.whoAmI.gid)
+    ovs_credentials = grid.settings.get('ovs_credentials', {})
+    edgeuser = ovs_credentials.get('edgeuser')
+    edgepassword = ovs_credentials.get('edgepassword')
     edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection',
                                                   role='storagedriver', gid=j.application.whoAmI.gid)
     localfile = '/var/lib/libvirt/images/routeros/{:04x}/routeros.qcow2'.format(networkid)
@@ -24,6 +28,8 @@ def action(networkid):
     ovslocation = 'openvstorage+%s:%s:%s/%s' % (
         edgetransport, edgeip, edgeport, devicename
     )
+    if edgeuser:
+        ovslocation += ":username={}:password={}".format(edgeuser, edgepassword)
     print('Restoring {} to {}'.format(ovslocation, localfile))
     destination = '/var/lib/libvirt/images/routeros/'
     networkidHex = '%04x' % int(networkid)

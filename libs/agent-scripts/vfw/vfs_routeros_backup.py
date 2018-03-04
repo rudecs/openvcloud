@@ -1,4 +1,3 @@
-
 from JumpScale import j
 
 descr = """
@@ -20,6 +19,11 @@ interval = 600
 def action():
     import time
     vcl = j.clients.osis.getNamespace('vfw')
+    scl = j.clients.osis.getNamespace('system')
+    grid = scl.grid.get(j.application.whoAmI.gid)
+    ovs_credentials = grid.settings.get('ovs_credentials', {})
+    edgeuser = ovs_credentials.get('edgeuser')
+    edgepassword = ovs_credentials.get('edgepassword')
     vfws = vcl.virtualfirewall.search({'nid': j.application.whoAmI.nid, 'accesstime': {'$gt': int(time.time()) - 7200}})[1:]
     acl = j.clients.agentcontroller.get()
     edgeip, edgeport, edgetransport = acl.execute('greenitglobe', 'getedgeconnection',
@@ -33,6 +37,8 @@ def action():
         )
         print('Backing up {} to {}'.format(sourcefile, destinationfile))
         destination = destinationfile.replace('://', ':')
+        if edgeuser:
+            destination += ":username={}:password={}".format(edgeuser, edgepassword)
         try:
             j.system.platform.qemu_img.info(destination)
             create = False
