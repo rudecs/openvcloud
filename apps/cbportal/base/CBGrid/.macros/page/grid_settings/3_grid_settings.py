@@ -8,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     settings = ''
     grid_settings = scl.grid.searchOne({'id': gid}).get('settings', {})
     if grid_settings:
-       settings = yaml.safe_dump(settings, default_flow_style=False)
+       settings = yaml.safe_dump(grid_settings, default_flow_style=False)
 
     popup = Popup(id='settings', header='Change grid settings',
                   submit_url='/restmachine/cloudbroker/grid/changeSettings')

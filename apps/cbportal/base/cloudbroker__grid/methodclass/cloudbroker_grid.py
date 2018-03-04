@@ -86,7 +86,7 @@ class cloudbroker_grid(BaseActor):
         if self.sysmodels.grid.count({'id': id}) == 0:
             raise exceptions.NotFound("No grid with id {} was found".format(id))
         try:
-            settings = yaml.loads(settings)
+            settings = yaml.load(settings)
         except:
             raise exceptions.BadRequest("settings needs to be in valid YAML format")
         if not isinstance(settings, dict):
