@@ -13,6 +13,7 @@ class cloudbroker_grid(BaseActor):
         super(cloudbroker_grid, self).__init__()
         self.sysmodels = j.clients.osis.getNamespace('system')
         self.acl = j.clients.agentcontroller.get()
+        self.pcl = j.clients.portal.getByInstance('main')
 
     @auth(['level1', 'level2', 'level3'])
     def purgeLogs(self, gid, age='-3d', **kwargs):
@@ -71,8 +72,11 @@ class cloudbroker_grid(BaseActor):
     def runUpgradeScript(self, **kwargs):
         upgrade_version = self.sysmodels.version.searchOne({'status': 'INSTALLING'})['name']
         current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
+        location_url = self.pcl.actors.cloudapi.locations.getUrl()
         job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='controllernode', gid=j.application.whoAmI.gid,
-                                        wait=True, args={'upgrade_version': upgrade_version, 'current_version': current_version})
+                                        wait=True, args={'upgrade_version': upgrade_version,
+                                                         'current_version': current_version,
+                                                         'location_url': location_url})
         if job['state'] != 'OK':
             raise exceptions.Error("Couldn't execute upgrade script")
         return 'Upgrade script ran successfully'

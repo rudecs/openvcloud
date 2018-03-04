@@ -17,7 +17,7 @@ roles = ['controllernode']
 async = True
 
 
-def action(upgrade_version, current_version=""):
+def action(upgrade_version, location_url,  current_version=""):
     versionfolders = []
     upgrade_versions = []
     versions = j.system.fs.listDirsInDir(UPGRADEFOLDER, dirNameOnly=True)
@@ -29,8 +29,6 @@ def action(upgrade_version, current_version=""):
     versionfolders = [os.path.join(UPGRADEFOLDER, v[0]) for v in upgrade_versions]
     acl = j.clients.agentcontroller.get()
     ccl = j.clients.osis.getNamespace('cloudbroker')
-    pcl = j.clients.portal.getByInstance('main')
-    locationurl = pcl.actors.cloudapi.locations.getUrl()
 
     locationgids = [loc['gid'] for loc in ccl.location.search({})[1:]]
     for versionfolder in versionfolders:
@@ -57,7 +55,7 @@ def action(upgrade_version, current_version=""):
                             except:
                                 eco = False
                             if eco:
-                                j.console.warning('Failed to execute {} on {} see "{}/grid/error%20condition?id={}'.format(name, job['nid'], locationurl, eco))
+                                j.console.warning('Failed to execute {} on {} see "{}/grid/error%20condition?id={}'.format(name, job['nid'], location_url, eco))
                             else:
                                 j.console.warning('Failed to execute {} on {} see: {}'.format(name, job['nid'], job['result']))
                         if job['state'] == 'TIMEOUT':
