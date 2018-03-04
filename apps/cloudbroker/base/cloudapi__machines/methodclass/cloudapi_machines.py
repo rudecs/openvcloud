@@ -415,9 +415,8 @@ class cloudapi_machines(BaseActor):
                 disk.type = 'B' if i == 0 else 'D'
                 disk.sizeMax = diskobj['size'] / 1024 / 1024 / 1024
                 totaldisksize += disk.sizeMax
-                diskid = self.models.disk.set(disk)[0]
-                disk.id = diskid
                 disk.name = diskobj['name']
+                diskid = self.models.disk.set(disk)[0]
                 if i == 0:
                     bootdisk = disk
                 vm.disks.append(diskid)
