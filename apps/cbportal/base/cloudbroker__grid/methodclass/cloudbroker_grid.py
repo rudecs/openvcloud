@@ -4,8 +4,8 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
 import requests
 from urlparse import urlparse
-from os import path as os_path 
-import time
+from os import path as os_path
+import yaml
 
 class cloudbroker_grid(BaseActor):
 
@@ -50,7 +50,7 @@ class cloudbroker_grid(BaseActor):
         location.name = name
         self.models.location.set(location)
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
-        
+
     @auth(['level1', 'level2', 'level3'])
     def upgrade(self, url, **kwargs):
         manifest = requests.get(url).content
@@ -80,3 +80,15 @@ class cloudbroker_grid(BaseActor):
         if job['state'] != 'OK':
             raise exceptions.Error("Couldn't execute upgrade script")
         return 'Upgrade script ran successfully'
+
+    @auth(['level1', 'level2', 'level3'])
+    def changeSettings(self, id, settings, **kwargs):
+        if self.sysmodels.grid.count({'id': id}) == 0:
+            raise exceptions.NotFound("No grid with id {} was found".format(id))
+        try:
+            settings = yaml.loads(settings)
+        except:
+            raise exceptions.BadRequest("settings needs to be in valid JSON format")
+        self.sysmodels.grid.updateSearch({'id': id}, {'$set': {'settings': settings}})
+        return 'Changing settings done successfully'
+

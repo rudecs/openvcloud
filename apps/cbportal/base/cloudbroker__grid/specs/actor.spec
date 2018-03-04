@@ -47,4 +47,12 @@
         Run version migration scripts
         """
         result: str
+
+    method:changeSettings
+        """
+        changes grid settings
+        """
+        var:id int,, id of the grid
+        var:settings str,, json data of the new settings will override old data
+        result: str
         

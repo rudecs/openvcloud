@@ -2,6 +2,8 @@
 @@title Location: ${name}
 {{toc: start=3 | depth=2}}
 
+{{grid_settings: gid:$$gid}}
+
 {{location}}
 
 {% if id %}
@@ -16,6 +18,9 @@ h3. Location: ${name}
    - label: New Name
      name: name
      type: text
+
+- display: Change settings
+  action: '#settings'
 
 - display: Check VMs
   action: /restmachine/cloudbroker/grid/checkVMs
