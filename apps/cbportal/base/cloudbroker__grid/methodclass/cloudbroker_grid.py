@@ -68,7 +68,7 @@ class cloudbroker_grid(BaseActor):
         return {'redirect_url': '/updating'}
 
     @auth(['level1', 'level2', 'level3'])
-    def run_upgrade_script(self, **kwargs):
+    def runUpgradeScript(self, **kwargs):
         upgrade_version = self.sysmodels.version.searchOne({'status': 'INSTALLING'})['name']
         current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
         job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='controllernode', gid=j.application.whoAmI.gid,

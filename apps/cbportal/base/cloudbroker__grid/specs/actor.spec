@@ -42,7 +42,7 @@
         """
         var:url str,, Version to update to
     
-    method:run_upgrade_script
+    method:runUpgradeScript
         """
         Run version migration scripts
         """
