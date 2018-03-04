@@ -88,7 +88,9 @@ class cloudbroker_grid(BaseActor):
         try:
             settings = yaml.loads(settings)
         except:
-            raise exceptions.BadRequest("settings needs to be in valid JSON format")
+            raise exceptions.BadRequest("settings needs to be in valid YAML format")
+        if not isinstance(settings, dict):
+            raise exceptions.BadRequest("settings needs to be in valid YAML format and needs to be an object")
         self.sysmodels.grid.updateSearch({'id': id}, {'$set': {'settings': settings}})
         return 'Changing settings done successfully'
 
