@@ -370,34 +370,6 @@ class cloudbroker_machine(BaseActor):
         self.models.vmachine.set(vmachine)
 
     @auth(['level1', 'level2', 'level3'])
-    def export(self, machineId, name, backuptype, storage, host, aws_access_key, aws_secret_key, bucketname, **kwargs):
-        machineId = int(machineId)
-        machine = self._validateMachineRequest(machineId)
-        stack = self.models.stack.get(machine.stackId)
-        storageparameters = {}
-        if storage == 'S3':
-            if not aws_access_key or not aws_secret_key or not host:
-                raise exceptions.BadRequest('S3 parameters are not provided')
-            storageparameters['aws_access_key'] = aws_access_key
-            storageparameters['aws_secret_key'] = aws_secret_key
-            storageparameters['host'] = host
-            storageparameters['is_secure'] = True
-
-        storageparameters['storage_type'] = storage
-        storageparameters['backup_type'] = backuptype
-        storageparameters['bucket'] = bucketname
-        storageparameters['mdbucketname'] = bucketname
-
-        storagepath = '/mnt/vmstor/vm-%s' % machineId
-        nid = int(stack.referenceId)
-        gid = stack.gid
-        args = {'path': storagepath, 'name': name, 'machineId': machineId,
-                'storageparameters': storageparameters, 'nid': nid, 'backup_type': backuptype}
-        guid = self.acl.executeJumpscript(
-            'cloudscalers', 'cloudbroker_export', j.application.whoAmI.nid, gid=gid, args=args, wait=False)['guid']
-        return guid
-
-    @auth(['level1', 'level2', 'level3'])
     def listExports(self, status, machineId, **kwargs):
         machineId = int(machineId)
         query = {'status': status, 'machineId': machineId}
