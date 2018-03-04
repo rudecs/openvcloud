@@ -6,7 +6,6 @@ def main(j, args, params, tags, tasklet):
     scl = j.clients.osis.getNamespace('system')
     params.result = page = args.page
     url = scl.grid.searchOne({"id":j.application.whoAmI.gid}).get('settings', {}).get('manifestUrl')
-
     if url:
         contents = requests.get(url).json()
     else:

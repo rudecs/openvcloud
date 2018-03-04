@@ -58,6 +58,7 @@ class cloudbroker_grid(BaseActor):
         versionmodel.name = version
         versionmodel.url = url
         versionmodel.manifest = manifest
+        versionmodel.creationTime = j.base.time.getTimeEpoch()
         versionmodel.status = 'INSTALLING'
         self.sysmodels.version.set(versionmodel)
         gids = [ x['gid'] for x in self.models.location.search({'$fields': ['gid']})[1:]]
@@ -74,5 +75,4 @@ class cloudbroker_grid(BaseActor):
                                         wait=True, args={'upgrade_version': upgrade_version, 'current_version': current_version})
         if job['state'] != 'OK':
             raise exceptions.Error("Couldn't execute upgrade script")
-        self.sysmodels.updateSearch({'status': 'INSTALLING'}, {'$set': {'status': 'CURRENT', 'creationTime': int(time.time())}})
         return 'Upgrade script ran successfully'
