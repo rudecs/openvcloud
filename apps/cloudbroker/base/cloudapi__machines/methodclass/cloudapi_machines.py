@@ -521,6 +521,8 @@ class cloudapi_machines(BaseActor):
         """
         for name, url in kwargs.iteritems():
             parsed = urlparse.urlparse(url)
+            if not url:
+                raise exceptions.BadRequest("{} parameter should not be empty".format(name))
             if parsed.scheme != "https":
                 raise exceptions.BadRequest("{} parameter only supports https links".format(name))
             if ':' in parsed.netloc or '@' in parsed.netloc:
@@ -544,7 +546,9 @@ class cloudapi_machines(BaseActor):
         param:sizeId the size id of the machine
         param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
         """
-        self._validate_links(link=link, callbackUrl=callbackUrl)
+        self._validate_links(link=link)
+        if callbackUrl is not None:
+            self._validate_links(callbackUrl=callbackUrl)
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
@@ -572,7 +576,9 @@ class cloudapi_machines(BaseActor):
         param:machineId id of the machine to export
         param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
         """
-        self._validate_links(link=link, callbackUrl=callbackUrl)
+        self._validate_links(link=link)
+        if callbackUrl is not None:
+            self._validate_links(callbackUrl=callbackUrl)
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
         provider, _, vm = self.cb.getProviderAndNode(machineId)
