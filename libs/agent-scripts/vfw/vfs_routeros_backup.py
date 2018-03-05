@@ -13,7 +13,7 @@ enable = True
 async = True
 queue = 'hypervisor'
 roles = ['cpunode']
-interval = 600
+period = 600
 
 
 def action():
