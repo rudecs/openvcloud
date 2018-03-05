@@ -82,13 +82,15 @@ class cloudbroker_image(BaseActor):
         return bytesize
 
     @auth(['level1', 'level2', 'level3'])
-    def createImage(self, name, url, gid, imagetype, username=None, password=None, accountId=None, **kwargs):
+    def createImage(self, name, url, gid, imagetype, boottype, username=None, password=None, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
+        if boottype not in ['bios', 'uefi']:
+            raise exceptions.BadRequest('Invalid boottype, should be either uefi or bios')
         bytesize = self._getImageSize(url)
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._createImage,
-                            (name, url, gid, imagetype, bytesize, username, password, accountId, kwargs),
+                            (name, url, gid, imagetype, boottype, bytesize, username, password, accountId, kwargs),
                             {},
                             'Creating Image {}'.format(name),
                             'Finished Creating Image',
@@ -101,13 +103,13 @@ class cloudbroker_image(BaseActor):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
         image = self.models.image.get(imageId)
-        image.name = name if name else image.name 
-        image.username = username if username else image.username  
+        image.name = name if name else image.name
+        image.username = username if username else image.username
         image.password = password if password else image.password
         image.accountId = accountId if accountId else image.accountId
         self.models.image.set(image)
 
-    def _createImage(self, name, url, gid, imagetype, bytesize, username, password, accountId, kwargs):
+    def _createImage(self, name, url, gid, imagetype, boottype, bytesize, username, password, accountId, kwargs):
         ctx = kwargs['ctx']
         gbsize = int(math.ceil(j.tools.units.bytes.toSize(bytesize, '', 'G')))
         provider = self.cb.getProviderByGID(gid)
@@ -120,6 +122,7 @@ class cloudbroker_image(BaseActor):
         image.accountId = accountId or 0
         image.status = 'CREATING'
         image.size = gbsize
+        image.bootType = boottype
         image.id = self.models.image.set(image)[0]
         volume = provider.create_volume(gbsize, 'templates/image_{}'.format(image.id), data=False)
         self.models.image.updateSearch({'id': image.id}, {'$set': {'referenceId': volume.vdiskguid}})

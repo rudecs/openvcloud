@@ -19,7 +19,12 @@ def main(j, args, params, tags, tasklet):
             ('Windows', 'Windows'),
             ('Other', 'Other'),
     ]
+    boottype = [
+            ('BIOS', 'bios'),
+            ('UEFI', 'uefi'),
+    ]
     popup.addDropdown('Choose Type', 'imagetype', imagetypes)
+    popup.addDropdown('Boot Type', 'boottype', boottype)
     popup.addText('Username for the image leave empty when the image is cloud-init enabled', 'username')
     popup.addText('Password for the image leave empty when the image is cloud-init enabled', 'password')
     popup.addText('AccountId optional if you want to make the image for this account only', 'accountId')

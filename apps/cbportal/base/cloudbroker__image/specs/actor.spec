@@ -49,6 +49,8 @@
         var:name str,,Name of the rescue disk
         var:url str,,URL where to download ISO from
         var:gid int,,Grid ID where this template should be create in
+        var:boottype str,,Boot type of image bios or uefi
+        var:imagetype str,,Image type Linux, Windows or Other
         var:username str,,Optional username for the image @optional
         var:password str,,Optional password for the image @optional
         var:accountId int,,AccountId to make the image exclusive @optional
