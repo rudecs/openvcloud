@@ -16,12 +16,7 @@ def main(j, args, params, tags, tasklet):
     if cloudspaceId:
         filters['cloudspaceId'] = int(cloudspaceId)
     if imageid:
-        imageid = str(imageid)
-        images = ccl.image.search({'referenceId': imageid})[1:]
-        if images:
-            filters['imageId'] = images[0]['id']
-        else:
-            filters['imageId'] = imageid
+        filters['imageId'] = int(imageid)
 
     if gid:
         gid = int(gid)
