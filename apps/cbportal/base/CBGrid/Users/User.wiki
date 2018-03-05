@@ -16,7 +16,7 @@ h2. User: ${id}
   navigateback: true
 
 }}
-{{user_edit: guid:$$id}}
+{{user_edit: guid:'$$id'}}
 
 |*Groups*|${", ".join(groups)} |
 |*Emails*|${", ".join(emails)} |

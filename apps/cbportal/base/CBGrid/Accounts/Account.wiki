@@ -68,13 +68,13 @@ h2. Account: ${name}
 
   - name: accountId
     type: hidden
-    value: $$id
+    value: '$$id'
 
 {% if status != "DISABLED" %}
 - display: Disable
   action: /restmachine/cloudbroker/account/disable
   data:
-   accountId: $$id
+   accountId: '$$id'
    async: true
   input:
   - reason
@@ -82,14 +82,14 @@ h2. Account: ${name}
 - display: Enable
   action: /restmachine/cloudbroker/account/enable
   data:
-   accountId: $$id
+   accountId: '$$id'
   input:
   - reason
 {% endif %}
 - display: Delete
   action: /restmachine/cloudbroker/account/delete
   data:
-   accountId: $$id
+   accountId: '$$id'
   input:
   - reason
 
@@ -97,7 +97,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/addUser
   hide: true
   data:
-   accountId: $$id
+   accountId: '$$id'
   input:
   - name: username
     label: Username or email address (an invitation will be sent to unregistered emails)
@@ -117,7 +117,7 @@ h2. Account: ${name}
   action: /restmachine/cloudbroker/account/deleteUser
   hide: true
   data:
-   accountId: $$id
+   accountId: '$$id'
   input:
   - name: recursivedelete
     type: dropdown
@@ -130,7 +130,7 @@ h2. Account: ${name}
 }}
 {% endif %}
 
-{{createspace: accountId:$$id}}
+{{createspace: accountId:'$$id'}}
 
 h3. Details
 |*Account ID*|$$id|
@@ -162,10 +162,10 @@ h3. Cloud Spaces
   input:
   - reason
  }}
-{{cbspaces: accountId:$$id}}
+{{cbspaces: accountId:'$$id'}}
 
 h3. Audits
-{{grid.audits accountId:$$id}}
+{{grid.audits accountId:'$$id'}}
 {% else %}
 No account provided
 {% endif %}
