@@ -17,12 +17,12 @@ roles = ['master']
 async = True
 
 
-def action(upgrade_version, location_url,  current_version=""):
+def action(previous_version, location_url,  current_version=""):
     versionfolders = []
     upgrade_versions = []
     versions = j.system.fs.listDirsInDir(UPGRADEFOLDER, dirNameOnly=True)
     for vers in versions:
-        if parse_version(current_version) < parse_version(version) <= parse_version(upgrade_version):
+        if parse_version(previous_version) < parse_version(version) <= parse_version(current_version):
             upgrade_versions.append((vers, parse_version(vers)))
 
     upgrade_versions.sort(key=lambda ver: ver[1])
