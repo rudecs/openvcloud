@@ -82,7 +82,7 @@ class cloudbroker_grid(BaseActor):
         else:
             current_version = upgrade_version
         location_url = self.pcl.actors.cloudapi.locations.getUrl()
-        job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='controllernode', gid=j.application.whoAmI.gid,
+        job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='master', gid=j.application.whoAmI.gid,
                                         wait=True, args={'upgrade_version': upgrade_version,
                                                          'current_version': current_version,
                                                          'location_url': location_url})

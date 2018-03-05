@@ -13,7 +13,7 @@ author = "deboeckj@greenitglobe.com"
 license = "bsd"
 version = "1.0"
 category = "cloudbroker"
-roles = ['controllernode']
+roles = ['master']
 async = True
 
 
