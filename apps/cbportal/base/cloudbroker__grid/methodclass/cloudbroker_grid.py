@@ -55,13 +55,18 @@ class cloudbroker_grid(BaseActor):
     def upgrade(self, url, **kwargs):
         manifest = requests.get(url).content
         version = os_path.splitext(os_path.basename(urlparse(url).path))[0]
-        versionmodel = self.sysmodels.version.new()
-        versionmodel.name = version
-        versionmodel.url = url
-        versionmodel.manifest = manifest
-        versionmodel.creationTime = j.base.time.getTimeEpoch()
-        versionmodel.status = 'INSTALLING'
-        self.sysmodels.version.set(versionmodel)
+        current_time = j.base.time.getTimeEpoch()
+        if self.sysmodels.version.count({'name': version}) > 0:
+            self.sysmodels.version.updateSearch({'name': version}, {'$set': {'creationTime': current_time, 'status': 'INSTALLING'}})
+        else:
+            versionmodel = self.sysmodels.version.new()
+            versionmodel.name = version
+            versionmodel.url = url
+            versionmodel.manifest = manifest
+            versionmodel.creationTime = current_time
+            versionmodel.status = 'INSTALLING'
+            self.sysmodels.version.set(versionmodel)
+
         gids = [ x['gid'] for x in self.models.location.search({'$fields': ['gid']})[1:]]
         for gid in gids:
             self.acl.executeJumpscript('greenitglobe', 'delete_file', role='controllernode', gid=gid, wait=True, all=True, args={'path': '/var/ovc/updatelogs/update_env.log'})
@@ -71,7 +76,11 @@ class cloudbroker_grid(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     def runUpgradeScript(self, **kwargs):
         upgrade_version = self.sysmodels.version.searchOne({'status': 'INSTALLING'})['name']
-        current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
+        current_version_dict = self.sysmodels.version.searchOne({'status': 'CURRENT'})
+        if current_version_dict:
+            current_version = current_version_dict['name']
+        else:
+            current_version = upgrade_version
         location_url = self.pcl.actors.cloudapi.locations.getUrl()
         job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='controllernode', gid=j.application.whoAmI.gid,
                                         wait=True, args={'upgrade_version': upgrade_version,

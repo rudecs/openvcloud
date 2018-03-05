@@ -15,7 +15,7 @@ def main(j, args, params, tags, tasklet):
     for file in contents:
         if re.search("^(\d+\.)?(\d+\.)?(\d+)", file['name']):
             version = file['name'].split('.yml')[0]
-            if parse_version(version) > parse_version(current_version):
+            if parse_version(version) >= parse_version(current_version):
                 versions.append((version, file['download_url']))
 
     popup = Popup(id='updateenv', header='Update environment',
