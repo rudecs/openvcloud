@@ -206,7 +206,7 @@ if __name__ == '__main__':
         j.console.warning('File {} does not exist.'.format(options.manifest))
         sys.exit(1)
     with open(options.manifest) as manifestfd:
-        manifest = yaml.load(manifestfd)
+        manifest = yaml.load(manifestfd)['repos']
     j.console.warning('''\
 WARNING: This command will reset all your repos.
     Do NOT continue if you have uncommited code.
