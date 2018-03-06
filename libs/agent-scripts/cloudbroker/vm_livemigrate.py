@@ -29,7 +29,12 @@ def action(vm_id, sourceurl, domainxml, force):
         localip = j.system.net.getReachableIpAddress(parsedsourceurl.hostname, 22)
         target_con = libvirt.open(sourceurl.replace(parsedsourceurl.hostname, localip))  # local
         targeturl = "tcp://{}".format(localip)
-        domain = source_con.lookupByUUIDString(vm_id)
+        try:
+            domain = source_con.lookupByUUIDString(vm_id)
+        except libvirt.libvirtError as e:
+            if e.get_error_code() == libvirt.VIR_ERR_NO_DOMAIN:
+                return -1 # nothing to do domain is not running
+            raise
 
         if domain.state()[0] in (libvirt.VIR_DOMAIN_RUNNING, libvirt.VIR_DOMAIN_PAUSED):
             srcdom = ElementTree.fromstring(domain.XMLDesc(libvirt.VIR_DOMAIN_XML_MIGRATABLE))

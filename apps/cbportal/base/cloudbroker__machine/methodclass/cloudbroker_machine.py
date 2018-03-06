@@ -365,7 +365,9 @@ class cloudbroker_machine(BaseActor):
         if vmachine.status != resourcestatus.Machine.HALTED:
             # create network on target node
             node = self.cb.getNode(vmachine, target_provider)
-            target_provider.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId), force)
+            migrated = target_provider.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId), force)
+            if migrated == -1:
+                vmachine.status = resourcestatus.Machine.HALTED
         vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 
