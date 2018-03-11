@@ -26,14 +26,19 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, **kwargs):
+    def create(self, cloudspaceId, name, description, imageId, disksize, datadisks, sizeId=None, vcpus=None,
+               memory=None, **kwargs):
+        if sizeId == -1:
+            sizeId = None
         return self.cb.actors.cloudapi.machines.create(cloudspaceId=cloudspaceId, name=name,
                                                        description=description, sizeId=sizeId,
-                                                       imageId=imageId, disksize=disksize, datadisks=datadisks)
+                                                       imageId=imageId, disksize=disksize, datadisks=datadisks,
+                                                       vcpus=vcpus, memory=memory)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def createOnStack(self, cloudspaceId, name, description, sizeId, imageId, disksize, stackid, datadisks, userdata=None, **kwargs):
+    def createOnStack(self, cloudspaceId, name, description, imageId, disksize, stackid, datadisks,
+                      userdata=None, sizeId=None, vcpus=None, memory=None, **kwargs):
         """
         Create a machine on a specific stackid
         param:cloudspaceId id of space in which we want to create a machine
@@ -44,16 +49,16 @@ class cloudbroker_machine(BaseActor):
         param:disksize size of base volume
         param:stackid id of the stack
         param:datadisks list of disk sizes
+        param:vcpu int number of cpu to assign to machine 
+        param:memory int ammount of memory to assign to machine
         result bool
         """
-        datadisks = datadisks or []
-        cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
-        totaldisksize = sum(datadisks + [disksize])
-        size = self.models.size.get(sizeId)
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory / 1024.0, totaldisksize)
-        machine, auth, diskinfo = self.cb.machine.createModel(name, description, cloudspace, imageId, sizeId, disksize, datadisks)
+        if sizeId == -1:
+            sizeId = None
+        machine, auth, diskinfo, cloudspace = j.apps.cloudapi.machines._prepare_machine(cloudspaceId, name, description,
+                                                                                        imageId, disksize, datadisks,
+                                                                                        sizeId, userdata,
+                                                                                        vcpus, memory)
         machineId =  self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid, userdata)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
@@ -83,10 +88,6 @@ class cloudbroker_machine(BaseActor):
         sourcedisks = machine.pop('disks')
         for disk in sourcedisks:
             totaldisksize += disk['sizeMax']
-
-        size = self.models.size.searchOne({'vcpus': vcpus, 'memory': memory})
-        if size is None:
-            raise exceptions.BadRequest("No size to match {} vcpus and {} memory".format(vcpus, memory))
         image = self.models.image.searchOne({'name': machine['imagename']})
         if image is None:
             raise exceptions.BadRequest("Could not find image with name {}".format(machine['imagename']))
@@ -127,7 +128,8 @@ class cloudbroker_machine(BaseActor):
         vm = self.models.vmachine.new()
         vm.load(machine)
         vm.cloudspaceId = cloudspace.id
-        vm.sizeId = size['id']
+        vm.memory = memory
+        vm.vcpus = vcpus
         vm.imageId = image['id']
         vm.status = resourcestatus.Machine.MIGRATING
         vm.id = None
@@ -616,8 +618,11 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def resize(self, machineId, sizeId, **kwargs):
-        response = self.cb.actors.cloudapi.machines.resize(machineId=machineId, sizeId=sizeId)
+    def resize(self, machineId, sizeId=None, vcpus=None, memory=None, **kwargs):
+        if sizeId == -1:
+            sizeId = None
+        response = self.cb.actors.cloudapi.machines.resize(machineId=machineId, sizeId=sizeId, memory=memory,
+                                                           vcpus=vcpus)
         if response:
             return "Successfully resized machine"
         else:

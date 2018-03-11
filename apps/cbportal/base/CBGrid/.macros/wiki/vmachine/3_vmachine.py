@@ -95,10 +95,6 @@ def main(j, args, params, tags, tasklet):
 
     data.update(obj.dump())
     try:
-        size = cbosis.size.get(obj.sizeId).dump()
-    except Exception:
-        size = {'vcpus': 'N/A', 'memory': 'N/A', 'description': 'N/A'}
-    try:
         stack = cbosis.stack.get(obj.stackId).dump()
     except Exception:
         stack = {'name': 'N/A', 'referenceId': 'N/A', 'type': 'UNKNOWN'}
@@ -156,7 +152,6 @@ def main(j, args, params, tags, tasklet):
                 disk['footprint'] = '%.2f' % j.tools.units.bytes.toSize(disk['footprint'], output='G')
                 break
 
-    data['size'] = '%s vCPUs, %s Memory, %s' % (size['vcpus'], size['memory'], size['description'])
     data['image'] = image
     data['stackname'] = stack['name']
     data['spacename'] = space['name']

@@ -11,7 +11,9 @@
         var:cloudspaceId int,,id of cloud space in which we want to create a machine
         var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
-        var:sizeId int,,id of the specific size
+        var:sizeId int,,id of the specific size @optional 
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:datadisks list(int),, list of extra data disks in gigabytes  @optional
@@ -176,7 +178,9 @@
         var:cloudspaceId int,, id of the cloudspace in which the vm should be created
         var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
-        var:sizeId int,, the size id of the machine
+        var:sizeId int,,id of the specific size @optional 
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         var:callbackUrl str,, callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion. @optional
 
     method:exportOVF
@@ -205,7 +209,9 @@
         Returns status code 202 with response false if the size could not be applied live and required a stop/start of the machine
         """
         var:machineId int,, id of machine to resize
-        var:sizeId int,,new sizeId
+        var:sizeId int,,id of the specific size @optional 
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         result:bool
 
     method:clone

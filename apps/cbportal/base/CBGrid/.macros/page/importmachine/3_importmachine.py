@@ -13,7 +13,6 @@ def main(j, args, params, tags, tasklet):
     dropdisksizes = list()
     dropstacks = list()
     disksizes = set()
-    dropsizes = list()
 
     def sizeSorter(size):
         return size['memory']
@@ -23,10 +22,6 @@ def main(j, args, params, tags, tasklet):
 
     for size in sorted(disksizes):
         dropdisksizes.append(("%s GB" % size, str(size)))
-
-    for size in sorted(sizes, key=sizeSorter):
-        disksizes.update(size['disks'])
-        dropsizes.append(("%(memory)s MB,    %(vcpus)s core(s)" % size, size['id']))
 
     for stack in sorted(stacks, key=sortName):
         dropstacks.append((stack['name'], stack['id']))
@@ -40,7 +35,8 @@ def main(j, args, params, tags, tasklet):
     popup.addText('OVF path', 'path')
     popup.addText('Username for Link', 'username')
     popup.addText('Password for Link', 'passwd', type='password')
-    popup.addDropdown('Choose Memory', 'sizeId', dropsizes)
+    popup.addNumber('Number of VCPUS', 'vcpus')
+    popup.addNumber('Amount of memory', 'memory')
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)
 

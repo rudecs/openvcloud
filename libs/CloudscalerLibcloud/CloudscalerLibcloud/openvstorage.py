@@ -90,6 +90,8 @@ def getEdgeconnection(vpoolname=VPOOLNAME):
     storagedrivers = list(StorageDriverList.get_storagedrivers())
     random.shuffle(storagedrivers)
     for storagedriver in storagedrivers:
+        if storagedriver.status == 'FAILURE':
+            continue
         if (vpoolname is not None and storagedriver.vpool.name == vpoolname) or \
                 (vpoolname is None and storagedriver.vpool.name != VPOOLNAME):
             return storagedriver.storage_ip, storagedriver.ports['edge'], protocol

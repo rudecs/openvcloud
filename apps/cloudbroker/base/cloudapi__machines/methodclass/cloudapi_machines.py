@@ -387,7 +387,8 @@ class cloudapi_machines(BaseActor):
 
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
-    def syncImportOVF(self, uploaddata, envelope, cloudspace, name, description, sizeId, callbackUrl, user):
+    def syncImportOVF(self, uploaddata, envelope, cloudspace, name, description, callbackUrl, user, vcpus=None,
+                      memory=None, sizeId=None):
         try:
             error = False
             userobj = j.core.portal.active.auth.getUserInfo(user)
@@ -399,7 +400,20 @@ class cloudapi_machines(BaseActor):
 
             vm.name = name
             vm.descr = description
-            vm.sizeId = sizeId
+            if sizeId and (vcpus or memory):
+                raise exceptions.BadRequest("sizeId and (vcpus or memory) are mutually exclusive")
+            # make sure that if u pass memory or vcpus u have to pass the other as well
+            if (memory or vcpus) and not (memory and vcpus):
+                raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
+            if sizeId == -1:
+                sizeId = None
+            if sizeId:
+                size = self.models.size.get(sizeId)
+                vm.sizeId = sizeId
+                memory = size.memory
+                vcpus = size.vcpus
+            vm.memory = memory 
+            vm.vcpus = vcpus
             vm.imageId = j.apps.cloudapi.images.get_or_create_by_name('Imported Machine').id
             vm.creationTime = int(time.time())
             vm.updateTime = int(time.time())
@@ -423,12 +437,12 @@ class cloudapi_machines(BaseActor):
                 diskobj['id'] = diskid
                 diskobj['path'] = 'disk-%i.vmdk' % i
             # Validate that enough resources are available in the CU limits to clone the machine
-            size = self.models.size.get(vm.sizeId)
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                       size.memory / 1024.0, totaldisksize)
+            size = {'memory': memory, 'vcpus': vcpus}
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vcpus,
+                                                                       memory / 1024.0, totaldisksize)
 
             vm.id = self.models.vmachine.set(vm)[0]
-            stack = self.cb.getBestStack(cloudspace.gid, vm.imageId, memory=size.memory)
+            stack = self.cb.getBestStack(cloudspace.gid, vm.imageId, memory=memory)
             provider = self.cb.getProviderByStackId(stack['id'])
 
             machine['id'] = vm.id
@@ -477,14 +491,13 @@ class cloudapi_machines(BaseActor):
             volumes = provider.ex_clone_disks(diskmapping, disks_snapshots)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
-            size = self.models.size.get(vm.sizeId)
             osname = self.models.image.get(vm.imageId).name
             os = re.match('^[a-zA-Z]+', osname).group(0).lower()
             envelope = ovf.model_to_ovf({
                 'name': vm.name,
                 'description': vm.descr,
-                'cpus': size.vcpus,
-                'mem': size.memory,
+                'cpus': vm.vcpus,
+                'mem': vm.memory,
                 'os': os,
                 'osname': osname,
                 'disks': [{
@@ -532,7 +545,8 @@ class cloudapi_machines(BaseActor):
                 raise exceptions.BadRequest("Local hostnames are not supported in the {} parameter".format(name))
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, sizeId, callbackUrl, **kwargs):
+    def importOVF(self, link, username, passwd, path, cloudspaceId, name, description, callbackUrl, vcpus=None,
+                  memory=None, sizeId=None, **kwargs):
         """
         Import a machine from owncloud(ovf)
         param:link WebDav link to owncloud
@@ -562,7 +576,13 @@ class cloudapi_machines(BaseActor):
                 msg = 'Failed to retreive envelope'
             raise exceptions.BadRequest(msg)
 
-        gevent.spawn(self.syncImportOVF, uploaddata, job['result'], cloudspace, name, description, sizeId, callbackUrl, user)
+        if sizeId and (vcpus or memory):
+                raise exceptions.BadRequest("sizeId and (vcpus or memory) are mutually exclusive")
+        if (memory or vcpus) and not (memory and vcpus):
+             raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
+
+        gevent.spawn(self.syncImportOVF, uploaddata, job['result'], cloudspace, name, description, callbackUrl, user, vcpus,
+                     memory, sizeId)
 
     @authenticator.auth(acl={'machine': set('X')})
     def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
@@ -611,7 +631,7 @@ class cloudapi_machines(BaseActor):
         return self._export(machineId, backupName, storageparameters)
 
     @authenticator.auth(acl={'cloudspace': set('C')})
-    def create(self, cloudspaceId, name, description, sizeId, imageId, disksize, datadisks, userdata=None, **kwargs):
+    def create(self, cloudspaceId, name, description, imageId, disksize, datadisks, sizeId=None, userdata=None, vcpus=None, memory=None, **kwargs):
         """
         Create a machine based on the available sizes, in a certain cloud space
         The user needs write access rights on the cloud space
@@ -623,23 +643,44 @@ class cloudapi_machines(BaseActor):
         :param imageId: id of the specific image
         :param disksize: size of base volume
         :param datadisks: list of extra data disks
+        :param vcpu: int number of cpu to assign to machine 
+        :param memory: int ammount of memory to assign to machine
         :return bool
 
         """
-        datadisks = datadisks or []
-        cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
-        # Validate that enough resources are available in the CU limits to create the machine
-        size = self.models.size.get(sizeId)
-        totaldisksize = sum(datadisks + [disksize])
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory / 1024.0, totaldisksize)
-        machine, auth, diskinfo = self.cb.machine.createModel(
-            name, description, cloudspace, imageId, sizeId, disksize, datadisks)
+        machine, auth, diskinfo, cloudspace = self._prepare_machine(cloudspaceId, name, description, imageId, disksize,
+                                                                    datadisks, sizeId, userdata, vcpus,
+                                                                    memory)
         machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None, userdata)
         kwargs['ctx'].env['tags'] += " machineId:{}".format(machineId)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
+
+
+    def _prepare_machine(self, cloudspaceId, name, description, imageId, disksize, datadisks, sizeId=None, 
+                         userdata=None, vcpus=None, memory=None, **kwargs):
+        """
+        internal method to prevent code duplication
+        """
+        if sizeId and (vcpus or memory):
+            raise exceptions.BadRequest("sizeId and (vcpus or memory) are mutually exclusive")
+        # make sure that if u pass memory or vcpus u have to pass the other as well
+        if (memory or vcpus) and not (memory and vcpus):
+             raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
+        datadisks = datadisks or []
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
+        # Validate that enough resources are available in the CU limits to create the machine
+        if sizeId:
+            size = self.models.size.get(sizeId)
+            memory = size.memory
+            vcpus = size.vcpus
+        totaldisksize = sum(datadisks + [disksize])
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vcpus,
+                                                                   memory / 1024.0, totaldisksize)
+        machine, auth, diskinfo = self.cb.machine.createModel(
+            name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory)
+        return machine, auth, diskinfo, cloudspace
 
 
     @authenticator.auth(acl={'cloudspace': set('X')})
@@ -737,7 +778,9 @@ class cloudapi_machines(BaseActor):
         return {'id': machine.id, 'cloudspaceid': machine.cloudspaceId, 'acl': acl, 'disks': disks,
                 'name': machine.name, 'description': machine.descr, 'hostname': machine.hostName,
                 'status': machine.status, 'imageid': machine.imageId, 'osImage': osImage, 'sizeid': machine.sizeId,
-                'interfaces': machinedict['nics'], 'storage': storage, 'accounts': machinedict['accounts'], 'locked': locked, 'updateTime': updateTime, 'creationTime': creationTime}
+                'memory': machine.memory, 'vcpus': machine.vcpus, 'interfaces': machinedict['nics'], 'storage': storage,
+                'accounts': machinedict['accounts'], 'locked': locked, 'updateTime': updateTime,
+                'creationTime': creationTime}
 
     # Authentication (permissions) are checked while retrieving the machines
     def list(self, cloudspaceId, **kwargs):
@@ -752,7 +795,7 @@ class cloudapi_machines(BaseActor):
             raise exceptions.BadRequest('Please specify a cloudsapce ID.')
         cloudspaceId = int(cloudspaceId)
         fields = ['id', 'referenceId', 'cloudspaceid', 'hostname', 'imageId', 'name',
-                  'nics', 'sizeId', 'status', 'stackId', 'disks', 'creationTime', 'updateTime']
+                  'nics', 'sizeId', 'status', 'stackId', 'disks', 'creationTime', 'updateTime', 'memory', 'vcpus']
 
         user = ctx.env['beaker.session']['user']
         userobj = j.core.portal.active.auth.getUserInfo(user)
@@ -917,12 +960,11 @@ class cloudapi_machines(BaseActor):
             raise exceptions.MethodNotAllowed('Cannot clone a cloned machine.')
 
         # validate capacity of the vm
-        size = self.models.size.get(machine.sizeId)
         query = {'$fields': ['id', 'sizeMax'],
                  '$query': {'id': {'$in': machine.disks}}}
         totaldisksize = sum([disk['sizeMax'] for disk in self.models.disk.search(query)[1:]])
-        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, size.vcpus,
-                                                                   size.memory / 1024.0, totaldisksize)
+        j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, machine.vcpus,
+                                                                   machine.memory / 1024.0, totaldisksize)
 
         # clone vm model
         self.cb.machine.assertName(machine.cloudspaceId, name)
@@ -930,8 +972,11 @@ class cloudapi_machines(BaseActor):
         clone.cloudspaceId = cloudspace.id
         clone.name = name
         clone.descr = machine.descr
-        clone.sizeId = machine.sizeId
         clone.imageId = machine.imageId
+        if machine.sizeId:
+            clone.sizeId = machine.sizeId
+        clone.memory = machine.memory
+        clone.vcpus = machine.vcpus
         image = self.models.image.get(machine.imageId)
         clone.cloneReference = machine.id
         clone.acl = machine.acl
@@ -948,7 +993,7 @@ class cloudapi_machines(BaseActor):
         diskmapping = []
 
         _, node, machine = self.cb.getProviderAndNode(machineId)
-        stack = self.cb.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
+        stack = self.cb.getBestStack(cloudspace.gid, machine.imageId, memory=machine.memory)
         provider = self.cb.getProviderByStackId(stack['id'])
 
         totaldisksize = 0
@@ -987,7 +1032,8 @@ class cloudapi_machines(BaseActor):
                     disks_snapshots[snapshot['diskguid']] = snapshot['guid']
 
         try:
-            node = provider.ex_clone(node, password, image.type, size, clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
+            node = provider.ex_clone(node, password, image.type, {'memory': machine.memory, 'vcpus': machine.vcpus},
+                                     clone.id, cloudspace.networkId, diskmapping, disks_snapshots)
             if node == -1:
                 raise exceptions.ServiceUnavailable("Not enough resources available to host clone")
             self.cb.machine.updateMachineFromNode(clone, node, provider.stack)
@@ -1195,18 +1241,30 @@ class cloudapi_machines(BaseActor):
         return True
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def resize(self, machineId, sizeId, **kwargs):
+    def resize(self, machineId, sizeId=None, vcpus=None, memory=None, **kwargs):
+        if sizeId and (vcpus or memory):
+            raise exceptions.BadRequest("sizeId and (vcpus or memory) are mutually exclusive")
+        # make sure that if u pass memory or vcpus u have to pass the other as well
+        if (memory or vcpus) and not (memory and vcpus):
+            raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
+        if sizeId == -1:
+            sizeId = None
+        if sizeId:
+            size = self.models.size.get(sizeId) 
+            memory = size.memory
+            vcpus = size.vcpus
+        new_memory = memory
+        new_vcpus = vcpus
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
-        size = self.models.size.get(sizeId)
-
         # Validate that enough resources are available in the CU limits if size will be increased
-        oldsize = self.models.size.get(vmachine.sizeId)
+        old_memory = vmachine.memory
+        old_vcpus = vmachine.vcpus
         # Calcultate the delta in memory and vpcu only if new size is bigger than old size
-        deltacpu = max(size.vcpus - oldsize.vcpus, 0)
-        deltamemorymb = size.memory - oldsize.memory
+        deltacpu = max(new_vcpus - old_vcpus, 0)
+        deltamemorymb = new_memory - old_memory
         if deltamemorymb < 0 and vmachine.status != resourcestatus.Machine.HALTED:
             raise exceptions.BadRequest('Can not decrease memory on a running machine')
-        if size.vcpus < oldsize.vcpus and vmachine.status != resourcestatus.Machine.HALTED:
+        if new_vcpus < old_vcpus and vmachine.status != resourcestatus.Machine.HALTED:
             raise exceptions.BadRequest('Can not decrease vcpus on a running machine')
 
         deltamemory = max(deltamemorymb/1024., 0)
@@ -1215,12 +1273,16 @@ class cloudapi_machines(BaseActor):
                                                                    memorysize=deltamemory)
 
         newcpucount = None
-        if size.vcpus > oldsize.vcpus:
-            newcpucount = size.vcpus
+        if new_vcpus > old_vcpus:
+            newcpucount = new_vcpus
         success = True
         if vmachine.status != resourcestatus.Machine.HALTED:
             success = provider.ex_resize(node=node, extramem=deltamemorymb, vcpus=newcpucount)
-        self.models.vmachine.updateSearch({'id': machineId}, {'$set': {'sizeId': sizeId}})
+
+        new_values = {'memory': new_memory, 'vcpus': new_vcpus, 'sizeId': 0}
+        if sizeId:
+            new_values['sizeId'] = sizeId
+        self.models.vmachine.updateSearch({'id': machineId}, {'$set': new_values})
         if not success:
             raise exceptions.Accepted(False)
         return True

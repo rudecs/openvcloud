@@ -12,21 +12,9 @@ def main(j, args, params, tags, tasklet):
         return params
     bootdisk = bootdisks[0]
 
-    sizes = ccl.size.search({})[1:]
-    dropsizes = list()
-
-    def sizeSorter(size):
-        return size['memory']
-
-    for size in sorted(sizes, key=sizeSorter):
-        if bootdisk['sizeMax'] in size['disks']:
-            dropsizes.append(("VCPU %(vcpus)s / %(memory)s MB" % size, size['id']))
-
-    if not dropsizes:
-        return params
-
     popup = Popup(id='resizemachine', header='Resize Machine', submit_url='/restmachine/cloudbroker/machine/resize', showresponse=True)
-    popup.addDropdown('Choose Size', 'sizeId', dropsizes)
+    popup.addNumber('Number of VCPUS', 'vcpus')
+    popup.addNumber('Amount of memory', 'memory')
     popup.addHiddenField('machineId', machineId)
     popup.write_html(page)
 

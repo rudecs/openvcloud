@@ -172,7 +172,9 @@ class CloudBroker(object):
             volume = j.apps.cloudapi.disks.getStorageVolume(disk, driver)
             volumes.append(volume)
 
-        size = models.size.get(machine.sizeId)
+        size = {'memory': machine.memory, 'vcpus': machine.vcpus}
+        if machine.sizeId:
+            size = models.size.get(machine.sizeId).dump()
         extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes, 'size': size, 'boottype': image.bootType, 'bootdev': 'hd'}
         node = Node(
             id=machine.referenceId,
@@ -237,28 +239,27 @@ class CloudBroker(object):
         query = {'$query': {'id': {'$in': nodeids}},
                  '$fields': ['id', 'memory']}
         nodesbyid = {node['id']: node['memory'] for node in self.syscl.node.search(query)[1:]}
-        sizes = {s['id']: s['memory'] for s in models.size.search({'$fields': ['id', 'memory']})[1:]}
         grid = self.syscl.grid.get(gid)
         for stack in stacks:
             if stack.get('status', 'ENABLED') == 'ENABLED':
                 nodeid = int(stack['referenceId'])
                 if (stack['gid'], nodeid) not in activesessions:
                     continue
-                self.getStackCapacity(stack, grid, sizes, nodesbyid)
+                self.getStackCapacity(stack, grid, nodesbyid)
                 resourcesdata.append(stack)
         resourcesdata.sort(key=lambda s: s['usedmemory'])
         return resourcesdata
 
-    def getStackCapacity(self, stack, grid, sizes, nodesbyid):
+    def getStackCapacity(self, stack, grid, nodesbyid):
         # search for all vms running on the stacks
-        usedvms = models.vmachine.search({'$fields': ['id', 'sizeId'],
+        usedvms = models.vmachine.search({'$fields': ['id', 'memory'],
                                           '$query': {'stackId': stack['id'],
                                                      'status': {'$nin': resourcestatus.Machine.NON_CONSUMING_STATES}}
                                           }
                                          )[1:]
         stack['usedvms'] = len(usedvms)
         if usedvms:
-            stack['usedmemory'] = sum(sizes[vm['sizeId']] for vm in usedvms)
+            stack['usedmemory'] = sum(vm['memory'] for vm in usedvms)
         else:
             stack['usedmemory'] = 0
         # add vfws
@@ -462,14 +463,6 @@ class Machine(object):
         if models.vmachine.count({'status': {'$ne': resourcestatus.Machine.DESTROYED}, 'cloudspaceId': cloudspace.id}) >= 250:
             raise exceptions.BadRequest("Can not create more than 250 Virtual Machines per Cloud Space")
 
-        sizes = j.apps.cloudapi.sizes.list(cloudspace.id)
-        if sizeId not in [s['id'] for s in sizes]:
-            raise exceptions.BadRequest("Cannot create machine with specified size on this cloudspace")
-
-        size = models.size.get(sizeId)
-        if disksize not in size.disks:
-            raise exceptions.BadRequest("Disk size of {}GB is invalid for sizeId {}.".format(disksize, sizeId))
-
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
@@ -478,15 +471,20 @@ class Machine(object):
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
-    def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks):
-        datadisks = datadisks or []
-
+    def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory):
+        datadisks = datadisks or []        
         image = models.image.get(imageId)
         machine = models.vmachine.new()
+        if sizeId:
+            machine.sizeId = sizeId
+            size = models.size.get(sizeId)
+            vcpus = size.vcpus
+            memory = size.memory
+        machine.memory = memory
+        machine.vcpus = vcpus
         machine.cloudspaceId = cloudspace.id
         machine.descr = description
         machine.name = name
-        machine.sizeId = sizeId
         machine.imageId = imageId
         machine.creationTime = int(time.time())
         machine.updateTime = int(time.time())
@@ -602,14 +600,14 @@ class Machine(object):
         excludelist = []
         name = 'vm-%s' % machine.id
         newstackId = stackId
-        size = models.size.get(machine.sizeId)
+        size = {'memory':machine.memory, 'vcpus':machine.vcpus}
         volumes = []
 
         def getStackAndProvider(newstackId):
             provider = None
             try:
                 if not newstackId:
-                    stack = self.cb.getBestStack(cloudspace.gid, imageId, excludelist, size.memory)
+                    stack = self.cb.getBestStack(cloudspace.gid, imageId, excludelist, machine.memory)
                     if stack == -1:
                         raise exceptions.ServiceUnavailable(
                             'Not enough resources available to provision the requested machine')
@@ -637,8 +635,8 @@ class Machine(object):
             try:
                 if not volumes:
                     node = provider.create_node(name=name, image=image, disksize=firstdisk.sizeMax, auth=auth,
-                                                networkid=cloudspace.networkId, size=size,
-                                                datadisks=diskinfo, iotune=firstdisk.iotune, userdata=userdata)
+                                                networkid=cloudspace.networkId, size=size, datadisks=diskinfo,
+                                                iotune=firstdisk.iotune, userdata=userdata)
                 else:
                     node = provider.init_node(name, size, volumes, image.type)
             except StorageException as e:

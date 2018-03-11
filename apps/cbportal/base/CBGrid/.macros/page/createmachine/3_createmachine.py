@@ -11,15 +11,11 @@ def main(j, args, params, tags, tasklet):
 
     sizes = scl.size.search({})[1:]
     images = actors.images.list(accountId=cloudspace.accountId, cloudspaceId=cloudspace.id)
-    dropsizes = list()
     dropdisksizes = list()
     dropimages = list()
     dropstacks = list()
     disksizes = set()
     dropstacks.append(('Auto', 0))
-    def sizeSorter(size):
-        return size['memory']
-
     def imageSorter(image):
         return image['type'] + image['name']
 
@@ -28,10 +24,6 @@ def main(j, args, params, tags, tasklet):
 
     for image in sorted(images, key=imageSorter):
         dropimages.append(("%(type)s: %(name)s" % image, image['id']))
-
-    for size in sorted(sizes, key=sizeSorter):
-        disksizes.update(size['disks'])
-        dropsizes.append(("%(memory)s MB,    %(vcpus)s core(s)" % size, size['id']))
 
     for size in sorted(disksizes):
         dropdisksizes.append(("%s GB" % size, str(size)))
@@ -45,8 +37,9 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Machine Description', 'description', required=True)
     popup.addDropdown('Choose CPU Node', 'stackid', dropstacks)
     popup.addDropdown('Choose Image', 'imageId', dropimages)
-    popup.addDropdown('Choose Size', 'sizeId', dropsizes)
     popup.addDropdown('Choose Disk Size', 'disksize', dropdisksizes)
+    popup.addNumber('Number of VCPUS', 'vcpus')
+    popup.addNumber('Amount of memory', 'memory')
     popup.addText('User data for cloud-init', 'userdata')
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)

@@ -18,7 +18,9 @@
         var:cloudspaceId int,,id of space in which we want to create a machine
         var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
-        var:sizeId int,,id of the specific size
+        var:sizeId int,,id of the specific size @optional
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:datadisks list(int),, list of data disk sizes in gigabytes @optional
@@ -31,7 +33,9 @@
         var:cloudspaceId int,,id of space in which we want to create a machine
         var:name str,,name of machine @tags validator:name
         var:description str,,optional description @tags: optional
-        var:sizeId int,,id of the specific size
+        var:sizeId int,,id of the specific size @optional
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         var:imageId int,, id of the specific image
         var:disksize int,, size of base volume
         var:stackid int,, id of the stack
@@ -316,7 +320,9 @@
         Change memory and vcpu from machine
         """
         var:machineId int,, ID of machine
-        var:sizeId int,,new sizeId
+        var:sizeId int,,id of the specific size @optional
+        var:memory int,,amount of memory to provide @optional
+        var:vcpus int,,number of vcpus to provide @optional
         result:bool
 
     method:startMachines
