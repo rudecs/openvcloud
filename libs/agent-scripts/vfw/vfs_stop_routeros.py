@@ -21,7 +21,7 @@ def action(networkid):
     network = Network(libvirtutil)
 
     con = libvirtutil.connection
-    destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
+    destination = '/var/lib/libvirt/images/routeros/{0:04x}/routeros.qcow2'.format(networkid)
     try:
         network_id_hex = '%04x' % int(networkid)
         name = 'routeros_%s' % network_id_hex
@@ -32,7 +32,7 @@ def action(networkid):
                 network.cleanup_external(domain)
                 domain.shutdown()
                 domain.undefine()
-                j.system.process.execute('btrfs subvol delete {}'.format(destination), dieOnNonZeroExitCode=False)
+                j.system.fs.remove(destination)
                 return True
             else:
                 return True

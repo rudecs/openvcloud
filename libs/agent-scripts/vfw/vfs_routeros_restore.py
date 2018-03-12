@@ -31,8 +31,7 @@ def action(networkid):
     if edgeuser:
         ovslocation += ":username={}:password={}".format(edgeuser, edgepassword)
     print('Restoring {} to {}'.format(ovslocation, localfile))
-    destination = '/var/lib/libvirt/images/routeros/'
-    networkidHex = '%04x' % int(networkid)
+    destination = '/var/lib/libvirt/images/routeros/{:04x}'.format(int(networkid))
     try:
         j.system.platform.qemu_img.info(ovslocation)
     except RuntimeError as e:
@@ -40,13 +39,14 @@ def action(networkid):
             return False
         j.errorconditionhandler.processPythonExceptionObject(e)
         return False
-    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
-        j.system.btrfs.subvolumeDelete(destination, networkidHex)
-    j.system.btrfs.subvolumeCreate(destination, networkidHex)
+    if j.system.fs.exists(localfile):
+        j.system.fs.remove(localfile)
+    else:
+        j.system.fs.createDir(destination)
     try:
         j.system.platform.qemu_img.convert(ovslocation, 'raw', localfile, 'qcow2')
     except Exception as e:
-        j.system.btrfs.subvolumeDelete(destination, networkidHex)
+        j.system.fs.remove(localfile)
         j.errorconditionhandler.processPythonExceptionObject(e)
         return False
     return True

@@ -19,3 +19,6 @@ def action():
         update = {'memory': machine['memory']  if machine.get('memory') else size.memory ,
                     'vcpus': machine['vcpus'] if machine.get('vcpus') else size.vcpus}
         cbcl.vmachine.updateSearch({'id': machine['id']},  {'$set': update})
+
+if __name__ == '__main__':
+    action()

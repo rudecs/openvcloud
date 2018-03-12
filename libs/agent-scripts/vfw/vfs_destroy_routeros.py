@@ -44,10 +44,9 @@ def action(networkid):
         network.libvirtutil.cleanupNetwork(networkid, bridges)
     finally:
         network.close()
-    destination = '/var/lib/libvirt/images/routeros/'
-    networkidHex = '%04x' % int(networkid)
-    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
-        j.system.btrfs.subvolumeDelete(destination, networkidHex)
+    destinationfile = '/var/lib/libvirt/images/routeros/{:04x}/routeros.qcow2'.format(networkid)
+    if j.system.fs.exists(destinationfile):
+        j.system.fs.remove(destinationfile)
 
 
 if __name__ == '__main__':

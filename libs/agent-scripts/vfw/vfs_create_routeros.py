@@ -35,10 +35,9 @@ def cleanup(name, networkid):
     except:
         network.close()
 
-    destination = '/var/lib/libvirt/images/routeros/'
-    networkidHex = '%04x' % int(networkid)
-    if j.system.fs.exists(j.system.fs.joinPaths(destination, networkidHex)):
-        j.system.btrfs.subvolumeDelete(destination, networkidHex)
+    destinationfile = '/var/lib/libvirt/images/routeros/{:04x}/routeros.qcow2'.format(networkid)
+    if j.system.fs.exists(destinationfile):
+        j.system.fs.remove(destinationfile)
 
 
 def createVM(xml):
@@ -97,14 +96,15 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privaten
         print 'Creating network'
         createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
         j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
-        templatepath = '/var/lib/libvirt/images/routeros/template/'
-        destination = '/var/lib/libvirt/images/routeros/%s' % networkidHex
-        print 'Creating image snapshot %s -> %s' % (templatepath, destination)
-        if j.system.fs.exists(destination):
-            raise RuntimeError("Path %s already exists" % destination)
-        j.system.btrfs.snapshot(templatepath, destination)
-
+        templatepath = '/var/lib/libvirt/images/routeros/template/routeros.qcow2'
+        destination = '/var/lib/libvirt/images/routeros/%s/' % networkidHex
         destinationfile = os.path.join(destination, 'routeros.qcow2')
+        print 'Creating image snapshot %s -> %s' % (templatepath, destination)
+        if j.system.fs.exists(destinationfile):
+            raise RuntimeError("Path %s already exists" % destination)
+        j.system.fs.createDir(destination)
+        j.system.fs.copyFile(templatepath, destinationfile)
+
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
 

@@ -37,8 +37,9 @@ def action(networkid, sourceip, vlan, externalip):
     name = 'routeros_%04x' % networkid
 
     if source_con:
-        templatepath = '/var/lib/libvirt/images/routeros/template/'
+        templatepath = '/var/lib/libvirt/images/routeros/template/routeros.qcow2'
         destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
+        destinationfile = j.system.fs.joinPaths(destination, 'routeros.qcow2')
         try:
             domain = source_con.lookupByName(name)
         except libvirt.libvirtError:
@@ -50,7 +51,9 @@ def action(networkid, sourceip, vlan, externalip):
                 localip = j.system.net.getReachableIpAddress(sourceip, 22)
                 targeturl = "tcp://{}".format(localip)
                 if not j.system.fs.exists(destination):
-                    j.system.btrfs.snapshot(templatepath, destination)
+                    j.system.fs.createDir(destination)
+                if not j.system.fs.exists(destinationfile):
+                    j.system.fs.copyFile(templatepath, destinationfile)
                 xmldom = ElementTree.fromstring(domain.XMLDesc())
                 seclabel = xmldom.find('seclabel')
                 if seclabel is not None:
