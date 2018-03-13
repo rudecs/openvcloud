@@ -101,7 +101,12 @@ class LibvirtUtil(object):
     def modXML(self, xml):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
-        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=CPU_COUNT - 1))
+        if self.config.settings['cgroups'].get('vms'):
+            cpuLimit = self.config.settings['cgroups']['vms'].get('cpu')
+        if cpuLimit > cpu_count - 1:
+            raise RuntimeError("cpulimit is higher than available cpu count")
+        cpuLimit =  cpuLimit if cpuLimit else cpu_count -1
+        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=cpuLimit))
         xml = ElementTree.tostring(root)
         return xml
 
@@ -314,7 +319,9 @@ class LibvirtUtil(object):
 
     def memory_usage(self):
         ids = self.readonly.listDomainsID()
-        hostmem = self.readonly.getInfo()[1]
+        if self.config.settings['cgroups'].get('vms'):
+            memoryLimit = self.config.settings['cgroups']['vms'].get('memory'):
+        hostmem = memoryLimit if memoryLimit else self.readonly.getInfo()[1]
         totalmax = 0
         totalrunningmax = 0
         for id in ids:
