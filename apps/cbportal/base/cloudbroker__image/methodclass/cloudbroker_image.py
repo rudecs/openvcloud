@@ -123,11 +123,11 @@ class cloudbroker_image(BaseActor):
         image.status = 'CREATING'
         image.size = gbsize
         image.bootType = boottype
-        image.id = self.models.image.set(image)[0]
-        volume = provider.create_volume(gbsize, 'templates/image_{}'.format(image.id), data=False)
-        self.models.image.updateSearch({'id': image.id}, {'$set': {'referenceId': volume.vdiskguid}})
-        image.referenceId = volume.vdiskguid
         try:
+            image.id = self.models.image.set(image)[0]
+            volume = provider.create_volume(gbsize, 'templates/image_{}'.format(image.id), data=False)
+            self.models.image.updateSearch({'id': image.id}, {'$set': {'referenceId': volume.vdiskguid}})
+            image.referenceId = volume.vdiskguid
             size = provider._execute_agent_job(
                     'cloudbroker_import_image',
                     role='storagedriver',
@@ -176,10 +176,10 @@ class cloudbroker_image(BaseActor):
         disk.type = 'C'
         disk.sizeMax = gbsize
         disk.id = self.models.disk.set(disk)[0]
-        volume = provider.create_volume(gbsize, 'rescuedisk/disk_{}'.format(disk.id), data=False)
-        self.models.disk.updateSearch({'id': disk.id}, {'$set': {'referenceId': volume.id}})
-        disk.referenceId = volume.id
         try:
+            volume = provider.create_volume(gbsize, 'rescuedisk/disk_{}'.format(disk.id), data=False)
+            self.models.disk.updateSearch({'id': disk.id}, {'$set': {'referenceId': volume.id}})
+            disk.referenceId = volume.id
             size = provider._execute_agent_job(
                     'cloudbroker_import_image',
                     role='storagedriver',

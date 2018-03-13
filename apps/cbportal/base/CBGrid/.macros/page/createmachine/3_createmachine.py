@@ -9,7 +9,6 @@ def main(j, args, params, tags, tasklet):
     cloudspace = scl.cloudspace.get(cloudspaceId)
     stacks = scl.stack.search({'gid': cloudspace.gid, 'status': 'ENABLED'})[1:]
 
-    sizes = scl.size.search({})[1:]
     images = actors.images.list(accountId=cloudspace.accountId, cloudspaceId=cloudspace.id)
     dropdisksizes = list()
     dropimages = list()
@@ -37,7 +36,7 @@ def main(j, args, params, tags, tasklet):
     popup.addText('Machine Description', 'description', required=True)
     popup.addDropdown('Choose CPU Node', 'stackid', dropstacks)
     popup.addDropdown('Choose Image', 'imageId', dropimages)
-    popup.addDropdown('Choose Disk Size', 'disksize', dropdisksizes)
+    popup.addNumber('Disk Size', 'disksize')
     popup.addNumber('Number of VCPUS', 'vcpus')
     popup.addNumber('Amount of memory', 'memory')
     popup.addText('User data for cloud-init', 'userdata')

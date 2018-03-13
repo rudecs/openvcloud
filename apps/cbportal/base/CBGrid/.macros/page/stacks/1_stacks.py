@@ -34,7 +34,7 @@ def main(j, args, params, tags, tasklet):
     def fill_stack(stack):
         if 'usedros' not in stack:
             grid = get_grid(stack)
-            cb.getStackCapacity(stack, grid, sizes, nodesbyid)
+            cb.getStackCapacity(stack, grid, nodesbyid)
 
     def get_vms(stack, column):
         fill_stack(stack)

@@ -460,19 +460,19 @@ class Machine(object):
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
-        if models.vmachine.count({'status': {'$ne': resourcestatus.Machine.DESTROYED}, 'cloudspaceId': cloudspace.id}) >= 250:
+        if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.DELETED_STATES}, 'cloudspaceId': cloudspace.id}) >= 250:
             raise exceptions.BadRequest("Can not create more than 250 Virtual Machines per Cloud Space")
 
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name,
-                                          'status': {'$nin': [resourcestatus.Machine.DESTROYED, resourcestatus.Machine.ERROR]}})[1:]
+                                          'status': {'$nin': resourcestatus.Machine.DELETED_STATES}})[1:]
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory):
-        datadisks = datadisks or []        
+        datadisks = datadisks or []
         image = models.image.get(imageId)
         machine = models.vmachine.new()
         if sizeId:
