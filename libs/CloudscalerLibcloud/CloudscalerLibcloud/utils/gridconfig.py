@@ -27,7 +27,7 @@ class GridConfig(object):
             self.grid = self.scl.grid.get(self.gid)
         else:
             self.gid = grid.id
-            self.grid = grid
+            self.grid = grid            
         self.settings = self.grid.settings
 
     @property

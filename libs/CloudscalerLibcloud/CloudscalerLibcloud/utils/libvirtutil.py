@@ -101,12 +101,16 @@ class LibvirtUtil(object):
     def modXML(self, xml):
         root = ElementTree.fromstring(xml)
         vcpu = root.find("vcpu")
-        if self.config.settings['cgroups'].get('vms'):
-            cpuLimit = self.config.settings['cgroups']['vms'].get('cpu')
-        if cpuLimit > cpu_count - 1:
-            raise RuntimeError("cpulimit is higher than available cpu count")
-        cpuLimit =  cpuLimit if cpuLimit else cpu_count -1
-        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=RESERVED_CPUS, cpulimit=cpuLimit))
+        podCpu = 0
+        ovsCpu = 0
+        if self.config.settings['limits'].get('pods'):
+            podsCpu = self.config.settings['limits']['pods']['cpu']
+        if self.config.settings['limits'].get('ovs'):
+            ovsCpu = self.config.settings['limits']['ovs']['cpu']
+        reservedCpus = podsCpu + ovsCpu
+        if reservedCpus > cpu_count - 1:
+            raise RuntimeError("cpulimit in settings is higher than available cpu count")
+        vcpu.set("cpuset", "{startcpu}-{cpulimit}".format(startcpu=reservedCpus, cpulimit=cpu_count))
         xml = ElementTree.tostring(root)
         return xml
 
@@ -319,9 +323,20 @@ class LibvirtUtil(object):
 
     def memory_usage(self):
         ids = self.readonly.listDomainsID()
-        if self.config.settings['cgroups'].get('vms'):
-            memoryLimit = self.config.settings['cgroups']['vms'].get('memory'):
-        hostmem = memoryLimit if memoryLimit else self.readonly.getInfo()[1]
+            def modXML(self, xml):
+        podMemory = 0
+        ovsMemory = 0
+        if self.config.settings['limits'].get('pods'):
+            podsMemory = self.config.settings['limits']['pods']['memory']
+        if self.config.settings['limits'].get('ovs'):
+            ovsMemory = self.config.settings['limits']['ovs']['memory']
+        
+        reservedMemory = podsMemory + ovsMemory 
+        hostMemory = self.readonly.getInfo()[1]
+        if reservedMemory > Memory_count - 1:
+            raise RuntimeError("memory in settings is higher than available memory")
+
+        availableMemory = hostMemory - reservedMemorys
         totalmax = 0
         totalrunningmax = 0
         for id in ids:
@@ -330,15 +345,15 @@ class LibvirtUtil(object):
             totalmax += mem / 1024
             if machinestate == libvirt.VIR_DOMAIN_RUNNING:
                 totalrunningmax += maxmem / 1024
-        return (hostmem, totalmax, totalrunningmax)
+        return (availableMemory, totalmax, totalrunningmax)
 
     def check_machine(self, machinexml, reserved_mem=None):
         if reserved_mem is None:
             reserved_mem = self.config.get("reserved_mem")
         xml = ElementTree.fromstring(machinexml)
         memory = int(xml.find('currentMemory').text)
-        hostmem, totalmax, totalrunningmax = self.memory_usage()
-        if (totalrunningmax + memory) > (hostmem - reserved_mem):
+        availableMemory, totalmax, totalrunningmax = self.memory_usage()
+        if (totalrunningmax + memory) > (availableMemory - reserved_mem):
             return False
         return True
 
