@@ -53,7 +53,7 @@
         var:id int,, id of the computenode
         var:gid int,, the grid this computenode belongs to
         var:vmaction str,, what to do with running vms move or stop
-        var:message str,,message. Must be less than 30 characters
+        var:message str,,message. Must be less than 30 characters @optional
         result: str
 
     method:decommission

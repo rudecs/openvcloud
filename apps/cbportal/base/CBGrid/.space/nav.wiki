@@ -2,13 +2,12 @@
 Accounts:/cbgrid/accounts
 Cloud Spaces:/cbgrid/Cloud Spaces
 Locations:/cbgrid/locations
-Stacks:/cbgrid/Stacks
 Images:/cbgrid/images
 External Networks:/cbgrid/External Networks
 Private Networks:/cbgrid/private networks
 Users:/cbgrid/users
 Groups:/cbgrid/groups
 Virtual Machines:/cbgrid/Virtual Machines
-Storage Routers:/cbgrid/Storage Routers
+Physical Nodes:/cbgrid/physicalnodes
 0-access:/cbgrid/0-access ;0-access
 Software Versions:/cbgrid/Version

@@ -1,0 +1,11 @@
+@usedefaults
+
+h3. Physical Nodes
+
+{{actions: gridbinding:'table_system_node ids'
+  - display: Enable Nodes
+    action: /restmachine/cloudbroker/node/enable
+    reload: false
+ }}
+ 
+{{physicalnodes}}

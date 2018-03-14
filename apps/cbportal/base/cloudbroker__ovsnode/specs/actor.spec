@@ -13,3 +13,9 @@
         Activate storagerouter 
         """
         var:nids list(int),,nids of storagerouter
+
+    method:getStorageIP
+        """
+        get storage ip from models
+        """
+        var:nids int,,nid of storagerouter

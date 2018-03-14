@@ -17,10 +17,17 @@ class cloudbroker_computenode(BaseActor):
         self.node = j.apps.cloudbroker.node
 
     def _getStack(self, id, gid):
-        stacks = self.models.stack.search({'id': int(id), 'gid': int(gid)})[1:]
-        if not stacks:
+        stack = self.models.stack.searchOne({'id': int(id), 'gid': int(gid)})
+        if not stack:
             raise exceptions.NotFound('ComputeNode with id %s not found' % id)
-        return stacks[0]
+        return stack
+
+    def _getStackFromNode(self, nid, gid):
+        nid = nid if isinstance(nid, str) else str(nid)
+        stack = self.models.stack.searchOne({'referenceId': nid, 'gid': int(gid)})
+        if not stack:
+            raise exceptions.NotFound('ComputeNode with id %s not found' % id)
+        return stack
 
     @auth(['level1', 'level2', 'level3'])
     def setStatus(self, id, gid, status, **kwargs):
@@ -86,7 +93,7 @@ class cloudbroker_computenode(BaseActor):
             self.enable(stack.id, stack.gid, '', **kwargs)
 
     @auth(['level2', 'level3'], True)
-    def enable(self, id, gid, message, **kwargs):
+    def enable(self, id, gid, message='', **kwargs):
         title = "Enabling Stack"
         stack = self._getStack(id, gid)
         errorcb = functools.partial(self._errorcb, stack)

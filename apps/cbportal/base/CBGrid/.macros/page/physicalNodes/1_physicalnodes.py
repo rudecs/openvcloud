@@ -5,12 +5,11 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     imageid = args.getTag("imageid")
-    filters = dict()
+    filters = dict(roles={'$in':['cpunode','storagerouter']})
     grids = dict()
     cb = CloudBroker()
     query = {'$fields': ['id', 'memory']}
     nodesbyid = {node['id']: node['memory'] for node in cb.syscl.node.search(query)[1:] if 'memory' in node}
-    sizes = {s['id']: s['memory'] for s in cb.cbcl.size.search({'$fields': ['id', 'memory']})[1:]}
 
     if imageid:
         args.tags.tags.pop('imageid')
@@ -36,19 +35,27 @@ def main(j, args, params, tags, tasklet):
             grid = get_grid(stack)
             cb.getStackCapacity(stack, grid, nodesbyid)
 
-    def get_vms(stack, column):
-        fill_stack(stack)
-        return "{} + {}".format(stack['usedros'], stack['usedvms'])
+    def get_vms(node, column):
+        stack = cb.cbcl.stack.searchOne({'referenceId':str(node['id'])})
+        if stack:
+            fill_stack(stack)
+            return "{} + {}".format(stack['usedros'], stack['usedvms'])
+        else:
+            return ""
 
-    def get_memory(stack, column):
-        fill_stack(stack)
-        meminfo = "{:.2f} + {} / {:.2f} GiB".format(stack['usedmemory']/1024., stack['reservedmemory']/1024, stack['totalmemory']/1024.)
-        return meminfo
+    def get_memory(node, column):
+        stack = cb.cbcl.stack.searchOne({'referenceId':str(node['id'])})
+        if stack:
+            fill_stack(stack)
+            meminfo = "{:.2f} + {} / {:.2f} GiB".format(stack['usedmemory']/1024., stack['reservedmemory']/1024, stack['totalmemory']/1024.)
+            return meminfo
+        else:
+            return "%s GiB" % (node['memory']/1024)
 
     fields = [
         {'name': 'ID',
          'id': 'id',
-         'value': "<a href='/cbgrid/Stack?id=%(id)s'>%(id)s</a>"
+         'value': "<a href='/cbgrid/physicalNode?id=%(id)s&gid=%(gid)s'>%(id)s</a>"
          },
         {'name': 'Grid ID',
          'id': 'gid',
@@ -65,8 +72,11 @@ def main(j, args, params, tags, tasklet):
          },
         {'name': 'Reference ID',
          'id': 'referenceId',
-         'value': "<a href='/grid/grid node?id=%(referenceId)s&gid=%(gid)s'>%(referenceId)s</a>",
-         'type': 'text',
+         'value': "<a href='/grid/grid node?id=%(id)s&gid=%(gid)s'>%(id)s</a>"
+         },
+        {'name': 'Roles',
+         'id': 'roles',
+         'value': 'roles'
          },
         {'name': 'ROS + VMS',
          'id': 'is',
@@ -81,7 +91,7 @@ def main(j, args, params, tags, tasklet):
          'sortable': False
          },
     ]
-    tableid = modifier.addTableFromModel('cloudbroker', 'stack', fields, filters, selectable="rows")
+    tableid = modifier.addTableFromModel('system', 'node', fields, filters, selectable="rows")
     modifier.addSearchOptions('#%s' % tableid)
 
     params.result = page

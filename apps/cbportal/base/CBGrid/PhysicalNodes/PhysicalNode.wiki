@@ -1,0 +1,116 @@
+@usedefault
+@@title PhysicalNode: ${name}
+{{physical_node_data}}
+{% if node %} 
+{% if storageip %}
+h1. Physical Node: ${name}
+{% if status != 'DECOMMISSIONED' %}
+{{actions:
+ 
+{% if node.status in ['MAINTENANCE', 'ERROR'] %}
+- display: Enable
+  action: /restmachine/cloudbroker/node/enable
+  reload: false
+  data:
+    nid: ${node.id}
+    gid: ${node.gid}
+  input:
+  - type: text
+    name: message
+    label: Reason
+    required: true
+{% endif %}
+ 
+{% if node.status in ['ERROR', 'ENABLED'] %}
+- display: Put in Maintenance
+  action: /restmachine/cloudbroker/node/maintenance
+  reload: false
+  data:
+    nid: ${node.id}
+    gid: ${node.gid}
+  input:
+  - type: message
+    messagetype: warning
+    message: Putting Node in Maintenance!</br>
+             This will prevent new Virtual Machines to be created on this Node!</br>
+             All Virtual Machines running on this Node will be moved or turned off.
+  - type: dropdown
+    name: vmaction
+    label: Virtual Machine Action
+    values:
+    - value: move
+      label: Move All Virtual Machines
+    - value: stop
+      label: Stop All Virtual Machines
+
+  - type: text
+    name: message
+    required: true
+    label: Reason
+{% endif %}
+
+- display: Decommission
+  action: /restmachine/cloudbroker/node/decommission
+  data:
+    nid: ${node.id}
+    gid: ${node.gid}
+  input:
+  - type: message
+    messagetype: danger
+    message: Decommissioning a Node is irreversible.</br>
+             This action is only possible on a powered down node.</br>
+             You will NOT be able to reenable this node!</br>
+             All Virtual Machines will be moved to another node.
+  - type: text
+    name: message
+    required: true
+    label: Reason
+}}
+{{toc}}
+{% endif %}
+* *ReferenceId*: [${node.gid}:${node.id}|/grid/Grid Node?id=${node.id}&gid=${node.gid}]
+* *Storage IP Address*: ${storageip}
+{% if eco -%}
+* *Status*: [${node.status}|/grid/Error Condition?id=${eco}]
+{% else -%}
+* *Status*: ${node.status}
+{% endif %}
+
+{% if 'cpunode' in node.roles -%}
+
+h2. Compute data
+* *ApiURL*: ${stack.apiUrl}
+* *Description*: ${stack.descr}
+
+h3. Images:
+
+{{images: stackid:${stack.id}}}
+
+h3. Virtual Firewalls:
+
+{{networks: nid:${node.id}}}
+
+h3. Virtual Machines:
+
+{{vmachines: stackid:${stack.id}}}
+{% endif %}
+
+{% if 'storagedriver' in node.roles -%}
+h2. Storage data
+* *Node Type*: ${ovs.node_type}
+* *Vdisks Count*: ${ovs.vdisks_count} 
+
+h3. Vpools
+||Name||DTL Port||Edge Port||Management Port||XMLRPC Port||
+{% for key, storagedriver in ovs.storage_drivers.items() -%}
+    |${key}|${storagedriver.ports.dtl}|${storagedriver.ports.edge}|${storagedriver.ports.management}|${storagedriver.ports.xmlrpc}|
+{% endfor %}
+
+{% endif %}
+{% else %}
+h3. Storage Node does not have interface for storage ip , please contact Support
+{% endif %}
+{% else %}
+h3. Node Id is incorrect 
+{% endif %}
+
