@@ -91,3 +91,12 @@ class cloudbroker_node(BaseActor):
                                           success='Successfully deactivated compute node',
                                           error='Failed to deactivate compute node',
                                           errorcb='')
+
+    @auth(['level2', 'level3'], True)
+    def execute_script(self, nid, gid, script):
+        jobinfo = self.acl.executeJumpscript('jumpscale', 'exec',
+                                       gid=gid, nid=nid,
+                                       timeout=3600,
+                                       args={'cmd':script})
+        if jobinfo['state'] == 'ERROR':
+            raise exceptions.Error("Failed to execute maintenance script")

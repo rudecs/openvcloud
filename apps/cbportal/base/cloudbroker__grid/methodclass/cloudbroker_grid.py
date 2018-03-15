@@ -103,3 +103,36 @@ class cloudbroker_grid(BaseActor):
         self.sysmodels.grid.updateSearch({'id': id}, {'$set': {'settings': settings}})
         return 'Changing settings done successfully'
 
+        
+    @auth(['level2', 'level3'], True)
+    def executeMaintenanceScript(self, gid, nodestype, script, **kwargs):
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._executeMaintenanceScript,
+                            args=(int(gid), nodestype, script),
+                            kwargs=kwargs,
+                            title='Executing maintenance script',
+                            success='Maintenance Script executed successfully',
+                            error='Failed to execute maintenance script')
+
+    @auth(['level1', 'level2', 'level3'])
+    def _executeMaintenanceScript(self, gid, nodestype, script, **kwargs):
+        if nodestype == 'both':
+            nodestype = ['cpunode', 'storagenode']
+        else:
+            nodestype = [nodestype]
+
+        sessions = self.acl.listSessions()
+        for nodeid, roles in sessions.iteritems():
+            node_actor = j.apps.cloudbroker.node
+            nid = int(nodeid.split('_')[1])
+            if int(nodeid.split('_')[0]) == gid:
+                if set(roles) & set(nodestype): # check of there is intersection between nodestype and roles
+                    # put node in maintenance
+                    node_actor.maintenance(nid, gid, 'stop', **kwargs)
+                    # execute the script via agentcontroller
+                    node_actor.execute_script(nid, gid, script)
+                    # enable it again
+                    node_actor.enable(nid, gid, 'Back from maintenance', **kwargs)
+        return "Script Executed"
+        
+        

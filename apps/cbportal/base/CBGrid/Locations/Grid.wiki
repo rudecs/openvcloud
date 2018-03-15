@@ -71,10 +71,16 @@ h3. Location: ${name}
 - display: Delete Unused VM Size
   action: "#deletesize"
 
+- display: Execute Maintenance Script
+  action: '#execute_script'
+  
 }}
+
+
 
 {{ deletesize }}
 
+{{ execute_script gid:${gid} }}
 @row
 
 @col 4

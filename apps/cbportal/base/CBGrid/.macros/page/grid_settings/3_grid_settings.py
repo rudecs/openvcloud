@@ -12,7 +12,7 @@ def main(j, args, params, tags, tasklet):
 
     popup = Popup(id='settings', header='Change grid settings',
                   submit_url='/restmachine/cloudbroker/grid/changeSettings')
-    popup.addTextArea('Change the data to update grid settings', 'settings', required=True, value=settings)
+    popup.addTextArea('Change the data to update grid settings', 'settings', required=True, value=settings, rows=10)
     popup.addHiddenField('id', gid)
     popup.write_html(page)
     return params

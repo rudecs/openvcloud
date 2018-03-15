@@ -184,7 +184,6 @@ class cloudbroker_computenode(BaseActor):
                              cmdname="scheduleJumpscripts", args={'name': name, 'category': category},
                              queue="internal", log=False, timeout=120, roles=[])
 
-
     def _stop_vfws(self, stack, title, ctx):
         vfws = self._vcl.search({'gid': stack['gid'],
                                  'nid': int(stack['referenceId'])})[1:]
@@ -223,7 +222,7 @@ class cloudbroker_computenode(BaseActor):
             if not self.cb.netmgr.fw_move(vfw['guid'], nid):
                 self.cb.netmgr.fw_delete(fwid=vfw['guid'], deletemodel=False, timeout=20)
                 self.cb.netmgr.fw_start(vfw['guid'], targetNid=nid)
-
+ 
     @auth(['level2', 'level3'], True)
     @wrap_remote
     def decommission(self, id, gid, message, **kwargs):

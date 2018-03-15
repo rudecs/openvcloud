@@ -55,4 +55,11 @@
         var:id int,, id of the grid
         var:settings str,, json data of the new settings will override old data
         result: str
-        
+
+    method:executeMaintenanceScript
+        """
+        Executes maintenance script
+        """
+        var:gid str,, id of the grid
+        var:nodestype str,, Type of nodes you want to apply the action on
+        var:script str,, the script you want to run
