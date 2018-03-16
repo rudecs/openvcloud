@@ -459,6 +459,8 @@ class Machine(object):
             raise exceptions.BadRequest('Can not create machine on destroyed Cloud Space')
 
         image = models.image.get(imageId)
+        if image.accountId and image.accountId != cloudspace.accountId:
+            raise exceptions.BadRequest("Specified image can't be used by this account")
         if disksize < image.size:
             raise exceptions.BadRequest(
                 "Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
