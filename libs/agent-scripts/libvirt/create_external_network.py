@@ -21,8 +21,12 @@ def action(vlan):
     else:
         bridgename = 'ext-%04x' % vlan
 
-    if bridgename not in j.system.net.getNics():
-        j.system.ovsnetconfig.newVlanBridge(bridgename, 'backplane1', vlan)
+    nics = j.system.net.getNics()
+    if bridgename not in nics:
+        extbridge = 'ext-bridge'
+        if extbridge not in nics:
+            extbridge = 'backplane1'
+        j.system.ovsnetconfig.newVlanBridge(bridgename, extbridge, vlan)
     if not connection.checkNetwork(bridgename):
         connection.createNetwork(bridgename, bridgename)
     return bridgename
