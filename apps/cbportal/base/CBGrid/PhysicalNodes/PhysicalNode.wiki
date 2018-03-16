@@ -1,9 +1,9 @@
 @usedefault
-@@title PhysicalNode: ${name}
+@@title PhysicalNode: ${node.name}
 {{physical_node_data}}
 {% if node %} 
 {% if storageip %}
-h1. Physical Node: ${name}
+h1. Physical Node: ${node.name}
 {% if status != 'DECOMMISSIONED' %}
 {{actions:
  

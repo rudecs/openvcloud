@@ -70,10 +70,6 @@ def main(j, args, params, tags, tasklet):
          'id': 'status',
          'value': 'status'
          },
-        {'name': 'Reference ID',
-         'id': 'referenceId',
-         'value': "<a href='/grid/grid node?id=%(id)s&gid=%(gid)s'>%(id)s</a>"
-         },
         {'name': 'Roles',
          'id': 'roles',
          'value': 'roles'
