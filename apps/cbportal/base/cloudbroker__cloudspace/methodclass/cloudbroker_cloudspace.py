@@ -19,11 +19,13 @@ class cloudbroker_cloudspace(BaseActor):
     def _getCloudSpace(self, cloudspaceId):
         cloudspaceId = int(cloudspaceId)
 
-        cloudspaces = self.models.cloudspace.simpleSearch({'id': cloudspaceId})
-        if not cloudspaces:
+        cloudspace = self.models.cloudspace.searchOne({'id': cloudspaceId})
+        if not cloudspace:
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
 
-        cloudspace = cloudspaces[0]
+        if cloudspace['status'] == resourcestatus.Cloudspace.DESTROYED:
+            raise exceptions.BadRequest('Specified cloudspace is destroyed')
+
         return cloudspace
 
     @auth(['level1', 'level2', 'level3'])

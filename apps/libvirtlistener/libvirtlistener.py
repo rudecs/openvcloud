@@ -47,7 +47,7 @@ def main():
             if newstate is not None:
                 print('Updating state for vm {} to {}'.format(name, newstate))
                 # update the state if its not destroyed already
-                update = ccl.vmachine.updateSearch({'id': vm['id'], 'status': {'$ne': 'DELETED'}}, {'$set': {'status': newstate}})
+                update = ccl.vmachine.updateSearch({'id': vm['id'], 'status': {'$nin': ['DELETED', 'DESTROYED']}}, {'$set': {'status': newstate}})
                 if newstate == 'HALTED' and update['nModified'] == 1:
                     # check if lock exists on vm
                     lockname = 'cloudbroker_vmachine_{}'.format(vm['id'])

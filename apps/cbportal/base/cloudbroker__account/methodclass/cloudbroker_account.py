@@ -29,13 +29,14 @@ class cloudbroker_account(BaseActor):
         self.syscl = j.clients.osis.getNamespace('system')
 
     def _checkAccount(self, accountId):
-        account = self.models.account.search({'id': accountId, 'status': {'$ne': 'DESTROYED'}})[1:]
+        account = self.models.account.searchOne({'id': accountId})
         if not account:
-            raise exceptions.NotFound('Account name not found')
-        if len(account) > 1:
-            raise exceptions.BadRequest('Found multiple accounts for the account ID "%s"' % accountId)
+            raise exceptions.NotFound('Account not found')
 
-        return account[0]
+        if account['status'] == resourcestatus.Account.DESTROYED:
+            raise exceptions.BadRequest('Specified account is destroyed')
+
+        return account
 
     @auth(['level1', 'level2', 'level3'])
     @async('Disabling Account', 'Finished disabling account', 'Failed to disable account')
