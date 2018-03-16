@@ -2,7 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume, OpenvStorageISO
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume, OpenvStorageISO, PhysicalVolume
 
 
 class cloudapi_disks(BaseActor):
@@ -24,11 +24,17 @@ class cloudapi_disks(BaseActor):
             disk = disk.dump()
 
         volumeclass = OpenvStorageVolume
+        name = disk['name']
         if disk['type'] in ('M', 'C'):
             volumeclass = OpenvStorageISO
+        elif disk['type'] == 'P':
+            volumeclass = PhysicalVolume
+        elif disk['type'] == 'D':
+            name = str(disk['id'])
+
 
         volume = volumeclass(id=disk['referenceId'],
-                             name=disk['name'], size=disk['sizeMax'],
+                             name=name, size=disk['sizeMax'],
                              driver=provider,
                              extra={'node': node},
                              iotune=disk['iotune'],
@@ -51,26 +57,35 @@ class cloudapi_disks(BaseActor):
         """
         # Validate that enough resources are available in the account CU limits to add the disk
         j.apps.cloudapi.accounts.checkAvailableMachineResources(accountId, vdisksize=size)
-        disk, volume = self._create(accountId, gid, name, description, size, type, iops)
+        disk, _ = self._create(accountId, gid, name, description, size, type, iops)
         return disk.id
 
-    def _create(self, accountId, gid, name, description, size=10, type='D', iops=2000, **kwargs):
-        if size > 2000:
+    def _create(self, accountId, gid, name, description, size=10, type='D', iops=2000, physicalSource=None, nid=None, order=None, **kwargs):
+        if size > 2000 and type != 'P':
             raise exceptions.BadRequest("Disk size can not be bigger than 2000 GB")
+        if type == 'P' and not (physicalSource and nid):
+            raise exceptions.BadRequest("Need to specify both node id and physical source for disk of type 'P'")
+
         disk = self.models.disk.new()
         disk.name = name
         disk.descr = description
         disk.sizeMax = size
         disk.type = type
         disk.gid = gid
+        disk.order = order
         disk.iotune = {'total_iops_sec': iops}
         disk.accountId = accountId
         disk.id = self.models.disk.set(disk)[0]
         try:
             provider = self.cb.getProviderByGID(gid)
-            volume = provider.create_volume(disk.sizeMax, disk.id)
-            volume.iotune = disk.iotune
-            disk.referenceId = volume.id
+            if type == 'P':
+                volumeid = 'file://{source}?id={nid}'.format(source=physicalSource, nid=nid)
+                disk.referenceId = volumeid
+                volume = self.getStorageVolume(disk, provider)
+            else:
+                volume = provider.create_volume(disk.sizeMax, disk.id)
+                volume.iotune = disk.iotune
+                disk.referenceId = volume.id
         except:
             self.models.disk.delete(disk.id)
             raise

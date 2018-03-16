@@ -1,0 +1,14 @@
+<disk type='block' device='{{type}}'>
+    <driver name='qemu' type='raw' cache='none' io='threads'/>
+    <source dev='{{source}}'/>
+{% if iotune %}
+    <iotune>
+     {% for key, value in iotune.items() -%}
+     {% if value %}
+     <{{key}}>{{value}}</{{key}}>
+     {% endif %}
+     {% endfor %}
+    </iotune>
+{% endif %}
+    <target dev='{{dev}}' bus='{{bus}}'/>
+</disk>

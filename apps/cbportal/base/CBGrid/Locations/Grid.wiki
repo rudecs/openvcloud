@@ -4,6 +4,8 @@
 
 {{grid_settings: gid:$$gid}}
 
+{{system_space: gid:$$gid}}
+
 {{location}}
 
 {% if id %}
@@ -21,6 +23,9 @@ h3. Location: ${name}
 
 - display: Change settings
   action: '#settings'
+
+- display: Create system space
+  action: '#createsystemspace'
 
 - display: Check VMs
   action: /restmachine/cloudbroker/grid/checkVMs

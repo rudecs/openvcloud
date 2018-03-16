@@ -55,11 +55,10 @@ class cloudbroker_machine(BaseActor):
         """
         if sizeId == -1:
             sizeId = None
-        machine, auth, diskinfo, cloudspace = j.apps.cloudapi.machines._prepare_machine(cloudspaceId, name, description,
+        machine, auth, volumes, cloudspace = j.apps.cloudapi.machines._prepare_machine(cloudspaceId, name, description,
                                                                                         imageId, disksize, datadisks,
-                                                                                        sizeId, userdata,
-                                                                                        vcpus, memory)
-        machineId =  self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, stackid, userdata)
+                                                                                        sizeId, vcpus, memory)
+        machineId =  self.cb.machine.create(machine, auth, cloudspace, volumes, imageId, stackid, userdata)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
 
@@ -156,7 +155,7 @@ class cloudbroker_machine(BaseActor):
             self.models.disk.set(disk)
 
         # prepare network on target node
-        self.cb.chooseProvider(vm)
+        self.cb.chooseStack(vm)
         provider, node, machine = self.cb.getProviderAndNode(vm.id)
         # set status back to migrating
         self.models.vmachine.updateSearch({'id': vm.id}, {'$set': {'status': resourcestatus.Machine.MIGRATING}})
@@ -350,6 +349,8 @@ class cloudbroker_machine(BaseActor):
     @async('Moving Virtual Machine', 'Finished Moving Virtual Machine', 'Failed to move Virtual Machine')
     def moveToDifferentComputeNode(self, machineId, reason, targetStackId=None, force=False, **kwargs):
         vmachine = self._validateMachineRequest(machineId)
+        if self.models.disk.count({'id': {'$in': vmachine.disks}, 'type': 'P'}) > 0:
+            raise exceptions.BadRequest("Can't move a vm with physical disks attached")
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
         if not targetStackId:

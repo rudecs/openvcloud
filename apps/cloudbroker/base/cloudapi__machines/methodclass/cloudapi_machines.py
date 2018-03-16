@@ -101,7 +101,7 @@ class cloudapi_machines(BaseActor):
         if "start" in machine.tags.split(" "):
             j.apps.cloudbroker.machine.untag(machineId=machine.id, tagName="start")
         if machine.status not in resourcestatus.Machine.UP_STATES:
-            self.cb.chooseProvider(machine)
+            self.cb.chooseStack(machine)
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         if diskId is not None:
             if not self.models.disk.exists(diskId):
@@ -595,12 +595,14 @@ class cloudapi_machines(BaseActor):
         param:machineId id of the machine to export
         param:callbackUrl callback url so that the API caller can be notified. If this is specified the G8 will not send an email itself upon completion.
         """
+        provider, _, vm = self.cb.getProviderAndNode(machineId)
+        if self.models.disk.count({'id': {'$in': vm.disks}, 'type': 'P'}) > 0:
+            raise exceptions.BadRequest("Can't export a vm with physical disks attached")
         self._validate_links(link=link)
         if callbackUrl is not None:
             self._validate_links(callbackUrl=callbackUrl)
         ctx = kwargs['ctx']
         user = ctx.env['beaker.session']['user']
-        provider, _, vm = self.cb.getProviderAndNode(machineId)
         cloudspace = self.models.cloudspace.get(vm.cloudspaceId)
         uploaddata = {'link': link, 'passwd': passwd, 'path': path, 'username': username}
         job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export_readme', gid=cloudspace.gid,
@@ -648,25 +650,24 @@ class cloudapi_machines(BaseActor):
         :return bool
 
         """
-        machine, auth, diskinfo, cloudspace = self._prepare_machine(cloudspaceId, name, description, imageId, disksize,
-                                                                    datadisks, sizeId, userdata, vcpus,
-                                                                    memory)
-        machineId = self.cb.machine.create(machine, auth, cloudspace, diskinfo, imageId, None, userdata)
+        machine, auth, volumes, cloudspace = self._prepare_machine(cloudspaceId, name, description, imageId, disksize,
+                                                                    datadisks, sizeId, vcpus, memory)
+        machineId = self.cb.machine.create(machine, auth, cloudspace, volumes, imageId, None, userdata)
         kwargs['ctx'].env['tags'] += " machineId:{}".format(machineId)
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return machineId
 
 
     def _prepare_machine(self, cloudspaceId, name, description, imageId, disksize, datadisks, sizeId=None, 
-                         userdata=None, vcpus=None, memory=None, **kwargs):
+                          vcpus=None, memory=None, **kwargs):
         """
         internal method to prevent code duplication
         """
         if sizeId and (vcpus or memory):
             raise exceptions.BadRequest("sizeId and (vcpus or memory) are mutually exclusive")
         # make sure that if u pass memory or vcpus u have to pass the other as well
-        if (memory or vcpus) and not (memory and vcpus):
-             raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
+        if not sizeId and not (memory and vcpus):
+             raise exceptions.BadRequest("If sizeId is not specified need to specify both memory and vcpus.")
         datadisks = datadisks or []
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
@@ -676,12 +677,12 @@ class cloudapi_machines(BaseActor):
             memory = size.memory
             vcpus = size.vcpus
         totaldisksize = sum(datadisks + [disksize])
+
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vcpus,
                                                                    memory / 1024.0, totaldisksize)
-        machine, auth, diskinfo = self.cb.machine.createModel(
+        machine, auth, volumes = self.cb.machine.createModel(
             name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory)
-        return machine, auth, diskinfo, cloudspace
-
+        return machine, auth, volumes, cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def delete(self, machineId, **kwargs):
@@ -701,9 +702,13 @@ class cloudapi_machines(BaseActor):
             raise exceptions.Conflict(
                 "Can not delete a Virtual Machine which has clones.\nExisting Clones Are:\n%s" % '\n'.join(clonenames))
         self. _detachExternalNetworkFromModel(vmachinemodel)
-        if not vmachinemodel.status == resourcestatus.Machine.DELETED:
+        delete_state = resourcestatus.Machine.DELETED
+        pdisks = self.models.disk.search({'id': {'$in': vmachinemodel.disks}, 'type': 'P'})[1:]
+        if pdisks:
+            delete_state = resourcestatus.Machine.DESTROYED
+        if not vmachinemodel.status == delete_state:
             vmachinemodel.deletionTime = int(time.time())
-            vmachinemodel.status = resourcestatus.Machine.DELETED
+            vmachinemodel.status = delete_state
             self.models.vmachine.set(vmachinemodel)
 
         try:
@@ -730,6 +735,19 @@ class cloudapi_machines(BaseActor):
                 self.netmgr.fw_remove_lease(fwid, macs)
             except exceptions.ServiceUnavailable as e:
                 j.errorconditionhandler.processPythonExceptionObject(e, message="vfw is not deployed yet")
+        for pdisk in pdisks:
+            disk_info = urlparse.urlparse(pdisk['referenceId'])
+            node_id = disk_info.query.split('=')[1]
+            cmd = 'dd if=/dev/zero bs=1M count=500 of={}'.format(disk_info.path)
+            self.acl.executeJumpscript('jumpscale', 'exec', nid=node_id, args={'cmd': cmd})
+        if delete_state == 'DESTROYED':
+            disks = self.models.disk.search({'$fields': ['referenceId'], 'id' : {'$in': vmachinemodel.disks}})[1:]
+            vdiskguids = []
+            for vdisk in disks:
+                _, _, vdiskguid = vdisk['referenceId'].partition('@')
+                if vdiskguid:
+                    vdiskguids.append(vdiskguid)
+            provider.ex_delete_disks(vdiskguids)
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -945,6 +963,10 @@ class cloudapi_machines(BaseActor):
         :return id of the new cloned machine
         """
         machine = self._getMachine(machineId)
+        
+        if self.models.disk.count({'id': {'$in': vm.disks}, 'type': 'P'}) > 0:
+            raise exceptions.BadRequest("Can't clone a vm with physical disks attached")
+
         if cloudspaceId is None:
             cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         else:

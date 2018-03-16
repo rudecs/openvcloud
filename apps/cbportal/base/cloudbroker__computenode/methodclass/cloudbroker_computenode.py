@@ -141,9 +141,9 @@ class cloudbroker_computenode(BaseActor):
         errorcb = functools.partial(self._errorcb, stack)
         self._changeStackStatus(stack, "MAINTENANCE")
         title = 'Putting Node in Maintenance'
+        stackmachines = self._get_stack_machines(stack['id'], ['id', 'status', 'tags', 'name', 'disks'])
         if vmaction == 'stop':
             machines_actor = j.apps.cloudbroker.machine
-            stackmachines = self._get_stack_machines(stack['id'], ['id', 'status', 'tags'])
             for machine in stackmachines:
                 if machine['status'] == 'RUNNING':
                     if 'start' not in machine['tags'].split(" "):
@@ -160,8 +160,15 @@ class cloudbroker_computenode(BaseActor):
             machineIds = [machine['id'] for machine in stackmachines]
             machines_actor.stopMachines(machineIds, "", ctx=kwargs['ctx'])
         elif vmaction == 'move':
+            move_vms = []
+            system_vfwid = None
+            for stackmachine in stackmachines:
+                if self.models.disk.count({'id': {'$in': stackmachine['disks']}, 'type': 'P'}) == 0:
+                    move_vms.append(stackmachine)
+                else:
+                    system_vfwid = self.models.cloudspace.searchOne({'id': stackmachine['cloudspaceId']})['networkId']
             kwargs['ctx'].events.runAsync(self._move_virtual_machines,
-                                          args=(stack, title, kwargs['ctx']),
+                                          args=(stack, title, kwargs['ctx'], move_vms, system_vfwid),
                                           kwargs={},
                                           title='Putting Node in Maintenance',
                                           success='Successfully moved all Virtual Machines',
@@ -198,11 +205,8 @@ class cloudbroker_computenode(BaseActor):
             ctx.events.sendMessage(title, 'Starting Virtual Firewal %s' % vfw['id'])
             self.cb.netmgr.fw_start(vfw['guid'])
 
-    def _move_virtual_machines(self, stack, title, ctx):
+    def _move_virtual_machines(self, stack, title, ctx, stackmachines, exclude_vfwid=None):
         machines_actor = j.apps.cloudbroker.machine
-        stackmachines = self.models.vmachine.search({'stackId': stack['id'],
-                                                     'status': {'$nin': ['DESTROYED', 'ERROR']}
-                                                     })[1:]
         othernodes = self.scl.node.search({'gid': stack['gid'], 'status': 'ENABLED', 'roles': 'fw'})[1:]
         if not othernodes:
             raise exceptions.ServiceUnavailable('There is no other Firewall node available to move the Virtual Firewall to')
@@ -215,7 +219,7 @@ class cloudbroker_computenode(BaseActor):
                 j.errorconditionhandler.processPythonExceptionObject(e)
 
         vfws = self._vcl.search({'gid': stack['gid'],
-                                 'nid': int(stack['referenceId'])})[1:]
+                                 'nid': int(stack['referenceId']), 'id': {'$ne': exclude_vfwid}})[1:]
         for vfw in vfws:
             nid = int(self.cb.getBestStack(stack['gid'], excludelist=[stack['id']], memory=128)['referenceId'])
             ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
@@ -234,8 +238,9 @@ class cloudbroker_computenode(BaseActor):
         ctx = kwargs['ctx']
         title = 'Decommissioning Node'
         errorcb = functools.partial(self._errorcb, stack)
+        stackmachines = self._get_stack_machines(stack['id'], ['id', 'name'])
         ctx.events.runAsync(self._move_virtual_machines,
-                            args=(stack, title, ctx),
+                            args=(stack, title, ctx, stackmachines),
                             kwargs={},
                             title=title,
                             success='Successfully moved all Virtual Machines.</br>Decommissioning finished.',

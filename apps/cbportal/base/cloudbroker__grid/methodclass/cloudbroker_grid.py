@@ -6,6 +6,8 @@ import requests
 from urlparse import urlparse
 from os import path as os_path
 import yaml
+import json
+from cloudbrokerlib import resourcestatus
 
 class cloudbroker_grid(BaseActor):
 
@@ -136,3 +138,51 @@ class cloudbroker_grid(BaseActor):
         return "Script Executed"
         
         
+    @auth(['level1', 'level2', 'level3'])
+    def createSystemSpace(self, id, name, imageId, bootsize, dataDiskSize, sizeId=None, vcpus=None, memory=None, userdata=None, **kwargs):
+        try:
+            grid = self.sysmodels.grid.get(id)
+        except:
+            raise exceptions.NotFound("No grid with id {} was found".format(id))
+        all_vms = self.models.vmachine.search({
+            'status': {'$nin': resourcestatus.Machine.DELETED_STATES}})[1:]
+        vms = filter(lambda vm: self.models.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) > 0, all_vms)
+        if vms:
+            raise exceptions.BadRequest("System space already exists on this location")
+        stacks_pdisks = []
+        for stack in self.models.stack.search({'gid': id})[1:]:
+            pdisks = []
+            job = self.acl.executeJumpscript('jumpscale', 'exec', nid=stack['referenceId'], wait=True, args={'cmd': 'lsblk -b -J'})
+            disks_info = json.loads(job['result'][1])
+            for disk_info in disks_info['blockdevices']:
+                if not disk_info.get('children') and not disk_info['mountpoint']:
+                    pdisks.append(disk_info)
+            if pdisks:
+                stacks_pdisks.append((stack, pdisks))
+
+        if not stacks_pdisks:
+            return "Can't create system space on this location: {}. No physical disks available on compute nodes".format(id)
+
+        username = kwargs['ctx'].env['beaker.session']['user']
+        accountId = j.apps.cloudbroker.account.create(name=name, username=username, emailaddress=None)
+        cloudspaceId = j.apps.cloudapi.cloudspaces.create(accountId=accountId, location=grid.name, name=name, access=username, ctx=kwargs['ctx'])
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        for stack, pdisks in stacks_pdisks:
+            pvolumes = []
+            diskids = []
+            for order, disk_info in enumerate(pdisks):
+                size = j.tools.units.bytes.toSize(int(disk_info['size']), output="G")
+                disk, volume = j.apps.cloudapi.disks._create(accountId=accountId, gid=id, name='pdisk %s' % str(order + 1), description='Physical disk',
+                                                        size=int(size), type='P', physicalSource='/dev/%s' % disk_info['name'],
+                                                        nid=stack['referenceId'], order=order + 2)
+                
+                diskids.append(disk.id)
+                pvolumes.append(volume)
+            machine, vmauth, volumes = self.cb.machine.createModel(name='System machine %s' % stack['id'], description='System space machine', cloudspace=cloudspace,
+                                                                imageId=imageId, sizeId=sizeId, disksize=bootsize, datadisks=[dataDiskSize], 
+                                                                vcpus=vcpus, memory=memory)
+            volumes += pvolumes
+            machine.disks += diskids
+            self.models.vmachine.set(machine)
+            self.cb.machine.create(machine, vmauth, cloudspace, volumes, imageId, stack['id'], userdata)
+        return 'System space successfully created'

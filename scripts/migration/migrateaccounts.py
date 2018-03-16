@@ -4,6 +4,7 @@ import time
 import json
 from collections import namedtuple
 from xml.etree import ElementTree
+from cloudbrokerlib import resourcestatus
 import urlparse
 
 IMAGEMAP = {
@@ -153,6 +154,14 @@ class Migrator(object):
             newobj.name += '_migrated'
         return newobj
 
+    def get_vms(self, cs_id):
+        all_vms = self.source_ccl.vmachine.search({
+            'status': {'$nin': resourcestatus.Machine.DELETED_STATES},
+            'cloudspaceId': cs_id
+        })[1:]
+        vms = filter(lambda vm: self.source_ccl.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) == 0, all_vms)
+        return vms
+
     def migrate_space(self, cloudspace, newaccount):
         self.info('Migrating space {}'.format(cloudspace.name), 1)
         cloudspacedata = cloudspace.dump()
@@ -160,10 +169,7 @@ class Migrator(object):
         sourceip = self.get_source_ip(vfwdata['nid'])
         newcloudspaceId = self.pcl.actors.cloudbroker.cloudspace.migrateCloudspace(newaccount['id'], cloudspacedata, vfwdata, sourceip, self.rgid)
         newcloudspace = self.ccl.cloudbroker.searchOne({'id': newcloudspaceId})
-        vms = self.source_ccl.vmachine.search({
-            'status': {'$nin': ['ERROR', 'DESTROYED', 'DELETED']},
-            'cloudspaceId': cloudspace.id
-        })[1:]
+        vms = self.get_vms(cloudspace.id)
         if self.concurrency > 1:
             pool = ProcessPool(self.concurrency, interval=60)
             for vm in vms:

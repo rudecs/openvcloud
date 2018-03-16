@@ -93,24 +93,8 @@ class OpenvStorageVolume(StorageVolume):
     def __init__(self, *args, **kwargs):
         self.iotune = kwargs.pop('iotune', {})
         order = kwargs.pop('order', 0)
+        self._id = None
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
-        vdiskid, _, vdiskguid = self.id.partition('@')
-        url = urlparse.urlparse(vdiskid)
-        self.vdiskguid = vdiskguid
-        self.edgetransport = 'tcp' if '+' not in url.scheme else url.scheme.split('+')[1]
-        self.edgehost = url.hostname
-        self.edgeport = url.port
-        pathparams = url.path.strip('/').split(':')
-        self.username = None
-        self.password = None
-        self.name = pathparams[0]
-        for param in pathparams[1:]:
-            key, sep, value = param.partition('=')
-            if sep == '=':
-                if key == 'username':
-                    self.username = value
-                elif key == 'password':
-                    self.password = value
         self.type = 'disk'
         self.bus = 'virtio'
         self.dev = 'vd{}'.format(convertnumber(order))
@@ -124,6 +108,47 @@ class OpenvStorageVolume(StorageVolume):
 
     def __str__(self):
         template = env.get_template("ovsdisk.xml")
+        return template.render(self.__dict__)
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
+        if value:
+            vdiskid, _, vdiskguid = value.partition('@')
+            url = urlparse.urlparse(vdiskid)
+            self.vdiskguid = vdiskguid
+            self.edgetransport = 'tcp' if '+' not in url.scheme else url.scheme.split('+')[1]
+            self.edgehost = url.hostname
+            self.edgeport = url.port
+            pathparams = url.path.strip('/').split(':')
+            self.username = None
+            self.password = None
+            self.name = pathparams[0]
+            for param in pathparams[1:]:
+                key, sep, val = param.partition('=')
+                if sep == '=':
+                    if key == 'username':
+                        self.username = val
+                    elif key == 'password':
+                        self.password = val
+
+
+class PhysicalVolume(StorageVolume):
+    def __init__(self, *args, **kwargs):
+        self.iotune = kwargs.pop('iotune', {})
+        order = kwargs.pop('order', 0)
+        super(PhysicalVolume, self).__init__(*args, **kwargs)
+        self.source = urlparse.urlparse(self.id).path
+        self.type = 'disk'
+        self.bus = 'virtio'
+        self.dev = 'vd{}'.format(convertnumber(order))
+
+    def __str__(self):
+        template = env.get_template("phydisk.xml")
         return template.render(self.__dict__)
 
 
@@ -336,7 +361,7 @@ class CSLibvirtNodeDriver(object):
             raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
-        return OpenvStorageVolume(id=volumeid, name='Bootdisk', size=disksize, driver=self), edgeclient
+        return OpenvStorageVolume(id=volumeid, name=diskname, size=disksize, driver=self), edgeclient
 
     def create_volume(self, size, name, data=True, dev=''):
         if data:
@@ -434,7 +459,7 @@ class CSLibvirtNodeDriver(object):
             raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskpath)
-        isovolume = OpenvStorageISO(id=volumeid, name='Metadata ISO', size=0, driver=self)
+        isovolume = OpenvStorageISO(id=volumeid, name=diskpath, size=0, driver=self)
         try:
             volumeid = self._execute_agent_job('createmetaiso', role='storagedriver',
                                                ovspath=volumeid, metadata=metadata, userdata=userdata, type=type)
@@ -451,68 +476,6 @@ class CSLibvirtNodeDriver(object):
             return ''.join([random.choice(salt_set) for c in salt])
         salt = generate_salt()
         return crypt.crypt(password, '$6$' + salt)
-
-    def create_node(self, name, size, image, disksize, auth=None, networkid=None, datadisks=None, iotune=None, userdata=None):
-        """
-        Creation in libcloud is based on sizes and images, libvirt has no
-        knowledge of sizes and images.
-        This create_node is specially build to create machines based on extra
-        data from the cloudscaler broker.
-
-        @keyword    name:   String with a name for this new node (required)
-        @type       name:   C{str}
-
-        @keyword    size:   The size of resources allocated to this node.
-                        (required)
-        @type       size:   L{Size}
-
-        @keyword    image:  OS Image to boot on node. (required)
-        @type       image:  L{Image}
-
-        @keyword    auth:   Initial authentication information for the node
-                           (optional)
-        @type       auth:   L{NodeAuthSSHKey} or L{NodeAuthPassword}
-
-        @return: The newly created node.
-        @rtype: L{Node}
-        """
-        volumes = []
-        imagetype = image.type
-        boottype = image.bootType or 'bios'
-        iotune = iotune or {}
-
-        try:
-            volume, edgeclient = self._create_disk(name, disksize, image)
-            volume.dev = 'vda'
-            volume.iotune = iotune
-            volumes.append(volume)
-            if auth:
-                # At this moment we handle only NodeAuthPassword
-                volumes.append(self._create_metadata_iso(edgeclient, name, auth.password, imagetype, userdata))
-
-            if datadisks:
-                datavolumes = []
-                for idx, (diskname, disksize) in enumerate(datadisks):
-                    volume = {'name': diskname, 'size': disksize, 'dev': 'vd%s' % convertnumber(idx + 1)}
-                    datavolumes.append(volume)
-                volumes += self.create_volumes(datavolumes)
-                for volume in volumes:
-                    volume.iotune = iotune
-        except Exception as e:
-            if isinstance(e, StorageException):
-                volumes.extend(e.volumes)
-            if len(volumes) > 0:
-                self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
-            raise StorageException('Failed to create some volumes', e)
-        try:
-            return self.init_node(name, size, networkid, volumes, imagetype, boottype)
-        except NotEnoughResources:
-            raise
-        except:
-            if len(volumes) > 0:
-                self.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
-            raise
-
 
     def get_host_memory(self):
         return self.node.memory - self.config.get('reserved_mem')
@@ -587,7 +550,7 @@ class CSLibvirtNodeDriver(object):
     def get_disk_guids(self, node, type=None):
         diskguids = []
         for volume in node.extra['volumes']:
-            if type is not None and volume.type != type:
+            if type is not None and volume.type != type or isinstance(volume, PhysicalVolume):
                 continue
             diskguids.append(volume.vdiskguid)
         return diskguids
@@ -851,7 +814,8 @@ class CSLibvirtNodeDriver(object):
         volumes = list()
         ifaces = list()
         for disk in dom.findall('devices/disk'):
-            if disk.attrib['device'] != 'disk':
+            source = disk.find('source')
+            if disk.attrib['device'] != 'disk' or source.attrib.get('dev'):
                 continue
             volume = OpenvStorageVolumeFromXML(disk, self)
             volumes.append(volume)

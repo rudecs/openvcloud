@@ -34,9 +34,11 @@ h2. Disk: ${name}
 {% if machineId -%}
 |*Virtual Machine*| [${machineName}|Virtual Machine?id=${machineId}]|
 {% endif -%}
+{% if type != 'P' %}
 |*vDisk GUID*| ${vdiskguid}|
 |*Edge host*| ${edgehost}|
 |*Edge port*| ${edgeport}|
+{% endif %}
 |*Edge name*| ${edgename}|
 
 {% if type not in ['Meta', 'CD-ROM'] %}

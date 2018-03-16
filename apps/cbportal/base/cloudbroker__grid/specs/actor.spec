@@ -63,3 +63,18 @@
         var:gid str,, id of the grid
         var:nodestype str,, Type of nodes you want to apply the action on
         var:script str,, the script you want to run
+
+    method:createSystemSpace
+        """
+        create system space
+        """
+        var:id int,, id of the grid
+        var:name str,, name of the account/cloudspace to be created for the system @tags validator:name
+        var:imageId int,, id of the specific image
+        var:bootsize int,, size of base volume
+        var:dataDiskSize int,, data disk size in gigabytes
+        var:sizeId int,,id of the specific size @optional
+        var:vcpus int,,number of vcpus to provide @optional
+        var:memory int,,amount of memory to provide @optional
+        result: str
+

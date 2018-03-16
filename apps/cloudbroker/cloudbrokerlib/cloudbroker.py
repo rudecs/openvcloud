@@ -1,7 +1,7 @@
 from JumpScale import j
 from libcloud.compute.base import NodeAuthPassword
 from JumpScale.portal.portal import exceptions
-from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import CSLibvirtNodeDriver, StorageException, NotEnoughResources, Node, NetworkInterface, PhysicalVolume
 from cloudbrokerlib import enums, network, resourcestatus
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 from CloudscalerLibcloud.utils.gridconfig import GridConfig
@@ -215,14 +215,15 @@ class CloudBroker(object):
             models.vmachine.set(machine)
         return provider, node, machine
 
-    def chooseProvider(self, machine):
-        cloudspace = models.cloudspace.get(machine.cloudspaceId)
-        size = models.size.get(machine.sizeId)
-        newstack = self.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
-        if newstack == -1:
-            raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
-        machine.stackId = newstack['id']
-        models.vmachine.set(machine)
+    def chooseStack(self, machine):
+        if models.disk.count({'id': {'$in': machine.disks}, 'type': 'P'}) == 0:
+            cloudspace = models.cloudspace.get(machine.cloudspaceId)
+            size = models.size.get(machine.sizeId)
+            newstack = self.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
+            if newstack == -1:
+                raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
+            machine.stackId = newstack['id']
+            models.vmachine.set(machine)
         return True
 
     def getActiveSessionsKeys(self):
@@ -439,7 +440,11 @@ class Machine(object):
             models.vmachine.delete(machine.id)
         if volumes and gid:
             provider = self.cb.getProviderByGID(gid)
-            provider.destroy_volumes_by_guid([volume.vdiskguid for volume in volumes])
+            vdiskguids = []
+            for volume in volumes:
+                if not isinstance(volume, PhysicalVolume):
+                    vdiskguids.append(volume.vdiskguid)
+            provider.destroy_volumes_by_guid(vdiskguids)
 
     def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):
         self.assertName(cloudspace.id, name)
@@ -500,15 +505,15 @@ class Machine(object):
             disk.gid = cloudspace.gid
             disk.order = order
             disk.type = type
-            diskid = models.disk.set(disk)[0]
-            machine.disks.append(diskid)
-            return diskid
+            disk.id = models.disk.set(disk)[0]
+            machine.disks.append(disk.id)
+            return disk
 
         addDisk(0, disksize, 'B', 'Boot disk')
-        diskinfo = []
+        volumes = []
         for order, datadisksize in enumerate(datadisks):
-            diskid = addDisk(order + 1, int(datadisksize), 'D')
-            diskinfo.append((diskid, int(datadisksize)))
+            disk = addDisk(order + 1, int(datadisksize), 'D')
+            volumes.append(j.apps.cloudapi.disks.getStorageVolume(disk, None))
 
         account = machine.new_account()
         if hasattr(image, 'username') and image.username:
@@ -535,7 +540,7 @@ class Machine(object):
             nic.type = 'bridge'
             nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
             machine.id = models.vmachine.set(machine)[0]
-        return machine, auth, diskinfo
+        return machine, auth, volumes
 
     def updateMachineFromNode(self, machine, node, stack):
         cloudspace = models.cloudspace.get(machine.cloudspaceId)
@@ -596,12 +601,31 @@ class Machine(object):
             models.vmachine.set(machine)
 
 
-    def create(self, machine, auth, cloudspace, diskinfo, imageId, stackId, userdata=None):
+    def create(self, machine, auth, cloudspace, volumes, imageId, stackId, userdata=None):
         excludelist = []
         name = 'vm-%s' % machine.id
         newstackId = stackId
+        image = models.image.get(imageId)
+        boottype = image.bootType or 'bios'
+        firstdisk = models.disk.get(machine.disks[0])
+        spaceprovider = self.cb.getProviderByGID(cloudspace.gid)
+        try:
+            bootvolume, edgeclient = spaceprovider._create_disk(name, firstdisk.sizeMax, image)
+            bootvolume.dev = 'vda'
+            bootvolume.iotune = firstdisk.iotune
+            volumes.insert(0, bootvolume)
+            volumes.insert(1, spaceprovider._create_metadata_iso(edgeclient, name, auth.password, image.type, userdata))
+            for volume in volumes:
+                if not volume.id:
+                    vol = spaceprovider.create_volume(volume.size, volume.name, data=True, dev=volume.dev)
+                    volume.id = vol.id
+                volume.iotune = firstdisk.iotune
+        except StorageException as e:
+            eco = j.errorconditionhandler.processPythonExceptionObject(e)
+            self.cleanup(machine, cloudspace.gid, [bootvolume])
+            raise exceptions.ServiceUnavailable('Not enough resources available to create disks')
+
         size = {'memory':machine.memory, 'vcpus':machine.vcpus}
-        volumes = []
 
         def getStackAndProvider(newstackId):
             provider = None
@@ -626,23 +650,12 @@ class Machine(object):
         node = -1
         while node == -1:
             provider = getStackAndProvider(newstackId)
-            image = self.cb.getImage(provider, machine.imageId)
             if not image:
                 self.cleanup(machine, cloudspace.gid, volumes)
                 raise exceptions.BadRequest("Image is not available on requested stack")
 
-            firstdisk = models.disk.get(machine.disks[0])
             try:
-                if not volumes:
-                    node = provider.create_node(name=name, image=image, disksize=firstdisk.sizeMax, auth=auth,
-                                                networkid=cloudspace.networkId, size=size, datadisks=diskinfo,
-                                                iotune=firstdisk.iotune, userdata=userdata)
-                else:
-                    node = provider.init_node(name, size, volumes, image.type)
-            except StorageException as e:
-                eco = j.errorconditionhandler.processPythonExceptionObject(e)
-                self.cleanup(machine, cloudspace.gid, volumes)
-                raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
+                node = provider.init_node(name, size, cloudspace.networkId, volumes, image.type, boottype)
             except NotEnoughResources as e:
                 volumes = e.volumes
                 if stackId:
