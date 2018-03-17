@@ -315,7 +315,7 @@ class cloudapi_cloudspaces(BaseActor):
         """
         cloudspaceId = int(cloudspaceId)
         # A cloudspace may not contain any resources any more
-        query = {'cloudspaceId': cloudspaceId, 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}}
+        query = {'cloudspaceId': cloudspaceId, 'status': {'$nin': [resourcestatus.Machine.DESTROYED, resourcestatus.Machine.DELETED]}}
         results = self.models.vmachine.search(query)[1:]
         if len(results) > 0:
             raise exceptions.Conflict(
@@ -326,13 +326,25 @@ class cloudapi_cloudspaces(BaseActor):
             if cloudspace.status == resourcestatus.Cloudspace.DEPLOYING:
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
 
-        cloudspace.status = resourcestatus.Cloudspace.DESTROYING
-        self.models.cloudspace.set(cloudspace)
-        cloudspace = self.cb.cloudspace.release_resources(cloudspace)
-        cloudspace.status = resourcestatus.Cloudspace.DESTROYED
-        cloudspace.deletionTime = int(time.time())
-        cloudspace.updateTime = int(time.time())
-        self.models.cloudspace.set(cloudspace)
+        status = cloudspace.status
+        try:
+            provider = self.cb.getProviderByGID(cloudspace.gid)
+            machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': resourcestatus.Machine.DELETED})[1:]
+            for machine in sorted(machines, key=lambda m: m['cloneReference'], reverse=True):
+                self.cb.machine.destroy_machine(machine['id'], provider)
+            cloudspace.status = resourcestatus.Cloudspace.DESTROYING
+            self.models.cloudspace.set(cloudspace)
+            cloudspace = self.cb.cloudspace.release_resources(cloudspace)
+            cloudspace.status = resourcestatus.Cloudspace.DESTROYED
+            cloudspace.deletionTime = int(time.time())
+            cloudspace.updateTime = int(time.time())
+        except:
+            cloudspace = self.models.cloudspace.get(cloudspace.id).dump()
+            cloudspace['status'] = status
+            self.models.cloudspace.set(cloudspace)
+            raise
+        finally:
+            self.models.cloudspace.set(cloudspace)
         return True
 
     @authenticator.auth(acl={'account': set('A')})
