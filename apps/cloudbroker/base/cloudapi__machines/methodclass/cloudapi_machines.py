@@ -741,9 +741,9 @@ class cloudapi_machines(BaseActor):
             cmd = 'dd if=/dev/zero bs=1M count=500 of={}'.format(disk_info.path)
             self.acl.executeJumpscript('jumpscale', 'exec', nid=node_id, args={'cmd': cmd})
         if delete_state == 'DESTROYED':
-            disks = self.models.disk.search({'$fields': ['referenceId'], 'id' : {'$in': vmachinemodel.disks}})[1:]
+            vdisks = self.models.disk.search({'$fields': ['referenceId'], 'id' : {'$in': vmachinemodel.disks}})[1:]
             vdiskguids = []
-            for vdisk in disks:
+            for vdisk in vdisks:
                 _, _, vdiskguid = vdisk['referenceId'].partition('@')
                 if vdiskguid:
                     vdiskguids.append(vdiskguid)

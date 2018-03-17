@@ -478,6 +478,26 @@ class Machine(object):
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
+    def destroy_machine(self, machineId, provider):
+        """
+        Will force destroy a deleted machine
+        :param machineId: int machine id
+        :param provider: provider object
+        """
+        machine = models.vmachine.searchOne({'id': machineId})
+        if machine['status'] != 'DELETED':
+            raise exceptions.BadRequest("Can't destroy a non deleted machine")
+        vdisk_query = {'id' : {'$in': machine['disks']}}
+        vdisks = models.disk.search(vdisk_query)[1:]
+        vdiskguids = []
+        for vdisk in vdisks:
+            _, _, vdiskguid = vdisk['referenceId'].partition('@')
+            if vdiskguid:
+                vdiskguids.append(vdiskguid)
+        provider.ex_delete_disks(vdiskguids)
+        models.vmachine.updateSearch({'id': machine['id']}, {'$set': {'status': 'DESTROYED'}})
+        models.disk.updateSearch(vdisk_query, {'$set': {'status': 'DESTROYED'}})
+
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory):
         datadisks = datadisks or []
         image = models.image.get(imageId)

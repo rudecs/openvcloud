@@ -45,6 +45,7 @@ class cloudbroker_cloudspace(BaseActor):
                             error='Failed to delete Cloud Space')
 
     def _destroy(self, cloudspace, reason, ctx):
+        provider = self.cb.getProviderByGID(cloudspace['gid'])
         with self.models.cloudspace.lock(cloudspace['id']):
             cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
             if cloudspace['status'] == resourcestatus.Cloudspace.DEPLOYING:
@@ -55,13 +56,12 @@ class cloudbroker_cloudspace(BaseActor):
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         try:
             # delete machines
-            machines = self.models.vmachine.search(
-                {'cloudspaceId': cloudspace['id'], 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}})[1:]
+            machine_query = {'cloudspaceId': cloudspace['id'], 'status': {'$ne': resourcestatus.Machine.DESTROYED}}
+            machines = self.models.vmachine.search(machine_query)[1:]
             for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
-                machineId = machine['id']
-                if machine['status'] != resourcestatus.Cloudspace.DESTROYED:
-                    ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
-                    j.apps.cloudbroker.machine.destroy(machineId, reason)
+                ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
+                j.apps.cloudbroker.machine.destroy(machine['id'], reason)
+                self.cb.machine.destroy_machine(machine['id'], provider)
         except:
             cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
             cloudspace['status'] = status
