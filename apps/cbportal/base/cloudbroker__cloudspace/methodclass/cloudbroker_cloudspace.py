@@ -188,24 +188,6 @@ class cloudbroker_cloudspace(BaseActor):
         return result
 
     @auth(['level1', 'level2', 'level3'])
-    def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
-        """
-        Adds an available public IP address
-        param:cloudspaceId id of the cloudspace
-        param:ipaddress only needed if a specific IP address needs to be assigned to this space
-        """
-        return True
-
-    @auth(['level1', 'level2', 'level3'])
-    def removeIP(self, cloudspaceId, ipaddress, **kwargs):
-        """
-        Removed a public IP address from the cloudspace
-        param:cloudspaceId id of the cloudspace
-        param:ipaddress public IP address to remove from this cloudspace
-        """
-        return True
-
-    @auth(['level1', 'level2', 'level3'])
     def getVFW(self, cloudspaceId, **kwargs):
         """
         Get VFW info
