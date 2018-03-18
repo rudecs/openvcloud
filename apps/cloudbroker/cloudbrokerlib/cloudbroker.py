@@ -135,14 +135,14 @@ class CloudBroker(object):
             return -1
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
-            return -1
+            raise exceptions.ServiceUnavailable('No available node with specified resources')
 
         for provider in capacityinfo:
             if memory is None:
                 return provider
             elif memory < provider['freememory']:
                 return provider
-        return -1
+        raise exceptions.ServiceUnavailable('No available node with specified resources')
 
     def getNode(self, machine, driver=None):
         image = models.image.get(machine.imageId)

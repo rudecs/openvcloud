@@ -20,15 +20,30 @@ def action():
     initiate upgrade
     """
     import yaml
+
+    def get_revision(branch, tag):
+        match = ''
+        if tag:
+            match = 'tags/{}'.format(tag)
+        elif branch:
+            match = 'heads/{}'.format(branch)
+        else:
+            raise RuntimeError("No tag or branch set on repo")
+        _, output= j.system.process.execute('git ls-remote {}'.format(ovc_installer_url))
+        for line in output.splitlines():
+            if line.endswith(match):
+                return line.split()[0]
+
     zero_complexity_path = '/opt/code/github/0-complexity/'
     repo_path = zero_complexity_path + 'openvcloud_installer'
     scl = j.clients.osis.getNamespace('system')
     versionmodel = scl.version.searchOne({'status': 'INSTALLING'})
+    ovc_installer_url = 'https://github.com/0-complexity/openvcloud_installer'
     manifest = yaml.load(versionmodel['manifest'])
     manifest['version'] = versionmodel['name']
     manifest['url'] = versionmodel['url']
     for repo in manifest['repos']:
-        if repo['url'] == 'https://github.com/0-complexity/openvcloud_installer':
+        if repo['url'] == ovc_installer_url:
             tag = repo['target'].get('tag')
             branch = repo['target'].get('branch')
             break
@@ -42,7 +57,19 @@ def action():
     
     j.do.pullGitRepo('https://github.com/0-complexity/openvcloud_installer/', ignorelocalchanges=True, reset=True,
                      tag=tag, branch=branch)
-    j.system.process.execute('kubectl apply --kubeconfig /root/.kube/config -f %s/scripts/kubernetes/upgrader/upgrader-job.yaml' % repo_path, outputToStdout=True)
+    with open('{}/scripts/kubernetes/upgrader/upgrader-job.yaml'.format(repo_path)) as fil_desc:
+        upgrader_data = yaml.load(fil_desc)
+
+    for volume in upgrader_data['spec']['template']['spec']['volumes']:
+        if volume.get('gitRepo') and volume['gitRepo']['repository'] == ovc_installer_url:
+            volume['gitRepo']['revision'] = get_revision(branch, tag)
+            break
+    try:
+        with open('/tmp/upgrader-job.yaml', 'w+') as file_descriptor:
+            yaml.dump(upgrader_data, file_descriptor)
+        j.system.process.execute('kubectl apply --kubeconfig /root/.kube/config -f /tmp/upgrader-job.yaml', outputToStdout=True)
+    finally:
+        j.system.fs.remove('/tmp/upgrader-job.yaml')
 
 
 if __name__ == '__main__':
