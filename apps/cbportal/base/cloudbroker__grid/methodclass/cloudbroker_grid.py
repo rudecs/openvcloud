@@ -58,6 +58,7 @@ class cloudbroker_grid(BaseActor):
         manifest = requests.get(url).content
         version = os_path.splitext(os_path.basename(urlparse(url).path))[0]
         current_time = j.base.time.getTimeEpoch()
+        self.sysmodels.version.updateSearch({'status': 'INSTALLING'}, {'$set': {'status': 'ERROR'}})
         if self.sysmodels.version.count({'name': version}) > 0:
             self.sysmodels.version.updateSearch({'name': version}, {'$set': {'creationTime': current_time, 'status': 'INSTALLING'}})
         else:
