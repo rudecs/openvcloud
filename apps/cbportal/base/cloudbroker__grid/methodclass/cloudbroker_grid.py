@@ -60,7 +60,7 @@ class cloudbroker_grid(BaseActor):
         current_time = j.base.time.getTimeEpoch()
         self.sysmodels.version.updateSearch({'status': 'INSTALLING'}, {'$set': {'status': 'ERROR'}})
         if self.sysmodels.version.count({'name': version}) > 0:
-            self.sysmodels.version.updateSearch({'name': version}, {'$set': {'creationTime': current_time, 'status': 'INSTALLING'}})
+            self.sysmodels.version.updateSearch({'name': version}, {'$set': {'creationTime': current_time, 'status': 'INSTALLING', 'url': url, 'manifest': manifest}})
         else:
             versionmodel = self.sysmodels.version.new()
             versionmodel.name = version
