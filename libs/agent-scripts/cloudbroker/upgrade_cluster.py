@@ -62,7 +62,7 @@ def action():
 
     for volume in upgrader_data['spec']['template']['spec']['volumes']:
         if volume.get('gitRepo') and volume['gitRepo']['repository'] == ovc_installer_url:
-            volume['gitRepo']['revision'] = get_revision(branch, tag)
+            volume['gitRepo']['revision'] = str(get_revision(branch, tag))
             break
     try:
         with open('/tmp/upgrader-job.yaml', 'w+') as file_descriptor:
