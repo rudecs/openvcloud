@@ -105,19 +105,21 @@ class cloudbroker_cloudspace(BaseActor):
         param:cloudspaceId id of the cloudspace
         param:targetNode name of the firewallnode the virtual firewall has to be moved to
         """
-        cloudspace = self.models.cloudspace.get(int(cloudspaceId))
-        if cloudspace.status != resourcestatus.Cloudspace.DEPLOYED:
+        cloudspace = self._getCloudSpace(cloudspaceId)
+        if cloudspace['status'] != resourcestatus.Cloudspace.DEPLOYED:
             raise exceptions.BadRequest('Could not move fw for cloudspace which is not deployed')
 
-        fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        fwid = "%s_%s" % (cloudspace['gid'], cloudspace['networkId'])
         network = self.vfwcl.virtualfirewall.get(fwid)
         if targetNid and network.nid == targetNid:
             raise exceptions.BadRequest('Can not move VFW to the node it is running on')
 
         if targetNid is None:
             currentstack = self.cb.getObjectByReferenceId('stack', str(network.nid))
-            targetNid = int(self.cb.getBestStack(cloudspace.gid, excludelist=[currentstack.id], memory=128)['referenceId'])
+            targetNid = int(self.cb.getBestStack(cloudspace['gid'], excludelist=[currentstack.id], memory=128)['referenceId'])
         stack = self.cb.getObjectByReferenceId('stack', str(targetNid))
+        if not stack:
+            raise exceptions.NotFound("Couldn't find node with id {}".format(targetNid))
         if stack.status != 'ENABLED':
             raise exceptions.BadRequest('Stack is not enabled')
 
@@ -186,24 +188,6 @@ class cloudbroker_cloudspace(BaseActor):
         return result
 
     @auth(['level1', 'level2', 'level3'])
-    def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
-        """
-        Adds an available public IP address
-        param:cloudspaceId id of the cloudspace
-        param:ipaddress only needed if a specific IP address needs to be assigned to this space
-        """
-        return True
-
-    @auth(['level1', 'level2', 'level3'])
-    def removeIP(self, cloudspaceId, ipaddress, **kwargs):
-        """
-        Removed a public IP address from the cloudspace
-        param:cloudspaceId id of the cloudspace
-        param:ipaddress public IP address to remove from this cloudspace
-        """
-        return True
-
-    @auth(['level1', 'level2', 'level3'])
     def getVFW(self, cloudspaceId, **kwargs):
         """
         Get VFW info
@@ -246,9 +230,7 @@ class cloudbroker_cloudspace(BaseActor):
         Deploy VFW
         param:cloudspaceId id of the cloudspace
         """
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+        self._getCloudSpace(cloudspaceId)
 
         return self.cb.actors.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
 
@@ -297,9 +279,7 @@ class cloudbroker_cloudspace(BaseActor):
         Start VFW
         param:cloudspaceId id of the cloudspace
         """
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
-
+        cloudspaceId = self._getCloudSpace(cloudspaceId)['id']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
         return self.cb.netmgr.fw_start(fwid=fwid)
@@ -311,9 +291,7 @@ class cloudbroker_cloudspace(BaseActor):
         Stop VFW
         param:cloudspaceId id of the cloudspace
         """
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
-
+        cloudspaceId = self._getCloudSpace(cloudspaceId)['id']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
         return self.cb.netmgr.fw_stop(fwid=fwid)
@@ -321,10 +299,7 @@ class cloudbroker_cloudspace(BaseActor):
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
     def destroyVFW(self, cloudspaceId, **kwargs):
-        cloudspaceId = int(cloudspaceId)
-        if not self.models.cloudspace.exists(cloudspaceId):
-            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
-
+        cloudspaceId = self._getCloudSpace(cloudspaceId)['id']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         self._destroyVFW(cloudspace.gid, cloudspaceId)
         self.cb.cloudspace.release_resources(cloudspace, False)

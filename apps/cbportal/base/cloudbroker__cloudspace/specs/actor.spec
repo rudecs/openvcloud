@@ -66,20 +66,6 @@
         """
         var:cloudspaceId int,, id of the cloudspace
 
-    method:addExtraIP
-        """
-        Adds an available public IP address
-        """
-        var:cloudspaceId int,, id of the cloudspace
-        var:ipaddress str,, only needed if a specific IP address needs to be assigned to this space @optional
-
-    method:removeIP
-        """
-        Removed a public IP address from the cloudspace
-        """
-        var:cloudspaceId int,, id of the cloudspace
-        var:ipaddress str,, public IP address to remove from this cloudspace
-
     method:create
         """
         Create a cloudspace for given account
