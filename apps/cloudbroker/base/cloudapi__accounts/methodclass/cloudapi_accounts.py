@@ -214,12 +214,15 @@ class cloudapi_accounts(BaseActor):
         :return: True if update was successful
         """
 
+        accountobj = self.models.account.get(accountId) if self.models.account.exists(accountId) else None
+        if not accountobj or accountobj.status == 'DESTROYED':
+            raise exceptions.BadRequest('Cannot edit deleted account.')
+
         if sendAccessEmails == 1:
             sendAccessEmails = True
         elif sendAccessEmails == 0:
             sendAccessEmails = False
 
-        accountobj = self.models.account.get(accountId)
 
         if name:
             accountobj.name = name
