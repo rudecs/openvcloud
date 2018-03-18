@@ -369,6 +369,9 @@ class cloudbroker_cloudspace(BaseActor):
         :param private network: private network
         :return: True if update was successful
         """
+        if not access:
+            access = kwargs['ctx'].env['beaker.session']['user']
+
         user = self.syscl.user.search({'id': access})[1:]
         if not user:
             raise exceptions.NotFound('Username "%s" not found' % access)

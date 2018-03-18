@@ -235,6 +235,11 @@ class cloudapi_cloudspaces(BaseActor):
         self._validateAvaliableAccountResources(cs, maxMemoryCapacity, maxVDiskCapacity,
                                                 maxCPUCapacity, maxNetworkPeerTransfer, maxNumPublicIP)
         cs.id = self.models.cloudspace.set(cs)[0]
+        try:
+            self._checkAvailableAccountIPs(cs.id)
+        except exceptions.BadRequest:
+            self.models.cloudspace.delete(cs.id)
+            raise
 
         kwargs['ctx'].env['tags'] += " cloudspaceId:{}".format(cs.id)
         networkid = cs.networkId
@@ -838,6 +843,10 @@ class cloudapi_cloudspaces(BaseActor):
         result = {'user': 'admin', 'password': pwd, 'url': url}
         return result
 
+    def _checkAvailableAccountIPs(self, cloudspaceId, numips=1):
+        cloudspace = self.models.cloudspace.get(cloudspaceId)
+        j.apps.cloudapi.accounts.checkAvailablePublicIPs(cloudspace.accountId, numips)
+
     # Unexposed actor
     def checkAvailablePublicIPs(self, cloudspaceId, numips=1):
         """
@@ -848,9 +857,7 @@ class cloudapi_cloudspaces(BaseActor):
         :return: True if check succeeds, otherwise raise a 400 BadRequest error
         """
         # Validate that there still remains enough public IP addresses to assign in account
-        cloudspace = self.models.cloudspace.get(cloudspaceId)
-        j.apps.cloudapi.accounts.checkAvailablePublicIPs(cloudspace.accountId, numips)
-
+        self._checkAvailableAccountIPs(cloudspaceId, numips)
         # Validate that there still remains enough public IP addresses to assign in cloudspace
         resourcelimits = cloudspace.resourceLimits
         if 'CU_I' in resourcelimits:

@@ -23,7 +23,7 @@ def main(j, args, params, tags, tasklet):
     popup = Popup(id='create_space', header='Create Cloud Space',
                   submit_url='/restmachine/cloudbroker/cloudspace/create')
     popup.addText('Name', 'name', required=True)
-    popup.addText('Username to grant access', 'access', required=True)
+    popup.addText('Username to grant access (if empty will be currently logged in user)', 'access', required=False)
     popup.addDropdown('Choose Location', 'location', locations)
     popup.addDropdown('Choose External Network', 'externalnetworkId', externalnetworks)
     popup.addText('Private Network', 'privatenetwork', value='192.168.103.0/24')
