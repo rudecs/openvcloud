@@ -132,13 +132,13 @@ class cloudbroker_cloudspace(BaseActor):
         param:cloudspaceId id of the cloudspace
         param:vfw object to migrate
         """
-        location = self.ccl.location.searchOne({'gid': gid})
+        location = self.models.location.searchOne({'gid': gid})
         if location is None:
             raise exceptions.BadRequest("Location with gid {} does not exists".format(gid))
-        if self.ccl.account.count({'id': accountId}) == 0:
+        if self.models.account.count({'id': accountId}) == 0:
             raise exceptions.BadRequest("Account with id {} does not exists".format(accountId))
-        space = self.ccl.cloudspace.searchOne({
-            'name': cloudspace.name,
+        space = self.models.cloudspace.searchOne({
+            'name': cloudspace['name'],
             'status': {'$ne': resourcestatus.Cloudspace.DESTROYED},
             'accountId': accountId,
             'networkId': cloudspace['networkId'],
@@ -147,41 +147,43 @@ class cloudbroker_cloudspace(BaseActor):
         vfwobj = self.vfwcl.virtualfirewall.new()
         vfwobj.load(vfw)
         if not space:
-            if self.ccl.cloudspace.count({'networkId': cloudspace['networkId'], 'gid': gid}) > 0:
+            if self.models.cloudspace.count({'networkId': cloudspace['networkId'], 'gid': gid}) > 0:
                 raise exceptions.BadRequest("Can not migrate cloudspace {} networkId {} is already in use!".format(cloudspace['name'], cloudspace['networkId']))
             externalnetworkip = netaddr.IPNetwork(cloudspace['externalnetworkip']).ip
-            for externalnetwork in self.ccl.externalnetwork.search({'gid': gid})[1:]:
+            for externalnetwork in self.models.externalnetwork.search({'gid': gid})[1:]:
                 network = netaddr.IPNetwork('{network}/{subnetmask}'.format(**externalnetwork))
                 if externalnetworkip in network:
                     break
             else:
                 raise exceptions.BadRequest("No external network to host this space")
 
-            newcloudspace = self.ccl.cloudspace.new()
+            newcloudspace = self.models.cloudspace.new()
             newcloudspace.load(cloudspace)
             newcloudspace.id = None
             newcloudspace.guid = None
             newcloudspace.gid = gid
             newcloudspace.accountId = accountId
             newcloudspace.location = location['locationCode']
-            vfwobj.vlan = externalnetwork.vlan
+            newcloudspace.privatenetwork = str(netmgr.DEFAULTCIDR)
+            vfwobj.vlan = externalnetwork['vlan']
             newcloudspace.externalnetworkId = externalnetwork['id']
+
             newcloudspace.status = resourcestatus.Cloudspace.MIGRATING
             newcloudspace.id, _, _ = self.models.cloudspace.set(newcloudspace)
         else:
-            newcloudspace = self.ccl.cloudspace.get(space['id'])
+            newcloudspace = self.models.cloudspace.get(space['id'])
             if newcloudspace.status == resourcestatus.Cloudspace.DEPLOYED:
                 return newcloudspace.id
 
         vfwobj.gid = gid
         vfwobj.guid = "{}_{}".format(gid, vfw['id'])
-        vfwobj.nid = self.cb.getBestStack(gid)
+        vfwobj.nid = int(self.cb.getBestStack(gid)['referenceId'])
         vfwobj.domain = str(newcloudspace.id)
         self.vfwcl.virtualfirewall.set(vfw)
         result = self.cb.netmgr.fw_migrate(vfwobj, sourceip, vfw['nid'])
         if result:
             self.models.cloudspace.updateSearch({'id': newcloudspace.id}, {'$set': {'status': resourcestatus.Cloudspace.DEPLOYED}})
-        return result
+        return newcloudspace.id
 
     @auth(['level1', 'level2', 'level3'])
     def addExtraIP(self, cloudspaceId, ipaddress, **kwargs):
