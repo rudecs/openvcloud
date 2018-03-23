@@ -156,7 +156,7 @@ class Migrator(object):
 
     def get_vms(self, cs_id):
         all_vms = self.source_ccl.vmachine.search({
-            'status': {'$nin': resourcestatus.Machine.DELETED_STATES},
+            'status': {'$nin': resourcestatus.Machine.INVALID_STATES},
             'cloudspaceId': cs_id
         })[1:]
         vms = filter(lambda vm: self.source_ccl.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) == 0, all_vms)
@@ -167,8 +167,8 @@ class Migrator(object):
         cloudspacedata = cloudspace.dump()
         vfwdata = self.source_vfw.virtualfirewall.searchOne({'id': cloudspace['networkId']})
         sourceip = self.get_source_ip(vfwdata['nid'])
-        newcloudspaceId = self.pcl.actors.cloudbroker.cloudspace.migrateCloudspace(newaccount['id'], cloudspacedata, vfwdata, sourceip, self.rgid)
-        newcloudspace = self.ccl.cloudbroker.searchOne({'id': newcloudspaceId})
+        newcloudspaceId = self.pcl.actors.cloudbroker.cloudspace.migrateCloudspace(newaccount.id, cloudspacedata, vfwdata, sourceip, self.rgid)
+        newcloudspace = self.ccl.cloudspace.searchOne({'id': newcloudspaceId})
         vms = self.get_vms(cloudspace.id)
         if self.concurrency > 1:
             pool = ProcessPool(self.concurrency, interval=60)
