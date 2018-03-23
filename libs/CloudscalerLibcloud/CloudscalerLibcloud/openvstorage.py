@@ -37,6 +37,8 @@ def run_healthcheck(modulename, testname, category):
     results = []
     try:
         hcresults = HealthCheckCLIRunner.run_method(modulename, testname)
+        if not hcresults:
+            return results
         for testcategory, messageinfo in hcresults['result'].iteritems():
             for state, messages in messageinfo['messages'].iteritems():
                 for message in messages:
