@@ -89,12 +89,12 @@ class NetworkInterface(object):
 
 
 class OpenvStorageVolume(StorageVolume):
-
-    def __init__(self, *args, **kwargs):
+    def __init__(self, id, *args, **kwargs):
         self.iotune = kwargs.pop('iotune', {})
         order = kwargs.pop('order', 0)
         self._id = None
         super(OpenvStorageVolume, self).__init__(*args, **kwargs)
+        self.id = id  # force id setter after init
         self.type = 'disk'
         self.bus = 'virtio'
         self.dev = 'vd{}'.format(convertnumber(order))

@@ -79,7 +79,7 @@ h2. Private Network: ${id} (${'%04x' % id})
 {{createportforwarding: cloudspaceId:${domain}}}
 
 h3. Details
-|*Management IP*|${host}|
+|*Management IP*| ${host}|
 |*Public IPs*|${pubips}|
 |*FW Node*|[${nodename}|/grid/grid node?id=${nid}&gid=${gid}]|
 |*Status*| ${running} |
