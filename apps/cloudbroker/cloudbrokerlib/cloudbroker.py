@@ -494,7 +494,7 @@ class Machine(object):
             _, _, vdiskguid = vdisk['referenceId'].partition('@')
             if vdiskguid:
                 vdiskguids.append(vdiskguid)
-        provider.ex_delete_disks(vdiskguids)
+        provider.destroy_volumes_by_guid(vdiskguids)
         models.vmachine.updateSearch({'id': machine['id']}, {'$set': {'status': 'DESTROYED'}})
         models.disk.updateSearch(vdisk_query, {'$set': {'status': 'DESTROYED'}})
 

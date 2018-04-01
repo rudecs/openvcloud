@@ -747,12 +747,6 @@ class CSLibvirtNodeDriver(object):
             volumes.append(volume)
         return volumes
 
-    def ex_delete_disks(self, volumeguids):
-        self._execute_agent_job('deletedisks',
-                                role='storagedriver',
-                                ovs_connection=self.ovs_connection,
-                                diskguids=volumeguids)
-
     def ex_clone(self, node, password, imagetype, size, vmid, networkid, diskmapping, disks_snapshots=None):
         disks_snapshots = disks_snapshots or {}
         name = 'vm-%s' % vmid

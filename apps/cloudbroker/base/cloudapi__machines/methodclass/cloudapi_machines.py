@@ -510,7 +510,7 @@ class cloudapi_machines(BaseActor):
             export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid,
                                                     role='storagedriver', timeout=3600, args=jobargs)
             # TODO: the url to be sent to the user
-            provider.ex_delete_disks(diskguids)
+            provider.destroy_volumes_by_guid(diskguids)
             if export_job['state'] == 'ERROR':
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
@@ -747,7 +747,7 @@ class cloudapi_machines(BaseActor):
                 _, _, vdiskguid = vdisk['referenceId'].partition('@')
                 if vdiskguid:
                     vdiskguids.append(vdiskguid)
-            provider.ex_delete_disks(vdiskguids)
+            provider.destroy_volumes_by_guid(vdiskguids)
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
