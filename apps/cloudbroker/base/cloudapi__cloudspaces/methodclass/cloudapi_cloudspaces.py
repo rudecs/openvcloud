@@ -831,6 +831,8 @@ class cloudapi_cloudspaces(BaseActor):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
+        if not self.netmgr.fw_check(fwid, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not perform this action at this time, Check you virtual firewall')
         fw = self.netmgr._getVFWObject(fwid)
         self.netmgr.osisvfw.updateSearch({'guid': fwid}, {'$set': {'accesstime': int(time.time())}})
 

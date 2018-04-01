@@ -37,6 +37,8 @@ class cloudapi_portforwarding(BaseActor):
         """
         cloudspace, machine, fw, publicIp = self._validate_forward(cloudspaceId, publicIp, publicPort, machineId, localPort, protocol)
         fw_id = fw['guid']
+        if not self.netmgr.fw_check(fw_id, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not create PortForward at this time')
         grid_id = fw['gid']
         localIp = self._getLocalIp(machine)
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
@@ -141,6 +143,8 @@ class cloudapi_portforwarding(BaseActor):
 
     def _delete(self, cloudspaceId, id, **kwargs):
         fw_id, fw_gid = self._getFirewallId(cloudspaceId)
+        if not self.netmgr.fw_check(fw_id, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not delete PortForward at this time')
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         id = int(id)
         if not id < len(forwards):
@@ -171,6 +175,8 @@ class cloudapi_portforwarding(BaseActor):
 
     def _deleteByPort(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
         fw_id, fw_gid = self._getFirewallId(cloudspaceId)
+        if not self.netmgr.fw_check(fw_id, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not delete PortForward at this time')
         if not self.netmgr.fw_forward_delete(fw_id, fw_gid, publicIp, publicPort, protocol=proto):
             raise exceptions.NotFound("Could not find port forwarding with %s:%s %s" % (publicIp, publicPort, proto))
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
@@ -181,6 +187,8 @@ class cloudapi_portforwarding(BaseActor):
         protocol = protocol or 'tcp'
         cloudspace, machine, fw, publicIp = self._validate_forward(cloudspaceId, publicIp, publicPort, machineId, localPort, protocol)
         fw_id, fw_gid = self._getFirewallId(cloudspaceId)
+        if not self.netmgr.fw_check(fw_id, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not update PortForward at this time')
         forwards = self.netmgr.fw_forward_list(fw_id, fw_gid)
         for fw in forwards:
             if fw['publicIp'] == sourcePublicIp and int(fw['publicPort']) == sourcePublicPort and \
@@ -213,7 +221,8 @@ class cloudapi_portforwarding(BaseActor):
         if len(fw) == 0:
             raise exceptions.NotFound('Incorrect cloudspace or there is no corresponding gateway')
         fw_id = fw[0]['guid']
-
+        if not self.netmgr.fw_check(fw_id, timeout=5):
+            raise exceptions.ServiceUnavailable('Can not update PortForward at this time')
         forwards = self.netmgr.fw_forward_list(fw_id, cloudspace.gid)
         id = int(id)
         if not id < len(forwards):
