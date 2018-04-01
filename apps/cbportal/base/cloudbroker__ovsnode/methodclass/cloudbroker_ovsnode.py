@@ -1,6 +1,5 @@
 import time
 from JumpScale import j
-from xml.etree import ElementTree
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
 
@@ -9,7 +8,6 @@ class cloudbroker_ovsnode(BaseActor):
     def __init__(self):
         super(cloudbroker_ovsnode, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
-        self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.lcl = j.clients.osis.getNamespace('libcloud')
         self.node = j.apps.cloudbroker.node
 

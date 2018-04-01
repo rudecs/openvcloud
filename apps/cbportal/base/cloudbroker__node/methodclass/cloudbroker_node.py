@@ -33,47 +33,38 @@ class cloudbroker_node(BaseActor):
     @wrap_remote
     def maintenance(self, nid, gid, vmaction, **kwargs):
         node = self._getNode(nid)
+        kwargs['ctx'].events.runAsync(self._maintenance,
+                                      args=(node, vmaction),
+                                      kwargs=kwargs,
+                                      title='Deactivating node',
+                                      success='Successfully deactivated node',
+                                      error='Failed to deactivate node')
+
+
+    def _maintenance(self, node, vmaction, **kwargs):
         if 'storagedriver' in node['roles']:
-            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.ovsnode.deactivateNodes,
-                                          args=([nid],),
-                                          kwargs=kwargs,
-                                          title='Deactivating storage node',
-                                          success='Successfully deactivated storage node',
-                                          error='Failed to deactivate storage node ',
-                                          errorcb='')
+            j.apps.cloudbroker.ovsnode.deactivateNodes([node.id], **kwargs)
         if 'cpunode' in node['roles']:
-            stack = j.apps.cloudbroker.computenode._getStackFromNode(nid, gid)
-            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.computenode.maintenance, 
-                                          args=(stack['id'], gid, vmaction),
-                                          kwargs=kwargs,
-                                          title='Deactivating compute node',
-                                          success='Successfully deactivated compute node',
-                                          error='Failed to deactivate compute node',
-                                          errorcb='')
-            
+            stack = j.apps.cloudbroker.computenode._getStackFromNode(node.id, node.gid)
+            j.apps.cloudbroker.computenode.maintenance(stack['id'], node.gid, vmaction, **kwargs)
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
     def enable(self, nid, gid, message='', **kwargs):
         node = self._getNode(nid)
+        kwargs['ctx'].events.runAsync(self._enable,
+                                      args=(node, message,),
+                                      kwargs=kwargs,
+                                      title='Enabling node',
+                                      success='Successfully Enabled node',
+                                      error='Failed to Enable node')
+
+    def _enable(self, node, message='', **kwargs):
         if 'storagedriver' in node['roles']:
-            nids = [nid]
-            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.ovsnode.activateNodes,
-                                          args=([nid],),
-                                          kwargs=kwargs,
-                                          title='Enabling storage node',
-                                          success='Successfully Enabled storage node',
-                                          error='Failed to Enable storage node ',
-                                          errorcb='')
+            j.apps.cloudbroker.ovsnode.activateNodes([node.id], **kwargs)
         if 'cpunode' in node['roles']:
-            stack = j.apps.cloudbroker.computenode._getStackFromNode(nid, gid)
-            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.computenode.enable,
-                                          args=(stack['id'], gid, message),
-                                          kwargs=kwargs,
-                                          title='Enabling compute node',
-                                          success='Successfully Enabled compute node',
-                                          error='Failed to Enable compute node ',
-                                          errorcb='')
+            stack = j.apps.cloudbroker.computenode._getStackFromNode(node.id, node.gid)
+            j.apps.cloudbroker.computenode.enable(stack['id'], node.gid, message, **kwargs)
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
@@ -84,7 +75,7 @@ class cloudbroker_node(BaseActor):
             self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline', nid=nid, gid=gid)
         if 'cpunode' in node['roles']:
             stack = j.apps.cloudbroker.computenode._getStackFromNode(nid, gid)
-            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.computenode.maintenance, 
+            kwargs['ctx'].events.runAsync(j.apps.cloudbroker.computenode.maintenance,
                                           args=(stack['id'], gid, vmaction),
                                           kwargs=kwargs,
                                           title='Deactivating comppute node',
