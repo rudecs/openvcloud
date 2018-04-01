@@ -13,10 +13,10 @@ class Network(object):
 
     def cleanup_flows(self, bridge, port, mac, ip=None):
         cmd = rules.CLEANUPFLOWS_CMD.format(mac=mac, port=port, bridge=bridge)
-        j.system.process.execute(cmd)
+        j.system.process.execute(cmd, dieOnNonZeroExitCode=False)
         if ip:
             cmd = rules.CLEANUPFLOWS_CMD_IP.format(bridge=bridge, ipaddress=ip)
-            j.system.process.execute(cmd)
+            j.system.process.execute(cmd, dieOnNonZeroExitCode=False)
 
     def close(self):
         self.libvirtutil.close()
