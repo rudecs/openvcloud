@@ -269,7 +269,7 @@ class CSLibvirtNodeDriver(object):
 
     @property
     def edgeclients(self):
-        edgeclients = self.all_edgeclients
+        edgeclients = filter(lambda client: client['status'] == 'OK', self.all_edgeclients)
 
         activesessions = self.backendconnection.agentcontroller_client.listActiveSessions()
         activenodes = self.scl.node.search({'status': 'ENABLED', 'gid': self.gid, 'roles': 'storagedriver'})[1:]

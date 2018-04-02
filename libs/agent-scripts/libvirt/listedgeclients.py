@@ -42,21 +42,19 @@ def action(ovs_connection):
         vpools[vpool['guid']] = vpool['name']
 
     # filter storagerouters
-    storagerouters = set()
+    storagerouterstatus = dict()
     for storagerouter in ovs.get('/storagerouters/', params={'contents': 'status'})['data']:
-        if storagerouter['status'] == 'OK':
-            storagerouters.add(storagerouter['guid'])
+        storagerouterstatus[storagerouter['guid']] = storagerouter['status']
 
     # Then list the storage drivers
     edgeclients = list()
     result = ovs.get('/storagedrivers', params={'contents': 'vpool,storagerouter,vdisks_guids'})
     for storagedriver in result['data']:
-        if storagedriver['storagerouter_guid'] not in storagerouters:
-            continue
         edgeclients.append(dict(storageip=storagedriver['storage_ip'],
                                 edgeport=storagedriver['ports']['edge'],
                                 storagerouterguid=storagedriver['storagerouter_guid'],
                                 vpoolguid=storagedriver['vpool_guid'],
+                                status=storagerouterstatus[storagedriver['storagerouter_guid']],
                                 vpool=vpools[storagedriver['vpool_guid']],
                                 vdiskcount=len(storagedriver['vdisks_guids']),
                                 protocol=protocol))

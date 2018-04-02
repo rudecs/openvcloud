@@ -2,6 +2,7 @@ import time
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
+from JumpScale.portal.portal.auth import auth
 
 
 class cloudbroker_ovsnode(BaseActor):
@@ -11,6 +12,7 @@ class cloudbroker_ovsnode(BaseActor):
         self.lcl = j.clients.osis.getNamespace('libcloud')
         self.node = j.apps.cloudbroker.node
 
+    @auth(['level2', 'level3'], True)
     def activateNodes(self, nids, **kwargs):
         for nid in nids:
             node = self.node._getNode(nid)
@@ -29,6 +31,7 @@ class cloudbroker_ovsnode(BaseActor):
             raise exceptions.BadRequest(
                 'Storage Node does not have interface for storage ip , please specify storage interface')
 
+    @auth(['level2', 'level3'], True)
     def deactivateNodes(self, nids, **kwargs):
         if len(nids) != 1:
             raise exceptions.BadRequest("Can only deactivate 1 Storagerouter at a time")
@@ -46,15 +49,17 @@ class cloudbroker_ovsnode(BaseActor):
 
         driver = self.cb.getProviderByGID(node['gid'])
         alledgeclients = driver.all_edgeclients[:]
-        edgeclients = []
         for edgeclient in alledgeclients:
             if edgeclient['storageip'] in myips:
                 edgeinfo = edgeclient
                 continue
-            edgeclients.append(edgeclient)
 
         if edgeinfo is None:
             raise exceptions.Error("Could not find storage IP on node %s" % nid)
+
+        edgeclients = filter(lambda c: c['storageip'] != edgeclient['storageip'], driver.edgeclients[:])
+        if not edgeclients:
+            raise exceptions.BadRequest("No storage routers available to migrate to")
 
         def get_vpool_name(host, port):
             for edgeclient in alledgeclients:
