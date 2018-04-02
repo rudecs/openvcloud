@@ -43,10 +43,10 @@ class cloudbroker_node(BaseActor):
 
     def _maintenance(self, node, vmaction, **kwargs):
         if 'storagedriver' in node['roles']:
-            j.apps.cloudbroker.ovsnode.deactivateNodes([node.id], **kwargs)
+            j.apps.cloudbroker.ovsnode.deactivateNodes([node['id']], **kwargs)
         if 'cpunode' in node['roles']:
-            stack = j.apps.cloudbroker.computenode._getStackFromNode(node.id, node.gid)
-            j.apps.cloudbroker.computenode.maintenance(stack['id'], node.gid, vmaction, **kwargs)
+            stack = j.apps.cloudbroker.computenode._getStackFromNode(node['id'], node['gid'])
+            j.apps.cloudbroker.computenode.maintenance(stack['id'], node['gid'], vmaction, **kwargs)
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
@@ -61,10 +61,10 @@ class cloudbroker_node(BaseActor):
 
     def _enable(self, node, message='', **kwargs):
         if 'storagedriver' in node['roles']:
-            j.apps.cloudbroker.ovsnode.activateNodes([node.id], **kwargs)
+            j.apps.cloudbroker.ovsnode.activateNodes([node['id']], **kwargs)
         if 'cpunode' in node['roles']:
-            stack = j.apps.cloudbroker.computenode._getStackFromNode(node.id, node.gid)
-            j.apps.cloudbroker.computenode.enable(stack['id'], node.gid, message, **kwargs)
+            stack = j.apps.cloudbroker.computenode._getStackFromNode(node['id'], node['gid'])
+            j.apps.cloudbroker.computenode.enable(stack['id'], node['gid'], message, **kwargs)
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
