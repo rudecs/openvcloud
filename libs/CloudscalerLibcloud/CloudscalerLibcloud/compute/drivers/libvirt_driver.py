@@ -93,7 +93,7 @@ class OpenvStorageVolume(StorageVolume):
         self.iotune = kwargs.pop('iotune', {})
         order = kwargs.pop('order', 0)
         self._id = None
-        super(OpenvStorageVolume, self).__init__(*args, **kwargs)
+        super(OpenvStorageVolume, self).__init__(id, *args, **kwargs)
         self.id = id  # force id setter after init
         self.type = 'disk'
         self.bus = 'virtio'
