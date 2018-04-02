@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     modifier = j.html.getPageModifierGridDataTables(page)
 
     imageid = args.getTag("imageid")
-    filters = dict(roles={'$in':['cpunode','storagerouter']})
+    filters = dict(roles={'$in': ['cpunode', 'storagenode']})
     grids = dict()
     cb = CloudBroker()
     query = {'$fields': ['id', 'memory']}
