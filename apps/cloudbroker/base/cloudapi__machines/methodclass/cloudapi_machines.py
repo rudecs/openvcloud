@@ -963,8 +963,8 @@ class cloudapi_machines(BaseActor):
         :return id of the new cloned machine
         """
         machine = self._getMachine(machineId)
-        
-        if self.models.disk.count({'id': {'$in': vm.disks}, 'type': 'P'}) > 0:
+
+        if self.models.disk.count({'id': {'$in': machine.disks}, 'type': 'P'}) > 0:
             raise exceptions.BadRequest("Can't clone a vm with physical disks attached")
 
         if cloudspaceId is None:

@@ -173,8 +173,6 @@ class CloudBroker(object):
             volumes.append(volume)
 
         size = {'memory': machine.memory, 'vcpus': machine.vcpus}
-        if machine.sizeId:
-            size = models.size.get(machine.sizeId).dump()
         extra = {'ifaces': interfaces, 'imagetype': image.type, 'volumes': volumes, 'size': size, 'boottype': image.bootType, 'bootdev': 'hd'}
         node = Node(
             id=machine.referenceId,
@@ -218,8 +216,7 @@ class CloudBroker(object):
     def chooseStack(self, machine):
         if models.disk.count({'id': {'$in': machine.disks}, 'type': 'P'}) == 0:
             cloudspace = models.cloudspace.get(machine.cloudspaceId)
-            size = models.size.get(machine.sizeId)
-            newstack = self.getBestStack(cloudspace.gid, machine.imageId, memory=size.memory)
+            newstack = self.getBestStack(cloudspace.gid, machine.imageId, memory=machine.memory)
             if newstack == -1:
                 raise exceptions.ServiceUnavailable('Not enough resources available to start the requested machine')
             machine.stackId = newstack['id']
