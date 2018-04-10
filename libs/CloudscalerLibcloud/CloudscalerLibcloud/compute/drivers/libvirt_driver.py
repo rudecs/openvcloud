@@ -292,6 +292,8 @@ class CSLibvirtNodeDriver(object):
     def getNextEdgeClient(self, vpool, edgeclients=None):
         clients = edgeclients or self.edgeclients[:]
         clients = filter(lambda x: x['vpool'] == vpool, clients)
+        if not clients:
+            raise exceptions.ServiceUnavailable("No storagerouter available for vpool {}".format(vpool))
         return sorted(clients, key=lambda client: client['vdiskcount'])[0]
 
     def getEdgeClientFromVolume(self, volume):
