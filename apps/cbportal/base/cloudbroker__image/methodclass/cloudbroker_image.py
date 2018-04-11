@@ -102,12 +102,17 @@ class cloudbroker_image(BaseActor):
     def edit(self, imageId, name=None, username=None, password=None, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
-        image = self.models.image.get(imageId)
-        image.name = name if name else image.name
-        image.username = username if username else image.username
-        image.password = password if password else image.password
-        image.accountId = accountId if accountId else image.accountId
-        self.models.image.set(image)
+        self._checkimage(imageId)
+        update = {}
+        if name:
+            update['name'] = name
+        if username:
+            update['username'] = username
+        if password:
+            update['password'] = password
+        if accountId is not None:
+            update['accountId'] = accountId
+        self.models.image.updateSearch({'id': imageId}, {'$set': update})
 
     def _createImage(self, name, url, gid, imagetype, boottype, bytesize, username, password, accountId, kwargs):
         ctx = kwargs['ctx']
