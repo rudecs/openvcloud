@@ -103,7 +103,7 @@ class cloudbroker_machine(BaseActor):
                 ipAddress = nic['ipAddress']
                 for extnetwork in externalnetworks:
                     network = netaddr.IPNetwork('{network}/{subnetmask}'.format(**extnetwork))
-                    if ipAddress in network:
+                    if netaddr.IPNetwork(ipAddress).ip in network:
                         break
                 else:
                     raise exceptions.BadRequest("Could not migrate VM in external network {} which does not exist")

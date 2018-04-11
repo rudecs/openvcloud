@@ -183,8 +183,8 @@ class cloudbroker_cloudspace(BaseActor):
         vfwobj.guid = "{}_{}".format(gid, vfw['id'])
         vfwobj.nid = int(self.cb.getBestStack(gid)['referenceId'])
         vfwobj.domain = str(newcloudspace.id)
-        self.vfwcl.virtualfirewall.set(vfw)
-        result = self.cb.netmgr.fw_migrate(vfwobj, sourceip, vfw['nid'])
+        self.vfwcl.virtualfirewall.set(vfwobj)
+        result = self.cb.netmgr.fw_migrate(vfwobj, sourceip, vfwobj.nid)
         if result:
             self.models.cloudspace.updateSearch({'id': newcloudspace.id}, {'$set': {'status': resourcestatus.Cloudspace.DEPLOYED}})
         return newcloudspace.id
