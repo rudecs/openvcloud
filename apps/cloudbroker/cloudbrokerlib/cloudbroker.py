@@ -132,7 +132,7 @@ class CloudBroker(object):
     def getBestStack(self, gid, imageId=None, excludelist=[], memory=None):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
-            return -1
+            raise exceptions.ServiceUnavailable('No available node')
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             raise exceptions.ServiceUnavailable('No available node with specified resources')
