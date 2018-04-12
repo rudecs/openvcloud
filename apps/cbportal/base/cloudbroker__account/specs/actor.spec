@@ -19,6 +19,7 @@
     method:delete
         """
         Complete delete an account from the system
+        Returns 200 if account is deleted or was already deleted or never existed
         """"
         var:accountId int,,ID of account to delete
         var:reason str,,reason for deleting the account

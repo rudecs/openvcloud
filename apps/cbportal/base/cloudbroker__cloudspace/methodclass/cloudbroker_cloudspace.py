@@ -34,7 +34,10 @@ class cloudbroker_cloudspace(BaseActor):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
         """
-        cloudspace = self._getCloudSpace(cloudspaceId)
+        try:
+            cloudspace = self._getCloudSpace(cloudspaceId)
+        except (exceptions.BadRequest, exceptions.NotFound):
+            return
 
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,

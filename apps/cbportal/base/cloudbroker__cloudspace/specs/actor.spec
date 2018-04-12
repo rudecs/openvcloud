@@ -6,6 +6,7 @@
         """
         destroy a cloudspace
         Destroys its machines, vfws and routeros
+        Returns 200 if cloudspace is deleted or was already deleted or never existed
         """
         var:accountId int,,id of account
         var:cloudspaceId str,,ID of cloudspace

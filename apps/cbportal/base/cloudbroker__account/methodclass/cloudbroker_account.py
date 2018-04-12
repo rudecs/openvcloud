@@ -197,7 +197,10 @@ class cloudbroker_account(BaseActor):
         """
         Complete delete an account from the system
         """
-        account = self._checkAccount(accountId)
+        try:
+            account = self._checkAccount(accountId)
+        except (exceptions.BadRequest, exceptions.NotFound):
+            return
         startstate = account['status']
 
         def restorestate(eco):

@@ -31,6 +31,7 @@
     method:delete
         """
         Delete the cloudspace
+        Returns 200 if cloudspace is deleted or was already deleted or never existed
         """
         var:cloudspaceId int,, id of the cloudspace
         result:bool, True if deletion was successful
