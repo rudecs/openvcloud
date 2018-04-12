@@ -96,7 +96,7 @@ def migrate_vm(vmid, newspace, debug=False, dryrun=False):
 
 
 class Migrator(object):
-    def __init__(self, debug=False, dryrun=False, concurrency=1, cloudspaces=None):
+    def __init__(self, debug=False, dryrun=False, concurrency=1, cloudspaces=None, vms=None):
         self.acl = j.clients.agentcontroller.getByInstance('main')
         self.pcl = j.clients.portal.getByInstance('main')
         self.source_osis = j.clients.osis.getByInstance('source')
@@ -112,6 +112,7 @@ class Migrator(object):
         self.vfw = j.clients.osis.getNamespace('vfw', self.osis)
         self.lcl = j.clients.osis.getNamespace('libvirt', self.osis)
         self.cloudspaces = cloudspaces
+        self.vms = vms
         self.concurrency = concurrency
         self.debug = debug
         self.dryrun = dryrun
@@ -159,7 +160,12 @@ class Migrator(object):
             'status': {'$nin': resourcestatus.Machine.INVALID_STATES},
             'cloudspaceId': cs_id
         })[1:]
-        vms = filter(lambda vm: self.source_ccl.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) == 0, all_vms)
+        def vmfilter(vm):
+            if self.vms and vm['id'] not in self.vms:
+                return False
+            return self.source_ccl.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) == 0
+
+        vms = filter(vmfilter, all_vms)
         return vms
 
     def migrate_space(self, cloudspace, newaccount):
@@ -189,11 +195,13 @@ class Migrator(object):
                 oldvm = self.source_ccl.vmachine.get(vmid)
                 newvm = self.ccl.vmachine.searchOne({
                     'name': oldvm.name,
-                    'status': 'MIGRATING',
+                    'status': {'$in': ['MIGRATING', 'HALTED', 'PAUSED', 'RUNNING']},
                     'cloudspaceId': cloudspace['id']
                 })
                 if not newvm:
                     return "VM {} is being prepared for migration".format(vmid)
+                if newvm['status'] == 'RUNNING':
+                    return "VM {} finished migration".format(vmid)
                 vmdisks = self.ccl.disk.search({'id': {'$in': newvm['disks']}})[1:]
                 vmdiskguids = [disk['referenceId'].split('@')[-1] for disk in vmdisks if disk['referenceId']]
                 if not vmdiskguids:
@@ -313,6 +321,7 @@ class Migrator(object):
         else:
             # we copy over the data
             # not supported just yet!!!
+            raise RuntimeError("We do not support migrating vms that are not running!")
             qemujobs = []
             for sourcedisk, disk in disks:
                 sourceurl = sourcedisk.referenceId.split('@')[0].replace('://', ':')
@@ -336,14 +345,29 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('-a', '--accounts', help='Comma seperated accountids that require migration', required=True)
-    parser.add_argument('-c', '--cloudspaces', dest='cloudspaces', default=None, help='Failter for cloudspaces to migrate')
+    parser.add_argument('-c', '--cloudspaces', dest='cloudspaces', default=None, help='Filter for cloudspaces to migrate')
+    parser.add_argument('-m', '--vm', dest='vms', default=None, help='Filter for vms to migrate')
     parser.add_argument('-d', '--dry-run', dest='dry', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('-n', '--concurrency', dest='concurrency', type=int, default=1, help='Amount of VMs to migrate at once')
+    parser.add_argument('-s', '--status', dest='status', type=bool, default=False, action='store_true', help='Show status for vm')
     options = parser.parse_args()
     cloudspaces = None
+    vms = None
     if options.cloudspaces:
         cloudspaces = [int(cs) for cs in options.cloudspaces.split(',')]
-    migrator = Migrator(options.debug, options.dry, options.concurrency, cloudspaces)
-    for accountid in options.accounts.split(','):
-        migrator.migrate_account(int(accountid))
+    if options.vms:
+        vms = [int(vm) for vm in options.vms.split(',')]
+    migrator = Migrator(options.debug, options.dry, options.concurrency, cloudspaces, vms)
+    if not options.status:
+        for accountid in options.accounts.split(','):
+            migrator.migrate_account(int(accountid))
+    else:
+        cloudspace = migrator.ccl.cloudspace.searchOne({'id': cloudspaces[0]})
+        while True:
+            msg = migrator.vm_status(vms[0], cloudspace)
+            print msg
+            if 'finished' in msg:
+                break
+            time.sleep(60)
+
