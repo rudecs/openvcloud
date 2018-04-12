@@ -18,6 +18,9 @@ def main(j, args, params, tags, tasklet):
 
     imageobj = ccl.image.get(imageid)
     image = imageobj.dump()
+    if imageobj.accountId:
+        query = {'$fields': ['id', 'name'], '$query': {'id': imageobj.accountId}}
+        image['account'] = ccl.account.searchOne(query)
 
     args.doc.applyTemplate(image, True)
 

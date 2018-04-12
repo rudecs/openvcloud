@@ -58,6 +58,11 @@ h3. Image: ${name}
 * *Size*: ${size}
 * *UNCPath*: ${UNCPath}
 * *Status*: ${status or "CREATED"}
+{% if account -%}
+* *Account*: [${account.name}|/cbgrid/account?id=${account.id}]
+{% else -%}
+* *Account*: Public Available
+{% endif -%}
 
 h4. Stacks which have this Image
 
