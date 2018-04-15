@@ -850,7 +850,7 @@ class cloudapi_cloudspaces(BaseActor):
         j.apps.cloudapi.accounts.checkAvailablePublicIPs(cloudspace.accountId, numips)
 
     # Unexposed actor
-    def checkAvailablePublicIPs(self, cloudspaceId, numips=1):
+    def checkAvailablePublicIPs(self, cloudspace, numips=1):
         """
         Check that the required number of ip addresses are available in the given cloudspace
 
@@ -859,14 +859,14 @@ class cloudapi_cloudspaces(BaseActor):
         :return: True if check succeeds, otherwise raise a 400 BadRequest error
         """
         # Validate that there still remains enough public IP addresses to assign in account
-        self._checkAvailableAccountIPs(cloudspaceId, numips)
+        self._checkAvailableAccountIPs(cloudspace.id, numips)
         # Validate that there still remains enough public IP addresses to assign in cloudspace
         resourcelimits = cloudspace.resourceLimits
         if 'CU_I' in resourcelimits:
             reservedcus = cloudspace.resourceLimits['CU_I']
 
             if reservedcus != -1:
-                consumedcus = self.getConsumedPublicIPs(cloudspaceId)
+                consumedcus = self.getConsumedPublicIPs(cloudspace.id)
                 availablecus = reservedcus - consumedcus
                 if availablecus < numips:
                     raise exceptions.BadRequest("Required actions will consume an extra %s public "

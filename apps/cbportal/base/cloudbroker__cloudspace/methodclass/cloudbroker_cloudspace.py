@@ -228,7 +228,6 @@ class cloudbroker_cloudspace(BaseActor):
         return network_obj
 
     @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
     @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):
         """
@@ -237,7 +236,7 @@ class cloudbroker_cloudspace(BaseActor):
         """
         self._getCloudSpace(cloudspaceId)
 
-        return self.cb.actors.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
+        return j.apps.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

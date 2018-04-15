@@ -108,7 +108,7 @@ class cloudbroker_machine(BaseActor):
                 else:
                     raise exceptions.BadRequest("Could not migrate VM in external network {} which does not exist")
                 tags = j.core.tags.getObject(nic['params'], casesensitive=True)
-                tags.tags['externalnetworkId'] = str(network['id'])
+                tags.tags['externalnetworkId'] = str(extnetwork['id'])
                 nic['params'] = str(tags)
 
         diskids = []

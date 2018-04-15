@@ -1239,7 +1239,7 @@ class cloudapi_machines(BaseActor):
                 return True
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         # Check that attaching a external network will not exceed the allowed CU limits
-        j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(vmachine.cloudspaceId, 1)
+        j.apps.cloudapi.cloudspaces.checkAvailablePublicIPs(cloudspace, 1)
         networkid = cloudspace.networkId
         netinfo = self.network.getExternalIpAddress(cloudspace.gid, cloudspace.externalnetworkId)
         if netinfo is None:
