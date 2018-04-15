@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
+from JumpScale.portal.portal.async import async
 from cloudbrokerlib.baseactor import BaseActor, wrap_remote
 
 
@@ -31,7 +32,7 @@ class cloudbroker_node(BaseActor):
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
-    def maintenance(self, nid, gid, vmaction, **kwargs):
+    def maintenance(self, nid, vmaction, **kwargs):
         node = self._getNode(nid)
         kwargs['ctx'].events.runAsync(self._maintenance,
                                       args=(node, vmaction),
@@ -50,7 +51,7 @@ class cloudbroker_node(BaseActor):
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
-    def enable(self, nid, gid, message='', **kwargs):
+    def enable(self, nid, message='', **kwargs):
         node = self._getNode(nid)
         kwargs['ctx'].events.runAsync(self._enable,
                                       args=(node, message,),
@@ -58,6 +59,15 @@ class cloudbroker_node(BaseActor):
                                       title='Enabling node',
                                       success='Successfully Enabled node',
                                       error='Failed to Enable node')
+
+
+    @auth(['level2', 'level3'], True)
+    @async('Enable Nodes', 'Finished enabling nodes', 'Failed to enable nodes')
+    @wrap_remote
+    def enableNodes(self, nids, message='', **kwargs):
+        for nid in nids:
+            node = self._getNode(nid)
+            self._enable(node, message, **kwargs)
 
     def _enable(self, node, message='', **kwargs):
         if 'storagedriver' in node['roles']:
@@ -68,8 +78,9 @@ class cloudbroker_node(BaseActor):
 
     @auth(['level2', 'level3'], True)
     @wrap_remote
-    def decomission(self, nid, gid, vmaction, **kwargs):
+    def decomission(self, nid, vmaction, **kwargs):
         node = self._getNode(nid)
+        gid = node['gid']
         if 'storagedriver' in node['roles']:
             j.apps.cloudbroker.ovsnode.deactivateNodes([nid])
             self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline', nid=nid, gid=gid)

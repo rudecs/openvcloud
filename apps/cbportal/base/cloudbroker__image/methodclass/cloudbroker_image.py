@@ -128,6 +128,7 @@ class cloudbroker_image(BaseActor):
         image.status = 'CREATING'
         image.size = gbsize
         image.bootType = boottype
+        volume = None
         try:
             image.id = self.models.image.set(image)[0]
             volume = provider.create_volume(gbsize, 'templates/image_{}'.format(image.id), data=False)
@@ -146,7 +147,8 @@ class cloudbroker_image(BaseActor):
             )
         except BaseException as e:
             j.errorconditionhandler.processPythonExceptionObject(e)
-            provider.destroy_volume(volume)
+            if volume:
+                provider.destroy_volume(volume)
             if self.models.image.exists(image.id):
                 self.models.image.delete(image.id)
             raise
@@ -181,6 +183,7 @@ class cloudbroker_image(BaseActor):
         disk.type = 'C'
         disk.sizeMax = gbsize
         disk.id = self.models.disk.set(disk)[0]
+        volume = None
         try:
             volume = provider.create_volume(gbsize, 'rescuedisk/disk_{}'.format(disk.id), data=False)
             self.models.disk.updateSearch({'id': disk.id}, {'$set': {'referenceId': volume.id}})
@@ -197,7 +200,8 @@ class cloudbroker_image(BaseActor):
             )
         except BaseException as e:
             j.errorconditionhandler.processPythonExceptionObject(e)
-            provider.destroy_volume(volume)
+            if volume:
+                provider.destroy_volume(volume)
             if self.models.disk.exists(disk.id):
                 self.models.disk.delete(disk.id)
             raise

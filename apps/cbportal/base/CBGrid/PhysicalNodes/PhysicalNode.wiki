@@ -13,7 +13,6 @@ h1. Physical Node: ${node.name}
   reload: false
   data:
     nid: ${node.id}
-    gid: ${node.gid}
   input:
   - type: text
     name: message
@@ -27,7 +26,6 @@ h1. Physical Node: ${node.name}
   reload: false
   data:
     nid: ${node.id}
-    gid: ${node.gid}
   input:
   - type: message
     messagetype: warning
@@ -53,7 +51,6 @@ h1. Physical Node: ${node.name}
   action: /restmachine/cloudbroker/node/decommission
   data:
     nid: ${node.id}
-    gid: ${node.gid}
   input:
   - type: message
     messagetype: danger

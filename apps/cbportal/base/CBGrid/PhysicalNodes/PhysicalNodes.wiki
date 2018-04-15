@@ -2,10 +2,15 @@
 
 h3. Physical Nodes
 
-{{actions: gridbinding:'table_system_node ids'
-  - display: Enable Nodes
-    action: /restmachine/cloudbroker/node/enable
-    reload: false
+{{actions: gridbinding:'table_system_node nids'
+- display: Enable Nodes
+  action: /restmachine/cloudbroker/node/enableNodes
+  reload: false
+  input:
+  - type: text
+    name: message
+    label: Reason
+    required: true
  }}
  
 {{physicalnodes}}
