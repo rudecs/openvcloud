@@ -245,7 +245,7 @@ class NetManager(object):
         with self.osisvfw.lock(fwid):
             fwobj = self._getVFWObject(fwid)
             for tcprule in fwobj.tcpForwardRules:
-                if tcprule.fromAddr == fwip and tcprule.fromPort == str(fwport):
+                if tcprule.fromAddr == fwip and tcprule.fromPort == str(fwport) and tcprule.protocol == protocol:
                     raise exceptions.Conflict("Forward to %s with port %s already exists" % (fwip, fwport))
             rule = fwobj.new_tcpForwardRule()
             rule.fromAddr = fwip
