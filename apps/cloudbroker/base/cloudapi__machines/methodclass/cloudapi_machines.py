@@ -913,12 +913,18 @@ class cloudapi_machines(BaseActor):
         """
         if not epoch and not name:
             raise exceptions.BadRequest('Epoch or name should be passed to rollback')
-        if name:
-            for snapshot in self.listSnapshots(machineId):
-                if snapshot['name'] == name:
+        for snapshot in self.listSnapshots(machineId):
+            if epoch and epoch == snapshot['timestamp']:
+                if name:
+                    if snapshot['name'] == name:
+                        break
+                else:
                     break
-            else:
-                raise exceptions.BadRequest('No snapshots found with this name %s' % name)
+            if name and snapshot['name'] == name:
+                    break
+        else:
+            raise exceptions.BadRequest('No snapshots found with params: name %s , epoch %s' % (name))
+
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         return provider.ex_rollback_snapshot(node, epoch, name)
 
