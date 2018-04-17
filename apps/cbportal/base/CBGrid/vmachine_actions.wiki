@@ -77,6 +77,14 @@
   - name: snapshotName
     label: Name
     type: text
+  - name: force
+    type: dropdown
+    label: Overwrite existing snapshots with the same name?
+    values:
+     - label: 'No'
+       value: 0
+     - label: 'Yes'
+       value: 1
   - reason
 
 - display: Rollback Snapshot

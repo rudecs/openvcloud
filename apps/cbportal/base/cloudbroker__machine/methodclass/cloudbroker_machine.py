@@ -322,9 +322,9 @@ class cloudbroker_machine(BaseActor):
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote
-    def snapshot(self, machineId, snapshotName, reason, **kwargs):
+    def snapshot(self, machineId, snapshotName, reason, force=False, **kwargs):
         self._validateMachineRequest(machineId)
-        self.cb.actors.cloudapi.machines.snapshot(machineId=machineId, name=snapshotName)
+        self.cb.actors.cloudapi.machines.snapshot(machineId=machineId, name=snapshotName, force=force)
 
     @auth(['level1', 'level2', 'level3'])
     @wrap_remote

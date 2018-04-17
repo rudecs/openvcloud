@@ -487,7 +487,7 @@ class cloudapi_machines(BaseActor):
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
-            disks_snapshots = self.snapshot(vm.id, vm.name)
+            disks_snapshots = self.snapshot(vm.id, vm.name, force=True)
             volumes = provider.ex_clone_disks(diskmapping, disks_snapshots)
             diskguids = [volume.vdiskguid for volume in volumes]
             disknames = [volume.id.split('@')[0] for volume in volumes]
@@ -844,18 +844,22 @@ class cloudapi_machines(BaseActor):
         return self.models.vmachine.get(machineId)
 
     @authenticator.auth(acl={'machine': set('C')})
-    def snapshot(self, machineId, name, **kwargs):
+    def snapshot(self, machineId, name, force=False, **kwargs):
         """
         Take a snapshot of the machine
 
         :param machineId: id of the machine to snapshot
         :param name: name to give snapshot
+        :param force: force create new snapshot if old snapshots with the same name already exists
         :return the dict of diskguids:snapshotguids
         """
         snapshots = self.listSnapshots(machineId)
         for snapshot in snapshots:
             if snapshot.get('name', '') == name:
-                raise exceptions.BadRequest('Snapshot with the same name exists for this machine')
+                if force:
+                    self.deleteSnapshot(machineId=machineId, name=name)
+                else:
+                    raise exceptions.BadRequest('Snapshot with the same name exists for this machine')
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         snapshots = provider.ex_create_snapshot(node, name)
         return snapshots

@@ -131,6 +131,7 @@
         """
         var:machineId int,,id of machine to snapshot
         var:name str,, name to give snapshot @tags validator:name
+        var:force bool,False,force create a new snapshot if existing snapshot with the same name @optional
         result:dict diskguid:snapshotguid
 
     method:listSnapshots
