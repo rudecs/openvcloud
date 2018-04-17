@@ -43,8 +43,9 @@ def action():
                                   'client_secret': ovs_cred['client_secret']}
                 grid_info[grid_id] = {'ovs_connection': ovs_connection, 'diskguids': []}
             for disk in ccl.disk.search(query)[1:]:
-                diskguid = disk['referenceId'].split('@')[1]
-                grid_info[grid_id]['diskguids'].append(diskguid)
+                diskparts = disk['referenceId'].split('@')
+                if len(diskparts) == 2:
+                    grid_info[grid_id]['diskguids'].append(diskparts[1])
             ccl.disk.updateSearch(query, {'$set': {'status': 'DESTROYED'}})
     for gid, grid in grid_info.items():
         args = {'diskguids': grid['diskguids'], 'ovs_connection': grid['ovs_connection']}
