@@ -171,7 +171,7 @@ class Migrator(object):
     def migrate_space(self, cloudspace, newaccount):
         self.info('Migrating space {}'.format(cloudspace.name), 1)
         cloudspacedata = cloudspace.dump()
-        vfwdata = self.source_vfw.virtualfirewall.searchOne({'id': cloudspace['networkId']})
+        vfwdata = self.source_vfw.virtualfirewall.searchOne({'id': cloudspacedata['networkId']})
         sourceip = self.get_source_ip(vfwdata['nid'])
         newcloudspaceId = self.pcl.actors.cloudbroker.cloudspace.migrateCloudspace(newaccount.id, cloudspacedata, vfwdata, sourceip, self.rgid)
         newcloudspace = self.ccl.cloudspace.searchOne({'id': newcloudspaceId})
@@ -183,6 +183,7 @@ class Migrator(object):
             pool.run()
         else:
             for vm in vms:
+                self.info('Migrating vm-{}: {}'.format(vm['id'], vm['name']), 2)
                 migrate_vm(vm['id'], newcloudspace, self.debug, self.dryrun)
 
         cloudspace.status = 'DESTROYED'
@@ -271,6 +272,9 @@ class Migrator(object):
             target = nic.find('target')
             newtarget = newnic.find('target')
             target.attrib['dev'] = newtarget.attrib['dev']
+            source = nic.find('source')
+            newsource = newnic.find('source')
+            source.attrib['network'] = newsource.attrib['network']
         seclabel = srcdom.find('seclabel')
         if seclabel is not None:
             srcdom.remove(seclabel)
@@ -350,7 +354,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dry-run', dest='dry', action='store_true', default=False)
     parser.add_argument('--debug', action='store_true', default=False)
     parser.add_argument('-n', '--concurrency', dest='concurrency', type=int, default=1, help='Amount of VMs to migrate at once')
-    parser.add_argument('-s', '--status', dest='status', type=bool, default=False, action='store_true', help='Show status for vm')
+    parser.add_argument('-s', '--status', dest='status', default=False, action='store_true', help='Show status for vm')
     options = parser.parse_args()
     cloudspaces = None
     vms = None
