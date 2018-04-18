@@ -923,7 +923,7 @@ class cloudapi_machines(BaseActor):
             if name and snapshot['name'] == name:
                     break
         else:
-            raise exceptions.BadRequest('No snapshots found with params: name %s , epoch %s' % (name))
+            raise exceptions.BadRequest('No snapshots found with params: name %s , epoch %s' % (name, epoch))
 
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         return provider.ex_rollback_snapshot(node, epoch, name)
