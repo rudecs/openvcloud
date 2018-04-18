@@ -435,7 +435,7 @@ class cloudbroker_cloudspace(BaseActor):
         accountId = cloudspace['accountId']
         accountacl = authenticator.auth().getAccountAcl(accountId)
         if username not in accountacl:
-            self.cb.actors.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype="R")
+            self.cb.actors.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype="R", explicit=False)
 
         return True
 
@@ -454,6 +454,17 @@ class cloudbroker_cloudspace(BaseActor):
             # external user, delete ACE that was added using emailaddress
             userId = username
         self.cb.actors.cloudapi.cloudspaces.deleteUser(cloudspaceId=cloudspaceId, userId=userId, recursivedelete=recursivedelete)
+
+        accountId = cloudspace['accountId']
+        accountacl = authenticator.auth().getAccountAcl(accountId)
+
+        if username in accountacl:
+            if not accountacl[username].get('explicit', True):
+                # if user not in any other cloudspace just delete if from the account if it is not explicitly added
+                matched_cs = self.models.cloudspace.search({'accountId':accountId, 'acl.userGroupId': username, 'id': {'$ne': cloudspaceId}, '$fields': {'id'}})
+                if matched_cs[0] == 0:
+                    self.cb.actors.cloudapi.accounts.deleteUser(accountId=accountId, userId=username, recursivedelete=True)
+
         return True
 
     @auth(['level1', 'level2', 'level3'])

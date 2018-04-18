@@ -65,6 +65,7 @@
     prop:type str,,user or group (U or G)
     prop:right str,,right string now RWD  (depending type of object this action can be anything each type of action represented as 1 letter)
     prop:status str,CONFIRMED, whether the user is still INVITED or has already CONFIRMED (registered) in the system
+    prop:explicit bool,True, True if the permission is explicitly added 
 
 [rootmodel:Image] @dbtype:osis
     """

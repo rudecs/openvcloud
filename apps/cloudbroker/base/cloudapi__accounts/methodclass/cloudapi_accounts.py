@@ -15,7 +15,7 @@ class cloudapi_accounts(BaseActor):
         self.systemodel = j.clients.osis.getNamespace('system')
 
     @authenticator.auth(acl={'account': set('U')})
-    def addUser(self, accountId, userId, accesstype, **kwargs):
+    def addUser(self, accountId, userId, accesstype, explicit=True, **kwargs):
         """
         Give a registered user access rights
 
@@ -31,7 +31,7 @@ class cloudapi_accounts(BaseActor):
             # Replace email address with ID
             userId = user['id']
 
-        self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED')
+        self._addACE(accountId, userId, accesstype, userstatus='CONFIRMED', explicit=explicit)
         try:
             j.apps.cloudapi.users.sendShareResourceEmail(user, 'account', accountId, accesstype)
             return True
@@ -39,7 +39,7 @@ class cloudapi_accounts(BaseActor):
             self.deleteUser(accountId, userId, recursivedelete=False)
             raise
 
-    def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED'):
+    def _addACE(self, accountId, userId, accesstype, userstatus='CONFIRMED', explicit=True):
         """
         Add a new ACE to the ACL of the account
 
@@ -64,12 +64,13 @@ class cloudapi_accounts(BaseActor):
         acl.type = 'U'
         acl.right = accesstype
         acl.status = userstatus
+        acl.explicit = explicit
         self.models.account.updateSearch({'id': accountId},
                                          {'$push': {'acl': acl.obj2dict()}})
         return True
 
     @authenticator.auth(acl={'account': set('U')})
-    def updateUser(self, accountId, userId, accesstype, **kwargs):
+    def updateUser(self, accountId, userId, accesstype, explicit=True, **kwargs):
         """
         Update user access rights
 
@@ -94,7 +95,7 @@ class cloudapi_accounts(BaseActor):
             raise exceptions.NotFound('User does not have any access rights to update')
 
         self.models.account.updateSearch({'id': accountId, 'acl.userGroupId': userId},
-                                         {'$set': {'acl.$.right': accesstype}})
+                                         {'$set': {'acl.$.right': accesstype, 'acl.$.explicit': explicit}})
         return True
 
     def create(self, name, access, maxMemoryCapacity=None, maxVDiskCapacity=None,

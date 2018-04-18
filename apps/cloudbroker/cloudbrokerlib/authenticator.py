@@ -22,7 +22,7 @@ class auth(object):
         for ace in account.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right),
-                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status, explicit=ace.explicit)
                 result[ace.userGroupId] = ace_dict
         return result
 
@@ -34,7 +34,7 @@ class auth(object):
         for ace in cloudspace.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right),
-                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status, explicit=ace.explicit)
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
