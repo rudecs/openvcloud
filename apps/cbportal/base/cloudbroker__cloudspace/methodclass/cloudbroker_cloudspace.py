@@ -432,6 +432,11 @@ class cloudbroker_cloudspace(BaseActor):
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
+        accountId = cloudspace['accountId']
+        accountacl = authenticator.auth().getAccountAcl(accountId)
+        if username not in accountacl:
+            self.cb.actors.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype="R")
+
         return True
 
     @auth(['level1', 'level2', 'level3'])
