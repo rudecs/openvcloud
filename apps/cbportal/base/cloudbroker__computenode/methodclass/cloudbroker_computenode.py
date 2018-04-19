@@ -224,7 +224,11 @@ class cloudbroker_computenode(BaseActor):
             nid = int(self.cb.getBestStack(stack['gid'], excludelist=[stack['id']], memory=128)['referenceId'])
             ctx.events.sendMessage(title, 'Moving Virtual Firewal %s' % vfw['id'])
             if not self.cb.netmgr.fw_move(vfw['guid'], nid):
-                self.cb.netmgr.fw_delete(fwid=vfw['guid'], deletemodel=False, timeout=20)
+                try:
+                    self.cb.netmgr.fw_delete(fwid=vfw['guid'], deletemodel=False, timeout=20)
+                except exceptions.ServiceUnavailable:
+                    # agent on node is probably not running lets just start it somewhere else
+                    pass
                 self.cb.netmgr.fw_start(vfw['guid'], targetNid=nid)
  
     @auth(['level2', 'level3'], True)
