@@ -682,7 +682,7 @@ class Machine(object):
                     raise exceptions.ServiceUnavailable('Not enough resources available to provision the requested machine')
                 else:
                     newstackId = 0
-                    excludelist.append(provider.stackId)
+                    excludelist.append(provider.stack.id)
             except exceptions.ServiceUnavailable:
                 self.cleanup(machine, cloudspace.gid, volumes)
                 raise

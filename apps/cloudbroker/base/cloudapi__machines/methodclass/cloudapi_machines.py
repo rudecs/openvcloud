@@ -913,20 +913,24 @@ class cloudapi_machines(BaseActor):
         """
         if not epoch and not name:
             raise exceptions.BadRequest('Epoch or name should be passed to rollback')
+
         for snapshot in self.listSnapshots(machineId):
-            if epoch and epoch == snapshot['timestamp']:
-                if name:
-                    if snapshot['name'] == name:
-                        break
-                else:
-                    break
-            if name and snapshot['name'] == name:
-                    break
+            if self._match_snapshot(snapshot, name, epoch):
+                break
         else:
             raise exceptions.BadRequest('No snapshots found with params: name %s , epoch %s' % (name, epoch))
 
         provider, node, machine = self.cb.getProviderAndNode(machineId)
         return provider.ex_rollback_snapshot(node, epoch, name)
+
+    def _match_snapshot(self, snapshot, name=None, epoch=None):
+        if name:
+            if name != snapshot['name']:
+                return False
+        if epoch:
+            if epoch != snapshot['epoch']:
+                return False
+        return True
 
     @authenticator.auth(acl={'machine': set('C')})
     def update(self, machineId, name=None, description=None, **kwargs):
