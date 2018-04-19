@@ -155,7 +155,7 @@
         Rollback a snapshot of the machine
         """
         var:machineId int,, id of the machine
-        var:epoch str,, epoch time of snapshot @optional
+        var:epoch int,, epoch time of snapshot @optional
         var:name str,, name of snapshot @optional
         result:str
 
