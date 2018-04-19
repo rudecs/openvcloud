@@ -354,8 +354,7 @@ class cloudbroker_machine(BaseActor):
         cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
         source_stack = self.models.stack.get(vmachine.stackId)
         if not targetStackId:
-            size = self.models.size.get(vmachine.sizeId)
-            targetStackId = self.cb.getBestStack(cloudspace.gid, vmachine.imageId, memory=size.memory)['id']
+            targetStackId = self.cb.getBestStack(cloudspace.gid, vmachine.imageId, memory=vmachine.memory)['id']
 
         stack = self.models.stack.get(targetStackId)
         if not stack.status == "ENABLED":
