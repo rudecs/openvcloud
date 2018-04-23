@@ -9,6 +9,7 @@ import re
 import requests
 import gevent
 import urlparse
+from datetime import datetime
 
 
 class RequireState(object):
@@ -487,30 +488,32 @@ class cloudapi_machines(BaseActor):
             for disk in disks:
                 diskmapping.append((j.apps.cloudapi.disks.getStorageVolume(disk, provider),
                                     "export/clonefordisk_%s" % disk['referenceId'].split('@')[1]))
-            disks_snapshots = self.snapshot(vm.id, vm.name, force=True)
+            disks_snapshots = self.snapshot(vm.id, 'export_%s' % (str(datetime.now())), force=True)
             volumes = provider.ex_clone_disks(diskmapping, disks_snapshots)
             diskguids = [volume.vdiskguid for volume in volumes]
-            disknames = [volume.id.split('@')[0] for volume in volumes]
-            osname = self.models.image.get(vm.imageId).name
-            os = re.match('^[a-zA-Z]+', osname).group(0).lower()
-            envelope = ovf.model_to_ovf({
-                'name': vm.name,
-                'description': vm.descr,
-                'cpus': vm.vcpus,
-                'mem': vm.memory,
-                'os': os,
-                'osname': osname,
-                'disks': [{
-                    'name': 'disk-%i.vmdk' % i,
-                    'size': disk['sizeMax'] * 1024 * 1024 * 1024
-                } for i, disk in enumerate(disks)]
-            })
-            jobargs = uploaddata.copy()
-            jobargs.update({'envelope': envelope, 'disks': disknames})
-            export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid,
-                                                    role='storagedriver', timeout=3600, args=jobargs)
+            try:
+                disknames = [volume.id.split('@')[0] for volume in volumes]
+                osname = self.models.image.get(vm.imageId).name
+                os = re.match('^[a-zA-Z]+', osname).group(0).lower()
+                envelope = ovf.model_to_ovf({
+                    'name': vm.name,
+                    'description': vm.descr,
+                    'cpus': vm.vcpus,
+                    'mem': vm.memory,
+                    'os': os,
+                    'osname': osname,
+                    'disks': [{
+                        'name': 'disk-%i.vmdk' % i,
+                        'size': disk['sizeMax'] * 1024 * 1024 * 1024
+                    } for i, disk in enumerate(disks)]
+                })
+                jobargs = uploaddata.copy()
+                jobargs.update({'envelope': envelope, 'disks': disknames})
+                export_job = self.acl.executeJumpscript('greenitglobe', 'cloudbroker_export', gid=cloudspace.gid,
+                                                        role='storagedriver', timeout=3600, args=jobargs)
+            finally:
+                provider.destroy_volumes_by_guid(diskguids)
             # TODO: the url to be sent to the user
-            provider.destroy_volumes_by_guid(diskguids)
             if export_job['state'] == 'ERROR':
                 raise exceptions.Error("Failed to export Virtaul Machine")
             if not callbackUrl:
