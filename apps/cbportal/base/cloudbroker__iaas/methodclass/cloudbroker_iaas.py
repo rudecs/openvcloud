@@ -39,6 +39,7 @@ class cloudbroker_iaas(BaseActor):
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
         """
+        gateway = gateway.strip()
         try:
             net = netaddr.IPNetwork(subnet)
             if netaddr.IPAddress(startip) not in net:
@@ -130,6 +131,7 @@ class cloudbroker_iaas(BaseActor):
         return True
 
     def changeIPv4Gateway(self, externalnetworkId, gateway, **kwargs):
+        gateway = gateway.strip()
         if not self.models.externalnetwork.exists(externalnetworkId):
             raise exceptions.NotFound("Could not find externalnetwork with id %s" % externalnetworkId)
 
