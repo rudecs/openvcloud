@@ -7,7 +7,8 @@ def main(j, args, params, tags, tasklet):
 
     vmachine = scl.vmachine.get(machineId)
     cloudspace = scl.cloudspace.get(vmachine.cloudspaceId)
-    rescuedisks = scl.disk.search({'gid': cloudspace.gid, 'type': 'C', 'status': 'CREATED'})[1:]
+    accountId = cloudspace.accountId
+    rescuedisks = scl.disk.search({'gid': cloudspace.gid, 'type': 'C', 'status': 'CREATED', 'accountId': {'$in': [None, accountId]}})[1:]
     rescuedisks = [(disk['name'], disk['id']) for disk in rescuedisks]
 
     popup = Popup(id='startmachine', header='Start Machine',

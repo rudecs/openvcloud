@@ -113,6 +113,9 @@ class cloudapi_machines(BaseActor):
             disk = self.models.disk.get(diskId)
             if disk.type != 'C':
                 raise exceptions.BadRequest("diskId is not of type CD-ROM")
+            cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
+            if disk.accountId and disk.accountId != cloudspace.accountId:
+                raise exceptions.BadRequest("Rescue disk with id {} belongs to another account".format(diskId))
             volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
             node.extra['volumes'].append(volume)
             node.extra['bootdev'] = 'cdrom'

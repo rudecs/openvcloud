@@ -178,7 +178,7 @@ class cloudbroker_image(BaseActor):
         disk = self.models.disk.new()
         disk.name = name
         disk.gid = gid
-        disk.accountId = None
+        disk.accountId = accountId
         disk.status = 'CREATING'
         disk.type = 'C'
         disk.sizeMax = gbsize
