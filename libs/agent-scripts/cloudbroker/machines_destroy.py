@@ -17,6 +17,7 @@ async = True
 log = True
 enable = True
 period = 3600
+timeout = 900
 
 def action():
     from CloudscalerLibcloud.utils.gridconfig import GridConfig
