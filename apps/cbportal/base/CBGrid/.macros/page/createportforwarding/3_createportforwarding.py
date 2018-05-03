@@ -5,7 +5,7 @@ def main(j, args, params, tags, tasklet):
     params.result = page = args.page
     cloudspaceId = int(args.getTag('cloudspaceId'))
     ccl = j.clients.osis.getNamespace('cloudbroker')
-    vmachines = ccl.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['ERROR', 'DESTROYED']}})[1:]
+    vmachines = ccl.vmachine.search({'cloudspaceId': cloudspaceId, 'status': {'$nin': ['ERROR', 'DESTROYED', 'DELETED']}})[1:]
     dropvmachines = list()
 
     for vmachine in sorted(vmachines, key=lambda vm: vm['name']):

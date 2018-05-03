@@ -20,6 +20,7 @@ def action(networkid, sourceip, vlan, externalip):
     import libvirt
     import netaddr
     from xml.etree import ElementTree
+    import re
     target_con = libvirt.open()
     try:
         source_con = libvirt.open('qemu+ssh://%s/system' % sourceip)
@@ -33,7 +34,7 @@ def action(networkid, sourceip, vlan, externalip):
     createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
     createnetwork.executeLocal(networkid=networkid)
     create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-    create_external_network.executeLocal(vlan=vlan)
+    extbridge = create_external_network.executeLocal(vlan=vlan)
     name = 'routeros_%04x' % networkid
 
     if source_con:
@@ -59,6 +60,7 @@ def action(networkid, sourceip, vlan, externalip):
                 if seclabel is not None:
                     xmldom.remove(seclabel)
                 xml = ElementTree.tostring(xmldom)
+                xml = re.sub(r"bridge='(public|ext-\w+)'", r"bridge='{}'".format(extbridge), xml)
                 flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
                 try:
                     domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
