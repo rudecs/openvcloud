@@ -34,7 +34,7 @@ def main(j, args, params, tags, tasklet):
     popup.addNumber('Disk Size in GiB', 'disksize')
     popup.addNumber('Number of VCPUS', 'vcpus')
     popup.addNumber('Amount of memory in MiB', 'memory')
-    popup.addText('User data for cloud-init', 'userdata')
+    popup.addTextArea('User data for cloud-init', 'userdata', required=False, rows=5)
     popup.addHiddenField('cloudspaceId', cloudspaceId)
     popup.write_html(page)
 

@@ -22,7 +22,7 @@ def main(j, args, params, tags, tasklet):
     popup.addNumber('Choose data Disk Size in GiB', 'dataDiskSize')
     popup.addNumber('Number of VCPUS', 'vcpus')
     popup.addNumber('Amount of memory in MiB', 'memory')
-    popup.addText('User data for cloud-init', 'userdata')
+    popup.addTextArea('User data for cloud-init', 'userdata', required=False, rows=5)
     popup.addHiddenField('id', gid)
     popup.write_html(page)
 

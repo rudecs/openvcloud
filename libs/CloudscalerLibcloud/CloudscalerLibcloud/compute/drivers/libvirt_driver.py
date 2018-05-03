@@ -441,8 +441,8 @@ class CSLibvirtNodeDriver(object):
                         'chpasswd': {'expire': False}}
             metadata = {'local-hostname': name}
             if 'users' in customuserdata:
-                users = customuserdata.pop('users')
-                userdata.extend(users)
+                users = customuserdata.pop('users', [])
+                userdata['users'].extend(users)
             userdata.update(customuserdata)
         else:
             userdata = {}
