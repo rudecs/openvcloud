@@ -157,6 +157,10 @@ class cloudbroker_image(BaseActor):
         return True
 
     @auth(['level1', 'level2', 'level3'])
+    def deleteCDROMImage(self, diskId, **kwargs):
+        return j.apps.cloudapi.disks.delete(diskId, True, **kwargs)
+
+    @auth(['level1', 'level2', 'level3'])
     def createCDROMImage(self, name, url, gid, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")

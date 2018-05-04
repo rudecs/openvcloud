@@ -42,6 +42,13 @@
         var:accountId int,,AccountId to make the image exclusive @optional
         result:bool
 
+    method:deleteCDROMImage
+        """
+        Delete a CD-ROM Image
+        """
+        var:diskId int,,diskId of the CD-ROM image to delete
+
+
     method:createImage
         """
         Create a Image from url

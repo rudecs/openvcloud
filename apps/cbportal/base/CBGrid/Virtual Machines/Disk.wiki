@@ -20,6 +20,15 @@ h2. Disk: ${name}
     label: Disk size (in GiB)
 
 }}
+{% elif type == 'CD-ROM' and status != 'DESTROYED' %}
+{{actions:
+- display: Delete
+  action: /restmachine/cloudbroker/image/deleteCDROMImage
+  refresh: true
+  data:
+   diskId: ${id}
+
+}}
 {% endif %}
 
 {{disk_limitio: diskid:$$id}}
@@ -27,6 +36,7 @@ h2. Disk: ${name}
 |*ID*| ${id}|
 |*Name*| ${name}|
 |*Description*| ${descr}|
+|*Status*| ${status}|
 |*Type*| ${type}|
 |*Device name*| ${devicename}|
 |*Size*| ${sizeMax} GiB|
