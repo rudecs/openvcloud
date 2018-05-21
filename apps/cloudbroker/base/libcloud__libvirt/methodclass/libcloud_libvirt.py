@@ -1,8 +1,9 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import uuid
-ujson = j.db.serializers.ujson
 import netaddr
+ujson = j.db.serializers.ujson
+
 
 class Models(object):
     def __init__(self, client, namespace, categories):
@@ -14,28 +15,18 @@ class Models(object):
                 client.createNamespaceCategory(namespace, category)
             setattr(self, category, j.clients.osis.getCategory(client, namespace, category))
 
+
 class libcloud_libvirt(object):
     """
     libvirt libcloud manager.
     Contains function to access the internal model.
     """
-    NAMESPACE = 'libcloud'
-    CATEGORY = 'libvirtdomain'
-
     def __init__(self):
-        self._te={}
+        self._te = {}
         self._client = j.clients.osis.getByInstance('main')
         self.cache = j.clients.redis.getByInstance('system')
-        self.blobdb = self._getKeyValueStore()
         self._models = Models(self._client, 'libvirt', ['vnc', 'macaddress', 'networkids'])
         self.cbmodel = j.clients.osis.getNamespace('cloudbroker')
-
-    def _getKeyValueStore(self):
-        if self.NAMESPACE not in self._client.listNamespaces():
-            self._client.createNamespace(self.NAMESPACE, template='blob')
-        if self.CATEGORY not in self._client.listNamespaceCategories(self.NAMESPACE):
-           self._client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
-        return j.clients.osis.getCategory(self._client, self.NAMESPACE, self.CATEGORY)
 
     def getFreeMacAddress(self, gid, **kwargs):
         """

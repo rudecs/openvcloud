@@ -28,9 +28,6 @@ class DummyConnection():
 
 
 class CloudBrokerConnection():
-    NAMESPACE = 'libcloud'
-    CATEGORY = 'libvirtdomain'
-
     def __init__(self, client=None):
         from JumpScale import j
         self._j = j
@@ -39,16 +36,7 @@ class CloudBrokerConnection():
             self.libvirt_actor = self.client.getActor('libcloud', 'libvirt')
         else:
             self.libvirt_actor = j.apps.libcloud.libvirt
-        self.db = self._getKeyValueStore()
         self.agentcontroller_client = j.clients.agentcontroller.get()
-
-    def _getKeyValueStore(self):
-        client = self._j.clients.osis.getByInstance('main')
-        if self.NAMESPACE not in client.listNamespaces():
-            client.createNamespace(self.NAMESPACE, 'blob')
-        if self.CATEGORY not in client.listNamespaceCategories(self.NAMESPACE):
-            client.createNamespaceCategory(self.NAMESPACE, self.CATEGORY)
-        return self._j.clients.osis.getCategory(client, self.NAMESPACE, self.CATEGORY)
 
     def listSizes(self):
         return self.libvirt_actor.listSizes()
