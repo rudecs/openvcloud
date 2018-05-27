@@ -111,7 +111,7 @@ As an example you can check the [export_accounts_xls.py](export_accounts_xls.py)
 
 - Get the `export_accounts_xls.py` script - requires access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) repository:
   ```bash
-  curl https://raw.githubusercontent.com/0-complexity/openvcloud/master/docs/Monitoring/ResourceTracking/export_accounts_xls.py?$RANDOM > ${destination_folder}/export_accounts_xls.py
+  curl https://raw.githubusercontent.com/0-complexity/openvcloud/master/docs/Monitoring/ResourceTracking/export_accounts_xls.py?$RANDOM > ${DESTINATION_FOLDER}/export_accounts_xls.py
   ```
 
 - Get the `resourcemonitoring.capnp` schema - requires access to the [0-complexity/openvcloud](https://github.com/0-complexity/openvcloud) repository:
