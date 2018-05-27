@@ -22,7 +22,7 @@ def action(previous_version, location_url,  current_version=""):
     upgrade_versions = []
     versions = j.system.fs.listDirsInDir(UPGRADEFOLDER, dirNameOnly=True)
     for vers in versions:
-        if parse_version(previous_version) < parse_version(version) <= parse_version(current_version):
+        if parse_version(previous_version) < parse_version(vers) <= parse_version(current_version):
             upgrade_versions.append((vers, parse_version(vers)))
 
     upgrade_versions.sort(key=lambda ver: ver[1])
@@ -64,9 +64,11 @@ def action(previous_version, location_url,  current_version=""):
                     if errors:
                         sys.exit(1)
 
+
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--version', help='Version of upgrade scripts to run')
+    parser.add_argument('-p', '--previous', help='Previous version')
+    parser.add_argument('-c', '--current', help='Current version')
     options = parser.parse_args()
-    action(options.version)
+    action(options.previous, '', options.current)
