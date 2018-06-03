@@ -1,5 +1,4 @@
 from JumpScale import j
-import datetime
 import os
 import tarfile
 import io

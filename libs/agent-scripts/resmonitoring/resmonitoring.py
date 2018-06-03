@@ -106,19 +106,12 @@ def action():
     nodecl = j.clients.osis.getCategory(j.core.osis.client, 'system', 'node')
     imagecl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "image")
     stackcl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "stack")
-    sizescl = j.clients.osis.getCategory(j.core.osis.client, "cloudbroker", "size")
     vcl = j.clients.osis.getNamespace('vfw')
     virtualfirewalls = {vfw['id']: vfw for vfw in vcl.virtualfirewall.search({'gid': j.application.whoAmI.gid})[1:]}
     nodes = {node['id']: node for node in nodecl.search({'gid': j.application.whoAmI.gid})[1:]}
     stacks = {stack['id']: stack for stack in stackcl.search({'gid': j.application.whoAmI.gid})[1:]}
     images_list = imagecl.search({'$fields': ['id', 'name']})[1:]
-    sizes_list = sizescl.search({'$fields': ['id', 'memory', 'vcpus']})[1:]
-    mem_dict = {}
     images_dict = {}
-    cpu_dict = {}
-    for size in sizes_list:
-        mem_dict[size['id']] = size['memory']
-        cpu_dict[size['id']] = size['vcpus']
     for image in images_list:
         images_dict[image['id']] = image['name']
 
@@ -188,9 +181,6 @@ def action():
                 stack_id = machine_dict.get('stackId', None)
                 # get Image name
                 image_name = images_dict.get(machine_dict['imageId'], "")
-                # get mem size
-                memory_consumption = mem_dict[machine_dict['sizeId']]
-                vcpus = cpu_dict[machine_dict['sizeId']]
                 has_stack = machine_dict['status'] != "HALTED" and stack_id
                 if has_stack:
                     # get redis for this stack
@@ -233,8 +223,8 @@ def action():
                     nic_capnp.rx = get_last_hour_val(redis, rx_key)
 
                 m.imageName = image_name
-                m.mem = memory_consumption
-                m.vcpus = vcpus
+                m.mem = machine_dict['memory']
+                m.vcpus = machine_dict['vcpus']
                 m.status = machine_dict['status']
                 # write files to disk
             with open("%s/%s.bin" % (folder_name, cloudspace_id), "w+b") as f:

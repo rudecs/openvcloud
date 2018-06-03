@@ -502,17 +502,14 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total consumed memory
         """
         consumedmemcapacity = 0
-        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+        machines = self.models.vmachine.search({'$fields': ['id', 'memory'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
                                                            'status': {
                                                                '$nin': ['DESTROYED', 'ERROR']}}},
                                                size=0)[1:]
 
-        memsizes = {s['id']: s['memory'] for s in
-                    self.models.size.search({'$fields': ['id', 'memory']})[1:]}
-
         for machine in machines:
-            consumedmemcapacity += memsizes[machine['sizeId']]
+            consumedmemcapacity += machine['memory']
 
         return consumedmemcapacity / 1024.0
 
@@ -525,17 +522,14 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total number of consumed cpu cores
         """
         numcpus = 0
-        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+        machines = self.models.vmachine.search({'$fields': ['id', 'vcpus'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
                                                            'status': {
                                                                '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
 
-        cpusizes = {s['id']: s['vcpus'] for s in
-                    self.models.size.search({'$fields': ['id', 'vcpus']})[1:]}
-
         for machine in machines:
-            numcpus += cpusizes[machine['sizeId']]
+            numcpus += machine['vcpus']
 
         return numcpus
 
