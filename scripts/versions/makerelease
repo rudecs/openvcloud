@@ -10,6 +10,7 @@ from collections import namedtuple
 
 RepoInfo = namedtuple('RepoInfo', 'domain type account reponame path url')
 VersionInfo = namedtuple('VersionInfo', 'type name')
+skiprepos = []
 
 
 def get_repo_info(url):
@@ -161,14 +162,20 @@ def main(manifest, force, dry):
         if target.type == 'tag':
             if tag_exists(repo['client'], target.name) and not force:
                 j.console.warning('Tag {} already exists for repo {}'.format(target.name, repo['name']))
-                sys.exit(1)
+                if not j.console.askYesNo('Continue?'):
+                    sys.exit(1)
+                skiprepos.append(repo)
 
     j.console.notice('Creating targets')
     for repo in repos:
+        if repo in skiprepos:
+            print('Skipping existing repo {}'.format(repo['name']))
         prepare_source(repo, force, not dry)
 
     j.console.notice('Updating AYS repos')
     for repo in aysrepos:
+        if repo in skiprepos:
+            print('Skipping existing repo {}'.format(repo['name']))
         prepare_source(repo, force, False)
         source = repo['source']
         target = repo['target']
