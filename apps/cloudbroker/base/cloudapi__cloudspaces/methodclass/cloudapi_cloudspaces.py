@@ -958,17 +958,12 @@ class cloudapi_cloudspaces(BaseActor):
         """
 
         consumedmemcapacity = 0
-        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+        machines = self.models.vmachine.search({'$fields': ['id', 'memory'],
                                                 '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
                                                                '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
-        memsizes = {s['id']: s['memory'] for s in
-                    self.models.size.search({'$fields': ['id', 'memory']})[1:]}
-
-        machinessizeids = [d['sizeId'] for d in machines]
-        consumedmemcapacity = sum([memsizes[x] for x in machinessizeids])
-
+        consumedmemcapacity = sum([machine['memory'] for machine in machines])
         return consumedmemcapacity / 1024.0
 
     # unexposed actor
@@ -980,16 +975,12 @@ class cloudapi_cloudspaces(BaseActor):
         :return: the total number of consumed cpu cores
         """
         numcpus = 0
-        machines = self.models.vmachine.search({'$fields': ['id', 'sizeId'],
+        machines = self.models.vmachine.search({'$fields': ['id', 'vcpus'],
                                                 '$query': {'cloudspaceId': {'$in': cloudspacesIds},
                                                            'status': {
                                                                '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
-
-        cpusizes = {s['id']: s['vcpus'] for s in
-                    self.models.size.search({'$fields': ['id', 'vcpus']})[1:]}
-        machinessizeids = [d['sizeId'] for d in machines]
-        numcpus = sum([cpusizes[x] for x in machinessizeids])
+        numcpus = sum([machine['vcpus'] for machine in machines])
         return numcpus
 
     # unexposed actor
