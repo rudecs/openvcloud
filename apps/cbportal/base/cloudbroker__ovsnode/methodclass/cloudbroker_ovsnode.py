@@ -9,7 +9,6 @@ class cloudbroker_ovsnode(BaseActor):
     def __init__(self):
         super(cloudbroker_ovsnode, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
-        self.lcl = j.clients.osis.getNamespace('libcloud')
         self.node = j.apps.cloudbroker.node
 
     @auth(['level2', 'level3'], True)
