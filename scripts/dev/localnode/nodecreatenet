@@ -7,7 +7,7 @@ ip=172.17.1.10/16
 gateway=172.17.0.1
 
 ifdown eth0 || true
-ip a d $(ip a s dev eth0 | grep inet | awk '{print $2}') dev eth0
+ip a d $(ip a s dev eth0 | grep 'inet ' | awk '{print $2}') dev eth0
 ovs-vsctl --may-exist add-br  backplane1
 ovs-vsctl --may-exist add-port backplane1 eth0
 ip l s dev eth0 up

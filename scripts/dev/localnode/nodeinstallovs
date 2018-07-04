@@ -23,3 +23,30 @@ echo 'PrivateDevices=no' >> $red/redis.override.conf
 
 apt-get install -y volumedriver-no-dedup-server
 apt-get install -y openvstorage-hc
+
+cat << EOF > /opt/asd-manager/config/preconfig.json
+{
+    "asdmanager": {
+        "api_ip": "172.17.1.10", 
+        "asd_start_port": 8600, 
+        "asd_ips": [
+            "172.17.1.10"
+        ], 
+        "api_port": 8500
+    }
+}
+EOF
+cat << EOF > /opt/OpenvStorage/config/preconfig.json
+{"setup": {                    
+  "cluster_ip": "172.17.1.10", 
+  "enable_heartbeats": true,   
+  "external_config": null,     
+  "logging_target": null,      
+  "master_ip": "172.17.1.10",  
+  "master_password": null,     
+  "node_type": "master",       
+  "rdma": false,               
+  "rollback": null             
+}}                             
+EOF
+ovs setup
