@@ -153,6 +153,8 @@ class cloudapi_disks(BaseActor):
         :return: list with every element containing details of a disk as a dict
         """
         query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': 'DESTROYED'}}
+        if type:
+            query['type'] = type
         disks = self.models.disk.search(query)[1:]
         diskids = [disk['id'] for disk in disks]
         query = {'disks': {'$in': diskids}}
