@@ -1,24 +1,30 @@
 #!/bin/bash
+set -e
 sudo modprobe fuse
 sudo modprobe openvswitch
 sudo modprobe kvm
 sudo modprobe tun
+if [ -z "$1" ]; then
+    echo "Need node name"
+    exit 1
+fi
 node=$1
 
 echoerr() { echo "$@" 1>&2; }
 
 function createdev() {
+    filename="$HOME/.cache/loopdevs/${node}-${1}"
     devname="${node}-${1}"
     devsize=$2
     created="0"
     if [ ! -e $devname ]; then
         echoerr Create devices
-        truncate -s $devsize $devname
+        truncate -s $devsize $filename
         created="1"
     fi
     if ! losetup | grep $devname > /dev/null; then
         echoerr Loop devices
-        sudo losetup -P -f $devname
+        sudo losetup -P -f $filename
     fi
     dev=$(losetup -a | grep $devname | cut -d ':' -f 1)
     if [[ $created == "0" ]]; then
@@ -35,15 +41,6 @@ function createdev() {
 
 }
 
-function patchconfig() {
-    scriptdir=$(dirname $(readlink -f $0))
-    lxcconfig="/var/lib/lxc/${node}/config"
-    if ! sudo grep 'lxc.hook.autodev' $lxcconfig; then
-        echo "lxc.hook.autodev = ${scriptdir}/lxcdevicehook" | sudo tee -a $lxcconfig
-    fi
-}
-
-
+mkdir -p $HOME/.cache/loopdevs/
 createdev db 4GB
 createdev asd 200GB
-patchconfig

@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+source "$(dirname $(readlink -f $0))/_functions"
+
+echo "[Unit]
+Description=OVC IP
+
+[Service]
+ExecStart=/sbin/ip a a 172.17.1.1/16 dev eth0
+RestartSec=5                            
+Restart=on-failure                      
+Type=simple                             
+" > /etc/systemd/system/multi-user.target.wants/ovcstartup.service
+
+installjs
+ays install -n cb_master_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/masterconfig.hrd
+echo "
+pcl = j.clients.portal.getByInstance('main')
+pcl.actors.cloudbroker.iaas.addExternalNetwork(name='docknet', subnet='172.17.0.0/16', gateway='172.17.0.1', startip='172.17.1.100', endip='172.17.1.120', gid=66, vlan=0)
+" | js

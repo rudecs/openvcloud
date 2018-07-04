@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+source "$(dirname $(readlink -f $0))/_functions"
+
+installjs
+ays install -n cb_cpunode_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
+systemctl enable libvirt-bin
+systemctl start libvirt-bin
+systemctl enable virtlogd
+systemctl start virtlogd
+echo "
+<network>
+       <name>gw_mgmt</name>
+       <forward mode="bridge"/>
+       <bridge name='gw_mgmt'/>
+       <virtualport type='openvswitch'/>
+   </network>
+" > /tmp/net.xml
+virsh net-create /tmp/net.xml
+ays install -n cb_storagedriver_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
+ays install -n cb_storagenode_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
+jspython /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py

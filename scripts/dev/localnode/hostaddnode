@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+name=${1:-cpunode1}
+source "$(dirname $(readlink -f $0))/_functions"
+
+createcontainer
+
+cmd apt-get install -y udev openvswitch-switch
+cmd DEBIAN_FRONTEND=noninteractive apt-get install -y keyboard-configuration console-setup
+enableservice openvswitch-switch
+cmd mkdir /mnt/db
+randomfile="/tmp/cfg${RANDOM}"
+echo "[Unit]
+Description=OVC Startup
+
+[Service]
+ExecStart=/bin/bash /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/nodestartup
+RestartSec=5                            
+Restart=on-failure                      
+Type=simple                             
+" > $randomfile
+docker cp $randomfile $name:/etc/systemd/system/multi-user.target.wants/ovcstartup.service
+docker stop $name > /dev/null
+docker start $name > /dev/null
+
+echo "New node was setup connect via 'ssh -A 172.17.1.10'"

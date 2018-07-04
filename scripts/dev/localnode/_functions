@@ -1,0 +1,51 @@
+#!/bin/bash
+
+export AYSBRANCH=${AYSBRANCH:-master}
+export JSBRANCH=${JSBRANCH:-master}
+export OVCBRANCH=${OVCBRANCH:-master}
+export SSHKEY=${SSHKEY:-id_rsa.pub}
+
+installjs() {
+    cd /tmp;rm -f install.sh;curl -k https://raw.githubusercontent.com/Jumpscale7/jumpscale_core7/$JSBRANCH/install/install.sh > install.sh;bash install.sh
+
+    cat <<EOF > /opt/jumpscale7/hrd/system/atyourservice.hrd
+metadata.jumpscale             =
+    branch:'$AYSBRANCH',
+    url:'https://github.com/jumpscale7/ays_jumpscale7',
+
+metadata.openvcloud            =
+    branch:'$OVCBRANCH',
+    url:'https://github.com/0-complexity/openvcloud_ays',
+EOF
+}
+
+cmd() {
+    docker exec -ti $name bash -c "$*"
+}
+
+enableservice() {
+    cmd systemctl enable $1
+    cmd systemctl start $1
+}
+
+addsshhosts() {
+    cmd mkdir -p /root/.ssh
+    cmd "ssh-keyscan github.com >> /root/.ssh/known_hosts"
+    cmd "ssh-keyscan -p 10022 docs.greenitglobe.com >> /root/.ssh/known_hosts"
+}
+
+createcontainer() {
+
+    docker run -d --hostname $name --name $name --privileged -v /var/cache/apt/archives:/var/cache/apt/archives -v /opt/code:/opt/code --security-opt seccomp=unconfined --tmpfs /run --tmpfs /run/lock -v /sys/fs/cgroup:/sys/fs/cgroup:ro -t solita/ubuntu-systemd
+
+    cmd rm /etc/apt/apt.conf.d/docker-clean
+    cmd rm /etc/apt/apt.conf.d/docker-autoremove-suggests
+    cmd apt-get update
+    cmd apt-get install -y vim net-tools iproute2 openssh-server iputils-ping curl sudo
+    enableservice ssh
+    cmd mkdir /root/.ssh
+    docker cp $(readlink $HOME/.ssh/$SSHKEY) $name:/root/.ssh/authorized_keys
+    cmd chmod 600 /root/.ssh/authorized_keys
+    cmd chown 0:0 /root/.ssh/authorized_keys
+    addsshhosts
+}

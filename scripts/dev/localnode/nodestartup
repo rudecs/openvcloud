@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Started at $(date)" > /tmp/startup
+scriptdir=$(dirname $(readlink -f $0))
+$scriptdir/nodecreatenet
+mount LABEL="$(hostname -s)-db" /mnt/db
+mount -a

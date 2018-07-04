@@ -1,8 +1,14 @@
 #!/bin/bash
+set -e
+
+cp /etc/hosts /etc/hosts.bak
+umount /etc/hosts || true
+cp /etc/hosts.bak /etc/hosts
 echo 'deb http://apt.openvstorage.com fargo main' > /etc/apt/sources.list.d/ovsaptrepo.list
 
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0F18F826B6183F53
 apt-get update
+apt-get install -y iproute2 net-tools rsyslog sudo udev
 
 echo 'Package: *
 Pin: origin apt.openvstorage.com

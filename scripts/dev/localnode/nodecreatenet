@@ -1,0 +1,50 @@
+#!/bin/bash
+while ! ovs-vsctl show > /dev/null; do
+    sleep 2
+done
+
+ip=172.17.1.10/16
+gateway=172.17.0.1
+
+ifdown eth0 || true
+ip a d $(ip a s dev eth0 | grep inet | awk '{print $2}') dev eth0
+ovs-vsctl --may-exist add-br  backplane1
+ovs-vsctl --may-exist add-port backplane1 eth0
+ip l s dev eth0 up
+ip l s dev backplane1 up
+ip l s dev backplane1 mtu 2000
+ip a a $ip dev backplane1
+ip r a default via $gateway
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+#gwmgmt
+ovs-vsctl --may-exist add-br gw_mgmt
+ovs-vsctl add-port gw_mgmt backplane1-2312 -- set Interface backplane1-2312 type=patch options:peer=gw_mgt-2312
+ovs-vsctl add-port backplane1 gw_mgmt-2312 tag=2312 -- set Interface gw_mgmt-2312 type=patch options:peer=backplane1-2312
+ip a a 10.199.0.1/22 dev gw_mgmt
+ip l s dev gw_mgmt up
+
+#vxbackend
+ovs-vsctl --may-exist add-br vxbackend
+ovs-vsctl add-port vxbackend backplane1-2313 -- set Interface backplane1-2313 type=patch options:peer=vxbackend-2313
+ovs-vsctl add-port backplane1 vxbackend-2313 tag=2313 -- set Interface vxbackend-2313 type=patch options:peer=backplane1-2313
+ip a a 10.240.0.1/24 dev vxbackend
+ip l s dev vxbackend up
+
+#public
+ovs-vsctl --may-exist add-br public
+ovs-vsctl add-port public backplane1-0 -- set Interface backplane1-0 type=patch options:peer=public-0
+ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0
+
+umount /etc/hosts || true
+echo "127.0.0.1       localhost                     
+::1     localhost ip6-localhost ip6-loopback  
+fe00::0 ip6-localnet                          
+ff00::0 ip6-mcastprefix                       
+ff02::1 ip6-allnodes                          
+ff02::2 ip6-allrouters                        
+172.17.1.10      cpunode1" > /etc/hosts
+
+ip l s vxbackend mtu 2000
+ovs-vsctl add-port backplane1 vxbackend-200 tag=200 -- set Interface vxbackend-200 type=patch options:peer=backplane1-200
+ovs-vsctl add-port backplane1 public-0 tag=0 -- set Interface public-0 type=patch options:peer=backplane1-0
