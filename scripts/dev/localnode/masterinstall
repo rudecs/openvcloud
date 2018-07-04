@@ -13,6 +13,7 @@ Type=simple
 " > /etc/systemd/system/multi-user.target.wants/ovcstartup.service
 
 installjs
+ays install -n python_portal
 ays install -n cb_master_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/masterconfig.hrd
 echo "
 pcl = j.clients.portal.getByInstance('main')
