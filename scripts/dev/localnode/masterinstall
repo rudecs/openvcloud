@@ -12,10 +12,22 @@ Restart=on-failure
 Type=simple                             
 " > /etc/systemd/system/multi-user.target.wants/ovcstartup.service
 
+debconf-set-selections <<< "postfix postfix/mailname string ovc.local"
+debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
+apt-get install -y postfix
+systemctl enable postfix
+systemctl start postfix
+
 installjs
 ays install -n python_portal
 ays install -n cb_master_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/masterconfig.hrd
 echo "
 pcl = j.clients.portal.getByInstance('main')
 pcl.actors.cloudbroker.iaas.addExternalNetwork(name='docknet', subnet='172.17.0.0/16', gateway='172.17.0.1', startip='172.17.1.100', endip='172.17.1.120', gid=66, vlan=0)
+lcl = j.clients.osis.getNamespace('libvirt')
+if not lcl.vnc.list():
+    vnc = lcl.vnc.new()
+    vnc.gid = 66
+    vnc.url = 'http://172.17.1.10:8091/vnc_auto.html?token='
+    lcl.vnc.set(vnc)
 " | js

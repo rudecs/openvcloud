@@ -44,7 +44,7 @@ createcontainer() {
     cmd apt-get install -y vim net-tools iproute2 openssh-server iputils-ping curl sudo
     enableservice ssh
     cmd mkdir /root/.ssh
-    docker cp $(readlink $HOME/.ssh/$SSHKEY) $name:/root/.ssh/authorized_keys
+    docker cp "$(readlink -f $HOME/.ssh/$SSHKEY)" $name:/root/.ssh/authorized_keys
     cmd chmod 600 /root/.ssh/authorized_keys
     cmd chown 0:0 /root/.ssh/authorized_keys
     addsshhosts
