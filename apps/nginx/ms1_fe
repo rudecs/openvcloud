@@ -8,6 +8,10 @@ server {
     proxy_read_timeout          300;
     send_timeout                300;
 
+     location ~ ^/g8vdc$ {
+        return 301 $scheme://$host/cbgrid/;
+     }
+
     location / {
         proxy_pass http://127.0.0.1:82;
         proxy_set_header Host            $host;

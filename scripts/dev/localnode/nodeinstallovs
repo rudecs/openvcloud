@@ -23,6 +23,8 @@ echo 'PrivateDevices=no' >> $red/redis.override.conf
 
 apt-get install -y volumedriver-no-dedup-server
 apt-get install -y openvstorage-hc
+systemctl enable cron
+systemctl start cron
 
 cat << EOF > /opt/asd-manager/config/preconfig.json
 {

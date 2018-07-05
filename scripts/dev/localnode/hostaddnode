@@ -23,4 +23,4 @@ docker cp $randomfile $name:/etc/systemd/system/multi-user.target.wants/ovcstart
 docker stop $name > /dev/null
 docker start $name > /dev/null
 
-echo "New node was setup connect via 'ssh -A 172.17.1.10'"
+echo "New node was setup connect via 'ssh -A root@172.17.1.10'"

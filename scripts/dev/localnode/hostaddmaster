@@ -6,4 +6,4 @@ source "$(dirname $(readlink -f $0))/_functions"
 createcontainer
 cmd ip a a 172.17.1.1/16 dev eth0
 
-echo "New node was setup connect via 'ssh -A 172.17.1.1'"
+echo "New node was setup connect via 'ssh -A root@172.17.1.1'"
