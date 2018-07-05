@@ -151,6 +151,7 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privaten
 
         ro = j.clients.routeros.get(internalip, username, defaultpasswd)
         ro.do("/system/identity/set", {"name": "%s/%s" % (networkid, networkidHex)})
+        ro.do("/system/hardware/set", {"multi-cpu": "no"})
         ro.executeScript('/file remove numbers=[/file find]')
 
         # create certificates
