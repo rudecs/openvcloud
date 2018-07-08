@@ -19,6 +19,17 @@ metadata.openvcloud            =
 EOF
 }
 
+installovsrepo() {
+    echo 'deb http://apt.openvstorage.com fargo main' > /etc/apt/sources.list.d/ovsaptrepo.list
+    echo 'Package: *
+Pin: origin apt.openvstorage.com
+Pin-Priority: 1000
+' > /etc/apt/preferences
+
+    apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0F18F826B6183F53
+    apt-get update
+}
+
 cmd() {
     docker exec -ti $name bash -c "$*"
 }

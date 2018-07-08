@@ -52,7 +52,7 @@ for disk in diskinfo['data']:
     if disk['name'] == devices['db']:
         break
 else:
-    raise RuntimeError('Can not find loop0 disk')
+    raise RuntimeError('Can not find db disk')
 
 print('Creating roles')
 addrolesdata = {"size":3998220288,"offset":1048576,"disk_guid":disk['guid'],"partition_guid":disk['partitions_guids'][0],"roles":["DB","DTL","SCRUB","WRITE"]}

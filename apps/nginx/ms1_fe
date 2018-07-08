@@ -8,7 +8,7 @@ server {
     proxy_read_timeout          300;
     send_timeout                300;
 
-     location ~ ^/g8vdc$ {
+     location ~ ^/$ {
         return 301 $scheme://$host/cbgrid/;
      }
 

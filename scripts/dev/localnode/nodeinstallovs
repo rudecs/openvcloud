@@ -1,35 +1,28 @@
 #!/bin/bash
 set -e
+source "$(dirname $(readlink -f $0))/_functions"
 
 cp /etc/hosts /etc/hosts.bak
 umount /etc/hosts || true
 cp /etc/hosts.bak /etc/hosts
-echo 'deb http://apt.openvstorage.com fargo main' > /etc/apt/sources.list.d/ovsaptrepo.list
-
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0F18F826B6183F53
-apt-get update
+installovsrepo
 apt-get install -y iproute2 net-tools rsyslog sudo udev
-
-echo 'Package: *
-Pin: origin apt.openvstorage.com
-Pin-Priority: 1000
-' > /etc/apt/preferences
 
 red="/etc/systemd/system/redis-server.service.d/"
 mkdir -p $red
 echo '[Service]' > $red/redis.override.conf
 echo 'PrivateDevices=no' >> $red/redis.override.conf
 
-
 apt-get install -y volumedriver-no-dedup-server
 apt-get install -y openvstorage-hc
 systemctl enable cron
 systemctl start cron
+IPSUFFIX=$(($(hostname -s | sed "s/[^0-9]//g") + 9))
 
 cat << EOF > /opt/asd-manager/config/preconfig.json
 {
     "asdmanager": {
-        "api_ip": "172.17.1.10", 
+        "api_ip": "172.17.1.$IPSUFFIX", 
         "asd_start_port": 8600, 
         "asd_ips": [
             "172.17.1.10"
@@ -40,11 +33,11 @@ cat << EOF > /opt/asd-manager/config/preconfig.json
 EOF
 cat << EOF > /opt/OpenvStorage/config/preconfig.json
 {"setup": {                    
-  "cluster_ip": "172.17.1.10", 
+  "cluster_ip": "172.17.1.$IPSUFFIX", 
   "enable_heartbeats": true,   
   "external_config": null,     
   "logging_target": null,      
-  "master_ip": "172.17.1.10",  
+  "master_ip": "172.17.1.$IPSUFFIX",  
   "master_password": null,     
   "node_type": "master",       
   "rdma": false,               
