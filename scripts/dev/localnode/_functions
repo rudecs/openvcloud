@@ -6,6 +6,9 @@ export OVCBRANCH=${OVCBRANCH:-master}
 export SSHKEY=${SSHKEY:-id_rsa.pub}
 
 installjs() {
+    if [ -e "/opt/jumpscale7/hrd/system/system.hrd" ]; then
+        return 0
+    fi
     cd /tmp;rm -f install.sh;curl -k https://raw.githubusercontent.com/Jumpscale7/jumpscale_core7/$JSBRANCH/install/install.sh > install.sh;bash install.sh
 
     cat <<EOF > /opt/jumpscale7/hrd/system/atyourservice.hrd
@@ -20,6 +23,9 @@ EOF
 }
 
 installovsrepo() {
+    if [ -e /etc/apt/sources.list.d/ovsaptrepo.list ]; then
+        return 0
+    fi
     echo 'deb http://apt.openvstorage.com fargo main' > /etc/apt/sources.list.d/ovsaptrepo.list
     echo 'Package: *
 Pin: origin apt.openvstorage.com

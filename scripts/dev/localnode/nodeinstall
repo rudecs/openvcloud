@@ -5,6 +5,9 @@ source "$(dirname $(readlink -f $0))/_functions"
 installovsrepo
 installjs
 ays install -n cb_cpunode_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
+if ! grep "^host_uuid" /etc/libvirt/libvirtd.conf > /dev/null; then
+    echo "host_uuid = \"$(uuidgen)\"" >> /etc/libvirt/libvirtd.conf
+fi
 systemctl enable libvirt-bin
 systemctl start libvirt-bin
 systemctl enable virtlogd
@@ -20,7 +23,3 @@ echo "
 virsh net-define /tmp/net.xml || true
 virsh net-autostart gw_mgmt || true
 virsh net-start gw_mgmt || true
-ays install -n cb_storagedriver_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
-ays install -n cb_storagenode_aio --hrdseed /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/cfg/node.hrd
-jspython /opt/code/github/0-complexity/openvcloud/scripts/ovs/alba-create-user.py
-jspython /opt/code/github/0-complexity/openvcloud/scripts/dev/localnode/setupovs.py
