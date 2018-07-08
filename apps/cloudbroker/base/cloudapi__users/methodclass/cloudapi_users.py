@@ -31,20 +31,7 @@ class cloudapi_users(BaseActor):
         result str,,session
         """
         ctx = kwargs['ctx']
-        accounts = self.models.account.search({'acl.userGroupId': username, 'status': 'CONFIRMED'})[1:]
-        if accounts:
-            status = accounts[0].get('status', 'CONFIRMED')
-            if j.core.portal.active.auth.authenticate(username, password):
-                session = ctx.env['beaker.session'] # get session
-                session['user'] = username
-                session['account_status'] = status
-                session.save()
-                if status != 'CONFIRMED':
-                    ctx.start_response('409 Conflict', [])
-                    return session.id
-                return session.id
-        ctx.start_response('401 Unauthorized', [])
-        return 'Unauthorized'
+        return j.apps.system.usermanager.authenticate(name=username, secret=password, ctx=ctx)
 
     def get(self, username, **kwargs):
         """
