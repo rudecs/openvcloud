@@ -64,6 +64,8 @@ def main():
                         audit.kwargs = 'null'
                         audit.result = 'null'
                         scl.audit.set(audit)
+                        cloudspace = ccl.cloudspace.get(vm['cloudspaceId'])
+                        j.system.ovsnetconfig.cleanupIfUnused(cloudspace.networkId)
 
     rocon.domainEventRegisterAny(None, libvirt.VIR_DOMAIN_EVENT_ID_LIFECYCLE,
                                  callback, rocon)

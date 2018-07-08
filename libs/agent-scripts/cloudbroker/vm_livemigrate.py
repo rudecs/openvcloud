@@ -45,6 +45,7 @@ def action(vm_id, sourceurl, domainxml, force):
                     libvirt.VIR_MIGRATE_PEER2PEER
             try:
                 domain.migrate2(target_con, flags=flags, dxml=ElementTree.tostring(srcdom), uri=targeturl)
+                return 0
             except:
                 if force:
                     try:
@@ -61,7 +62,7 @@ def action(vm_id, sourceurl, domainxml, force):
     else:
         target_con = libvirt.open()  # local
         target_con.createXML(domainxml)
-    return True
+    return 1
 
 if __name__ == '__main__':
     import argparse

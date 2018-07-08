@@ -47,8 +47,6 @@ def action(networkid, sourceip, vlan, externalip):
             domain = None
         if domain:
             if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-                if not j.system.fs.exists(destination):
-                    print 'Creating image snapshot %s -> %s' % (templatepath, destination)
                 localip = j.system.net.getReachableIpAddress(sourceip, 22)
                 targeturl = "tcp://{}".format(localip)
                 if not j.system.fs.exists(destination):
@@ -74,17 +72,15 @@ def action(networkid, sourceip, vlan, externalip):
                 domain = target_con.lookupByName(name)
                 network.protect_external(domain, externalip)
                 network.protect_gwmgmt(domain, internalip)
+                return domain.XMLDesc()
             else:
                 domain.undefine()
                 return False
-        # remove disk from source
-        con = j.remote.cuisine.connect(sourceip, 22)
-        con.run('btrfs subvol delete {} || true'.format(destination))
-        return True
+        else:
+            return False
     else:
         # source is not available caller should probable do a restore from scratch
         return False
-    return True
 
 
 if __name__ == '__main__':

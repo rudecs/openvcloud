@@ -133,6 +133,8 @@ class NetManager(object):
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to move routeros check job %(guid)s" % job)
         if job['result']:
+            args = {'networkid': fwobj.id, 'domainxml': job['result']}
+            self.agentcontroller.executeJumpscript('greenitglobe', 'cleanup_network', nid=fwobj.nid, gid=fwobj.gid, args=args)
             fwobj.nid = targetNid
             self.osisvfw.set(fwobj)
         return job['result']

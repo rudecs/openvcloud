@@ -370,6 +370,9 @@ class cloudbroker_machine(BaseActor):
             migrated = target_provider.ex_migrate(node, self.cb.getProviderByStackId(vmachine.stackId), force)
             if migrated == -1:
                 vmachine.status = resourcestatus.Machine.HALTED
+            elif migrated == 0:
+                args = {'networkid': cloudspace.networkId}
+                self.cb.agentcontroller.executeJumpscript('greenitglobe', 'cleanup_network', nid=int(source_stack.referenceId), gid=source_stack.gid, args=args)
         vmachine.stackId = targetStackId
         self.models.vmachine.set(vmachine)
 
