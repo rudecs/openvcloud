@@ -88,7 +88,7 @@ class NetManager(object):
             if targetNid:
                 nid = targetNid
             else:
-                nid = int(self.cb.getBestStack(gid, memory=128)['referenceId'])
+                nid = int(self.cb.getBestStack(gid, memory=128, routeros=True)['referenceId'])
             job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)

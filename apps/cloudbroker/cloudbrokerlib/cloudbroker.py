@@ -129,19 +129,24 @@ class CloudBroker(object):
         else:
             return None
 
-    def getBestStack(self, gid, imageId=None, excludelist=[], memory=None):
+    def getBestStack(self, gid, imageId=None, excludelist=[], memory=None, routeros=False):
         capacityinfo = self.getCapacityInfo(gid, imageId)
         if not capacityinfo:
             raise exceptions.ServiceUnavailable('No available node')
+
         capacityinfo = [node for node in capacityinfo if node['id'] not in excludelist]
         if not capacityinfo:
             raise exceptions.ServiceUnavailable('No available node with specified resources')
+
+        if routeros:
+            capacityinfo.sort(key=lambda k: k['usedros'])
 
         for provider in capacityinfo:
             if memory is None:
                 return provider
             elif memory < provider['freememory']:
                 return provider
+
         raise exceptions.ServiceUnavailable('No available node with specified resources')
 
     def getNode(self, machine, driver=None):

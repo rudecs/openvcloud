@@ -3,6 +3,7 @@ import unittest, socket, random
 from ....utils.utils import BasicACLTest, VMClient
 from JumpScale.portal.portal.PortalClient2 import ApiError
 from JumpScale.baselib.http_client.HttpClient import HTTPError
+from JumpScale import j
 
 class CloudspaceTests(BasicACLTest):
 
@@ -380,7 +381,41 @@ class CloudspaceTests(BasicACLTest):
         self.assertEqual(e.exception.status_code, 400)
 
 
+    def test007_distrbute_router_os_over_cpu_nodes(self):
+        """ OVC-059
+        *Test case for router os creation*
 
+        **Test Scenario:**
+        #. Check the number of the router os on all the available cpu node.
+        #. Create new cloudspace (CS1).
+        #. Check that the new cloudspace is created on the cpu node with smallest number of router os.
+
+        """
+        self.lg('Check the number of the router os on all the available cpu node')
+
+        cb = j.clients.osis.getNamespace('cloudbroker')
+        vcl =  j.clients.osis.getNamespace('vfw')
+        gid = j.application.whoAmI.gid
+        stacks = cb.stack.list()
+ 
+        stacks_list = []
+        for stackId in stacks:
+            stack = cb.stack.get(stackId)
+            if stack.status != 'ENABLED':
+                continue
+                
+            referenceId = int(stack.referenceId)
+            number_of_ros = vcl.virtualfirewall.count({'gid': gid, 'nid': referenceId})
+            stacks_list.append((referenceId, number_of_ros))
+
+        stacks_list.sort(key=lambda tup: tup[1])
+
+        self.lg('Create new cloudspace')
+        cloudspace_id = self.cloudapi_cloudspace_create(self.account_id, self.location, self.account_owner)
+
+        self.lg('Check that the new cloudspace is created on the cpu node with smallest number of router os')        
+        vfw = self.api.cloudbroker.cloudspace.getVFW(cloudspace_id)
+        self.assertEqual(vfw['nid'], stacks_list[0][0])
 
 
 
