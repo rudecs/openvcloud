@@ -4,6 +4,7 @@ from cloudbrokerlib import authenticator
 from cloudbrokerlib.baseactor import BaseActor
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume, OpenvStorageISO, PhysicalVolume
 
+MIN_IOPS = 80
 
 class cloudapi_disks(BaseActor):
     """
@@ -97,7 +98,9 @@ class cloudapi_disks(BaseActor):
                 read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max,
                 write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
                 write_iops_sec_max, size_iops_sec, **kwargs):
+        args = locals()
 
+        # validate combinations
         if (iops or total_iops_sec) and (read_iops_sec or write_iops_sec):
             raise exceptions.BadRequest("total and read/write of iops_sec cannot be set at the same time")
         if (total_bytes_sec) and (read_bytes_sec or write_bytes_sec):
@@ -107,7 +110,14 @@ class cloudapi_disks(BaseActor):
         if (total_iops_sec_max) and (read_iops_sec_max or write_iops_sec_max):
             raise exceptions.BadRequest("total and read/write of iops_sec_max cannot be set at the same time")
 
-        iotune = locals()
+        # validate iops
+        for arg, val in args.items():
+            if arg in ('iops', 'total_iops_sec', 'read_iops_sec', 'write_iops_sec', 'total_iops_sec_max', 'read_iops_sec_max', 'write_iops_sec_max', 'size_iops_sec'):
+                if val < MIN_IOPS:
+                    raise exceptions.BadRequest("{arg} was set below the minimum iops {min_iops}: {provided_iops} provided".format(
+                        arg=arg, min_iops=MIN_IOPS, provided_iops=val))
+
+        iotune = args
         iotune.pop('diskId')
         iotune.pop('kwargs')
         iotune.pop('self')
