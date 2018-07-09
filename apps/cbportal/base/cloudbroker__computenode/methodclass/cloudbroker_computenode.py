@@ -174,9 +174,11 @@ class cloudbroker_computenode(BaseActor):
                                           success='Successfully moved all Virtual Machines',
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
-        self.node.unscheduleJumpscripts(int(stack['referenceId']), gid, category='monitor.healthcheck')
+        node_id = int(stack['referenceId'])
+        self.acl.executeJumpscript('cloudscalers', 'nodestatus', nid=node_id, gid=gid)
+        self.node.unscheduleJumpscripts(node_id, gid, category='monitor.healthcheck')
         time.sleep(5)
-        self.scl.health.deleteSearch({'nid': int(stack['referenceId'])})
+        self.scl.health.deleteSearch({'nid': node_id})
         return True
 
     def unscheduleJumpscripts(self, stack_id, gid, name=None, category=None):

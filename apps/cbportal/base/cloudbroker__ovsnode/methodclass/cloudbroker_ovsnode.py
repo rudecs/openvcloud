@@ -10,6 +10,7 @@ class cloudbroker_ovsnode(BaseActor):
         super(cloudbroker_ovsnode, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
         self.node = j.apps.cloudbroker.node
+        self.acl = j.clients.agentcontroller.get()
 
     @auth(['level2', 'level3'], True)
     def activateNodes(self, nids, **kwargs):
@@ -94,7 +95,9 @@ class cloudbroker_ovsnode(BaseActor):
                 break
             diskguids = driver.list_vdisks(edgeinfo['storagerouterguid'])
 
-        self.node.unscheduleJumpscripts(nid, node['gid'], category='monitor.healthcheck')
+        gid = node['gid']
+        self.acl.executeJumpscript('cloudscalers', 'nodestatus', nid=nid, gid=gid)
+        self.node.unscheduleJumpscripts(nid, gid, category='monitor.healthcheck')
         time.sleep(5)
         self.scl.health.deleteSearch({'nid': nid})
 
