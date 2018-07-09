@@ -498,7 +498,7 @@ class Machine(object):
                 vdiskguids.append(vdiskguid)
         provider.destroy_volumes_by_guid(vdiskguids)
         models.vmachine.updateSearch({'id': machine['id']}, {'$set': {'status': 'DESTROYED'}})
-        models.disk.updateSearch(vdisk_query, {'$set': {'status': 'DESTROYED'}})
+        models.disk.updateSearch(vdisk_query, {'$set': {'status': 'DELETED'}})
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory):
         datadisks = datadisks or []
@@ -529,6 +529,7 @@ class Machine(object):
             disk.gid = cloudspace.gid
             disk.order = order
             disk.type = type
+            disk.status = 'MODELED'
             disk.id = models.disk.set(disk)[0]
             machine.disks.append(disk.id)
             return disk
@@ -649,6 +650,8 @@ class Machine(object):
             self.cleanup(machine, cloudspace.gid, [bootvolume])
             raise exceptions.ServiceUnavailable('Not enough resources available to create disks')
 
+        models.disk.updateSearch({'id' : {'$in': machine.disks}}, {'$set': {'status': 'CREATED'}})
+
         size = {'memory':machine.memory, 'vcpus':machine.vcpus}
 
         def getStackAndProvider(newstackId):
@@ -699,4 +702,6 @@ class Machine(object):
                 models.vmachine.set(machine)
         self.cb.clearProvider(provider.stack)
         self.updateMachineFromNode(machine, node, provider.stack)
+        models.disk.updateSearch({'id' : {'$in': machine.disks}}, {'$set': {'status': 'ASSIGNED'}})
         return machine.id
+            

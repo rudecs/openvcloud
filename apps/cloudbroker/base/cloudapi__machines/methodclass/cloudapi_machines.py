@@ -213,6 +213,8 @@ class cloudapi_machines(BaseActor):
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.detach_volume(volume)
         machine.disks.remove(diskId)
+        disk.status = "CREATED"
+        self.models.disk.set(disk)
         self.models.vmachine.set(machine)
         return True
 
@@ -258,6 +260,8 @@ class cloudapi_machines(BaseActor):
         provider.attach_volume(node, volume)
         self.models.disk.updateSearch({'id': disk.id}, {'$set': {'order': diskorder}})
         machine.disks.append(disk.id)
+        disk.status = 'ASSIGNED'
+        self.models.disk.set(disk)
         self.models.vmachine.set(machine)
         return True
 
@@ -727,7 +731,7 @@ class cloudapi_machines(BaseActor):
                 berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
             provider.destroy_node(node)
-        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': 'DELETED'}})
+        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': 'TOBEDELETED'}})
 
         # delete leases
         cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
@@ -754,6 +758,7 @@ class cloudapi_machines(BaseActor):
                 if vdiskguid:
                     vdiskguids.append(vdiskguid)
             provider.destroy_volumes_by_guid(vdiskguids)
+        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': 'DELETED'}})
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -1051,6 +1056,7 @@ class cloudapi_machines(BaseActor):
             clonedisk.type = origdisk.type
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
+            clonedisk.status = 'MODELED'
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
             volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)
@@ -1082,6 +1088,7 @@ class cloudapi_machines(BaseActor):
         except:
             self.cb.machine.cleanup(clone)
             raise
+        self.models.disk.updateSearch({'id' : {'$in': clone.disks}}, {'$set': {'status': 'ASSIGNED'}})
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return clone.id
 

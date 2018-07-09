@@ -74,6 +74,7 @@ class cloudapi_disks(BaseActor):
         disk.type = type
         disk.gid = gid
         disk.order = order
+        disk.status = 'MODELED'
         disk.iotune = {'total_iops_sec': iops}
         disk.accountId = accountId
         disk.id = self.models.disk.set(disk)[0]
@@ -87,7 +88,9 @@ class cloudapi_disks(BaseActor):
                 volume = provider.create_volume(disk.sizeMax, disk.id)
                 volume.iotune = disk.iotune
                 disk.referenceId = volume.id
+            disk.status = 'CREATED'
         except:
+            disk.status = "DELETED"
             self.models.disk.delete(disk.id)
             raise
         self.models.disk.set(disk)
@@ -125,7 +128,7 @@ class cloudapi_disks(BaseActor):
         if iops:
             iotune['total_iops_sec'] = iops
         disk = self.models.disk.get(diskId)
-        if disk.status == 'DESTROYED':
+        if disk.status == 'DELETED':
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         if disk.type == 'M':
@@ -162,7 +165,7 @@ class cloudapi_disks(BaseActor):
         :param type: type of type of the disks
         :return: list with every element containing details of a disk as a dict
         """
-        query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': 'DESTROYED'}}
+        query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': 'DELETED'}}
         if type:
             query['type'] = type
         disks = self.models.disk.search(query)[1:]
@@ -189,17 +192,20 @@ class cloudapi_disks(BaseActor):
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
-        if disk.status == 'DESTROYED':
+        if disk.status == 'DELETED':
             return True
         machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if machines and not detach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:
             j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
+            disk.status = 'CREATED'
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
+        disk.status = 'TOBEDELETED'
+        self.models.disk.set(disk)
         provider.destroy_volume(volume)
-        disk.status = 'DESTROYED'
+        disk.status = 'DELETED'
         self.models.disk.set(disk)
         return True
 
@@ -218,7 +224,7 @@ class cloudapi_disks(BaseActor):
             raise exceptions.BadRequest("Can't resize a disk of type Meta")
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
-        if disk.status == 'DESTROYED':
+        if disk.status == 'DELETED':
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
