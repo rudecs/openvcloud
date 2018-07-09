@@ -134,8 +134,8 @@ rm -rf /mnt/vmstor/$vm
 ![](Hardware.png)
 
 
-<a id="stack"></a>
-### Stack Status
+<a id="node"></a>
+### Node Status
 
 ![](StackStatus.png)
 

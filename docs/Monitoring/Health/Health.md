@@ -29,7 +29,7 @@ Depending on the type of node, following sections are available:
 |[Temperature](#temperature)    | X           | X        | X            |
 |[Workers](#workers)            | X           | X        | X            |
 |[Hardware](#hardware)          |             | X        | X            |
-|[Stack Status](#stack)         |             | X        |              |
+|[Node Status](#node)           |             | X        | X            |
 |[Deployment Test](#deployment) |             | X        |              |
 |[OVS Services](#ovs-services)  |             |          | X            |
 
@@ -103,9 +103,9 @@ Depending on the type of node, following sections are available:
 - **redis_usage_check.py** checks Redis server status
 
 
-<a id="stack"></a>
+<a id="node"></a>
 ### Stack Status
-- **stackstatus.py** checks the status of each stack (CPU node)
+- **nodestatus.py** checks the status of each stack (CPU node)
 
 
 <a id="temperature"></a>
