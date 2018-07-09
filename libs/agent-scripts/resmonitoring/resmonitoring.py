@@ -46,7 +46,7 @@ def get_cached_accounts():
                                '$fields': ['id', 'accountId', 'status', 'gid', 'networkId']}, size=0)[1:]
     vms = vmcl.search({'$query': {'cloudspaceId': {'$in': map(get_ids, cloudspaces)},
                                   'status': {'$ne': "DESTROYED"}},
-                       '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId', 'cloudspaceId']},
+                       '$fields': ['id', 'disks', 'sizeId', 'imageId', 'status', 'nics', 'stackId', 'cloudspaceId', 'memory', 'vcpus']},
                       size=0)[1:]
     diskids = []
     for vm in vms:
