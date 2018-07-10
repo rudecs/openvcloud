@@ -12,3 +12,4 @@
 * [Configure Network Devices](ConfigureNetworkDevices/configure_network_devices.md)
 * [Backend Encryption](BackendEncryption/backend_encryption.md)
 * [Advanced Configuration](AdvancedConfiguration/AdvancedConfiguration.md)
+* [Update SMTP Configuration](UpdateSMTP/updatesmtp.md)
