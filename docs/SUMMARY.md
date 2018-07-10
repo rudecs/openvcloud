@@ -42,7 +42,7 @@
   * [Getting Started](EndUserPortal/GettingStarted/GettingStarted.md)
   * [Machine API](EndUserPortal/MachineAPI/MachineAPI.md)
   * [Knowledge Base](EndUserPortal/KnowledgeBase/KnowledgeBase.md)
-* [Installation of an OpenvCloud Environment](https://gig-tech.gitbook.io/ovc-installer/)
+* [Installation of an OpenvCloud Environment](Installation/README.md)
   * [System configuration](Installation/System-config.md)
   * [Installation](Installation/Installation.md)
     * [Installer script manual](Installation/Installer-script.md)
