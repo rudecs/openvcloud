@@ -1,6 +1,7 @@
 ## Components
 
-![](system-architecture.png)
+![](https://docs.google.com/drawings/d/e/2PACX-1vQ1VSIuIXgAWT3W2mx-GR79_BAj0ST5-DhNHt8TuK-Ji1lWhsUh3GaYXYbj7oHu372vEzwlvUJWLsku/pub?w=706&h=645)
+[edit image here](https://docs.google.com/drawings/d/1G0kzg5FEMheZwc8cRUZi5QP5NEkfXzr5HXvkPsXNcsk/edit)
 
 In what follows all components are discussed bottom-up.
 
@@ -59,32 +60,7 @@ The portals are created using the **JumpScale Portal Framework** that features w
 
 End users have access through the **End User Portal**, which is another portal created using the **JumpScale Portal Framework**.
 
+### OpenvCloud API
 
-### Cockpit
-
-The **Cockpit** interacts with one or more **Masters** for managing the full lifecycle of both system and customer workloads (services) consuming capacity from the OpenvCloud environments controlled by the **Masters** it connects to through their REST APIs.
-
-
-### AYS Robot
-
-Key features of the **Cockpit** are **AYS** (abbreviation for "At Your Service") and the **AYS Robot**. **AYS** is a self-healing lifecycle management solution for a G8 cloud infrastructure and the workloads (virtual datacenters, virtual machines, Docker containers, applications/services, virtually anything) running on a G8 cloud. See the [section about AYS](../AtYourService/AtYourServiceIntro.md) for more details. The **AYS Robot** is the component that is actually responsible for orchestrating all work, including picking up blueprints and executing them, and also tasks such as monitoring the system and all workloads and trigger (self-healing) actions, as defined in AYS service templates.
-
-
-### Blueprints
-
-**Blueprints** are human readable files to describe a full solution/workload or a change request to an existing solution. Such a solution can for instance be a virtual datacenter, or a virtual datacenter hosting a web application, of which of the services all run in a separate Docker container. The solution or change request to the solution can be as sophisticated as required. A blueprint allows you declaratively specify exactly what you require, hiding all complexities.
-
-
-### Cockpit Portal
-
-The **Cockpit Portal** is a web portal for administrating the Cockpit.  
-
-
-### Cockpit Chatbot
-
-All functions exposed in the **Cockpit Portal** are also available through a chatbot active on **Telegram**.
-
-
-### Marketplaces
-
-Customers typically interact with an G8 environment via a **Marketplace** where they can order virtual datacenters and applications hosted in virtual datacenters, which are provisioned through blueprints via the Cockpit. Green IT Globe provides a WHMCS-based reference implementation of such a marketplace on GitHub, as documented here: https://www.gitbook.com/book/gig/g8-whmcs-reference-implementation/details
+The OpenvCloud API permits thirdparty tools like [Terraform](https://www.terraform.io/) to make provisioning of VM's automatic and repeatable, so that the raw compute and storage capacity can be consumed in a very easy and tested procedure.
+Using the API customized portals for end customers can be built as well, as any functionality for creating and managing VM's and cloudspaces is available via the OpenvCloud API.

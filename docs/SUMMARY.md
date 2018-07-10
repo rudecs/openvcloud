@@ -2,7 +2,6 @@
 
 * [Introduction](README.md)
 * [Architecture](Architecture/Architecture.md)
-  * [Solution Blueprint](Architecture/SolutionBlueprint.md)
   * [System Architecture](Architecture/SystemArchitecture.md)
   * [Network](Architecture/Network/Network.md)
     * [Physical Network](Architecture/Network/PhysicalNetwork.md)
