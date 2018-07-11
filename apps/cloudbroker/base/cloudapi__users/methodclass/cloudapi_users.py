@@ -1,7 +1,5 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-import JumpScale.grid.agentcontroller
-import JumpScale.baselib.mailclient
 from cloudbrokerlib.baseactor import BaseActor
 import re, string, random, time
 import json
@@ -18,7 +16,6 @@ class cloudapi_users(BaseActor):
     def __init__(self):
         super(cloudapi_users, self).__init__()
         self.libvirt_actor = j.apps.libcloud.libvirt
-        self.acl = j.clients.agentcontroller.get()
         self.systemodel = j.clients.osis.getNamespace('system')
 
     def authenticate(self, username, password, **kwargs):

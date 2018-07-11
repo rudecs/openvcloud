@@ -1,13 +1,13 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.authenticator import auth
 import itertools
 
 
 class cloudbroker_qos(BaseActor):
     def __init__(self):
         super(cloudbroker_qos, self).__init__()
-        self.acl = j.clients.agentcontroller.get()
         self.ccl = j.clients.osis.getNamespace('cloudbroker')
         self.vcl = j.clients.osis.getNamespace('vfw')
 
@@ -19,7 +19,7 @@ class cloudbroker_qos(BaseActor):
         """
         raise NotImplementedError("not implemented method limitCPU")
 
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def limitIO(self, diskId, iops, total_bytes_sec, read_bytes_sec, write_bytes_sec, total_iops_sec,
                 read_iops_sec, write_iops_sec, total_bytes_sec_max, read_bytes_sec_max, 
                 write_bytes_sec_max, total_iops_sec_max, read_iops_sec_max,
@@ -30,7 +30,7 @@ class cloudbroker_qos(BaseActor):
         param:iops Max IO per second, 0 means unlimited
         result bool
         """
-        return self.cb.actors.cloudapi.disks.limitIO(
+        return j.apps.cloudapi.disks.limitIO(
             diskId=diskId, iops=iops, total_bytes_sec=total_bytes_sec,
             read_bytes_sec=read_bytes_sec, write_bytes_sec=write_bytes_sec,
             total_iops_sec=total_iops_sec, read_iops_sec=read_iops_sec,
@@ -40,14 +40,15 @@ class cloudbroker_qos(BaseActor):
             write_iops_sec_max=write_iops_sec_max, size_iops_sec=size_iops_sec,
         )
 
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def resize(self, diskId, size, **kwargs):
-        res = self.cb.actors.cloudapi.disks.resize(diskId=diskId, size=size)
+        res = j.apps.cloudapi.disks.resize(diskId=diskId, size=size)
         message = 'Online disk resize done'
         if not res:
             message = "Unable to perform an online disk resize. Please <b>stop</b> and <b>start</b> your machine for your changes to be reflected."
         return message
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def limitInternalBandwith(self, cloudspaceId, machineId, machineMAC, rate, burst, **kwargs):
         """
         This will put a limit on the VIF of all VMs within the cloudspace
@@ -79,11 +80,12 @@ class cloudbroker_qos(BaseActor):
             if stack:
                 machineids = [vm['referenceId'] for vm in machines]
                 args = {'machineids': machineids, 'rate': rate, 'burst': burst}
-                self.acl.execute('cloudscalers', 'limitnics',
+                self.cb.executeJumpscript('cloudscalers', 'limitnics',
                                  gid=stack['gid'], nid=int(stack['referenceId']),
                                  args=args)
         return True
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def limitInternetBandwith(self, cloudspaceId, rate, burst, **kwargs):
         """
         This will put a limit on the outgoing traffic on the public VIF of the VFW on the physical machine
@@ -97,5 +99,5 @@ class cloudbroker_qos(BaseActor):
         if not self.vcl.virtualfirewall.exists(vfwid):
             raise exceptions.NotFound("VFW for cloudspace %s does not exists" % cloudspaceId)
         vfw = self.vcl.virtualfirewall.get(vfwid)
-        self.acl.executeJumpscript('cloudscalers', 'limitpublicnet', gid=vfw.gid, nid=vfw.nid,
+        self.cb.executeJumpscript('cloudscalers', 'limitpublicnet', gid=vfw.gid, nid=vfw.nid,
                                    args={'networkId': cloudspace.networkId, 'rate': rate, 'burst': burst})

@@ -1,23 +1,15 @@
-from JumpScale import j
-import JumpScale.grid.agentcontroller
+from cloudbrokerlib.authenticator import auth
+from cloudbrokerlib.baseactor import BaseActor
 
-class cloudbroker_diagnostics(object):
+class cloudbroker_diagnostics(BaseActor):
     """
     Operator actions to perform specific diagnostic checks on the platform
     
     """
-    def __init__(self):
-        self._acl = None
-    
-    @property
-    def acl(self):
-        if not self._acl:
-            self._acl = j.clients.agentcontroller.get()
-        return self._acl
-
+    @auth(groups=['level1', 'level2', 'level3'])
     def checkVms(self, **kwargs):
         """
         Starts the vms check jumpscipt to do a ping to every VM from their virtual firewalls
         result boolean
         """
-        return self.acl.executeJumpscript('jumpscale', 'vms_check', role='master')
+        return self.cb.executeJumpscript('jumpscale', 'vms_check', role='master')

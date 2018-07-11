@@ -6,6 +6,7 @@ from cloudbrokerlib import enums, network, resourcestatus
 from CloudscalerLibcloud.utils.connection import CloudBrokerConnection
 from CloudscalerLibcloud.utils.gridconfig import GridConfig
 from .netmgr import NetManager
+from .utils import getJobTags, Dummy, removeConfusingChars
 import random
 import time
 import string
@@ -16,18 +17,6 @@ DEFAULTIOPS = 2000
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
 _providers = dict()
-
-
-def removeConfusingChars(input):
-    return input.replace('0', '').replace('O', '').replace('l', '').replace('I', '')
-
-
-class Dummy(object):
-
-    def __init__(self, **kwargs):
-        self.extra = {}
-        for key, value in kwargs.iteritems():
-            setattr(self, key, value)
 
 
 def CloudProvider(stackId):
@@ -45,8 +34,6 @@ def CloudProvider(stackId):
     return _providers[stackId]
 
 
-
-
 class CloudBroker(object):
     _resourceProviderId2StackId = dict()
 
@@ -60,6 +47,18 @@ class CloudBroker(object):
         self.machine = Machine(self)
         self.cloudspace = CloudSpace(self)
         self.netmgr = NetManager(self)
+
+    def executeJumpscript(self, organization, name, nid=None, role=None, args={}, all=False, timeout=600, wait=True, queue=u'', gid=None, errorreport=True, transporttimeout=None, _agentid=0):
+        kwargs = locals().copy()
+        kwargs.pop('self')
+        kwargs['tags'] = getJobTags()
+        return self.agentcontroller.executeJumpscript(**kwargs)
+
+    def scheduleCmd(self, gid, nid, cmdcategory, cmdname, args={}, jscriptid=None, queue=u'', log=True, timeout=None, roles=[], wait=False, errorreport=False, transporttimeout=None, _agentid=0):
+        kwargs = locals().copy()
+        kwargs.pop('self')
+        kwargs['tags'] = getJobTags()
+        return self.agentcontroller.scheduleCmd(**kwargs)
 
     def getImage(self, provider, imageId):
         if imageId not in provider.stack.images:

@@ -7,6 +7,7 @@ from libcloud.compute.drivers.dummy import DummyNodeDriver
 from jinja2 import Environment, PackageLoader
 from JumpScale.portal.portal import exceptions
 from xml.etree import ElementTree
+from cloudbrokerlib.utils import getJobTags
 import urlparse
 import uuid
 import crypt
@@ -330,8 +331,10 @@ class CSLibvirtNodeDriver(object):
             id = 0
         else:
             id = id and int(id)
+       
+        tags = getJobTags()
         job = self.backendconnection.agentcontroller_client.executeJumpscript(
-            'greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs)
+            'greenitglobe', name_, nid=id, role=role, gid=self.gid, wait=wait, queue=queue, args=kwargs, tags=tags)
         if wait and job['state'] != 'OK':
             if job['state'] == 'NOWORK':
                 j.errorconditionhandler.raiseOperationalWarning('Could not find agent with nid:%s' % id)

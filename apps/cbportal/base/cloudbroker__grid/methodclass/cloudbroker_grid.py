@@ -1,7 +1,7 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
+from cloudbrokerlib.authenticator import auth
 import requests
 from urlparse import urlparse
 from os import path as os_path
@@ -14,24 +14,22 @@ class cloudbroker_grid(BaseActor):
     def __init__(self):
         super(cloudbroker_grid, self).__init__()
         self.sysmodels = j.clients.osis.getNamespace('system')
-        self.acl = j.clients.agentcontroller.get()
-        self.pcl = j.clients.portal.getByInstance('main')
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def purgeLogs(self, gid, age='-3d', **kwargs):
-        return self.acl.executeJumpscript('cloudscalers', 'logs_purge', args={'age': age}, gid=gid, role='master', wait=False)['result']
+        return self.cb.executeJumpscript('cloudscalers', 'logs_purge', args={'age': age}, gid=gid, role='master', wait=False)['result']
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def checkVMs(self, **kwargs):
-        sessions = self.acl.listSessions()
+        sessions = self.cb.agentcontroller.listSessions()
         for nodeid, roles in sessions.iteritems():
             if 'master' in roles:
                 gid = int(nodeid.split('_')[0])
-                self.acl.executeJumpscript('jumpscale', 'vms_check', gid=gid, role='master', wait=False)
+                self.cb.executeJumpscript('jumpscale', 'vms_check', gid=gid, role='master', wait=False)
         return 'Scheduled check on VMS'
 
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def rename(self, name, gid, **kwargs):
         location = next(iter(self.models.location.search({'gid': gid})[1:]), None)
         if not location:
@@ -40,7 +38,7 @@ class cloudbroker_grid(BaseActor):
         self.models.location.set(location)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def add(self, name, gid, locationcode, **kwargs):
         location = next(iter(self.models.location.search({'gid': gid})[1:]), None)
         if location:
@@ -53,7 +51,7 @@ class cloudbroker_grid(BaseActor):
         self.models.location.set(location)
         return 'Location has been added successfully, do not forget to add networkids and public IPs'
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def upgrade(self, url, **kwargs):
         manifest = requests.get(url).content
         version = os_path.splitext(os_path.basename(urlparse(url).path))[0]
@@ -72,11 +70,11 @@ class cloudbroker_grid(BaseActor):
 
         gids = [ x['gid'] for x in self.models.location.search({'$fields': ['gid']})[1:]]
         for gid in gids:
-            self.acl.executeJumpscript('greenitglobe', 'delete_file', role='controllernode', gid=gid, wait=True, all=True, args={'path': '/var/ovc/updatelogs/update_env.log'})
-            self.acl.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
+            self.cb.executeJumpscript('greenitglobe', 'delete_file', role='controllernode', gid=gid, wait=True, all=True, args={'path': '/var/ovc/updatelogs/update_env.log'})
+            self.cb.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
         return {'redirect_url': '/updating'}
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def runUpgradeScript(self, **kwargs):
         current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
         previous_version_dict = self.sysmodels.version.searchOne({'status': 'PREVIOUS'})
@@ -84,8 +82,8 @@ class cloudbroker_grid(BaseActor):
             previous_version = previous_version_dict['name']
         else:
             previous_version = current_version
-        location_url = self.pcl.actors.cloudapi.locations.getUrl()
-        job = self.acl.executeJumpscript('greenitglobe', 'upgrader', role='master', gid=j.application.whoAmI.gid,
+        location_url = j.apps.cloudapi.locations.getUrl()
+        job = self.cb.executeJumpscript('greenitglobe', 'upgrader', role='master', gid=j.application.whoAmI.gid,
                                         wait=True, args={'previous_version': previous_version,
                                                          'current_version': current_version,
                                                          'location_url': location_url})
@@ -93,7 +91,7 @@ class cloudbroker_grid(BaseActor):
             raise exceptions.Error("Couldn't execute upgrade script")
         return 'Upgrade script ran successfully'
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def changeSettings(self, id, settings, **kwargs):
         if self.sysmodels.grid.count({'id': id}) == 0:
             raise exceptions.NotFound("No grid with id {} was found".format(id))
@@ -107,7 +105,7 @@ class cloudbroker_grid(BaseActor):
         return 'Changing settings done successfully'
 
         
-    @auth(['level2', 'level3'], True)
+    @auth(groups=['level2', 'level3'], True)
     def executeMaintenanceScript(self, gid, nodestype, script, **kwargs):
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._executeMaintenanceScript,
@@ -117,14 +115,14 @@ class cloudbroker_grid(BaseActor):
                             success='Maintenance Script executed successfully',
                             error='Failed to execute maintenance script')
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def _executeMaintenanceScript(self, gid, nodestype, script, **kwargs):
         if nodestype == 'both':
             nodestype = ['cpunode', 'storagenode']
         else:
             nodestype = [nodestype]
 
-        sessions = self.acl.listSessions()
+        sessions = self.cb.agentcontroller.listSessions()
         for nodeid, roles in sessions.iteritems():
             node_actor = j.apps.cloudbroker.node
             nid = int(nodeid.split('_')[1])
@@ -139,7 +137,7 @@ class cloudbroker_grid(BaseActor):
         return "Script Executed"
         
         
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def createSystemSpace(self, id, name, imageId, bootsize, dataDiskSize, sizeId=None, vcpus=None, memory=None, userdata=None, **kwargs):
         try:
             grid = self.sysmodels.grid.get(id)
@@ -153,7 +151,7 @@ class cloudbroker_grid(BaseActor):
         stacks_pdisks = []
         for stack in self.models.stack.search({'gid': id})[1:]:
             pdisks = []
-            job = self.acl.executeJumpscript('jumpscale', 'exec', nid=stack['referenceId'], wait=True, args={'cmd': 'lsblk -b -J'})
+            job = self.cb.executeJumpscript('jumpscale', 'exec', nid=stack['referenceId'], wait=True, args={'cmd': 'lsblk -b -J'})
             disks_info = json.loads(job['result'][1])
             for disk_info in disks_info['blockdevices']:
                 if not disk_info.get('children') and not disk_info['mountpoint']:

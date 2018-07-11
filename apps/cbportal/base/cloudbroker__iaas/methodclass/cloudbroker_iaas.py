@@ -2,7 +2,7 @@ from JumpScale import j
 from JumpScale.portal.portal import exceptions
 import netaddr
 import socket
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 from cloudbrokerlib.baseactor import BaseActor
 json = j.db.serializers.ujson
 
@@ -34,6 +34,7 @@ class cloudbroker_iaas(BaseActor):
             res.append(pingip)
         return res
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, pingips, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
@@ -70,6 +71,7 @@ class cloudbroker_iaas(BaseActor):
         pool.id, _, _ = self.models.externalnetwork.set(pool)
         return pool.id
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def getUsedIPInfo(self, pool):
         network = {'spaces': [], 'vms': []}
         for space in self.models.cloudspace.search({'$query': {'gid': pool.gid,
@@ -94,6 +96,7 @@ class cloudbroker_iaas(BaseActor):
             usedips.add(ip)
         return usedips
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteExternalNetwork(self, externalnetworkId, **kwargs):
         if not self.models.externalnetwork.exists(externalnetworkId):
             raise exceptions.NotFound("Could not find external network with id %s" % externalnetworkId)
@@ -104,6 +107,7 @@ class cloudbroker_iaas(BaseActor):
             raise exceptions.Conflict("Cannot delete, external network in use")
         return True
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def addExternalIPS(self, externalnetworkId, startip, endip, **kwargs):
         """
         Add public ips to an existing range
@@ -130,6 +134,7 @@ class cloudbroker_iaas(BaseActor):
         self.models.externalnetwork.set(pool)
         return True
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def changeIPv4Gateway(self, externalnetworkId, gateway, **kwargs):
         gateway = gateway.strip()
         if not self.models.externalnetwork.exists(externalnetworkId):
@@ -146,6 +151,7 @@ class cloudbroker_iaas(BaseActor):
         pool.gateway = gateway
         self.models.externalnetwork.set(pool)
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def removeExternalIPs(self, externalnetworkId, freeips, **kwargs):
         """
         Remove public ips from an existing range
@@ -163,6 +169,7 @@ class cloudbroker_iaas(BaseActor):
         self.models.externalnetwork.set(pool)
         return True
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def removeExternalIP(self, externalnetworkId, ip, **kwargs):
         """
         Remove External IP Addresses
@@ -172,6 +179,7 @@ class cloudbroker_iaas(BaseActor):
         self.models.externalnetwork.updateSearch({'id': externalnetworkId}, {'$pull': {'ips': ip}})
         return True
 
+    @auth(groups=['level1', 'level2', 'level3'])
     def editPingIps(self, externalnetworkId, pingips, **kwargs):
         """
         Edit list of ips pinged for network check
@@ -182,7 +190,7 @@ class cloudbroker_iaas(BaseActor):
         self.models.externalnetwork.updateSearch({'id': externalnetworkId}, {'$set': {'pingips': pingips}})
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def addSize(self, name, vcpus, memory, disksize, **kwargs):
         """
         Add a new size to grid location.
@@ -211,7 +219,7 @@ class cloudbroker_iaas(BaseActor):
 
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteSize(self, size_id, **kwargs):
         """
         Delete unused size in location.

@@ -1,9 +1,8 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.authenticator import auth
+from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal import exceptions
 from JumpScale.baselib.http_client.HttpClient import HTTPError
-import hashlib
 import time
 import uuid
 
@@ -15,7 +14,7 @@ class cloudbroker_user(BaseActor):
         super(cloudbroker_user, self).__init__()
         self.syscl = j.clients.osis.getNamespace('system')
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def create(self, username, emailaddress, password, groups, **kwargs):
         groups = groups or []
         if password is None:
@@ -28,7 +27,7 @@ class cloudbroker_user(BaseActor):
 
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteUsers(self, userIds, **kwargs):
         if isinstance(userIds, basestring):
             userIds = [userIds]
@@ -49,7 +48,7 @@ class cloudbroker_user(BaseActor):
             except exceptions.BadRequest:
                 pass
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def delete(self, username, **kwargs):
         """
         Delete the user from all ACLs and set user status to inactive
@@ -106,7 +105,7 @@ class cloudbroker_user(BaseActor):
 
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteByGuid(self, userguid, **kwargs):
         """
         Delete the user from all ACLs and set user status to inactive

@@ -2,20 +2,3 @@
     """
     Operator actions for interventions on accounts
     """
-    method:deactivateNodes
-        """
-        deactivate a storagerouter by moving all the storage connections
-        """
-        var:nids list(int),,nids of storagerouter
-
-    method:activateNodes
-        """
-        Activate storagerouter 
-        """
-        var:nids list(int),,nids of storagerouter
-
-    method:getStorageIP
-        """
-        get storage ip from models
-        """
-        var:nids int,,nid of storagerouter

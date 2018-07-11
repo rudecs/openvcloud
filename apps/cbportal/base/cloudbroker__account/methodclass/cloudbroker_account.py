@@ -1,8 +1,8 @@
 from JumpScale import j
 import time
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
 from JumpScale.portal.portal.async import async
 from JumpScale.portal.portal import Validators
 from cloudbrokerlib import resourcestatus
@@ -38,9 +38,8 @@ class cloudbroker_account(BaseActor):
 
         return account
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     @async('Disabling Account', 'Finished disabling account', 'Failed to disable account')
-    @wrap_remote
     def disable(self, accountId, reason, **kwargs):
         """
         Disable an account
@@ -59,11 +58,10 @@ class cloudbroker_account(BaseActor):
                                                      'status': {'$in': resourcestatus.Machine.UP_STATES}
                                                      })[1:]
             for vmachine in vmachines:
-                self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
+                j.apps.cloudapi.machines.stop(machineId=vmachine['id'])
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def create(self, name, username, emailaddress, maxMemoryCapacity=-1,
                maxVDiskCapacity=-1, maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, sendAccessEmails=True, **kwargs):
 
@@ -92,7 +90,7 @@ class cloudbroker_account(BaseActor):
                 j.apps.cloudbroker.user.create(username=username, emailaddress=[emailaddress], password=password, groups=['user'])
 
             now = int(time.time())
-            locationurl = self.cb.actors.cloudapi.locations.getUrl().strip('/')
+            locationurl = j.apps.cloudapi.locations.getUrl().strip('/')
 
             account = self.models.account.new()
             account.name = name
@@ -124,13 +122,14 @@ class cloudbroker_account(BaseActor):
                 'email': emailaddress,
                 'portalurl': locationurl
             }
+            kwargs['ctx'].env['tags'] += " accountId:{}".format(accountid)
 
             if emailaddress:
                 _send_signup_mail(hrd=self.hrd, **mail_args)
 
             return accountid
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def enable(self, accountId, reason, **kwargs):
         """
         Enable an account
@@ -146,8 +145,7 @@ class cloudbroker_account(BaseActor):
         self.models.account.set(account)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def update(self, accountId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
                maxNetworkPeerTransfer, maxNumPublicIP, sendAccessEmails, **kwargs):
         """
@@ -183,16 +181,16 @@ class cloudbroker_account(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cb.actors.cloudapi.accounts.update(accountId=accountId, name=name, maxMemoryCapacity=maxMemoryCapacity,
+        return j.apps.cloudapi.accounts.update(accountId=accountId, name=name, maxMemoryCapacity=maxMemoryCapacity,
                                                        maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity, maxNetworkPeerTransfer=maxNetworkPeerTransfer,
                                                        maxNumPublicIP=maxNumPublicIP, sendAccessEmails=sendAccessEmails)
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteAccounts(self, accountIds, reason, **kwargs):
         for accountId in accountIds:
             self.delete(accountId, reason, **kwargs)
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def delete(self, accountId, reason, **kwargs):
         """
         Complete delete an account from the system
@@ -232,7 +230,7 @@ class cloudbroker_account(BaseActor):
             for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': 'DESTROYED'}})[1:]:
                 ctx.events.sendMessage(title, 'Deleting dependant Virtual Machine %(name)s' % image)
                 j.apps.cloudbroker.machine.destroy(vm['id'], reason)
-            self.cb.actors.cloudapi.images.delete(imageId=image['id'])
+            j.apps.cloudapi.images.delete(imageId=image['id'])
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
             j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
@@ -241,8 +239,7 @@ class cloudbroker_account(BaseActor):
         self.models.account.set(account)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def addUser(self, accountId, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -255,13 +252,12 @@ class cloudbroker_account(BaseActor):
         self._checkAccount(accountId)
         user = self.cb.checkUser(username, activeonly=False)
         if user:
-            self.cb.actors.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype=accesstype)
+            j.apps.cloudapi.accounts.addUser(accountId=accountId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteUser(self, accountId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
@@ -274,5 +270,5 @@ class cloudbroker_account(BaseActor):
         else:
             # external user, delete ACE that was added using emailaddress
             userId = username
-        self.cb.actors.cloudapi.accounts.deleteUser(accountId=accountId, userId=userId, recursivedelete=recursivedelete)
+        j.apps.cloudapi.accounts.deleteUser(accountId=accountId, userId=userId, recursivedelete=recursivedelete)
         return True

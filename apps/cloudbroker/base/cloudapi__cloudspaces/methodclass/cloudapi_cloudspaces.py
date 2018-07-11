@@ -366,7 +366,7 @@ class cloudapi_cloudspaces(BaseActor):
                                                  'status': {'$in': resourcestatus.Machine.UP_STATES}
                                                  })[1:]
         for vmachine in vmachines:
-            self.cb.actors.cloudapi.machines.stop(machineId=vmachine['id'])
+            j.apps.cloudapi.machines.stop(machineId=vmachine['id'])
         self.netmgr.fw_stop(cloudspace.networkId)
         self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': resourcestatus.Cloudspace.DISABLED}})
         return True

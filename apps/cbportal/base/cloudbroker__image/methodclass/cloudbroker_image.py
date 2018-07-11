@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 from cloudbrokerlib.baseactor import BaseActor
 import requests
 import urllib
@@ -13,7 +13,7 @@ class cloudbroker_image(BaseActor):
             raise exceptions.BadRequest('Image with id "%s" not found' % imageId)
         return self.models.image.get(imageId)
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def delete(self, imageId, **kwargs):
         """
         Delete an image
@@ -24,7 +24,7 @@ class cloudbroker_image(BaseActor):
         self.models.stack.updateSearch({'images': imageId}, {'$pull': {'images': imageId}})
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def enable(self, imageId, **kwargs):
         """
         Enable an image
@@ -36,7 +36,7 @@ class cloudbroker_image(BaseActor):
             raise exceptions.BadRequest('Can not enable a destroyed image')
         self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'CREATED'}})
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def disable(self, imageId, **kwargs):
         """
         Disable an image
@@ -48,7 +48,7 @@ class cloudbroker_image(BaseActor):
             raise exceptions.BadRequest('Can not disable a destroyed image')
         self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'DISABLED'}})
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def updateNodes(self, imageId, enabledStacks, **kwargs):
         enabledStacks = enabledStacks or list()
         image = self._checkimage(imageId)
@@ -81,7 +81,7 @@ class cloudbroker_image(BaseActor):
             raise exceptions.BadRequest('Failed to get url size')
         return bytesize
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def createImage(self, name, url, gid, imagetype, boottype, username=None, password=None, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
@@ -98,7 +98,7 @@ class cloudbroker_image(BaseActor):
         )
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def edit(self, imageId, name=None, username=None, password=None, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
@@ -156,11 +156,11 @@ class cloudbroker_image(BaseActor):
         self.models.stack.updateSearch({'gid': gid}, {'$addToSet': {'images': image.id}})
         return True
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteCDROMImage(self, diskId, **kwargs):
         return j.apps.cloudapi.disks.delete(diskId, True, **kwargs)
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def createCDROMImage(self, name, url, gid, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")

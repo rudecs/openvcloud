@@ -1,9 +1,9 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 import functools
 import time
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
 
 class cloudbroker_computenode(BaseActor):
     """
@@ -13,7 +13,6 @@ class cloudbroker_computenode(BaseActor):
         super(cloudbroker_computenode, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
         self._vcl = j.clients.osis.getCategory(j.core.portal.active.osis, 'vfw', 'virtualfirewall')
-        self.acl = j.clients.agentcontroller.get()
         self.node = j.apps.cloudbroker.node
 
     def _getStack(self, id, gid):
@@ -29,7 +28,6 @@ class cloudbroker_computenode(BaseActor):
             raise exceptions.NotFound('ComputeNode with id %s not found' % id)
         return stack
 
-    @auth(['level1', 'level2', 'level3'])
     def setStatus(self, id, gid, status, **kwargs):
         """
         Set different stack statusses, options are 'ENABLED(creation and actions on machines is possible)','DISABLED(Only existing machines are started)', 'OFFLINE(Machine is not available'
@@ -71,14 +69,12 @@ class cloudbroker_computenode(BaseActor):
         stack['eco'] = eco.guid
         self.models.stack.set(stack)
 
-    @auth(['level1', 'level2', 'level3'], True)
     def list(self, gid=None, **kwargs):
         query = {}
         if gid:
             query['gid'] = gid
         return self.models.stack.search(query)[1:]
 
-    @auth(['level2', 'level3'], True)
     def enableStacks(self, ids, **kwargs):
         kwargs['ctx'].events.runAsync(self._enableStacks,
                                       args=(ids, ),
@@ -92,7 +88,6 @@ class cloudbroker_computenode(BaseActor):
             stack = self.models.stack.get(stackid)
             self.enable(stack.id, stack.gid, '', **kwargs)
 
-    @auth(['level2', 'level3'], True)
     def enable(self, id, gid, message='', **kwargs):
         title = "Enabling Stack"
         stack = self._getStack(id, gid)
@@ -126,8 +121,6 @@ class cloudbroker_computenode(BaseActor):
         machines = self.models.vmachine.search(querybuilder)[1:]
         return machines
 
-    @auth(['level2', 'level3'], True)
-    @wrap_remote
     def maintenance(self, id, gid, vmaction, **kwargs):
         """
         :param id: stack Id
@@ -175,7 +168,7 @@ class cloudbroker_computenode(BaseActor):
                                           error='Failed to move Virtual Machines',
                                           errorcb=errorcb)
         node_id = int(stack['referenceId'])
-        self.acl.executeJumpscript('cloudscalers', 'nodestatus', nid=node_id, gid=gid)
+        self.cb.executeJumpscript('cloudscalers', 'nodestatus', nid=node_id, gid=gid)
         self.node.unscheduleJumpscripts(node_id, gid, category='monitor.healthcheck')
         time.sleep(5)
         self.scl.health.deleteSearch({'nid': node_id})
@@ -183,13 +176,13 @@ class cloudbroker_computenode(BaseActor):
 
     def unscheduleJumpscripts(self, stack_id, gid, name=None, category=None):
         stack = self._getStack(stack_id, gid)
-        self.acl.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
+        self.cb.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
                              cmdname="unscheduleJumpscripts", args={'name': name, 'category': category},
                              queue="internal", log=False, timeout=120, roles=[])
 
     def scheduleJumpscripts(self, stack_id, gid, name=None, category=None):
         stack = self._getStack(stack_id, gid)
-        self.acl.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
+        self.cb.scheduleCmd(gid, int(stack['referenceId']), cmdcategory="jumpscripts", jscriptid=0,
                              cmdname="scheduleJumpscripts", args={'name': name, 'category': category},
                              queue="internal", log=False, timeout=120, roles=[])
 
@@ -233,8 +226,7 @@ class cloudbroker_computenode(BaseActor):
                     pass
                 self.cb.netmgr.fw_start(vfw['guid'], targetNid=nid)
  
-    @auth(['level2', 'level3'], True)
-    @wrap_remote
+    @auth(groups=['level2', 'level3'])
     def decommission(self, id, gid, message, **kwargs):
         stack = self._getStack(id, gid)
         stacks = self.models.stack.search({'gid': gid, 'status': 'ENABLED'})[1:]
@@ -253,14 +245,3 @@ class cloudbroker_computenode(BaseActor):
                             error='Failed to move all Virtual Machines',
                             errorcb=errorcb)
         return True
-
-    def btrfs_rebalance(self, name, gid, mountpoint, uuid, **kwargs):
-        """
-        Rebalances the btrfs filesystem
-        var:name str,, name of the computenode
-        var:gid int,, the grid this computenode belongs to
-        var:mountpoint str,,the mountpoint of the btrfs
-        var:uuid str,,if no mountpoint given, uuid is mandatory
-        result: bool
-        """
-        raise NotImplemented()

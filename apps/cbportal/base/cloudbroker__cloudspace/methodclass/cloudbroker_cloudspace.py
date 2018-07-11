@@ -1,8 +1,8 @@
 from JumpScale import j
 from cloudbrokerlib import authenticator, resourcestatus
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 from JumpScale.portal.portal.async import async
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
 from cloudbrokerlib import network, netmgr
 import netaddr
 from JumpScale.portal.portal import exceptions
@@ -28,8 +28,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return cloudspace
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def destroy(self, accountId, cloudspaceId, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
@@ -80,8 +79,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.models.cloudspace.set(cloudspace)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def destroyCloudSpaces(self, cloudspaceIds, reason, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
@@ -99,8 +97,7 @@ class cloudbroker_cloudspace(BaseActor):
             cloudspace = self._getCloudSpace(cloudspaceId)
             self._destroy(cloudspace, reason, ctx)
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     @async('Moving Virtual Firewall', 'Finished moving VFW', 'Failed to move VFW')
     def moveVirtualFirewallToFirewallNode(self, cloudspaceId, targetNid, **kwargs):
         """
@@ -131,8 +128,7 @@ class cloudbroker_cloudspace(BaseActor):
             self.resetVFW(cloudspaceId, resettype='restore', targetNid=targetNid)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def migrateCloudspace(self, accountId, cloudspace, vfw, sourceip, gid, **kwargs):
         """
         Migrate vfw from another grid
@@ -192,7 +188,7 @@ class cloudbroker_cloudspace(BaseActor):
             self.models.cloudspace.updateSearch({'id': newcloudspace.id}, {'$set': {'status': resourcestatus.Cloudspace.DEPLOYED}})
         return newcloudspace.id
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def getVFW(self, cloudspaceId, **kwargs):
         """
         Get VFW info
@@ -227,7 +223,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return network_obj
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     @async('Deploying Cloud Space', 'Finished deploying Cloud Space', 'Failed to deploy Cloud Space')
     def deployVFW(self, cloudspaceId, **kwargs):
         """
@@ -238,8 +234,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return j.apps.cloudapi.cloudspaces.deploy(cloudspaceId=cloudspaceId)
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     @async('Redeploying Cloud Space', 'Finished redeploying Cloud Space', 'Failed to redeploy Cloud Space')
     def resetVFW(self, cloudspaceId, resettype, targetNid=None, **kwargs):
         """
@@ -264,7 +259,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.cb.netmgr.fw_start(fwid, resettype, targetNid)
 
 
-    @auth(['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'])
     def applyConfig(self, cloudspaceId, **kwargs):
         cloudspaceId = int(cloudspaceId)
         if not self.models.cloudspace.exists(cloudspaceId):
@@ -276,8 +271,7 @@ class cloudbroker_cloudspace(BaseActor):
         self.cb.cloudspace.update_firewall(cloudspace)
 
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def startVFW(self, cloudspaceId, **kwargs):
         """
         Start VFW
@@ -288,8 +282,7 @@ class cloudbroker_cloudspace(BaseActor):
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
         return self.cb.netmgr.fw_start(fwid=fwid)
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def stopVFW(self, cloudspaceId, **kwargs):
         """
         Stop VFW
@@ -300,8 +293,7 @@ class cloudbroker_cloudspace(BaseActor):
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
         return self.cb.netmgr.fw_stop(fwid=fwid)
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def destroyVFW(self, cloudspaceId, **kwargs):
         cloudspaceId = self._getCloudSpace(cloudspaceId)['id']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
@@ -321,8 +313,7 @@ class cloudbroker_cloudspace(BaseActor):
             return True
         return False
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def update(self, cloudspaceId, name, maxMemoryCapacity, maxVDiskCapacity, maxCPUCapacity,
                maxNetworkPeerTransfer, maxNumPublicIP, allowedVMSizes, **kwargs):
         """
@@ -351,12 +342,11 @@ class cloudbroker_cloudspace(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cb.actors.cloudapi.cloudspaces.update(cloudspaceId=cloudspaceId, name=name, maxMemoryCapacity=maxMemoryCapacity,
+        return j.apps.cloudapi.cloudspaces.update(cloudspaceId=cloudspaceId, name=name, maxMemoryCapacity=maxMemoryCapacity,
                                              maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
                                              maxNetworkPeerTransfer=maxNetworkPeerTransfer, maxNumPublicIP=maxNumPublicIP, allowedVMSizes=allowedVMSizes)
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def create(self, accountId, location, name, access, maxMemoryCapacity=-1, maxVDiskCapacity=-1,
                maxCPUCapacity=-1, maxNetworkPeerTransfer=-1, maxNumPublicIP=-1, externalnetworkId=None, allowedVMSizes=[], privatenetwork=netmgr.DEFAULTCIDR, **kwargs):
         """
@@ -392,7 +382,7 @@ class cloudbroker_cloudspace(BaseActor):
         maxNetworkPeerTransfer = resourcelimits['CU_NP']
         maxNumPublicIP = resourcelimits['CU_I']
 
-        return self.cb.actors.cloudapi.cloudspaces.create(accountId=accountId, location=location, name=name,
+        return j.apps.cloudapi.cloudspaces.create(accountId=accountId, location=location, name=name,
                                                           access=access, maxMemoryCapacity=maxMemoryCapacity,
                                                           maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
                                                           maxNetworkPeerTransfer=maxNetworkPeerTransfer,
@@ -406,8 +396,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         return cloudspaces[0]
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def addUser(self, cloudspaceId, username, accesstype, **kwargs):
         """
         Give a user access rights.
@@ -423,19 +412,18 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
         if username in cloudspaceacl:
-            updated = self.cb.actors.cloudapi.cloudspaces.updateUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
+            updated = j.apps.cloudapi.cloudspaces.updateUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
             if not updated:
                 raise exceptions.PreconditionFailed('User already has same access level to owning '
                                                     'account')
         elif user:
-            self.cb.actors.cloudapi.cloudspaces.addUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
+            j.apps.cloudapi.cloudspaces.addUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
         else:
             raise exceptions.NotFound('User with username %s is not found' % username)
 
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def deleteUser(self, cloudspaceId, username, recursivedelete, **kwargs):
         """
         Delete a user from the account
@@ -448,10 +436,9 @@ class cloudbroker_cloudspace(BaseActor):
         else:
             # external user, delete ACE that was added using emailaddress
             userId = username
-        self.cb.actors.cloudapi.cloudspaces.deleteUser(cloudspaceId=cloudspaceId, userId=userId, recursivedelete=recursivedelete)
+        j.apps.cloudapi.cloudspaces.deleteUser(cloudspaceId=cloudspaceId, userId=userId, recursivedelete=recursivedelete)
         return True
 
-    @auth(['level1', 'level2', 'level3'])
-    @wrap_remote
+    @auth(groups=['level1', 'level2', 'level3'])
     def deletePortForward(self, cloudspaceId, publicIp, publicPort, proto, **kwargs):
-        return self.cb.actors.cloudapi.portforwarding.deleteByPort(cloudspaceId=cloudspaceId, publicIp=publicIp, publicPort=publicPort, proto=proto)
+        return j.apps.cloudapi.portforwarding.deleteByPort(cloudspaceId=cloudspaceId, publicIp=publicIp, publicPort=publicPort, proto=proto)

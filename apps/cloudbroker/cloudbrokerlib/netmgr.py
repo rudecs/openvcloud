@@ -21,7 +21,6 @@ class NetManager(object):
         self.json = j.db.serializers.getSerializerType('j')
         self._ovsdata = {}
         self.cb = cb
-        self.agentcontroller = self.cb.agentcontroller
 
     def get_ovs_credentials(self, gid):
         cachekey = 'credentials_{}'.format(gid)
@@ -89,10 +88,10 @@ class NetManager(object):
                 nid = targetNid
             else:
                 nid = int(self.cb.getBestStack(gid, memory=128, routeros=True)['referenceId'])
-            job = self.agentcontroller.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, wait=True)
+            job = self.cb.scheduleCmd(nid=nid, cmdcategory='jumpscale', cmdname='vfs_create_routeros', gid=gid, args=args, wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
-            result = self.agentcontroller.waitJumpscript(job=job)
+            result = self.cb.agentcontroller.waitJumpscript(job=job)
 
             if result['state'] != 'OK':
                 if isnew:
@@ -107,10 +106,10 @@ class NetManager(object):
             self.fw_reapply(fwid)
             return result
         else:
-            job = self.agentcontroller.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_routeros', roles=['fw'], gid=gid, args=args, wait=True)
+            job = self.cb.scheduleCmd(nid=None, cmdcategory='jumpscale', cmdname='vfs_routeros', roles=['fw'], gid=gid, args=args, wait=True)
             fwobj.deployment_jobguid = job['guid']
             self.osisvfw.set(fwobj)
-            result = self.agentcontroller.waitJumpscript(job=job)
+            result = self.cb.agentcontroller.waitJumpscript(job=job)
             return result
 
     def fw_move(self, fwid, targetNid, **kwargs):
@@ -129,12 +128,12 @@ class NetManager(object):
                 'vlan': fwobj.vlan,
                 'externalip': fwobj.pubips[0],
                 'sourceip': sourceip}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_migrate_routeros', nid=targetNid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to move routeros check job %(guid)s" % job)
         if job['result']:
             args = {'networkid': fwobj.id, 'domainxml': job['result']}
-            self.agentcontroller.executeJumpscript('greenitglobe', 'cleanup_network', nid=fwobj.nid, gid=fwobj.gid, args=args)
+            self.cb.executeJumpscript('greenitglobe', 'cleanup_network', nid=fwobj.nid, gid=fwobj.gid, args=args)
             fwobj.nid = targetNid
             self.osisvfw.set(fwobj)
         return job['result']
@@ -142,7 +141,7 @@ class NetManager(object):
     def fw_executescript(self, fwid, script):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'script': script}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_runscript_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_runscript_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.BadRequest("Failed to execute script")
         result, err = job['result']
@@ -154,7 +153,7 @@ class NetManager(object):
     def fw_get_ipaddress(self, fwid, macaddress):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_ipaddress_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_get_ipaddress_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to retreive IPAddress for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
         return job['result']
@@ -162,7 +161,7 @@ class NetManager(object):
     def fw_remove_lease(self, fwid, macaddress):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'macaddress': macaddress}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_remove_lease_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_remove_lease_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to release lease for macaddress %s. Error: %s" % (macaddress, job['result']['errormessage']))
         return job['result']
@@ -170,7 +169,7 @@ class NetManager(object):
     def fw_set_password(self, fwid, username, password):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict(), 'username': username, 'password': password}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_set_password_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_set_password_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to set password. Error: %s" % (job['result']['errormessage']))
         return job['result']
@@ -178,7 +177,7 @@ class NetManager(object):
     def fw_get_openvpn_config(self, fwid, **kwargs):
         fwobj = self._getVFWObject(fwid)
         args = {'fwobject': fwobj.obj2dict()}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_get_openvpn_config_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_get_openvpn_config_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to get OpenVPN Config")
         return job['result']
@@ -193,19 +192,19 @@ class NetManager(object):
         if fwobj.type == 'routeros':
             args = {'networkid': fwobj.id}
             if fwobj.nid:
-                job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args, timeout=timeout)
+                job = self.cb.executeJumpscript('jumpscale', 'vfs_destroy_routeros', nid=fwobj.nid, gid=fwobj.gid, args=args, timeout=timeout)
                 if job['state'] != 'OK':
                     raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
                 if deletemodel:
                     # delete backup if the delete is final
                     args = {'ovs_connection': self.get_ovs_connection(fwobj.gid), 'diskpath': '/routeros/{0:04x}/routeros-small-{0:04x}.raw'.format(fwobj.id)}
-                    job = self.agentcontroller.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
+                    job = self.cb.executeJumpscript('greenitglobe', 'deletedisk_by_path', role='storagedriver', gid=fwobj.gid, args=args)
                     if job['state'] != 'OK':
                         raise exceptions.ServiceUnavailable("Failed to remove vfw with id %s" % fwid)
             if deletemodel:
                 self.osisvfw.delete(fwid)
         else:
-            result = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_delete', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
+            result = self.cb.executeJumpscript('jumpscale', 'vfs_delete', nid=fwobj.nid, gid=fwobj.gid, args=args)['result']
             if result:
                 self.osisvfw.delete(fwid)
             return result
@@ -216,7 +215,7 @@ class NetManager(object):
             fwobj.nid = targetNid
             self.osisvfw.set(fwobj)
         args = {'networkid': fwobj.id}
-        job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_routeros_restore', nid=fwobj.nid, gid=fwobj.gid, args=args)
+        job = self.cb.executeJumpscript('jumpscale', 'vfs_routeros_restore', nid=fwobj.nid, gid=fwobj.gid, args=args)
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to restore vfw")
         return job['result']
@@ -226,9 +225,9 @@ class NetManager(object):
 
     def _applyconfig(self, gid, nid, args):
         if args['fwobject']['type'] == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_applyconfig_routeros', gid=gid, nid=nid, args=args)
         else:
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_applyconfig', gid=gid, nid=nid, args=args)
 
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable('Failed to apply config')
@@ -372,9 +371,9 @@ class NetManager(object):
         fwobj = self._getVFWObject(fwid) # to get updated model
         args = {'fwobject': fwobj.obj2dict()}
         if fwobj.type == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_start_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         else:
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_start', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_start', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to start vfw")
@@ -389,9 +388,9 @@ class NetManager(object):
         fwobj = self._getVFWObject(fwid)
         args = {'networkid': fwobj.id}
         if fwobj.type == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_stop_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args)
         else:
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_stop', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_stop', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to stop vfw")
@@ -406,9 +405,9 @@ class NetManager(object):
         fwobj = self._getVFWObject(fwid)
         args = {'networkid': fwobj.id}
         if fwobj.type == 'routeros':
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args, timeout=timeout)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_checkstatus_routeros', gid=fwobj.gid, nid=fwobj.nid, args=args, timeout=timeout)
         else:
-            job = self.agentcontroller.executeJumpscript('jumpscale', 'vfs_checkstatus', gid=fwobj.gid, nid=fwobj.nid, args=args)
+            job = self.cb.executeJumpscript('jumpscale', 'vfs_checkstatus', gid=fwobj.gid, nid=fwobj.nid, args=args)
 
         if job['state'] != 'OK':
             raise exceptions.ServiceUnavailable("Failed to get vfw status")

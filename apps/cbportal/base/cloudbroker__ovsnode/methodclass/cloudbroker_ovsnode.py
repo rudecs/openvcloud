@@ -2,7 +2,6 @@ import time
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from cloudbrokerlib.baseactor import BaseActor
-from JumpScale.portal.portal.auth import auth
 
 
 class cloudbroker_ovsnode(BaseActor):
@@ -10,9 +9,7 @@ class cloudbroker_ovsnode(BaseActor):
         super(cloudbroker_ovsnode, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
         self.node = j.apps.cloudbroker.node
-        self.acl = j.clients.agentcontroller.get()
 
-    @auth(['level2', 'level3'], True)
     def activateNodes(self, nids, **kwargs):
         for nid in nids:
             node = self.node._getNode(nid)
@@ -31,13 +28,11 @@ class cloudbroker_ovsnode(BaseActor):
             raise exceptions.BadRequest(
                 'Storage Node does not have interface for storage ip , please specify storage interface')
 
-    @auth(['level2', 'level3'], True)
     def deactivateNodes(self, nids, **kwargs):
         if len(nids) != 1:
             raise exceptions.BadRequest("Can only deactivate 1 Storagerouter at a time")
         nid = nids[0]
         ctx = kwargs['ctx']
-        self.scl.node.updateSearch({'id': nid}, {'$set': {'status': 'MAINTENANCE'}})
         node = self.node._getNode(nid)
         edgeinfo = None
         myips = []
@@ -57,9 +52,10 @@ class cloudbroker_ovsnode(BaseActor):
         if edgeinfo is None:
             raise exceptions.Error("Could not find storage IP on node %s" % nid)
 
-        edgeclients = filter(lambda c: c['storageip'] != edgeclient['storageip'], driver.edgeclients[:])
+        edgeclients = filter(lambda c: c['storageip'] != edgeclient['storageip'], alledgeclients)
         if not edgeclients:
             raise exceptions.BadRequest("No storage routers available to migrate to")
+        self.scl.node.updateSearch({'id': nid}, {'$set': {'status': 'MAINTENANCE'}})
 
         def get_vpool_name(host, port):
             for edgeclient in alledgeclients:
@@ -96,7 +92,7 @@ class cloudbroker_ovsnode(BaseActor):
             diskguids = driver.list_vdisks(edgeinfo['storagerouterguid'])
 
         gid = node['gid']
-        self.acl.executeJumpscript('cloudscalers', 'nodestatus', nid=nid, gid=gid)
+        self.cb.executeJumpscript('cloudscalers', 'nodestatus', nid=nid, gid=gid)
         self.node.unscheduleJumpscripts(nid, gid, category='monitor.healthcheck')
         time.sleep(5)
         self.scl.health.deleteSearch({'nid': nid})

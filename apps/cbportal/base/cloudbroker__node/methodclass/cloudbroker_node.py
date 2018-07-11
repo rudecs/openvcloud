@@ -1,15 +1,14 @@
 from JumpScale import j
-from JumpScale.portal.portal.auth import auth
+from cloudbrokerlib.authenticator import auth
 from JumpScale.portal.portal import exceptions
 from JumpScale.portal.portal.async import async
-from cloudbrokerlib.baseactor import BaseActor, wrap_remote
+from cloudbrokerlib.baseactor import BaseActor
 
 
 class cloudbroker_node(BaseActor):
     def __init__(self):
         super(cloudbroker_node, self).__init__()
         self.scl = j.clients.osis.getNamespace('system')
-        self.acl = j.clients.agentcontroller.get()
 
     def _getNode(self, id):
         id = int(id) if isinstance(id, str) else id
@@ -21,17 +20,16 @@ class cloudbroker_node(BaseActor):
         return node
 
     def unscheduleJumpscripts(self, nid, gid, name=None, category=None):
-        self.acl.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0,
+        self.cb.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0,
                             cmdname="unscheduleJumpscripts", args={'name': name, 'category': category},
                             queue="internal", log=False, timeout=120, roles=[])
 
     def scheduleJumpscripts(self, nid, gid, name=None, category=None):
-        self.acl.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0,
+        self.cb.scheduleCmd(gid, nid, cmdcategory="jumpscripts", jscriptid=0,
                             cmdname="scheduleJumpscripts", args={'name': name, 'category': category},
                             queue="internal", log=False, timeout=120, roles=[])
 
-    @auth(['level2', 'level3'], True)
-    @wrap_remote
+    @auth(groups=['level2', 'level3'])
     def maintenance(self, nid, vmaction, **kwargs):
         node = self._getNode(nid)
         kwargs['ctx'].events.runAsync(self._maintenance,
@@ -49,8 +47,7 @@ class cloudbroker_node(BaseActor):
             stack = j.apps.cloudbroker.computenode._getStackFromNode(node['id'], node['gid'])
             j.apps.cloudbroker.computenode.maintenance(stack['id'], node['gid'], vmaction, **kwargs)
 
-    @auth(['level2', 'level3'], True)
-    @wrap_remote
+    @auth(groups=['level2', 'level3'])
     def enable(self, nid, message='', **kwargs):
         node = self._getNode(nid)
         kwargs['ctx'].events.runAsync(self._enable,
@@ -61,9 +58,8 @@ class cloudbroker_node(BaseActor):
                                       error='Failed to Enable node')
 
 
-    @auth(['level2', 'level3'], True)
+    @auth(groups=['level2', 'level3'])
     @async('Enable Nodes', 'Finished enabling nodes', 'Failed to enable nodes')
-    @wrap_remote
     def enableNodes(self, nids, message='', **kwargs):
         for nid in nids:
             node = self._getNode(nid)
@@ -76,14 +72,13 @@ class cloudbroker_node(BaseActor):
             stack = j.apps.cloudbroker.computenode._getStackFromNode(node['id'], node['gid'])
             j.apps.cloudbroker.computenode.enable(stack['id'], node['gid'], message, **kwargs)
 
-    @auth(['level2', 'level3'], True)
-    @wrap_remote
+    @auth(groups=['level2', 'level3'])
     def decomission(self, nid, vmaction, **kwargs):
         node = self._getNode(nid)
         gid = node['gid']
         if 'storagedriver' in node['roles']:
             j.apps.cloudbroker.ovsnode.deactivateNodes([nid])
-            self.acl.executeJumpscript('cloudscalers', 'ovs_put_node_offline', nid=nid, gid=gid)
+            self.cb.executeJumpscript('cloudscalers', 'ovs_put_node_offline', nid=nid, gid=gid)
         if 'cpunode' in node['roles']:
             stack = j.apps.cloudbroker.computenode._getStackFromNode(nid, gid)
             kwargs['ctx'].events.runAsync(j.apps.cloudbroker.computenode.maintenance,
@@ -94,9 +89,9 @@ class cloudbroker_node(BaseActor):
                                           error='Failed to deactivate compute node',
                                           errorcb='')
 
-    @auth(['level2', 'level3'], True)
+    @auth(groups=['level2', 'level3'])
     def execute_script(self, nid, gid, script):
-        jobinfo = self.acl.executeJumpscript('jumpscale', 'exec',
+        jobinfo = self.cb.executeJumpscript('jumpscale', 'exec',
                                        gid=gid, nid=nid,
                                        timeout=3600,
                                        args={'cmd':script})
