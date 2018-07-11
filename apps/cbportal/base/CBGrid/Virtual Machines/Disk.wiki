@@ -62,6 +62,9 @@ h2. Disk tune {{action: id:'disk_limitio_$$id' class:'glyphicon glyphicon-edit m
 | Max IOPS | ${iotune['read_iops_sec_max']} | ${iotune['write_iops_sec_max']} | ${iotune['total_iops_sec_max']} |
 | Max Bytes | ${iotune['read_bytes_sec_max']} | ${iotune['write_bytes_sec_max']} | ${iotune['total_bytes_sec_max']} |
 {% endif %}
+
+h2. Error Conditions
+{{grid.ecos tags:'vdiskguid:${vdiskguid}'}}
 {% else %}
 No disk found
 {% endif %}
