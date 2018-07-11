@@ -12,6 +12,7 @@ class ExtendedTests(BasicACLTest):
         super(ExtendedTests, self).setUp()
         self.default_setup()
 
+    @parameterized.expand(['Ubuntu 16.04 x64'])
     def test001_create_vmachine_with_all_disks(self, image_name):
         """ OVC-013
         *Test case for create machine with Linux image available.*
@@ -21,6 +22,9 @@ class ExtendedTests(BasicACLTest):
         #. validate the image is exists, should succeed
         #. get all available sizes to use, should succeed
         #. create machine using given image with specific size and all available disk sizes, should succeed
+        #. check if disks are in correct state ASSIGNED
+        #. delete vm 
+        #. check if disks are in coorect state DELETED
         """
         self.lg('%s STARTED' % self._testID)
 
@@ -55,10 +59,20 @@ class ExtendedTests(BasicACLTest):
                                                           size_id=size['id'],
                                                           image_id=image['id'],
                                                           disksize=disk)
+                self.lg('Make sure disks are in correct state')
+                machine = self.api.cloudapi.machines.get(machine_id)
+                m_disks =  machine['disks']
+                for disk in m_disks:
+                    self.assertEqual(self.api.cloudapi.disks.get(disk['id'])['status'], 'ASSIGNED')
+                    
                 self.lg('- done using image [%s] with memory size [%s] with disk '
                         '[%s]' % (image_name, size['memory'], disk))
                 self.lg('- delete machine to free environment resources, should succeed')
                 self.api.cloudapi.machines.delete(machineId=machine_id)
+
+                self.lg('Make sure disks are in correct state')
+                for disk in m_disks:
+                    self.assertEqual(self.api.cloudapi.disks.get(disk['id'])['status'], 'DELETED')
 
         self.lg('%s ENDED' % self._testID)
 
@@ -160,10 +174,12 @@ class ExtendedTests(BasicACLTest):
         **Test Scenario:**
 
         #. Create a data disk DS1, should succeed.
+        #. Make sure disk is in CREATED state
         #. List the data disks, DS1 should be found.
         #. List the Boot disks, DS1 shouldn't be found
         #. Delete non existing disk, should fail.
         #. Delete DS1, should succeed.
+        #. Make sure disk is in DELETED STATE
         #. List the disks, DS1 shouldn't be there.
         #. Repeat the above steps for a boot Disk
         """
@@ -172,6 +188,10 @@ class ExtendedTests(BasicACLTest):
         self.lg(' Create a %s disk DS1, should succeed'% disk_type)
         disk_id = self.create_disk(self.account_id, disk_type=disk_type)
         self.assertTrue(disk_id)
+
+        self.lg("Make sure that disk status has changed to CREATED")
+        disk = self.api.cloudapi.disks.get(disk_id)
+        self.assertEqual(disk['status'], 'CREATED')
 
         self.lg('List the %s disks, DS1 should be found.'% disk_type)
         disks = self.api.cloudapi.disks.list(accountId=self.account_id, type=disk_type)
@@ -196,6 +216,10 @@ class ExtendedTests(BasicACLTest):
         response = self.api.cloudapi.disks.delete(diskId=disk_id, detach=False)
         self.assertTrue(response)
 
+        self.lg("Make sure that disk status has changed to CREATED")
+        disk = self.api.cloudapi.disks.get(disk_id)
+        self.assertEqual(disk['status'], 'DELETED')
+
         self.lg("List the %s disks, DS1 shouldn't be there."% disk_type)
         disks = self.api.cloudapi.disks.list(accountId=self.account_id, type=disk_type)
         self.assertFalse([True for d in disks if d['id'] == disk_id])
@@ -209,18 +233,25 @@ class ExtendedTests(BasicACLTest):
         **Test Scenario:**
 
         #. Create a disk DS1, should succeed.
+        #. Make sure disk is in CREATED state
         #. Create VM1
         #. Attach non existing disk to VM1, should fail
         #. Attach DS1 to VM1, should succeed
+        #. Make sure disk is in ASSIGNED state
         #. Delete DS1 without detaching it, should fail
         #. Detach non existing disk, should fail
         #. Detach DS1, should succeed
+        #. Make sure disk is in CREATED state
         """
         self.lg('%s STARTED' % self._testID)
 
         self.lg("Create a disk DS1, should succeed.")
         disk_id = self.create_disk(self.account_id)
         self.assertTrue(disk_id)
+
+        self.lg("Make sure that disk status has changed to CREATED")
+        disk = self.api.cloudapi.disks.get(disk_id)
+        self.assertEqual(disk['status'], 'CREATED')
 
         self.lg("Create VM1")
         VM1_id = self.cloudapi_create_machine(cloudspace_id=self.cloudspace_id)
@@ -235,6 +266,9 @@ class ExtendedTests(BasicACLTest):
         self.lg("Attach DS1 to VM1, should succeed")
         response = self.api.cloudapi.machines.attachDisk(machineId=VM1_id, diskId=disk_id)
         self.assertTrue(response)
+        self.lg("Make sure that disk status has changed to ASSIGNED")
+        disk = self.api.cloudapi.disks.get(disk_id)
+        self.assertEqual(disk['status'], 'ASSIGNED')
 
         self.lg("Delete DS1 without detaching it, should fail")
         with self.assertRaises(HTTPError) as e:
@@ -245,17 +279,20 @@ class ExtendedTests(BasicACLTest):
 
         self.lg("Detach non existing disk, should fail")
         with self.assertRaises(HTTPError) as e:
-            self.api.cloudapi.machines.attachDisk(machineId=VM1_id, diskId=disk_id+9)
+            self.api.cloudapi.machines.detachDisk(machineId=VM1_id, diskId=disk_id+9)
 
         self.lg('- expected error raised %s' % e.exception.status_code)
         self.assertEqual(e.exception.status_code, 404)
 
         self.lg("Detach DS1, should succeed")
-        response = self.api.cloudapi.machines.attachDisk(machineId=VM1_id, diskId=disk_id)
+        response = self.api.cloudapi.machines.detachDisk(machineId=VM1_id, diskId=disk_id)
         self.assertTrue(response)
 
-        self.lg('%s ENDED' % self._testID)
+        self.lg("Make sure that disk status has changed to CREATED")
+        disk = self.api.cloudapi.disks.get(disk_id)
+        self.assertEqual(disk['status'], 'CREATED')
 
+        self.lg('%s ENDED' % self._testID)
     def test006_attach_disk_to_vm_of_another_account(self):
         """ OVC-030
         *Test case for attaching disk to a vm of another account*
