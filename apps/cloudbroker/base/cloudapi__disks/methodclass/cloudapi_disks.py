@@ -115,7 +115,7 @@ class cloudapi_disks(BaseActor):
         # validate iops
         for arg, val in args.items():
             if arg in ('iops', 'total_iops_sec', 'read_iops_sec', 'write_iops_sec', 'total_iops_sec_max', 'read_iops_sec_max', 'write_iops_sec_max', 'size_iops_sec'):
-                if val < MIN_IOPS:
+                if val and val < MIN_IOPS:
                     raise exceptions.BadRequest("{arg} was set below the minimum iops {min_iops}: {provided_iops} provided".format(
                         arg=arg, min_iops=MIN_IOPS, provided_iops=val))
 

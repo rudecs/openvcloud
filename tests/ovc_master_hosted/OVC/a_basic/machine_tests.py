@@ -794,3 +794,94 @@ class BasicTests(BasicACLTest):
             self.api.cloudapi.machines.delete(machineId=1010101010)
         self.assertEqual(e.exception.status_code, 404)
 
+    def test014_disk_limitio_min_iops_validation(self):
+        """ OVC-059
+
+        *Test case for limitio minimum iops validation*
+
+        **Test Scenario:**
+
+        #. Create disk.
+        #. Call limitio on that disk and try all iops related fields below minimum iops, they should fail.
+        #. Call limitio with with all iops field in valid range.
+        """
+        # iops minimum allowed is currently set to 80 (/apps/cloudbroker/base/cloudapi__disks/methodclass/cloudapi_disks.py: MIN_IOPS)
+        failing_iops = 79
+        passing_iops = 100
+
+        self.lg('Creating disk')
+        disk_id = self.create_disk(self.account_id, size=10)
+        self.assertTrue(disk_id)
+
+        # valid limitIO should be on a disk attached to a VM
+        vm_id = self.cloudapi_create_machine(cloudspace_id=self.cloudspace_id)
+        self.api.cloudapi.machines.attachDisk(machineId=vm_id, diskId=disk_id)
+
+        iops_args = ('iops', 'total_iops_sec', 'read_iops_sec', 'write_iops_sec', 'total_iops_sec_max', 'read_iops_sec_max', 'write_iops_sec_max', 'size_iops_sec')
+
+        for iops_arg in iops_args:
+            args = {}
+            for k in iops_args:
+                if k == iops_arg:
+                    args[k] = failing_iops
+                else:
+                    args[k] = passing_iops
+
+            self.lg('Calling limitIO with "%s" having a too low value' % iops_arg)
+            with self.assertRaises(HTTPError) as e:
+                self.api.cloudapi.disks.limitIO(
+                    diskId=disk_id,
+                    iops=args['iops'] if args['read_iops_sec'] == passing_iops and args['write_iops_sec'] == passing_iops else None,
+                    total_bytes_sec=None,
+                    read_bytes_sec=None,
+                    write_bytes_sec=None,
+                    total_iops_sec=args['total_iops_sec'] if args['read_iops_sec'] == passing_iops and args['write_iops_sec'] == passing_iops else None,
+                    read_iops_sec=args['read_iops_sec'] if args['read_iops_sec'] == failing_iops or args['write_iops_sec'] == failing_iops else None,
+                    write_iops_sec=args['write_iops_sec'] if args['read_iops_sec'] == failing_iops or args['write_iops_sec'] == failing_iops else None,
+                    total_bytes_sec_max=None,
+                    read_bytes_sec_max=None,
+                    write_bytes_sec_max=None,
+                    total_iops_sec_max=args['total_iops_sec_max'] if args['read_iops_sec'] == passing_iops and args['write_iops_sec'] == passing_iops else None,
+                    read_iops_sec_max=args['read_iops_sec_max'] if args['read_iops_sec_max'] == failing_iops or args['write_iops_sec_max'] == failing_iops else None,
+                    write_iops_sec_max=args['write_iops_sec_max'] if args['read_iops_sec_max'] == failing_iops or args['write_iops_sec_max'] == failing_iops else None,
+                    size_iops_sec=args['size_iops_sec'],
+                )
+            self.assertEqual(e.exception.status_code, 400)
+
+        self.lg('Calling limitIO with valid total iops args')
+        self.api.cloudapi.disks.limitIO(
+            diskId=disk_id,
+            iops=passing_iops,
+            total_bytes_sec=None,
+            read_bytes_sec=None,
+            write_bytes_sec=None,
+            total_iops_sec=passing_iops,
+            read_iops_sec=None,
+            write_iops_sec=None,
+            total_bytes_sec_max=None,
+            read_bytes_sec_max=None,
+            write_bytes_sec_max=None,
+            total_iops_sec_max=passing_iops,
+            read_iops_sec_max=None,
+            write_iops_sec_max=None,
+            size_iops_sec=passing_iops,
+        )
+
+        self.lg('Calling limitIO with valid read/write iops args')
+        self.api.cloudapi.disks.limitIO(
+            diskId=disk_id,
+            iops=None,
+            total_bytes_sec=None,
+            read_bytes_sec=None,
+            write_bytes_sec=None,
+            total_iops_sec=None,
+            read_iops_sec=passing_iops,
+            write_iops_sec=passing_iops,
+            total_bytes_sec_max=None,
+            read_bytes_sec_max=None,
+            write_bytes_sec_max=None,
+            total_iops_sec_max=None,
+            read_iops_sec_max=passing_iops,
+            write_iops_sec_max=passing_iops,
+            size_iops_sec=passing_iops,
+        )
