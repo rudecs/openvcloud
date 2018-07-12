@@ -8,3 +8,6 @@ There are two types of functional tests, for each of them there is a subdirector
 
 
 - [Tests designed to run on ovc_master](./docs/ovc_master_hosted/ovc_master_hosted.md)
+
+
+For a quick start to how to execute the tests [Click here](./docs/quick_start.md)

@@ -50,6 +50,7 @@ class BaseTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):
         self.api = API()
         self.environment = config['main']['environment']
+        self.protocol = config['main']['protocol']
         self.owncloud_user = config['main']['owncloud_user']
         self.owncloud_password = config['main']['owncloud_password']
         self.owncloud_url = config['main']['owncloud_url']
@@ -160,7 +161,8 @@ class BaseTest(unittest.TestCase):
         :returns user_api: cloud_api authenticated with the user name and password
         """
         url = self.api.cloudapi.locations.getUrl().split('//')[1]
-        user_api = j.clients.portal.get2(url, port=443)
+        port = 443 if self.protocol == 'https' else 80
+        user_api = j.clients.portal.get2(url, port=port)
         user_api.system.usermanager.authenticate(name=username, secret=password or username)
         return user_api
 
