@@ -505,7 +505,7 @@ class cloudapi_cloudspaces(BaseActor):
         machines = self.models.vmachine.search({'$fields': ['id', 'memory'],
                                                 '$query': {'cloudspaceId': cloudspaceId,
                                                            'status': {
-                                                               '$nin': ['DESTROYED', 'ERROR']}}},
+                                                               '$nin': resourcestatus.Machine.INVALID_STATES}}},
                                                size=0)[1:]
 
         for machine in machines:
@@ -553,7 +553,7 @@ class cloudapi_cloudspaces(BaseActor):
             diskids.extend(m['disks'])
 
         disksizes = {d['id']: d['sizeMax'] for d in self.models.disk.search(
-            {'$query': {'id': {'$in': diskids}, 'status': {'$ne': 'DESTROYED'}},
+            {'$query': {'id': {'$in': diskids}, 'status': {'$nin': resourcestatus.Disk.INVALID_STATES}},
              '$fields': ['id', 'sizeMax']}, size=0)[1:]}
         for machine in machines:
             for diskid in machine['disks']:

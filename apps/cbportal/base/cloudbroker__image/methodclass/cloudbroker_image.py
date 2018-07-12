@@ -1,5 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
+from cloudbrokerlib import resourcestatus
 from cloudbrokerlib.authenticator import auth
 from cloudbrokerlib.baseactor import BaseActor
 import requests
@@ -183,7 +184,7 @@ class cloudbroker_image(BaseActor):
         disk.name = name
         disk.gid = gid
         disk.accountId = accountId
-        disk.status = 'CREATING'
+        disk.status = resourcestatus.Disk.CREATING
         disk.type = 'C'
         disk.sizeMax = gbsize
         disk.id = self.models.disk.set(disk)[0]

@@ -528,7 +528,7 @@ class Machine(object):
             disk.gid = cloudspace.gid
             disk.order = order
             disk.type = type
-            disk.status = 'MODELED'
+            disk.status = resourcestatus.Disk.MODELED
             disk.id = models.disk.set(disk)[0]
             machine.disks.append(disk.id)
             return disk

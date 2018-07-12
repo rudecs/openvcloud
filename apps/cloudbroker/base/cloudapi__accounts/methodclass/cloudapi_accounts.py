@@ -315,7 +315,7 @@ class cloudapi_accounts(BaseActor):
         :return: the total consumed disk storage
         """
         disks = self.models.disk.search(
-            {'$query': {'accountId': accountId, 'status': {'$ne': 'DESTROYED'}},
+            {'$query': {'accountId': accountId, 'status': {'$nin': resourcestatus.Disk.INVALID_STATES}},
              '$fields': ['sizeMax']}, size=0)[1:]
         consumeddiskcapacity = sum([d['sizeMax'] for d in disks])
         return consumeddiskcapacity

@@ -213,7 +213,7 @@ class cloudapi_machines(BaseActor):
         volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
         provider.detach_volume(volume)
         machine.disks.remove(diskId)
-        disk.status = "CREATED"
+        disk.status = resourcestatus.Disk.CREATED
         self.models.disk.set(disk)
         self.models.vmachine.set(machine)
         return True
@@ -260,7 +260,7 @@ class cloudapi_machines(BaseActor):
         provider.attach_volume(node, volume)
         self.models.disk.updateSearch({'id': disk.id}, {'$set': {'order': diskorder}})
         machine.disks.append(disk.id)
-        disk.status = 'ASSIGNED'
+        disk.status = resourcestatus.Disk.ASSIGNED
         self.models.disk.set(disk)
         self.models.vmachine.set(machine)
         return True
@@ -1056,7 +1056,7 @@ class cloudapi_machines(BaseActor):
             clonedisk.type = origdisk.type
             clonedisk.descr = origdisk.descr
             clonedisk.sizeMax = origdisk.sizeMax
-            clonedisk.status = 'MODELED'
+            clonedisk.status = resourcestatus.Disk.MODELED
             clonediskId = self.models.disk.set(clonedisk)[0]
             clone.disks.append(clonediskId)
             volume = j.apps.cloudapi.disks.getStorageVolume(origdisk, provider, node)

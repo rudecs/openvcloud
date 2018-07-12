@@ -1,6 +1,6 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from cloudbrokerlib import authenticator
+from cloudbrokerlib import authenticator, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume, OpenvStorageISO, PhysicalVolume
 
@@ -73,7 +73,7 @@ class cloudapi_disks(BaseActor):
         disk.type = type
         disk.gid = gid
         disk.order = order
-        disk.status = 'MODELED'
+        disk.status = resourcestatus.Disk.MODELED
         disk.iotune = {'total_iops_sec': iops}
         disk.accountId = accountId
         disk.id = self.models.disk.set(disk)[0]
@@ -87,9 +87,9 @@ class cloudapi_disks(BaseActor):
                 volume = provider.create_volume(disk.sizeMax, disk.id)
                 volume.iotune = disk.iotune
                 disk.referenceId = volume.id
-            disk.status = 'CREATED'
+            disk.status = resourcestatus.Disk.CREATED
         except:
-            disk.status = "DELETED"
+            disk.status = resourcestatus.Disk.DELETED
             self.models.disk.delete(disk.id)
             raise
         self.models.disk.set(disk)
@@ -127,7 +127,7 @@ class cloudapi_disks(BaseActor):
         if iops:
             iotune['total_iops_sec'] = iops
         disk = self.models.disk.get(diskId)
-        if disk.status == 'DELETED':
+        if disk.status == resourcestatus.Disk.DELETED:
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         if disk.type == 'M':
@@ -191,20 +191,20 @@ class cloudapi_disks(BaseActor):
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
-        if disk.status == 'DELETED':
+        if disk.status == resourcestatus.Disk.DELETED:
             return True
         machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if machines and not detach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:
             j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
-            disk.status = 'CREATED'
+            disk.status = resourcestatus.Disk.CREATED
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
-        disk.status = 'TOBEDELETED'
+        disk.status = resourcestatus.Disk.TOBEDELETED
         self.models.disk.set(disk)
         provider.destroy_volume(volume)
-        disk.status = 'DELETED'
+        disk.status = resourcestatus.Disk.DELETED
         self.models.disk.set(disk)
         return True
 
@@ -223,7 +223,7 @@ class cloudapi_disks(BaseActor):
             raise exceptions.BadRequest("Can't resize a disk of type Meta")
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
-        if disk.status == 'DELETED':
+        if disk.status == resourcestatus.Disk.DELETED:
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
