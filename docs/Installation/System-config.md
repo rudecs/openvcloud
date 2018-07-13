@@ -2,7 +2,7 @@
 
 The configuration file is needed by the [installer script](#installer-script.md) to setup the OpenvCloud system.
 
-An example `system-config.yaml` file can be found [here](../scripts/kubernetes/config/system-config.yaml).
+An example `system-config.yaml` file can be found [here](https://github.com/0-complexity/openvcloud_installer/blob/master/scripts/kubernetes/config/system-config.yaml).
 
 For example the `ssh` key in the config is used to specify the key needed for authorization on each node in the cluster. This same info is used to add the key to the authorized keys on the machine.
 

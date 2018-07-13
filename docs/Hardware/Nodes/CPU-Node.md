@@ -1,10 +1,12 @@
-## Adding, Replacing & Removing CPU Nodes
+## Adding & Removing CPU Nodes
 
 ### Adding a CPU Node
 
-See the [section about installing an OpenvCloud environment](../../Installation/Installation.md).
+- **Step 1**: Add the node to the [system-config.yaml](../../Installation/System-config.md).
+- **Step 2**: [Update the configuration into kubernetes using the installer script](../../Installation/Installer-script.md#cluster-writeconfig).
+- **Step 3**: [Install the node using the installer script](../../Installation/Installer-script.md#cluster-writeconfig#node)
 
-### Replacing a CPU node
+### Removing a CPU node
 
 Steps in order to replace a CPU node:
 
@@ -18,12 +20,5 @@ Steps in order to replace a CPU node:
 
 - **Step 2**: Shutdown the node
 - **Step 3**: Put the node in Decommission mode, documented [here](../../Sysadmin/Decommission/decommission_node.md)
-
-- **Step 4**: Repair the node
-- **Step 5**: Add the node back to the grid, following [installation documentation](../../Installation/Installation.md), more specifically the sections about [setting up the nodes](../../Installation/1-GetNodeInto911-mode.md) and [connecting them to the master cloud space](../../Installation/3-ConnectNode2ovc_git.md).
-
-
-
-### Removing a CPU node
-
-Same steps as above.
+- **Step 4**: Remove the node from [system-config.yaml](../../Installation/System-config.md).
+- **Step 5**: [Update the configuration into kubernetes using the installer script](../../Installation/Installer-script.md#cluster-writeconfig).

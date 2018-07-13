@@ -104,6 +104,7 @@ Install Docker on the first controller node:
 ```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt-get install apt-transport-https
 apt-get update
 apt-get install libltdl7 aufs-tools
 apt-get install docker-ce=17.03.0~ce-0~ubuntu-xenial

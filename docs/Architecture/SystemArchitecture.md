@@ -1,7 +1,8 @@
 ## Components
 
 ![](https://docs.google.com/drawings/d/e/2PACX-1vQ1VSIuIXgAWT3W2mx-GR79_BAj0ST5-DhNHt8TuK-Ji1lWhsUh3GaYXYbj7oHu372vEzwlvUJWLsku/pub?w=706&h=645)
-[edit image here](https://docs.google.com/drawings/d/1G0kzg5FEMheZwc8cRUZi5QP5NEkfXzr5HXvkPsXNcsk/edit)
+
+[edit image](https://docs.google.com/drawings/d/1G0kzg5FEMheZwc8cRUZi5QP5NEkfXzr5HXvkPsXNcsk/edit)
 
 In what follows all components are discussed bottom-up.
 
