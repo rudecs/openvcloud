@@ -105,7 +105,7 @@ class cloudbroker_grid(BaseActor):
         return 'Changing settings done successfully'
 
         
-    @auth(groups=['level2', 'level3'], True)
+    @auth(groups=['level2', 'level3'])
     def executeMaintenanceScript(self, gid, nodestype, script, **kwargs):
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._executeMaintenanceScript,
