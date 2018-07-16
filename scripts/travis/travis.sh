@@ -32,7 +32,7 @@ function push_results() {
     REMOTE_LOGFILE="${TESTSUITE}_${TIMESTAMP}_${TRAVIS_JOB_NUMBER}.log"
     
     echo "Uploading results ..."
-    execute "s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} --host=${S3_HOST} --no-ssl put ${LOGFILE} s3://${S3_LOGS_BUCKET}/${REMOTE_LOGFILE}"
+    execute "s3cmd --access_key ${S3_KEY} --secret_key ${S3_SECRET} --host ${S3_HOST} --no-ssl put ${LOGFILE} s3://${S3_LOGS_BUCKET}/${REMOTE_LOGFILE}"
 }
 
 while true; do
