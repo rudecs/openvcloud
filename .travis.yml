@@ -1,7 +1,8 @@
+if: type IN (api, cron)
 language: python
 dist: trusty
 sudo: true
-if: type IN (api, cron)
+
 install: 
   - sudo apt install sshpass -y
   - curl -s https://install.zerotier.com/ | sudo bash
@@ -15,10 +16,10 @@ jobs:
     script: echo "Updating environment"
 
   - stage: ovc acl tests
-    script: echo "Running acl tests"
+    script: ./scripts/travis/travis.sh acl ${acl_tests_path}
 
   - stage: ovc acl tests
-    script: echo "Running ovc tests"
+    script: ./scripts/travis/travis.sh ovc ${ovc_tests_path}
 
   - stage: portal tests
-    script: echo "Running portal tests"
+    script: ./scripts/travis/travis.sh portal ${portal_tests_path}
