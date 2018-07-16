@@ -9,17 +9,17 @@ install:
 
 jobs:
   include:
-  - stage: build images
-    script: echo "Building images"
+  # - stage: build images
+  #   script: echo "Building images"
       
-  - stage: update environment
-    script: echo "Updating environment"
+  # - stage: update environment
+  #   script: echo "Updating environment"
 
   - stage: ovc acl tests
-    script: ./scripts/travis/travis.sh acl ${acl_tests_path}
+    script: bash scripts/travis/travis.sh acl ${acl_tests_path}
 
   - stage: ovc acl tests
-    script: ./scripts/travis/travis.sh ovc ${ovc_tests_path}
+    script: bash scripts/travis/travis.sh ovc ${ovc_tests_path}
 
   - stage: portal tests
-    script: ./scripts/travis/travis.sh portal ${portal_tests_path}
+    script: bash scripts/travis/travis.sh portal ${portal_tests_path}
