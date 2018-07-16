@@ -207,7 +207,18 @@ class cloudbroker_machine(BaseActor):
         cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
         if machine.status != resourcestatus.Machine.DELETED:
             raise exceptions.BadRequest("Can't restore a non deleted machine")
-        with self.models.cloudspace.lock('{}_ip'.format(machine.cloudspaceId)):
+
+        with self.models.account.lock(cloudspace.accountId):
+            vcpus = machine.vcpus
+            memory = machine.memory
+            diskids = machine.disks
+            totaldisksize = 0
+            for diskid in diskids:
+                disk = self.models.disk.get(diskid)
+                totaldisksize += disk.sizeMax
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vcpus,
+                                                                    memory / 1024.0, totaldisksize)
+
             nic = machine.nics[0]
             nic.type = 'bridge'
             nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)

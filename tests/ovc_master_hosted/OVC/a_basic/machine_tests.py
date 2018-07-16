@@ -885,3 +885,87 @@ class BasicTests(BasicACLTest):
             write_iops_sec_max=passing_iops,
             size_iops_sec=passing_iops,
         )
+
+    def test015_restore_insufficient_account_resources(self):
+        """ OVC-060
+
+        *Test case for restoring a deleted machine when it would exceed the account resource limits*
+
+        **Test Scenario:**
+
+        #. Create and delete a VM within resource limit
+        #. Create another VM or reset the account limits so restoring the VM would exceed them, should fail
+        """
+        self.lg('Creating account')
+        account_name = str(uuid.uuid4()).replace('-', '')[0:10]
+        account_id = self.cloudbroker_account_create(
+            name=account_name,
+            username=self.username,
+            email=self.email,
+            maxCPUCapacity=2,
+            maxMemoryCapacity=2,
+            maxVDiskCapacity=100
+        )
+
+        self.lg('Creating cloudspace')
+        cloudspace_id = self.cloudapi_cloudspace_create(
+            account_id=account_id,
+            location=self.location,
+            access=self.username
+        )
+
+        self.lg('Creating test machine')
+        test_machine_id = self.cloudapi_create_machine(cloudspace_id=cloudspace_id, memory=1024, vcpus=1, disksize=50)
+
+        self.lg('Deleting test machine')
+        self.api.cloudapi.machines.delete(machineId=test_machine_id)
+
+        self.lg('Creating machine to hog all the resources')
+        hog_machine_id = self.cloudapi_create_machine(cloudspace_id=cloudspace_id, memory=2048, vcpus=2, disksize=100)
+
+        self.lg('Restoring test machine, should fail due to resource limit reached')
+        with self.assertRaises(HTTPError) as e:
+            self.api.cloudbroker.machine.restore(machineId=test_machine_id)
+        self.assertEqual(e.exception.status_code, 400)
+
+    def test016_restore_insufficient_cloudspace_resources(self):
+        """ OVC-061
+
+        *Test case for restoring a deleted machine when it would exceed the cloudspace resource limits*
+
+        **Test Scenario:**
+
+        #. Create and delete a VM within resource limit
+        #. Create another VM or reset the cloudspace limits so restoring the VM would exceed them, should fail
+        """
+        self.lg('Creating account')
+        account_name = str(uuid.uuid4()).replace('-', '')[0:10]
+        account_id = self.cloudbroker_account_create(
+            name=account_name,
+            username=self.username,
+            email=self.email,
+        )
+
+        self.lg('Creating cloudspace')
+        cloudspace_id = self.cloudapi_cloudspace_create(
+            account_id=account_id,
+            location=self.location,
+            access=self.username,
+            maxCPUCapacity=2,
+            maxMemoryCapacity=2,
+            maxDiskCapacity=100
+        )
+
+        self.lg('Creating test machine')
+        test_machine_id = self.cloudapi_create_machine(cloudspace_id=cloudspace_id, memory=1024, vcpus=1, disksize=50)
+
+        self.lg('Deleting test machine')
+        self.api.cloudapi.machines.delete(machineId=test_machine_id)
+
+        self.lg('Creating machine to hog all the resources')
+        hog_machine_id = self.cloudapi_create_machine(cloudspace_id=cloudspace_id, memory=2048, vcpus=2, disksize=100)
+
+        self.lg('Restoring test machine, should fail due to resource limit reached')
+        with self.assertRaises(HTTPError) as e:
+            self.api.cloudbroker.machine.restore(machineId=test_machine_id)
+        self.assertEqual(e.exception.status_code, 400)
