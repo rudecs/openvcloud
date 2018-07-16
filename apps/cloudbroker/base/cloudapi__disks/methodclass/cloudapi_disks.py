@@ -55,10 +55,11 @@ class cloudapi_disks(BaseActor):
         :return the id of the created disk
 
         """
-        # Validate that enough resources are available in the account CU limits to add the disk
-        j.apps.cloudapi.accounts.checkAvailableMachineResources(accountId, vdisksize=size)
-        disk, _ = self._create(accountId, gid, name, description, size, type, iops)
-        return disk.id
+        with self.models.account.lock(accountId):
+            # Validate that enough resources are available in the account CU limits to add the disk
+            j.apps.cloudapi.accounts.checkAvailableMachineResources(accountId, vdisksize=size)
+            disk, _ = self._create(accountId, gid, name, description, size, type, iops)
+            return disk.id
 
     def _create(self, accountId, gid, name, description, size=10, type='D', iops=2000, physicalSource=None, nid=None, order=None, **kwargs):
         if size > 2000 and type != 'P':
@@ -227,22 +228,23 @@ class cloudapi_disks(BaseActor):
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
-        if machine:
-            # Validate that enough resources are available in the CU limits to add the disk
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine['cloudspaceId'], vdisksize=size)
-            provider, _, _ = self.cb.getProviderAndNode(machine['id'])
-            machine_id = machine['referenceId']
-        else:
-            # Validate that enough resources are available in the CU limits to add the disk
-            j.apps.cloudapi.accounts.checkAvailableMachineResources(disk.accountId, vdisksize=size)
-            provider = self.cb.getProviderByGID(disk.gid)
-            machine_id = None
+        with self.models.account.lock(disk.accountId):
+            if machine:
+                # Validate that enough resources are available in the CU limits to add the disk
+                j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine['cloudspaceId'], vdisksize=size)
+                provider, _, _ = self.cb.getProviderAndNode(machine['id'])
+                machine_id = machine['referenceId']
+            else:
+                # Validate that enough resources are available in the CU limits to add the disk
+                j.apps.cloudapi.accounts.checkAvailableMachineResources(disk.accountId, vdisksize=size)
+                provider = self.cb.getProviderByGID(disk.gid)
+                machine_id = None
 
-        volume = self.getStorageVolume(disk, provider)
-        disk.sizeMax = size
-        disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine_id}
-        res = provider.ex_extend_disk(volume.vdiskguid, size, disk_info)
-        self.models.disk.set(disk)
-        if not res:
-            raise exceptions.Accepted(False)
-        return True
+            volume = self.getStorageVolume(disk, provider)
+            disk.sizeMax = size
+            disk_info = {'referenceId': disk.referenceId, 'machineRefId': machine_id}
+            res = provider.ex_extend_disk(volume.vdiskguid, size, disk_info)
+            self.models.disk.set(disk)
+            if not res:
+                raise exceptions.Accepted(False)
+            return True

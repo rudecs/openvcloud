@@ -1,4 +1,5 @@
 import unittest, random, uuid, socket
+from multiprocessing import Process, Value
 from ....utils.utils import BasicACLTest, VMClient
 from nose_parameterized import parameterized
 from JumpScale.portal.portal.PortalClient2 import ApiError
@@ -688,3 +689,123 @@ class MachineTests(BasicACLTest):
         self.assertEqual(e.exception.status_code, 400)
 
         self.lg('%s ENDED' % self._testID)
+
+    def test017_concurrent_create_machine_with_account_resourcelimit(self):
+        """ OVC-62
+        *Test case for creating machines concurrently with resource limiting, meant to trigger double spending*
+
+        **Test Scenario:**
+
+        #. Create machines concurrently that just have enough resources to be created.
+        #. Check if only one machine was created, if more, double spending occurred.
+        """
+
+        # create acc/cloudspace with limits on account
+        self.lg('Creating account')
+        account_name = str(uuid.uuid4()).replace('-', '')[0:10]
+        account_id = self.cloudbroker_account_create(
+            name=account_name,
+            username=self.username,
+            email=self.email,
+            maxCPUCapacity=2,
+            maxMemoryCapacity=512,
+            maxVDiskCapacity=10
+        )
+
+        self.lg('Creating cloudspace')
+        cloudspace_id = self.cloudapi_cloudspace_create(
+            account_id=account_id,
+            location=self.location,
+            access=self.username
+        )
+
+        data = {
+            "cloudspace_id": cloudspace_id,
+            "memory": 512,
+            "vcpus": 2,
+            "disksize": 10,
+        }
+
+        procs = []
+
+        from multiprocessing import Process, Value
+        created_machines = Value('i', 0, lock=True)
+        for _ in range(5):
+            p = Process(target=self._concurrent_create_machine, args=(created_machines,), kwargs=data)
+            procs.append(p)
+
+        self.lg('Requesting creation of VMs concurrently')
+        for p in procs:
+            p.start()
+
+        for p in procs:
+            p.join()
+
+        self.lg('Checking created VMs')
+        self.assertEqual(1, created_machines.value, "Only 1 VM should have been created, found %s" % str(created_machines))
+
+
+    def test018_concurrent_create_machine_with_cloudspace_resourcelimit(self):
+        """ OVC-63
+        *Test case for creating machines concurrently with resource limiting, meant to trigger double spending*
+
+        **Test Scenario:**
+
+        #. Create machines concurrently that just have enough resources to be created.
+        #. Check if only one machine was created, if more, double spending occurred.
+        """
+
+        # create acc/cloudspace with limits on cloudspace
+        self.lg('Creating account')
+        account_name = str(uuid.uuid4()).replace('-', '')[0:10]
+        account_id = self.cloudbroker_account_create(
+            name=account_name,
+            username=self.username,
+            email=self.email,
+        )
+
+        self.lg('Creating cloudspace')
+        cloudspace_id = self.cloudapi_cloudspace_create(
+            account_id=account_id,
+            location=self.location,
+            access=self.username,
+            maxCPUCapacity=2,
+            maxMemoryCapacity=512,
+            maxDiskCapacity=10,
+        )
+
+        data = {
+            "cloudspace_id": cloudspace_id,
+            "memory": 512,
+            "vcpus": 2,
+            "disksize": 10,
+        }
+
+        procs = []
+
+        created_machines = Value('i', 0, lock=True)
+        for _ in range(5):
+            p = Process(target=self._concurrent_create_machine, args=(created_machines,), kwargs=data)
+            procs.append(p)
+
+        self.lg('Requesting creation of VMs concurrently')
+        for p in procs:
+            p.start()
+
+        for p in procs:
+            p.join()
+
+        self.lg('Checking created VMs')
+        self.assertEqual(1, created_machines.value, "Only 1 VM should have been created, found %s" % str(created_machines))
+
+    def _concurrent_create_machine(self, created_machines, **kwargs):
+        try:
+            machine_id = self.cloudapi_create_machine(**kwargs)
+        except HTTPError as err:
+            if err.status_code == 400:
+                return
+            raise
+
+        self.api.cloudapi.machines.get(machine_id)
+        with created_machines.get_lock():
+            created_machines.value += 1
