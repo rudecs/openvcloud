@@ -27,12 +27,10 @@ function run_tests() {
 
 function push_results() {
     TESTSUITE=${1}
-    TIMESTAMP=$(date "+%m/%d/%y")
-    LOGFILE="/tmp/${TESTSUITE}.log"
-    REMOTE_LOGFILE="/tmp/${TESTSUITE}_${TIMESTAMP}.log"
+    LOGFILE="/tmp/${TESTSUITE}_${TRAVIS_JOB_NUMBER}.log"
     
     echo "Uploading results ..."
-    execute "mv ${LOGFILE} ${REMOTE_LOGFILE}; s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} --host=${S3_HOST} --no-ssl put ${REMOTE_LOGFILE} s3://${S3_LOGS_BUCKET}"
+    execute "s3cmd --access_key=${S3_KEY} --secret_key=${S3_SECRET} --host=${S3_HOST} --no-ssl put ${LOGFILE} s3://${S3_LOGS_BUCKET}"
 }
 
 while true; do
