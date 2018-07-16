@@ -11,6 +11,7 @@ import random
 import time
 import string
 import re
+import netaddr
 
 DEFAULTIOPS = 2000
 
@@ -468,8 +469,9 @@ class Machine(object):
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
 
-        if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.DELETED_STATES}, 'cloudspaceId': cloudspace.id}) >= 250:
-            raise exceptions.BadRequest("Can not create more than 250 Virtual Machines per Cloud Space")
+        maxvms = netaddr.IPNetwork(cloudspace.privatenetwork).size - 5
+        if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.DELETED_STATES}, 'cloudspaceId': cloudspace.id}) >= maxvms:
+            raise exceptions.BadRequest("Can not create more than {} Virtual Machines in this Cloud Space".format(maxvms))
 
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
@@ -633,21 +635,29 @@ class Machine(object):
         boottype = image.bootType or 'bios'
         firstdisk = models.disk.get(machine.disks[0])
         spaceprovider = self.cb.getProviderByGID(cloudspace.gid)
+        createdvolumes = []
         try:
             bootvolume, edgeclient = spaceprovider._create_disk(name, firstdisk.sizeMax, image)
             bootvolume.dev = 'vda'
             bootvolume.iotune = firstdisk.iotune
             volumes.insert(0, bootvolume)
-            volumes.insert(1, spaceprovider._create_metadata_iso(edgeclient, name, auth.password, image.type, userdata))
+            createdvolumes.append(bootvolume)
+            metavolume = spaceprovider._create_metadata_iso(edgeclient, name, auth.password, image.type, userdata)
+            createdvolumes.append(metavolume)
+            volumes.insert(1, metavolume)
             for volume in volumes:
                 if not volume.id:
                     vol = spaceprovider.create_volume(volume.size, volume.name, data=True, dev=volume.dev)
                     volume.id = vol.id
+                    createdvolumes.append(vol)
                 volume.iotune = firstdisk.iotune
         except StorageException as e:
             eco = j.errorconditionhandler.processPythonExceptionObject(e)
-            self.cleanup(machine, cloudspace.gid, [bootvolume])
+            self.cleanup(machine, cloudspace.gid, createdvolumes)
             raise exceptions.ServiceUnavailable('Not enough resources available to create disks')
+        except:
+            self.cleanup(machine, cloudspace.gid, createdvolumes)
+            raise
 
         models.disk.updateSearch({'id' : {'$in': machine.disks}}, {'$set': {'status': 'CREATED'}})
 

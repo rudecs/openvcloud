@@ -362,7 +362,7 @@ class CSLibvirtNodeDriver(object):
 
         try:
             vdiskguid = self._execute_agent_job('creatediskfromtemplate', role='storagedriver', **kwargs)
-        except Exception as ex:
+        except (Exception, exceptions.ServiceUnavailable) as ex:
             raise StorageException(ex.message, ex)
 
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
@@ -384,7 +384,7 @@ class CSLibvirtNodeDriver(object):
                     'pagecache_ratio': self.ovs_settings['vpool_data_metadatacache']}
         try:
             vdiskguid = self._execute_agent_job('createdisk', role='storagedriver', **kwargs)
-        except Exception as ex:
+        except (Exception, exceptions.ServiceUnavailable) as ex:
             raise StorageException(ex.message, ex)
         volumeid = self.getVolumeId(vdiskguid=vdiskguid, edgeclient=edgeclient, name=diskname)
         stvol = OpenvStorageVolume(id=volumeid, size=size, name=diskname, driver=self)
