@@ -16,10 +16,13 @@ jobs:
   #   script: echo "Updating environment"
 
   - stage: ovc acl tests
-    script: bash scripts/travis/travis.sh acl ${acl_tests_path}
+    script: bash scripts/travis/travis.sh --run-test acl ${acl_tests_path}
+    after_script: bash scripts/travis/travis.sh --push-result acl
 
   - stage: ovc acl tests
-    script: bash scripts/travis/travis.sh ovc ${ovc_tests_path}
+    script: bash scripts/travis/travis.sh --run-test ovc ${ovc_tests_path}
+    after_script: bash scripts/travis/travis.sh --push-result ovc
 
   - stage: portal tests
-    script: bash scripts/travis/travis.sh portal ${portal_tests_path}
+    script: bash scripts/travis/travis.sh --run-test portal ${portal_tests_path}
+    after_script: bash scripts/travis/travis.sh --push-result portal
