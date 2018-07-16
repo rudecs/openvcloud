@@ -29,7 +29,7 @@ function push_results() {
     TESTSUITE=${1}
     TIMESTAMP=$(date "+%m-%d-%y")
     LOGFILE="/tmp/${TESTSUITE}.log"
-    REMOTE_LOGFILE="${TESTSUITE}_${TIMESTAMP}_${TRAVIS_JOB_NUMBER}.log"
+    REMOTE_LOGFILE="/${TIMESTAMP}/${TRAVIS_BUILD_NUMBER}/${TESTSUITE}.log"
     
     echo "Uploading results ..."
     execute "s3cmd --access_key ${S3_KEY} --secret_key ${S3_SECRET} --host ${S3_HOST} --host-bucket ${S3_HOST} --no-ssl put ${LOGFILE} s3://${S3_LOGS_BUCKET}/${REMOTE_LOGFILE}"
