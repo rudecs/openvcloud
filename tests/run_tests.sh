@@ -2,7 +2,7 @@
 
 TESTSUITE=${1}
 TESTS_PATH=${2}
-LOGFILE="/tmp/${TESTSUITE}_${TRAVIS_JOB_NUMBER}.log"
+LOGFILE="/tmp/${TESTSUITE}.log"
 
 if [[ ${TESTSUITE} == "acl" ]] || [[ ${TESTSUITE} == "ovc" ]]; then
 
