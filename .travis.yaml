@@ -1,0 +1,24 @@
+language: python
+dist: trusty
+sudo: true
+if: type IN (api, cron)
+install: 
+  - sudo apt install sshpass -y
+  - curl -s https://install.zerotier.com/ | sudo bash
+
+jobs:
+  include:
+  - stage: build images
+    script: echo "Building images"
+      
+  - stage: update environment
+    script: echo "Updating environment"
+
+  - stage: ovc acl tests
+    script: echo "Running acl tests"
+
+  - stage: ovc acl tests
+    script: echo "Running ovc tests"
+
+  - stage: portal tests
+    script: echo "Running portal tests"
