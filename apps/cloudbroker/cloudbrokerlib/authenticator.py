@@ -1,6 +1,7 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
 from .cloudbroker import models
+from cloudbrokerlib import resourcestatus
 
 
 class auth(object):
@@ -116,12 +117,14 @@ class auth(object):
             elif 'diskId' in kwargs and kwargs['diskId']:
                 disk = self.models.disk.get(int(kwargs['diskId']))
                 machinedict = self.models.vmachine.searchOne({'disks': disk.id,
-                                                        'status': {'$ne': 'DESTROYED'}})[1:]
+                                                        'status': {'$ne': resourcestatus.Machine.DESTROYED}})
                 if machinedict:
-                    machine = self.modesl.vmachine.new()
+                    machine = self.models.vmachine.new()
                     machine.load(machinedict)
                     cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-                account = self.models.account.get(disk.accountId)
+                accountId = disk.accountId
+                if accountId:
+                    account = self.models.account.get(accountId)
             elif 'cloudspaceId' in kwargs and kwargs['cloudspaceId']:
                 cloudspace = self.models.cloudspace.get(int(kwargs['cloudspaceId']))
                 account = self.models.account.get(cloudspace.accountId)
@@ -189,10 +192,12 @@ class auth(object):
         :raise Exception with 404 if destroyed or 403 Forbidden if non-read action cannot be
             performed on cloudspace or one of its machines
         """
-        if cloudspace.status == 'DESTROYED':
+        if cloudspace.status == resourcestatus.Cloudspace.DESTROYED:
             raise exceptions.NotFound('Could not find an accessible resource.')
-        elif requiredaccessrights != set('R') and cloudspace.status not in ['VIRTUAL', 'DEPLOYING',
-                                                                            'DEPLOYED']:
+        elif cloudspace.status == resourcestatus.Cloudspace.DELETED and requiredaccessrights != set('D'):
+            raise exceptions.NotFound('Could not find an accessible resource.')
+        elif requiredaccessrights != set('R') and cloudspace.status not in [resourcestatus.Cloudspace.VIRTUAL,
+                                                                            resourcestatus.Cloudspace.DEPLOYING, resourcestatus.Cloudspace.DEPLOYED]:
             raise exceptions.Forbidden('Only READ actions can be executed on cloudspace '
                                        '(or one of its machines) with status %s.' %
                                        cloudspace.status)

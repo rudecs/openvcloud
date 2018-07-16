@@ -15,15 +15,27 @@ class cloudbroker_image(BaseActor):
         return self.models.image.get(imageId)
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def delete(self, imageId, **kwargs):
+    def delete(self, imageId, reason, permanently=False, name=None, **kwargs):
         """
         Delete an image
         param:imageId id of image
         result bool
         """
-        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'DESTROYED'}})
-        self.models.stack.updateSearch({'images': imageId}, {'$pull': {'images': imageId}})
+        if name:
+            image = self.models.image.searchOne({'id': imageId, 'name': name})
+            if not image:
+                raise exceptions.BadRequest('Incorrect image name specified')
+        return j.apps.cloudapi.images.deleteImage(imageId, permanently)
+
+    @auth(groups=['level3'])
+    def deleteImages(self, imageIds, reason, permanently=False, **kwargs):
+        for imageId in imageIds:
+            self.delete(imageId, reason, permanently)
         return True
+
+    @auth(groups=['level1', 'level2', 'level3'])
+    def restore(self, imageId, reason, **kwargs):
+        return j.apps.cloudapi.images.restore(imageId)
 
     @auth(groups=['level1', 'level2', 'level3'])
     def enable(self, imageId, **kwargs):
@@ -33,9 +45,9 @@ class cloudbroker_image(BaseActor):
         result bool
         """
         image = self._checkimage(imageId)
-        if image.status == 'DESTROYED':
-            raise exceptions.BadRequest('Can not enable a destroyed image')
-        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'CREATED'}})
+        if image.status in resourcestatus.Image.INVALID_STATES:
+            raise exceptions.BadRequest('Can not enable a deleted image')
+        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': resourcestatus.Image.CREATED}})
 
     @auth(groups=['level1', 'level2', 'level3'])
     def disable(self, imageId, **kwargs):
@@ -45,9 +57,9 @@ class cloudbroker_image(BaseActor):
         result bool
         """
         image = self._checkimage(imageId)
-        if image.status == 'DESTROYED':
-            raise exceptions.BadRequest('Can not disable a destroyed image')
-        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': 'DISABLED'}})
+        if image.status in resourcestatus.Image.INVALID_STATES:
+            raise exceptions.BadRequest('Can not disable a deleted image')
+        self.models.image.updateSearch({'id': imageId}, {'$set': {'status': resourcestatus.Image.DISABLED}})
 
     @auth(groups=['level1', 'level2', 'level3'])
     def updateNodes(self, imageId, enabledStacks, **kwargs):
@@ -85,7 +97,7 @@ class cloudbroker_image(BaseActor):
     @auth(groups=['level1', 'level2', 'level3'])
     def createImage(self, name, url, gid, imagetype, boottype, username=None, password=None, accountId=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
-            raise exceptions.BadRequest("Specified accountId does not exists")
+            raise exceptions.BadRequest("Specified accountId does not exist")
         if boottype not in ['bios', 'uefi']:
             raise exceptions.BadRequest('Invalid boottype, should be either uefi or bios')
         bytesize = self._getImageSize(url)
@@ -126,7 +138,7 @@ class cloudbroker_image(BaseActor):
         image.username = username
         image.password = password
         image.accountId = accountId or 0
-        image.status = 'CREATING'
+        image.status = resourcestatus.Image.CREATING
         image.size = gbsize
         image.bootType = boottype
         volume = None
@@ -153,13 +165,13 @@ class cloudbroker_image(BaseActor):
             if self.models.image.exists(image.id):
                 self.models.image.delete(image.id)
             raise
-        self.models.image.updateSearch({'id': image.id}, {'$set': {'status': 'CREATED', 'size': size}})
+        self.models.image.updateSearch({'id': image.id}, {'$set': {'status': resourcestatus.Image.CREATED, 'size': size}})
         self.models.stack.updateSearch({'gid': gid}, {'$addToSet': {'images': image.id}})
         return True
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def deleteCDROMImage(self, diskId, **kwargs):
-        return j.apps.cloudapi.disks.delete(diskId, True, **kwargs)
+    def deleteCDROMImage(self, diskId, permanently=False, name=None, reason=None, **kwargs):
+        return j.apps.cloudapi.disks.delete(diskId, True, permanently, name, reason, **kwargs)
 
     @auth(groups=['level1', 'level2', 'level3'])
     def createCDROMImage(self, name, url, gid, accountId=None, **kwargs):
@@ -210,4 +222,4 @@ class cloudbroker_image(BaseActor):
             if self.models.disk.exists(disk.id):
                 self.models.disk.delete(disk.id)
             raise
-        self.models.disk.updateSearch({'id': disk.id}, {'$set': {'status': 'CREATED', 'sizeMax': size}})
+        self.models.disk.updateSearch({'id': disk.id}, {'$set': {'status': resourcestatus.Disk.CREATED, 'sizeMax': size}})

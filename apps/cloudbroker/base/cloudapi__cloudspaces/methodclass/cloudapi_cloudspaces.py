@@ -311,7 +311,7 @@ class cloudapi_cloudspaces(BaseActor):
             raise
 
     @authenticator.auth(acl={'cloudspace': set('D')})
-    def delete(self, cloudspaceId, **kwargs):
+    def delete(self, cloudspaceId, permanently=False, **kwargs):
         """
         Delete the cloudspace
 
@@ -334,15 +334,22 @@ class cloudapi_cloudspaces(BaseActor):
         status = cloudspace.status
         try:
             provider = self.cb.getProviderByGID(cloudspace.gid)
-            machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': resourcestatus.Machine.DELETED})[1:]
-            for machine in sorted(machines, key=lambda m: m['cloneReference'], reverse=True):
-                self.cb.machine.destroy_machine(machine['id'], provider)
             cloudspace.status = resourcestatus.Cloudspace.DESTROYING
             self.models.cloudspace.set(cloudspace)
-            cloudspace = self.cb.cloudspace.release_resources(cloudspace)
-            cloudspace.status = resourcestatus.Cloudspace.DESTROYED
-            cloudspace.deletionTime = int(time.time())
-            cloudspace.updateTime = int(time.time())
+            if permanently:
+                machines = self.models.vmachine.search({'cloudspaceId': cloudspaceId, 'status': resourcestatus.Machine.DELETED})[1:]
+                for machine in sorted(machines, key=lambda m: m['cloneReference'], reverse=True):
+                    self.cb.machine.destroy_machine(machine['id'], provider)
+                cloudspace = self.cb.cloudspace.release_resources(cloudspace)
+                cloudspace.status = resourcestatus.Cloudspace.DESTROYED
+                current_time = int(time.time())
+            else:
+                fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+                self.cb.netmgr.fw_stop(fwid)
+                cloudspace.status = resourcestatus.Cloudspace.DELETED
+                current_time = int(time.time())
+                cloudspace.deletionTime = current_time
+            cloudspace.updateTime = current_time
         except:
             cloudspace = self.models.cloudspace.get(cloudspace.id).dump()
             cloudspace['status'] = status
@@ -367,7 +374,8 @@ class cloudapi_cloudspaces(BaseActor):
                                                  })[1:]
         for vmachine in vmachines:
             j.apps.cloudapi.machines.stop(machineId=vmachine['id'])
-        self.netmgr.fw_stop(cloudspace.networkId)
+        fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
+        self.netmgr.fw_stop(fwid)
         self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': {'status': resourcestatus.Cloudspace.DISABLED}})
         return True
 
@@ -419,6 +427,28 @@ class cloudapi_cloudspaces(BaseActor):
                       "location": cloudspaceObject.location,
                       "secret": cloudspaceObject.secret}
         return cloudspace
+
+    @authenticator.auth(acl={'cloudspace': set('U')})
+    def restore(self, cloudspaceId, reason, **kwargs):
+        cloudspaceId = int(cloudspaceId)
+        cloudspace = self.models.cloudspace.searchOne({'id': cloudspaceId})
+        if not cloudspace:
+            raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
+        if cloudspace['status'] != resourcestatus.Cloudspace.DELETED:
+            raise exceptions.BadRequest('Can only restore a deleted cloudspace')
+        title = 'Deleting Cloud Space %(name)s' % cloudspace
+        ctx = kwargs['ctx']
+        # restoring machines
+        machine_query = {'cloudspaceId': cloudspace['id'], 'status': resourcestatus.Machine.DELETED}
+        machines = self.models.vmachine.search(machine_query)[1:]
+        for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
+            ctx.events.sendMessage(title, 'Restoring Virtual Machine %s/%s' % (idx + 1, len(machines)))
+            j.apps.cloudapi.machines.restore(machine['id'], reason, csrestore="")
+        fwid = '%s_%s' % (cloudspace['gid'], cloudspace['networkId'])
+        self.cb.netmgr.fw_start(fwid=fwid)
+        set_query = {'status': resourcestatus.Cloudspace.DEPLOYED, 'deletionTime': 0}
+        self.models.cloudspace.updateSearch({'id': cloudspaceId}, {'$set': set_query})
+        return True
 
     @authenticator.auth(acl={'cloudspace': set('U')})
     def deleteUser(self, cloudspaceId, userId, recursivedelete=False, **kwargs):

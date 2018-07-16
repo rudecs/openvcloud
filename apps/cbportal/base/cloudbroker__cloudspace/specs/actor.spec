@@ -5,11 +5,12 @@
     method:destroy
         """
         destroy a cloudspace
-        Destroys its machines, vfws and routeros
+        If permanently is true, destroys its machines, vfws and routeros
+        Otherwise it is possible to restore the cloudspace along with its machines again during the retention period
         Returns 200 if cloudspace is deleted or was already deleted or never existed
         """
-        var:accountId int,,id of account
         var:cloudspaceId str,,ID of cloudspace
+        var:permanently bool,False, whether to completly delete the cloudspace
         var:reason str,, reason for destroying the cloudspace
 
     method:moveVirtualFirewallToFirewallNode
@@ -35,7 +36,14 @@
         Reset VFW
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:resettype str,,either factory or restore
+        var:reason str,,either factory or restore
+
+    method:restore
+        """
+        Restore a deleted cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:reason str,, reason for restoring the cloudspace
     
     method:applyConfig
         """
@@ -136,3 +144,4 @@
         """
         var:cloudspaceIds list(int),, IDs of cloudspaces
         var:reason str,, ID of account
+        var:permanently bool ,, whether to completly destroy cloudspaces or not

@@ -134,6 +134,7 @@
         """
         var:machineId int,,Machine id
         var:reason str,,Reason
+        var:permanently bool,False, whether to completly delete the machine
 
     method:moveToDifferentComputeNode
         """
@@ -352,3 +353,4 @@
         """
         var:machineIds list(int),,Machine ids
         var:reason str,,Reason
+        var:permanently bool,False, whether to completly delete the machines

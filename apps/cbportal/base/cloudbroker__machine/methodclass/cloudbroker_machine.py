@@ -163,26 +163,26 @@ class cloudbroker_machine(BaseActor):
         return {'id': vm.id, 'xml': xml, 'stackId': machine.stackId}
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def destroy(self, machineId, reason, **kwargs):
-        j.apps.cloudapi.machines.delete(machineId=int(machineId))
+    def destroy(self, machineId, reason, permanently=False, name=None, **kwargs):
+        j.apps.cloudapi.machines.delete(machineId=int(machineId), permanently=permanently, name=name)
         return True
 
-    @auth(groups=['level1', 'level2', 'level3'])
-    def destroyMachines(self, machineIds, reason, **kwargs):
+    @auth(groups=['level3'])
+    def destroyMachines(self, machineIds, reason, permanently=False, **kwargs):
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroyMachines,
-                            args=(machineIds, reason, ctx),
+                            args=(machineIds, permanently, reason, ctx),
                             kwargs={},
                             title='Destroying Machines',
                             success='Machines destroyed successfully',
                             error='Failed to destroy machines')
 
-    def _destroyMachines(self, machineIds, reason, ctx):
+    def _destroyMachines(self, machineIds, permanently, reason, ctx):
         for idx, machineId in enumerate(machineIds):
             ctx.events.sendMessage("Destroying Machine", 'Destroying Machine %s/%s' %
                                    (idx + 1, len(machineIds)))
             try:  # BULK ACTION
-                self.destroy(machineId, reason)
+                self.destroy(machineId, reason, permanently)
             except exceptions.BadRequest:
                 pass
 
@@ -200,35 +200,7 @@ class cloudbroker_machine(BaseActor):
 
         :param machineId: id of the machine
         """
-        ctx = kwargs['ctx']
-        ctx.env['JS_AUDIT'] = True
-        ctx.env['tags'] += " machineId:{}".format(machineId)
-        machine = self._validateMachineRequest(machineId)
-        cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
-        if machine.status != resourcestatus.Machine.DELETED:
-            raise exceptions.BadRequest("Can't restore a non deleted machine")
-
-        with self.models.account.lock(cloudspace.accountId):
-            vcpus = machine.vcpus
-            memory = machine.memory
-            diskids = machine.disks
-            totaldisksize = 0
-            for diskid in diskids:
-                disk = self.models.disk.get(diskid)
-                totaldisksize += disk.sizeMax
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vcpus,
-                                                                    memory / 1024.0, totaldisksize)
-
-            nic = machine.nics[0]
-            nic.type = 'bridge'
-            nic.ipAddress = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
-            machine.status = resourcestatus.Machine.HALTED
-            machine.updateTime = int(time.time())
-            machine.deletionTime = 0
-            self.models.vmachine.set(machine)
-        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
-        self.models.disk.updateSearch({'id' : {'$in': machine.disks}}, {'$set': {'status': 'CREATED'}})
-        return True
+        return j.apps.cloudapi.machines.restore(machineId, reason)
 
     @auth(groups=['level1', 'level2', 'level3'])
     def startMachines(self, machineIds, reason, **kwargs):

@@ -4,6 +4,9 @@
 {% if id %}
 h3. Image: ${name}
 
+{% if status != "DESTROYED" %}
+{% if status != "DELETED" %}
+
 {{actions:
 - display: Image Availability
   action: '#image_update_cpu_nodes'
@@ -36,6 +39,16 @@ h3. Image: ${name}
   action: /restmachine/cloudbroker/image/delete
   data:
    imageId: $$id
+  input:
+  - reason
+  - name: permanently
+    label: Completely delete the image, can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
 
 - display: Enable
   input:
@@ -51,6 +64,34 @@ h3. Image: ${name}
   data:
    imageId: $$id
 }}
+
+{% else %}
+
+{{actions:
+- display: Restore Image
+  action: /restmachine/cloudbroker/image/restore
+  data:
+   imageId: $$id
+  input:
+  - reason
+
+- display: Permenant delete
+  action: /restmachine/cloudbroker/image/delete
+  data:
+   imageId: $$id
+   permanently: True
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+}}
+
+{% endif %}
+{% endif %}
 
 {{image_update_cpu_nodes: imageId:$$id}}
 

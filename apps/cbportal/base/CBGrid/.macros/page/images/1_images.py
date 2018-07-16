@@ -6,7 +6,7 @@ def main(j, args, params, tags, tasklet):
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
     stackid = args.getTag('stackid')
-    filters = dict()
+    filters = {'status': {'$nin': ['DESTROYED', 'DELETED']}}
     if stackid:
         stackid = int(stackid)
         stack = ccl.stack.get(stackid)

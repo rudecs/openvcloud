@@ -67,6 +67,14 @@
    machineId: $$id
   input:
   - reason
+  - name: permanently
+    label: Completely delete the machine, can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
 
 - display: Snapshot
   action: /restmachine/cloudbroker/machine/snapshot
@@ -310,5 +318,19 @@
    machineId: $$id
   input:
   - reason
+
+- display: Permenant delete
+  action: /restmachine/cloudbroker/machine/destroy
+  data:
+   machineId: $$id
+   permanently: True
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
 }}
 {% endif %}

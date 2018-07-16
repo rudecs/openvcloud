@@ -26,7 +26,7 @@
     prop:clone int,, id of the clone
     prop:creationTime int,, epoch time of creation, in seconds @index
     prop:updateTime int,, epoch time of update, in seconds @index
-    prop:deletionTime int,, epoch time of destruction, in seconds @index
+    prop:deletionTime int,, epoch time of deletion, in seconds @index
     prop:memory int,, the amount of mmemory available to this machine
     prop:vcpus int,, the number of vcpus available to this machine 
     prop:type str,,Type of machine @index
@@ -84,6 +84,7 @@
     prop:password str,, specific password for this image
     prop:provider_name str,, provider name for this image openstack/libvirt, ...
     prop:bootType str,, image boot type e.g bios, uefi
+    prop:deletionTime int,, epoch time of deletion, in seconds @index
 
 
 
@@ -132,6 +133,7 @@
     prop:params str,,pylabs tags to define optional params
     prop:bootPartition int,,the partition to boot from if disk is a bootdisk
     prop:images list(int),,List of id of Image object
+    prop:deletionTime int,, epoch time of deletion, in seconds @index
 
 [rootmodel:Network] @dbtype:osis
     """
@@ -178,7 +180,7 @@
     prop:secret str,, used to identify a space through the cloud robot
     prop:creationTime int,, epoch time of creation, in seconds @index
     prop:updateTime int,, epoch time of creation, in seconds @index
-    prop:deletionTime int,, epoch time of destruction, in seconds @index
+    prop:deletionTime int,, epoch time of deletion, in seconds @index
     prop:privatenetwork str,,Private network cidr eg. 192.168.103.0/24
 
 [rootmodel:externalnetwork] @dbtype:osis

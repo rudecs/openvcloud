@@ -41,6 +41,7 @@
         Delete a machine
         """
         var:machineId int,, id of the machine
+        var:permanently bool,False, whether to completly delete the machine
         result: bool
 
     method:update
@@ -94,6 +95,14 @@
         Resume the machine
         """
         var:machineId int,, id of the machine
+        result:bool
+
+    method:restore
+        """
+        Restore a deleted machine
+        """
+        var:machineId int,, id of the machine
+        var:reason str,,Reason
         result:bool
 
     method:addDisk

@@ -34,6 +34,7 @@
         Returns 200 if cloudspace is deleted or was already deleted or never existed
         """
         var:cloudspaceId int,, id of the cloudspace
+        var:permanently bool,False, whether to completly delete the cloudspace
         result:bool, True if deletion was successful
 
     method:disable
@@ -72,6 +73,13 @@
         var:cloudspaceId int,, id of the cloudspace
         var:sizeId int,, id of the required size to be added
         result:bool, True if size is added
+
+    method:restore
+        """
+        Restore a deleted cloudspace
+        """
+        var:cloudspaceId int,, id of the cloudspace
+        var:reason str,, reason for restoring the cloudspace
 
     method:removeAllowedSize
         """

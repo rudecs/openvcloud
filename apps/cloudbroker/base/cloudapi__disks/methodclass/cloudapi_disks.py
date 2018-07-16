@@ -3,6 +3,7 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor
 from CloudscalerLibcloud.compute.drivers.libvirt_driver import OpenvStorageVolume, OpenvStorageISO, PhysicalVolume
+import time
 
 MIN_IOPS = 80
 
@@ -90,7 +91,6 @@ class cloudapi_disks(BaseActor):
                 disk.referenceId = volume.id
             disk.status = resourcestatus.Disk.CREATED
         except:
-            disk.status = resourcestatus.Disk.DELETED
             self.models.disk.delete(disk.id)
             raise
         self.models.disk.set(disk)
@@ -128,7 +128,7 @@ class cloudapi_disks(BaseActor):
         if iops:
             iotune['total_iops_sec'] = iops
         disk = self.models.disk.get(diskId)
-        if disk.status == resourcestatus.Disk.DELETED:
+        if disk.status == resourcestatus.Disk.INVALID_STATES:
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         if disk.type == 'M':
@@ -165,7 +165,7 @@ class cloudapi_disks(BaseActor):
         :param type: type of type of the disks
         :return: list with every element containing details of a disk as a dict
         """
-        query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': 'DELETED'}}
+        query = {'accountId': {'$in': [accountId, None]}, 'status': {'$ne': resourcestatus.Account.DESTROYED}}
         if type:
             query['type'] = type
         disks = self.models.disk.search(query)[1:]
@@ -181,7 +181,7 @@ class cloudapi_disks(BaseActor):
         return disks
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def delete(self, diskId, detach, **kwargs):
+    def delete(self, diskId, detach, permanently=False, name=None, reason=None, **kwargs):
         """
         Delete a disk
 
@@ -192,20 +192,31 @@ class cloudapi_disks(BaseActor):
         if not self.models.disk.exists(diskId):
             return True
         disk = self.models.disk.get(diskId)
-        if disk.status == resourcestatus.Disk.DELETED:
+        if name and disk.name != name:
+            raise exceptions.BadRequest('Incorrect disk name specified')
+        if disk.status == resourcestatus.Disk.DESTROYED:
             return True
-        machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
+        if disk.type == 'C':
+            machines = self.models.vmachine.count({'tags': {'$regex': ".*cdrom:%s.*" % disk.id}})
+            if machines:
+                raise exceptions.BadRequest('Cannot delete a used disk')
+        else:
+            machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if machines and not detach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:
             j.apps.cloudapi.machines.detachDisk(machineId=machines[0]['id'], diskId=diskId, **kwargs)
             disk.status = resourcestatus.Disk.CREATED
+        disk.deletionTime = int(time.time())
+        if not machines and not permanently:
+            self.models.disk.updateSearch({'id': diskId}, {'$set': {'status': resourcestatus.Disk.TOBEDELETED}})
+            return True
+        disk.status = resourcestatus.Disk.DELETED
+        self.models.disk.set(disk)
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
-        disk.status = resourcestatus.Disk.TOBEDELETED
-        self.models.disk.set(disk)
         provider.destroy_volume(volume)
-        disk.status = resourcestatus.Disk.DELETED
+        disk.status = resourcestatus.Disk.DESTROYED
         self.models.disk.set(disk)
         return True
 
@@ -224,7 +235,7 @@ class cloudapi_disks(BaseActor):
             raise exceptions.BadRequest("Can't resize a disk of type Meta")
         if disk.sizeMax >= size:
             raise exceptions.BadRequest("The specified size is smaller than or equal the original size")
-        if disk.status == resourcestatus.Disk.DELETED:
+        if disk.status == resourcestatus.Disk.INVALID_STATES:
             raise exceptions.BadRequest("Disk with id %s is not created" % diskId)
 
         machine = next(iter(self.models.vmachine.search({'disks': diskId})[1:]), None)
@@ -248,3 +259,21 @@ class cloudapi_disks(BaseActor):
             if not res:
                 raise exceptions.Accepted(False)
             return True
+
+    @authenticator.auth(acl={'cloudspace': set('X')})
+    def restore(self, diskId, reason, **kwargs):
+        disk = self.models.disk.searchOne({'id': diskId})
+        if not disk or disk['status'] == resourcestatus.Disk.DESTROYED:
+            raise exceptions.NotFound("Couldn't find disk with id: %s" % diskId)
+        if disk['status'] != resourcestatus.Disk.TOBEDELETED:
+            raise exceptions.BadRequest('Cannot restore an attached or non deleted disk')
+        self.models.disk.updateSearch({'id': diskId}, {'$set': {'status': resourcestatus.Disk.CREATED, 'deletionTime': 0}})
+        return True
+
+    @authenticator.auth(acl={'cloudspace': set('X')})
+    def deleteDisks(self, diskIds, reason, **kwargs):
+        for diskId in diskIds:
+            self.delete(diskId, False, True, reason=reason)
+        return True
+        
+

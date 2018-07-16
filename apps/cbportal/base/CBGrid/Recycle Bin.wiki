@@ -1,0 +1,207 @@
+@usedefault
+
+@@title Recycle bin
+
+{{binids}}
+
+h1. Recycle Bin
+
+{{actions:
+- display: Destroy Cloudspace
+  action: /restmachine/cloudbroker/cloudspace/destroy
+  hide: true
+  refresh: true
+  input:
+  - label: CloudSpace name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Restore Cloudspace
+  action: /restmachine/cloudbroker/cloudspace/restore
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+
+- display: Destroy Machine
+  action: /restmachine/cloudbroker/machine/destroy
+  hide: true
+  refresh: true
+  input:
+  - label: Machine name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Restore Machine
+  action: /restmachine/cloudbroker/machine/restore
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+
+- display: Destroy Cloudspaces
+  action: /restmachine/cloudbroker/cloudspace/destroyCloudSpaces
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Destroy Machines
+  action: /restmachine/cloudbroker/machine/destroyMachines
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+
+- display: Destroy Disk
+  action: /restmachine/cloudapi/disks/delete
+  hide: true
+  refresh: true
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Restore Disk
+  action: /restmachine/cloudapi/disks/restore
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+
+- display: Destroy Image
+  action: /restmachine/cloudbroker/image/delete
+  hide: true
+  refresh: true
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Restore Image
+  action: /restmachine/cloudbroker/image/restore
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+}}
+
+
+h2. Deleted Cloud Spaces
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all Cloud Spaces
+  action: /restmachine/cloudbroker/cloudspace/destroyCloudSpaces
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+    cloudspaceIds: ${cloudspaceIds}
+
+}}
+
+{{csbin}}
+
+h2. Deleted Virtual Machines
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all Machines
+  action: /restmachine/cloudbroker/machine/destroyMachines
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+    machineIds: ${machineIds}
+}}
+
+{{vmbin}}
+
+h2. Deleted disks
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all disks
+  action: /restmachine/cloudapi/disks/deleteDisks
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    diskIds: ${BdiskIds}
+}}
+
+{{diskbin: type:B}}
+
+h2. Deleted Images
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all images
+  action: /restmachine/cloudbroker/image/deleteImages
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    imageIds: ${imageIds}
+    permanently: True
+}}
+
+{{imagebin}}
+
+h2. Deleted CD-ROM
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all CD-ROMS
+  action: /restmachine/cloudapi/disks/deleteDisks
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    diskIds: ${CdiskIds}
+}}
+
+{{diskbin: type:C}}

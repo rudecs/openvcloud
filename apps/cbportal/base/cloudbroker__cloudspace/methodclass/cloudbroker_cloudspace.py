@@ -6,6 +6,7 @@ from cloudbrokerlib.baseactor import BaseActor
 from cloudbrokerlib import network, netmgr
 import netaddr
 from JumpScale.portal.portal import exceptions
+import time
 
 
 class cloudbroker_cloudspace(BaseActor):
@@ -29,25 +30,27 @@ class cloudbroker_cloudspace(BaseActor):
         return cloudspace
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def destroy(self, accountId, cloudspaceId, reason, **kwargs):
+    def destroy(self, cloudspaceId, reason, permanently=False, name=None, **kwargs):
+
         """
-        Destroys a cloudspacec and its machines, vfws and routeros
+        Destroys a cloudspace and its machines, vfws and routeros
         """
         try:
             cloudspace = self._getCloudSpace(cloudspaceId)
         except (exceptions.BadRequest, exceptions.NotFound):
             return
 
+        if name and cloudspace['name'] != name:
+            raise exceptions.BadRequest('Incorrect cloudspace name specified')
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroy,
-                            args=(cloudspace, reason, ctx),
+                            args=(cloudspace, reason, permanently, ctx),
                             kwargs={},
                             title='Deleting Cloud Space',
                             success='Finished deleting Cloud Space',
                             error='Failed to delete Cloud Space')
 
-    def _destroy(self, cloudspace, reason, ctx):
-        provider = self.cb.getProviderByGID(cloudspace['gid'])
+    def _destroy(self, cloudspace, reason, permanently, ctx):
         with self.models.cloudspace.lock(cloudspace['id']):
             cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
             if cloudspace['status'] == resourcestatus.Cloudspace.DEPLOYING:
@@ -62,40 +65,54 @@ class cloudbroker_cloudspace(BaseActor):
             machines = self.models.vmachine.search(machine_query)[1:]
             for idx, machine in enumerate(sorted(machines, key=lambda m: m['cloneReference'], reverse=True)):
                 ctx.events.sendMessage(title, 'Deleting Virtual Machine %s/%s' % (idx + 1, len(machines)))
-                j.apps.cloudbroker.machine.destroy(machine['id'], reason)
-                self.cb.machine.destroy_machine(machine['id'], provider)
+                j.apps.cloudbroker.machine.destroy(machine['id'], reason, permanently)
         except:
             cloudspace = self.models.cloudspace.get(cloudspace['id']).dump()
             cloudspace['status'] = status
             self.models.cloudspace.set(cloudspace)
             raise
 
-        # delete routeros
-        ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
-        self._destroyVFW(cloudspace['gid'], cloudspace['id'])
-        cloudspace = self.models.cloudspace.get(cloudspace['id'])
-        cloudspace.status = resourcestatus.Cloudspace.DESTROYED
-        self.cb.cloudspace.release_resources(cloudspace)
+        if not permanently:
+            ctx.events.sendMessage(title, 'Stopping Virtual Firewall')
+            fwid = '%s_%s' % (cloudspace['gid'], cloudspace['networkId'])
+            self.cb.netmgr.fw_stop(fwid)
+            cloudspace['status'] = resourcestatus.Cloudspace.DELETED
+            current_time = int(time.time())
+            cloudspace['deletionTime'] = current_time
+            cloudspace['updateTime'] = current_time
+        else:
+            # delete routeros
+            ctx.events.sendMessage(title, 'Deleting Virtual Firewall')
+            self._destroyVFW(cloudspace['gid'], cloudspace['id'])
+            cloudspace = self.models.cloudspace.get(cloudspace['id'])
+            self.cb.cloudspace.release_resources(cloudspace)
+            cloudspace.status = resourcestatus.Cloudspace.DESTROYED
+            cloudspace.updateTime = int(time.time())
         self.models.cloudspace.set(cloudspace)
         return True
 
+
     @auth(groups=['level1', 'level2', 'level3'])
-    def destroyCloudSpaces(self, cloudspaceIds, reason, **kwargs):
+    def restore(self, cloudspaceId, reason, **kwargs):
+        return j.apps.cloudapi.cloudspaces.restore(cloudspaceId, reason, ctx=kwargs['ctx'])
+
+    @auth(groups=['level3'])
+    def destroyCloudSpaces(self, cloudspaceIds, reason, permanently=False, **kwargs):
         """
         Destroys a cloudspacec and its machines, vfws and routeros
         """
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._destroyCloudSpaces,
-                            args=(cloudspaceIds, reason, ctx),
+                            args=(cloudspaceIds, reason, permanently, ctx),
                             kwargs={},
                             title='Destroying Cloud Spaces',
                             success='Finished destroying Cloud Spaces',
                             error='Failed to destroy Cloud Space')
 
-    def _destroyCloudSpaces(self, cloudspaceIds, reason, ctx):
+    def _destroyCloudSpaces(self, cloudspaceIds, reason, permanently, ctx):
         for idx, cloudspaceId in enumerate(cloudspaceIds):
             cloudspace = self._getCloudSpace(cloudspaceId)
-            self._destroy(cloudspace, reason, ctx)
+            self._destroy(cloudspace, reason, permanently, ctx)
 
     @auth(groups=['level1', 'level2', 'level3'])
     @async('Moving Virtual Firewall', 'Finished moving VFW', 'Failed to move VFW')
@@ -279,6 +296,8 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspaceId = self._getCloudSpace(cloudspaceId)['id']
         cloudspace = self.models.cloudspace.get(cloudspaceId)
+        if cloudspace.status == resourcestatus.Cloudspace.DELETED:
+            raise exceptions.BadRequest('Selected Cloud Space is deleted')
         fwid = '%s_%s' % (cloudspace.gid, cloudspace.networkId)
         return self.cb.netmgr.fw_start(fwid=fwid)
 
@@ -387,7 +406,7 @@ class cloudbroker_cloudspace(BaseActor):
                                                           maxVDiskCapacity=maxVDiskCapacity, maxCPUCapacity=maxCPUCapacity,
                                                           maxNetworkPeerTransfer=maxNetworkPeerTransfer,
                                                           maxNumPublicIP=maxNumPublicIP, externalnetworkId=externalnetworkId,
-                                                          allowedVMSizes=allowedVMSizes, privatenetwork=privatenetwork)
+                                                          allowedVMSizes=allowedVMSizes, privatenetwork=privatenetwork, ctx=kwargs['ctx'])
 
     def _checkCloudspace(self, cloudspaceId):
         cloudspaces = self.models.cloudspace.search({'id': cloudspaceId})[1:]
@@ -408,6 +427,8 @@ class cloudbroker_cloudspace(BaseActor):
         """
         cloudspace = self._checkCloudspace(cloudspaceId)
         cloudspaceId = cloudspace['id']
+        if cloudspace['status'] == resourcestatus.Cloudspace.DELETED:
+            raise exceptions.BadRequest('Selected cloudspace is deleted')
         user = self.cb.checkUser(username, activeonly=False)
 
         cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)

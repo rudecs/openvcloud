@@ -7,6 +7,25 @@
         delete image
         """
         var:imageId int,,id of image to be deleted
+        var:reason str,, reason for deleting the image
+        var:permanently bool,False, whether to completly delete the image
+        result:bool
+
+    method:deleteImages
+        """
+        delete images
+        """
+        var:imageIds list(int),,list of images to be deleted
+        var:reason str,, reason for deleting the images
+        var:permanently bool,False, whether to completly delete the images
+        result:bool
+
+    method:restore
+        """
+        restore image
+        """
+        var:imageId int,,id of image to be restored
+        var:reason str,, reason for restoring the image
         result:bool
 
     method:enable
@@ -47,6 +66,7 @@
         Delete a CD-ROM Image
         """
         var:diskId int,,diskId of the CD-ROM image to delete
+        var:permanently bool,False, whether to completly delete the CD-ROM image, needs to be unused
 
 
     method:createImage

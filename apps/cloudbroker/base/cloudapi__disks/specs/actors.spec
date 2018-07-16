@@ -48,6 +48,7 @@
         """
         var:diskId int,, id of disk to delete
         var:detach bool,,detach disk from machine first @optional
+        var:permanently bool,False, whether to completly delete the disk, works only with non attached disks
         result: bool, True if disk was deleted successfully
 
     method:create
@@ -72,3 +73,19 @@
         var:diskId int,, Id of the disk to resize
         var:size int,, New size of the disk in GB
         result:str, return code of the operation
+
+    method:restore
+        """
+        Restore a deleted unattached diskId
+        """
+        var:diskId int,, Id of the disk to restore
+        var:reason str,, reason for restoring the disk
+        result:bool, True if disk is restored
+
+    method:deleteDisks
+        """
+        Delete multiple disks permanently
+        """
+        var:diskIds list(int),, list of disk ids to delete
+        var:reason str,, reason for deleting the disks
+        result:bool, True if disks are deleted

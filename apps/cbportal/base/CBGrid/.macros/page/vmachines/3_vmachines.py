@@ -1,5 +1,6 @@
 
 def main(j, args, params, tags, tasklet):
+    from cloudbrokerlib import resourcestatus
     import cgi
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
@@ -7,7 +8,7 @@ def main(j, args, params, tags, tasklet):
     cloudspaceId = args.getTag("cloudspaceid")
     imageid = args.getTag('imageid')
     gid = args.getTag('gid')
-    filters = {'status': {'$ne': 'DESTROYED'}}
+    filters = {'status': {'$nin': resourcestatus.Machine.INVALID_STATES}}
     ccl = j.clients.osis.getNamespace('cloudbroker')
 
     if stackid:

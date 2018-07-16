@@ -13,6 +13,8 @@ h2. Cloud Space: ${name}
 
 {% if status != "DESTROYED" %}
 
+{% if status != "DELETED" %}
+
 {{actions:
 
 
@@ -72,14 +74,21 @@ h2. Cloud Space: ${name}
 
 {% endif %}
 
-- display: Delete Cloud Space
+- display: Delete cloud Space
   action: /restmachine/cloudbroker/cloudspace/destroy
   reload: false
   data:
    cloudspaceId: $$id
-   accountId: ${accountId}
   input:
   - reason
+  - name: permanently
+    label: Completely delete the cloudspace, can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
 
 {% if status != "DISABLED" %}
 - display: Disable Cloud Space
@@ -141,6 +150,32 @@ h2. Cloud Space: ${name}
 
 }}
 
+{% else %}
+
+{{actions:
+- display: Restore Cloud Space
+  action: /restmachine/cloudbroker/cloudspace/restore
+  data:
+   cloudspaceId: $$id
+  input:
+  - reason
+
+- display: Permenant delete
+  action: /restmachine/cloudbroker/cloudspace/destroy
+  data:
+   cloudspaceId: $$id
+   permanently: True
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+}}
+
+{% endif %}
 {% endif %}
 
 {{createmachine: cloudspaceId:$$id}}

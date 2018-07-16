@@ -25,6 +25,18 @@ h2. Disk: ${name}
 - display: Delete
   action: /restmachine/cloudbroker/image/deleteCDROMImage
   refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  - name: permanently
+    label: Completely delete the CD-ROM image, can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
   data:
    diskId: ${id}
 
@@ -44,11 +56,11 @@ h2. Disk: ${name}
 {% if machineId -%}
 |*Virtual Machine*| [${machineName}|Virtual Machine?id=${machineId}]|
 {% endif -%}
-{% if type != 'P' %}
+{% if type != 'P' -%}
 |*vDisk GUID*| ${vdiskguid}|
 |*Edge host*| ${edgehost}|
 |*Edge port*| ${edgeport}|
-{% endif %}
+{% endif -%}
 |*Edge name*| ${edgename}|
 
 {% if type not in ['Meta', 'CD-ROM'] %}

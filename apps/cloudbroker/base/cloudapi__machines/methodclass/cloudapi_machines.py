@@ -104,6 +104,7 @@ class cloudapi_machines(BaseActor):
         if machine.status not in resourcestatus.Machine.UP_STATES:
             self.cb.chooseStack(machine)
         provider, node, machine = self.cb.getProviderAndNode(machineId)
+        tags = j.core.tags.getObject(machine.tags)
         if diskId is not None:
             if not self.models.disk.exists(diskId):
                 raise exceptions.BadRequest("Rescue disk with id {} does not exist".format(diskId))
@@ -113,12 +114,19 @@ class cloudapi_machines(BaseActor):
             disk = self.models.disk.get(diskId)
             if disk.type != 'C':
                 raise exceptions.BadRequest("diskId is not of type CD-ROM")
+            if disk.status in resourcestatus.Image.INVALID_STATES:
+                raise exceptions.BadRequest("Rescue disk with id {} is not available".format(diskId))
             cloudspace = self.models.cloudspace.get(machine.cloudspaceId)
             if disk.accountId and disk.accountId != cloudspace.accountId:
                 raise exceptions.BadRequest("Rescue disk with id {} belongs to another account".format(diskId))
             volume = j.apps.cloudapi.disks.getStorageVolume(disk, provider, node)
             node.extra['volumes'].append(volume)
             node.extra['bootdev'] = 'cdrom'
+            tags.tagSet('cdrom', disk.id)
+            self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'tags': tags.tagstring}})
+        elif 'cdrom' in tags.tags:
+            tags.tagDelete('cdrom')
+            self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'tags': tags.tagstring}})
 
         return self._action(machineId, 'start', resourcestatus.Machine.RUNNING, provider=provider, node=node)
 
@@ -698,17 +706,26 @@ class cloudapi_machines(BaseActor):
         return machine, auth, volumes, cloudspace
 
     @authenticator.auth(acl={'cloudspace': set('X')})
-    def delete(self, machineId, **kwargs):
+    def delete(self, machineId, permanently=False, **kwargs):
         """
         Delete the machine
 
         :param machineId: id of the machine
+        :param permanently: whether to completely remove the machine or not
         :return True if machine was deleted successfully
 
         """
         provider, node, vmachinemodel = self.cb.getProviderAndNode(machineId)
+        if 'name' in kwargs and kwargs['name']:
+            if vmachinemodel.name != kwargs['name']:
+                raise exceptions.BadRequest('Incorrect machine name specified')
         if node and node.extra.get('locked', False):
             raise exceptions.Conflict("Can not delete a locked Machine")
+        current_status = vmachinemodel.status
+        if current_status == resourcestatus.Machine.DELETED:
+            if permanently:
+                self.cb.machine.destroy_machine(machineId)
+            return True
         vms = self.models.vmachine.search({'cloneReference': machineId, 'status': {'$nin': resourcestatus.Machine.INVALID_STATES}})[1:]
         if vms:
             clonenames = ['  * %s' % vm['name'] for vm in vms]
@@ -717,10 +734,12 @@ class cloudapi_machines(BaseActor):
         self. _detachExternalNetworkFromModel(vmachinemodel)
         delete_state = resourcestatus.Machine.DELETED
         pdisks = self.models.disk.search({'id': {'$in': vmachinemodel.disks}, 'type': 'P'})[1:]
-        if pdisks:
+        if pdisks or permanently:
             delete_state = resourcestatus.Machine.DESTROYED
-        if not vmachinemodel.status == delete_state:
-            vmachinemodel.deletionTime = int(time.time())
+        if not current_status == delete_state:
+            current_time = int(time.time())
+            vmachinemodel.updateTime = current_time
+            vmachinemodel.deletionTime = current_time
             vmachinemodel.status = delete_state
             self.models.vmachine.set(vmachinemodel)
 
@@ -734,10 +753,10 @@ class cloudapi_machines(BaseActor):
                 berror, message="Failed to delete pf for vm with id %s can not apply config" % machineId)
         if provider:
             provider.destroy_node(node)
-        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': 'TOBEDELETED'}})
+        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': resourcestatus.Disk.DELETED}})
 
         # delete leases
-        cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId)
+        cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId) 
         fwid = "%s_%s" % (cloudspace.gid, cloudspace.networkId)
         macs = list()
         for nic in vmachinemodel.nics:
@@ -753,15 +772,8 @@ class cloudapi_machines(BaseActor):
             node_id = disk_info.query.split('=')[1]
             cmd = 'dd if=/dev/zero bs=1M count=500 of={}'.format(disk_info.path)
             self.acl.executeJumpscript('jumpscale', 'exec', nid=node_id, args={'cmd': cmd})
-        if delete_state == 'DESTROYED':
-            vdisks = self.models.disk.search({'$fields': ['referenceId'], 'id' : {'$in': vmachinemodel.disks}})[1:]
-            vdiskguids = []
-            for vdisk in vdisks:
-                _, _, vdiskguid = vdisk['referenceId'].partition('@')
-                if vdiskguid:
-                    vdiskguids.append(vdiskguid)
-            provider.destroy_volumes_by_guid(vdiskguids)
-        self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': 'DELETED'}})
+        if delete_state == resourcestatus.Machine.DESTROYED:
+            self.cb.machine.destroy_volumes(vmachinemodel.disks)
         return True
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -856,6 +868,43 @@ class cloudapi_machines(BaseActor):
     def _getMachine(self, machineId):
         machineId = int(machineId)
         return self.models.vmachine.get(machineId)
+
+    @authenticator.auth(acl={'cloudspace': set('X')})
+    def restore(self, machineId, reason, **kwargs):
+        """
+        Restore a deleted machine
+
+        :param machineId: id of the machine
+        """
+        machine = self.models.vmachine.searchOne({'id': int(machineId)})
+        if not machine:
+            raise exceptions.NotFound('Machine ID %s was not found' % machineId)
+        cloudspace = self.models.cloudspace.get(machine['cloudspaceId'])
+        if machine['status'] != resourcestatus.Machine.DELETED:
+            raise exceptions.BadRequest("Can't restore a non deleted machine")
+        if cloudspace.status == resourcestatus.Cloudspace.DELETED and 'csrestore' not in kwargs:
+            raise exceptions.BadRequest("Cannot restore a machine on a deleted cloudspace")
+        with self.models.account.lock(cloudspace.accountId):
+            vcpus = machine['vcpus']
+            memory = machine['memory']
+            diskids = machine['disks']
+            totaldisksize = 0
+            for diskid in diskids:
+                disk = self.models.disk.get(diskid)
+                totaldisksize += disk.sizeMax
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vcpus,
+                                                                    memory / 1024.0, totaldisksize)
+
+            nic = machine['nics'][0]
+            nic['type'] = 'bridge'
+            nic['ipAddress'] = self.cb.cloudspace.network.getFreeIPAddress(cloudspace)
+            machine['status'] = resourcestatus.Machine.HALTED
+            machine['updateTime'] = int(time.time())
+            machine['deletionTime'] = 0
+            self.models.vmachine.set(machine)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        self.models.disk.updateSearch({'id' : {'$in': machine['disks']}}, {'$set': {'status': resourcestatus.Disk.CREATED}})
+        return True
 
     @authenticator.auth(acl={'machine': set('C')})
     def snapshot(self, machineId, name, force=False, **kwargs):
@@ -1091,7 +1140,7 @@ class cloudapi_machines(BaseActor):
         except:
             self.cb.machine.cleanup(clone)
             raise
-        self.models.disk.updateSearch({'id' : {'$in': clone.disks}}, {'$set': {'status': 'ASSIGNED'}})
+        self.models.disk.updateSearch({'id' : {'$in': clone.disks}}, {'$set': {'status': resourcestatus.Disk.ASSIGNED}})
         gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
         return clone.id
 

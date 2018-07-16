@@ -1,9 +1,10 @@
 
 def main(j, args, params, tags, tasklet):
+    from cloudbrokerlib import resourcestatus
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
 
-    filters = dict()
+    filters = {'status': {'$nin': resourcestatus.Cloudspace.INVALID_STATES}}
     userId = args.getTag('userId')
     userId = userId.split('_', 1)[-1]
     if not userId:

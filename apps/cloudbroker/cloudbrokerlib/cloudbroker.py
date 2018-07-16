@@ -481,25 +481,35 @@ class Machine(object):
         if results:
             raise exceptions.Conflict('Selected name already exists')
 
-    def destroy_machine(self, machineId, provider):
+    def destroy_machine(self, machineId, provider=None):
         """
         Will force destroy a deleted machine
         :param machineId: int machine id
-        :param provider: provider object
+        :param provider: provider object, if not specified will get grid provider
         """
         machine = models.vmachine.searchOne({'id': machineId})
-        if machine['status'] != 'DELETED':
+        if machine['status'] != resourcestatus.Machine.DELETED:
             raise exceptions.BadRequest("Can't destroy a non deleted machine")
-        vdisk_query = {'id' : {'$in': machine['disks']}}
-        vdisks = models.disk.search(vdisk_query)[1:]
+        if machine['status'] == resourcestatus.Machine.DESTROYED:
+            return
+        self.destroy_volumes(machine['disks'], provider)
+        models.vmachine.updateSearch({'id': machine['id']}, {'$set': {'status': resourcestatus.Machine.DESTROYED, 'updateTime': int(time.time())}})
+
+    def destroy_volumes(self, disks, provider=None):
+        """
+        Destroys volumes of specified disks
+        :param disks: list if disks id
+        :param provider: provider object, if not specified will get grid provider
+        """
+        vdisks = models.disk.search({'$fields': ['referenceId', 'gid'], 'id' : {'$in': disks}})[1:]
         vdiskguids = []
         for vdisk in vdisks:
             _, _, vdiskguid = vdisk['referenceId'].partition('@')
             if vdiskguid:
                 vdiskguids.append(vdiskguid)
+        provider = provider or self.cb.getProviderByGID(vdisk['gid'])
         provider.destroy_volumes_by_guid(vdiskguids)
-        models.vmachine.updateSearch({'id': machine['id']}, {'$set': {'status': 'DESTROYED'}})
-        models.disk.updateSearch(vdisk_query, {'$set': {'status': 'DELETED'}})
+        models.disk.updateSearch({'id': {'$in': disks}}, {'$set': {'status': resourcestatus.Disk.DESTROYED}})
 
     def createModel(self, name, description, cloudspace, imageId, sizeId, disksize, datadisks, vcpus, memory):
         datadisks = datadisks or []
