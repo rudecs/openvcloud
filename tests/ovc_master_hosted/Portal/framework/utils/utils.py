@@ -29,7 +29,6 @@ class BaseTest(unittest.TestCase):
         self.admin_password = config['main']['passwd']
         self.GAuth_secret = config['main']['secret']
         self.browser = config['main']['browser']
-        self.remote_webdriver = config['main']['remote_webdriver']
         self.base_page = self.environment_url + '/ays'
         self.elements = xpath.elements.copy()
         self.api_url = self.environment_url.replace('http://', 'https://') + '/restmachine'
@@ -114,32 +113,18 @@ class BaseTest(unittest.TestCase):
             self.deleteUserApi(user)
 
     def set_browser(self):
-        if self.remote_webdriver:
-            if self.browser == 'chrome':
-                desired_capabilities = DesiredCapabilities.CHROME
-            else:
-                desired_capabilities = DesiredCapabilities.FIREFOX
-            self.driver = webdriver.Remote(command_executor=self.remote_webdriver + '/wd/hub',
-                                           desired_capabilities=desired_capabilities)
+        if self.browser == 'chrome':
+            self.driver = webdriver.Chrome()
+        elif self.browser == 'firefox':
+            self.driver = webdriver.Firefox()
+        elif self.browser == 'ie':
+            self.driver = webdriver.Ie()
+        elif self.browser == 'opera':
+            self.driver = webdriver.Opera()
+        elif self.browser == 'safari':
+            self.driver = webdriver.Safari
         else:
-            if self.browser == 'chrome':
-                self.driver = webdriver.Chrome()
-            elif self.browser == 'firefox':
-                # fp = FirefoxProfile()
-                # fp.set_preference("browser.download.folderList", 2)
-                # fp.set_preference("browser.download.manager.showWhenStarting", False)
-                # fp.set_preference("browser.download.dir", os.path.expanduser("~") + "/Downloads/")
-                # fp.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/zip, application/octet-stream")
-                # self.driver = webdriver.Firefox(firefox_profile=fp)
-                self.driver = webdriver.Firefox()
-            elif self.browser == 'ie':
-                self.driver = webdriver.Ie()
-            elif self.browser == 'opera':
-                self.driver = webdriver.Opera()
-            elif self.browser == 'safari':
-                self.driver = webdriver.Safari
-            else:
-                self.fail("Invalid browser configuration [%s]" % self.browser)
+            self.fail("Invalid browser configuration [%s]" % self.browser)
 
     def lg(self, msg):
         self._logger.info(msg)

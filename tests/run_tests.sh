@@ -12,9 +12,10 @@ if [[ ${TESTSUITE} == "acl" ]] || [[ ${TESTSUITE} == "ovc" ]]; then
 
 elif [[ ${TESTSUITE} == "portal" ]]; then
 
-    export PYTHONPATH=./
     cd ovc_master_hosted/Portal
-    su - test -c "xvfb-run -a nosetests -s -v ${TESTS_PATH} --tc-file config.ini 2>&1 | tee ${LOGFILE}" 
+    export PYTHONPATH=./
+    su - test -c "cd /opt/code/github/0-complexity/openvcloud/tests/ovc_master_hosted/Portal;\
+    xvfb-run -a nosetests -s -v ${TESTS_PATH} --tc-file config.ini 2>&1 | tee ${LOGFILE}" 
 
 else
     echo "Invalid testsuite name"

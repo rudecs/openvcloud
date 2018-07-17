@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 function execute() {
     sshpass -p ${password} ssh -o StrictHostKeyChecking=no -t ${username}@${ipaddress} ${1}
