@@ -121,7 +121,7 @@ def action():
 
     def get_node_redis(node, port=9999):
         redis = redises.get(node['id'])
-        if redis is not None:
+        if not redis:
             for nicinfo in node['netaddr']:
                 if nicinfo['name'] == 'backplane1':
                     ip = nicinfo['ip'][0]
