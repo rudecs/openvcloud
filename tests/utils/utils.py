@@ -627,7 +627,7 @@ class BasicACLTest(BaseTest):
             for account in accountIds:
                 self.lg('Teardown -- delete account: %s' % account)
                 try:
-                    api.cloudbroker.account.delete(accountId=account, reason="Teardown delete")
+                    api.cloudbroker.account.delete(accountId=account, reason="Teardown delete", permanently=True)
                 except HTTPError as e:
                     self.lg('Error when deleting account {}'.format(account))
 

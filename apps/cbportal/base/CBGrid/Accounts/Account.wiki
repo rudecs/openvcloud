@@ -5,6 +5,8 @@
 h2. Account: ${name}
 
 {% if status != 'DESTROYED' %}
+
+{% if status != "DELETED" %}
 {{actions:
 - display: Edit
   action: /restmachine/cloudbroker/account/update
@@ -92,6 +94,14 @@ h2. Account: ${name}
    accountId: '$$id'
   input:
   - reason
+  - name: permanently
+    label: Completely delete the Account , can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
 
 - display: Grant User Access
   action: /restmachine/cloudbroker/account/addUser
@@ -128,6 +138,33 @@ h2. Account: ${name}
      - label: 'No'
        value: false
 }}
+
+{% else %}
+
+{{actions:
+- display: Restore
+  action: /restmachine/cloudbroker/account/restore
+  data:
+   accountId: $$id
+  input:
+  - reason
+
+- display: Permenant delete
+  action: /restmachine/cloudbroker/account/delete
+  data:
+   accountId: $$id
+   permanently: True
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+}}
+
+{% endif %}
 {% endif %}
 
 {{createspace: accountId:'$$id'}}

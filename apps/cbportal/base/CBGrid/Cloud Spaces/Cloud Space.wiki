@@ -82,7 +82,7 @@ h2. Cloud Space: ${name}
   input:
   - reason
   - name: permanently
-    label: Completely delete the cloudspace, can't be restored later.
+    label: Completely delete the Cloud Space, can't be restored later.
     type: dropdown
     values:
      - label: "No"

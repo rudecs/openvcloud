@@ -892,7 +892,7 @@ class cloudapi_machines(BaseActor):
             for diskid in diskids:
                 disk = self.models.disk.get(diskid)
                 totaldisksize += disk.sizeMax
-            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine.cloudspaceId, vcpus,
+            j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(machine['cloudspaceId'], vcpus,
                                                                     memory / 1024.0, totaldisksize)
 
             nic = machine['nics'][0]

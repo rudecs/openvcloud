@@ -215,7 +215,7 @@ class cloudapi_accounts(BaseActor):
         """
 
         accountobj = self.models.account.get(accountId) if self.models.account.exists(accountId) else None
-        if not accountobj or accountobj.status == 'DESTROYED':
+        if not accountobj or accountobj.status == resourcestatus.Account.INVALID_STATES:
             raise exceptions.BadRequest('Cannot edit deleted account.')
 
         if sendAccessEmails == 1:

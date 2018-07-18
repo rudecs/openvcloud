@@ -119,8 +119,49 @@ h1. Recycle Bin
   - label: Reason
     type: text
     name: reason
+
+- display: Destroy Account
+  action: /restmachine/cloudbroker/account/delete
+  hide: true
+  refresh: true
+  input:
+  - label: Name
+    type: text
+    name: name
+    required: true
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+- display: Restore Account
+  action: /restmachine/cloudbroker/account/restore
+  hide: true
+  refresh: true
+  input:
+  - label: Reason
+    type: text
+    name: reason
 }}
 
+
+h2. Deleted Accounts
+{{datatables_use}}
+
+{{actions:
+- display: Destroy all Accounts
+  action: /restmachine/cloudbroker/account/deleteAccounts
+  input:
+  - label: Reason
+    type: text
+    name: reason
+  data:
+    permanently: True
+    accountIds: ${accountIds}
+
+}}
+
+{{accbin}}
 
 h2. Deleted Cloud Spaces
 {{datatables_use}}

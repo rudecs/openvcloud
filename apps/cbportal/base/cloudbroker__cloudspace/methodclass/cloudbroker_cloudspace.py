@@ -110,7 +110,7 @@ class cloudbroker_cloudspace(BaseActor):
                             error='Failed to destroy Cloud Space')
 
     def _destroyCloudSpaces(self, cloudspaceIds, reason, permanently, ctx):
-        for idx, cloudspaceId in enumerate(cloudspaceIds):
+        for cloudspaceId in cloudspaceIds:
             cloudspace = self._getCloudSpace(cloudspaceId)
             self._destroy(cloudspace, reason, permanently, ctx)
 

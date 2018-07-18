@@ -170,7 +170,7 @@ class cloudapi_cloudspaces(BaseActor):
         """
         accountId = accountId
         account = self.models.account.get(accountId)
-        if account.status in ['DESTROYED', 'DESTROYING']:
+        if account.status in resourcestatus.Account.INVALID_STATES:
             raise exceptions.NotFound('Account does not exist')
         locations = self.models.location.search({'locationCode': location})[1:]
         if not locations:
@@ -328,6 +328,8 @@ class cloudapi_cloudspaces(BaseActor):
         # The last cloudspace in a space may not be deleted
         with self.models.cloudspace.lock(cloudspaceId):
             cloudspace = self.models.cloudspace.get(cloudspaceId)
+            if cloudspace.status == resourcestatus.Cloudspace.DESTROYED:
+                return True
             if cloudspace.status == resourcestatus.Cloudspace.DEPLOYING:
                 raise exceptions.BadRequest('Can not delete a CloudSpace that is being deployed.')
 
@@ -432,10 +434,13 @@ class cloudapi_cloudspaces(BaseActor):
     def restore(self, cloudspaceId, reason, **kwargs):
         cloudspaceId = int(cloudspaceId)
         cloudspace = self.models.cloudspace.searchOne({'id': cloudspaceId})
+        account = self.models.account.get(cloudspace['accountId'])
         if not cloudspace:
             raise exceptions.NotFound('Cloudspace with id %s not found' % (cloudspaceId))
         if cloudspace['status'] != resourcestatus.Cloudspace.DELETED:
             raise exceptions.BadRequest('Can only restore a deleted cloudspace')
+        if account.status == resourcestatus.Account.DELETED and 'accrestore' not in kwargs:
+            raise exceptions.BadRequest("Cannot restore a cloudspace on a deleted account")
         title = 'Deleting Cloud Space %(name)s' % cloudspace
         ctx = kwargs['ctx']
         # restoring machines

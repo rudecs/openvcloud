@@ -32,6 +32,8 @@ class Account(object):
     DESTROYING = 'DESTROYING'
     CONFIRMED = 'CONFIRMED'
     DISABLED = 'DISABLED'
+    DELETED = 'DELETED'
+    INVALID_STATES = [DESTROYED, DESTROYING, DELETED]
     
 class Disk(object):
     ASSIGNED = 'ASSIGNED'
@@ -50,4 +52,3 @@ class Image(object):
     DELETED = 'DELETED'
     DISABLED = 'DISABLED'
     INVALID_STATES = [DESTROYED, DELETED]
-

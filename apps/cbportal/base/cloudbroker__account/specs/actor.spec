@@ -23,6 +23,7 @@
         """"
         var:accountId int,,ID of account to delete
         var:reason str,,reason for deleting the account
+        var:permanently bool,False, whether to completly delete the account
 
 
     method:deleteAccounts
@@ -77,3 +78,19 @@
         var:maxNetworkPeerTransfer int,, max sent/received network transfer peering @optional
         var:maxNumPublicIP int,, max number of assigned public IPs @optional
         var:sendAccessEmails bool,True, if true send emails when a user is granted access to resources @optional
+
+    method:restore
+        """
+        Restore a deleted account
+        """
+        var:accountId int,, id of the account
+        var:reason str,, reason for restoring the account
+
+    method:deleteAccounts
+        """
+        Destroy a group of cloud spaces
+        """
+        var:accountIds list(int),, IDs of accounts
+        var:reason str,, reason for deletion
+        var:permanently bool ,, whether to completly destroy accounts or not
+

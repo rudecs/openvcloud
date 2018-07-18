@@ -186,12 +186,7 @@ class cloudbroker_account(BaseActor):
                                                        maxNumPublicIP=maxNumPublicIP, sendAccessEmails=sendAccessEmails)
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def deleteAccounts(self, accountIds, reason, **kwargs):
-        for accountId in accountIds:
-            self.delete(accountId, reason, **kwargs)
-
-    @auth(groups=['level1', 'level2', 'level3'])
-    def delete(self, accountId, reason, **kwargs):
+    def delete(self, accountId, reason, permanently=False, name=None, **kwargs):
         """
         Complete delete an account from the system
         """
@@ -199,6 +194,10 @@ class cloudbroker_account(BaseActor):
             account = self._checkAccount(accountId)
         except (exceptions.BadRequest, exceptions.NotFound):
             return
+
+        if name and account['name'] != name:
+            raise exceptions.BadRequest('Incorrect account name specified')
+
         startstate = account['status']
 
         def restorestate(eco):
@@ -208,15 +207,14 @@ class cloudbroker_account(BaseActor):
 
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._delete,
-                            (accountId, reason, kwargs),
+                            (accountId, reason, permanently, kwargs['ctx']),
                             {},
                             'Deleting Account %(name)s' % account,
                             'Finished deleting Account',
                             'Failed to delete Account',
                             errorcb=restorestate)
 
-    def _delete(self, accountId, reason, kwargs):
-        ctx = kwargs['ctx']
+    def _delete(self, accountId, reason, permanently, ctx):
         account = self.models.account.get(accountId)
         title = 'Deleting Account %s' % account.name
         account.status = resourcestatus.Account.DESTROYING
@@ -227,17 +225,66 @@ class cloudbroker_account(BaseActor):
         images = self.models.image.search({'accountId': accountId})[1:]
         for image in images:
             ctx.events.sendMessage(title, 'Deleting Image %(name)s' % image)
-            for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': 'DESTROYED'}})[1:]:
+            for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': resourcestatus.Machine.DESTROYED}})[1:]:
                 ctx.events.sendMessage(title, 'Deleting dependant Virtual Machine %(name)s' % image)
-                j.apps.cloudbroker.machine.destroy(vm['id'], reason)
-            j.apps.cloudapi.images.delete(imageId=image['id'])
+                j.apps.cloudbroker.machine.destroy(vm['id'], reason, permanently)
+            j.apps.cloudapi.images.delete(imageId=image['id'], permanently=permanently)
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
-            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, kwargs['ctx'])
+            j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, permanently, ctx)
         account = self.models.account.get(accountId)
-        account.status = resourcestatus.Account.DESTROYED
+        if permanently:
+            account.status = resourcestatus.Account.DESTROYED
+        else:
+            account.status = resourcestatus.Account.DELETED
+        account.updateTime = int(time.time())
         self.models.account.set(account)
         return True
+
+    @auth(groups=['level1', 'level2', 'level3'])
+    def restore(self, accountId, reason, **kwargs):
+        account = self._checkAccount(accountId)
+        if account['status'] != resourcestatus.Account.DELETED:
+            raise exceptions.BadRequest('Can only restore a deleted account')
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._restore,
+                            (account, reason, ctx),
+                            {},
+                            'Restoring Account %(name)s' % account,
+                            'Finished restoring Account',
+                            'Failed to restore Account')
+
+    def _restore(self, account, reason, ctx):
+        images = self.models.image.search({'accountId': account['id']})[1:]
+        query = {'accountId': account['id'], 'status': {'$ne': resourcestatus.Cloudspace.DESTROYED}}
+        cloudspaces = self.models.cloudspace.search(query)[1:]
+        title = 'Restoring Account %(name)s' % account
+        for idx, image in enumerate(images):
+            ctx.events.sendMessage(title, 'Restoring image %s/%s' % (idx + 1, len(images)))
+            j.apps.cloudbroker.image.restore(image['id'], reason)
+        for idx, cloudspace in enumerate(cloudspaces):
+            ctx.events.sendMessage(title, 'Restoring Cloud Space %s/%s' % (idx + 1, len(cloudspaces)))
+            j.apps.cloudapi.cloudspaces.restore(cloudspace['id'], reason, ctx=ctx, accrestore="")
+
+        self.models.account.updateSearch({'id': account['id']}, {'$set': {'status': resourcestatus.Account.CONFIRMED, 'updateTime': int(time.time())}})
+        return True
+
+    @auth(groups=['level3'])
+    def deleteAccounts(self, accountIds, reason, permanently=False, **kwargs):
+        """
+        Destroys accounts
+        """
+        ctx = kwargs['ctx']
+        ctx.events.runAsync(self._deleteAccounts,
+                            args=(accountIds, reason, permanently, ctx),
+                            kwargs={},
+                            title='Destroying Accounts',
+                            success='Finished destroying Accounts',
+                            error='Failed to destroy Accounts')
+
+    def _deleteAccounts(self, accountIds, reason, permanently, ctx):
+        for accountId in accountIds:
+            self._delete(accountId, reason, permanently, ctx)
 
     @auth(groups=['level1', 'level2', 'level3'])
     def addUser(self, accountId, username, accesstype, **kwargs):

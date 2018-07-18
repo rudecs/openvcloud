@@ -143,5 +143,5 @@
         Destroy a group of cloud spaces
         """
         var:cloudspaceIds list(int),, IDs of cloudspaces
-        var:reason str,, ID of account
+        var:reason str,, reason for deletion
         var:permanently bool ,, whether to completly destroy cloudspaces or not
