@@ -18,7 +18,7 @@ With `--config` you specify the path to the system configuration file, typically
 The script takes following commands:
 - [cluster](#cluster)
 - [node](#node)
-- [resources](#resources)
+- [storage](#resources)
 - [image](#image)
 
 
@@ -29,8 +29,8 @@ The `cluster` command is used to perform actions on the Kubernetes cluster which
 
 There are three `cluster` subcommands:
 - [cluster deploy](#cluster-deploy)
-- [cluster writeconfig](#cluster-writeconfig)
-- [cluster updatedomain](#cluster-updatedomain)
+- [cluster resources writeconfig](#cluster-writeconfig)
+- [cluster resources writeconfig](#cluster-updatedomain)
 
 
 <a id="cluster-deploy"></a>
@@ -43,11 +43,11 @@ Following options are available
 - `--no-configure-cluster` specifies to only OpenvCloud pods
 
 <a id="cluster-writeconfig"></a>
-### cluster writeconfig
+### cluster resources writeconfig
 
-The command `cluster writeconfig` is used to create Kubernetes **ConfigMaps** from the specified configuration file. `configmap` is the specified configuration that can be mounted to the Kubernetes pods when the application needs information from the config file to perform its operations. This is already handled using the above command but this command can be used if it is required to update the ConfigMap with new config data. An example command:
+The command `cluster resources writeconfig` is used to create Kubernetes **ConfigMaps** from the specified configuration file. `configmap` is the specified configuration that can be mounted to the Kubernetes pods when the application needs information from the config file to perform its operations. This is already handled using the above command but this command can be used if it is required to update the ConfigMap with new config data. An example command:
 ```bash
-installer --config system-config.yaml cluster writeconfig 
+installer --config system-config.yaml cluster resources writeconfig 
 ```
 
 <a id="cluster-updatedomain"></a>
@@ -105,15 +105,15 @@ The `resources` command is used handle Kubernetes resource files.
 Usage is as follows
 - Write or update system-config in Kubernetes ConfigMap based on YAML file:
     ```bash
-    installer --config system-config.yaml resources writeconfig
+    installer --config system-config.yaml cluster resources writeconfig
     ```
 
 - Rewrite kube resources from template:
     ```bash
-    installer --config system-config.yaml resources write
+    installer --config system-config.yaml cluster resources write
     ```
 
 - Rewrite kube resources from template:
     ```bash
-    installer --config system-config.yaml resources deploy
+    installer --config system-config.yaml cluster deploy
     ```
