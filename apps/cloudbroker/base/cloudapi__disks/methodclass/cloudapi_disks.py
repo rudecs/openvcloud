@@ -199,7 +199,7 @@ class cloudapi_disks(BaseActor):
         if disk.type == 'C':
             machines = self.models.vmachine.count({'tags': {'$regex': ".*cdrom:%s.*" % disk.id}})
             if machines:
-                raise exceptions.BadRequest('Cannot delete a used disk')
+                raise exceptions.Conflict('Cannot delete a used disk')
         else:
             machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
         if machines and not detach:

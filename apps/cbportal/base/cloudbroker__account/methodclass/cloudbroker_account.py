@@ -228,7 +228,7 @@ class cloudbroker_account(BaseActor):
             for vm in self.models.vmachine.search({'imageId': image['id'], 'status': {'$ne': resourcestatus.Machine.DESTROYED}})[1:]:
                 ctx.events.sendMessage(title, 'Deleting dependant Virtual Machine %(name)s' % image)
                 j.apps.cloudbroker.machine.destroy(vm['id'], reason, permanently)
-            j.apps.cloudapi.images.delete(imageId=image['id'], permanently=permanently)
+            j.apps.cloudapi.images.delete(imageId=image['id'], permanently=permanently, ctx=ctx)
         cloudspaces = self.models.cloudspace.search(query)[1:]
         for cloudspace in cloudspaces:
             j.apps.cloudbroker.cloudspace._destroy(cloudspace, reason, permanently, ctx)
@@ -261,7 +261,7 @@ class cloudbroker_account(BaseActor):
         title = 'Restoring Account %(name)s' % account
         for idx, image in enumerate(images):
             ctx.events.sendMessage(title, 'Restoring image %s/%s' % (idx + 1, len(images)))
-            j.apps.cloudbroker.image.restore(image['id'], reason)
+            j.apps.cloudapi.images.restore(image['id'], imgrestore='')
         for idx, cloudspace in enumerate(cloudspaces):
             ctx.events.sendMessage(title, 'Restoring Cloud Space %s/%s' % (idx + 1, len(cloudspaces)))
             j.apps.cloudapi.cloudspaces.restore(cloudspace['id'], reason, ctx=ctx, accrestore="")

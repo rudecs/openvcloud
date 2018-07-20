@@ -37,6 +37,8 @@ class cloudapi_images(BaseActor):
 
     def deleteImage(self, imageId, permanently):
         image = self.models.image.get(imageId)
+        if image.status == resourcestatus.Image.DESTROYED:
+            return True
         references = self.models.vmachine.count({'imageId': imageId,
                                                  'status': {'$ne': resourcestatus.Machine.DESTROYED}})
         if references and permanently:
@@ -94,7 +96,10 @@ class cloudapi_images(BaseActor):
         image = self.models.image.searchOne({'id': imageId})
         if not image:
             raise exceptions.BadRequest('Image with id "%s" not found' % imageId)
-        if image['status'] != resourcestatus.Image.DELETED:
+        account = self.models.account.searchOne({'id': image['accountId']})
+        if account and account['status'] == resourcestatus.Account.DELETED:
+            raise exceptions.BadRequest("Cannot restore an image on a deleted account")
+        if image['status'] != resourcestatus.Image.DELETED and 'imgrestore' not in kwargs:
             raise exceptions.BadRequest('Can only restore a deleted image')
         self.models.image.updateSearch({'id': image['id']}, {'$set': {'status': resourcestatus.Image.CREATED, 'deletionTime': 0}})
         self.models.stack.updateSearch({'gid': image['gid']}, {'$addToSet': {'images': image['id']}})

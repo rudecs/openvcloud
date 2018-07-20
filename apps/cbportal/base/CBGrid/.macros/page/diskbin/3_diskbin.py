@@ -4,7 +4,11 @@ def main(j, args, params, tags, tasklet):
     page = args.page
     modifier = j.html.getPageModifierGridDataTables(page)
     disktype = args.getTag('type')
-    filters = {'status': resourcestatus.Disk.TOBEDELETED, 'type': disktype}
+    if disktype == 'B':
+        disktypes = ['B', 'D']
+    else:
+        disktypes =  [disktype]
+    filters = {'status': resourcestatus.Disk.TOBEDELETED, 'type': {'$in': disktypes}}
 
     def nameLinkify(row, field):
         val = row[field]

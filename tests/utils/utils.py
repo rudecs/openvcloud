@@ -15,6 +15,10 @@ import paramiko
 
 SESSION_DATA = {'vms': []}
 
+IMAGE_URL = 'ftp://pub:pub1234@ftp.aydo.com/Linux/openwrt/openwrt-18.06-rc1.qcow2'
+
+CDROM_URL = 'https://distro.ibiblio.org/tinycorelinux/9.x/x86/release/Core-current.iso'
+
 
 class API(object):
     API = {}
@@ -98,7 +102,7 @@ class BaseTest(unittest.TestCase):
 
     def cloudapi_cloudspace_create(self, account_id, location, access, api=None, name='',
                                    maxMemoryCapacity=-1, maxDiskCapacity=-1,
-                                   maxCPUCapacity=-1, maxNumPublicIP=-1, allowedVMSizes=None):
+                                   maxCPUCapacity=-1, maxNumPublicIP=-1, allowedVMSizes=None, wait=True):
         api = api or self.api
         name = name or str(uuid.uuid4()).replace('-', '')[0:10]
         cloudspaceId = api.cloudapi.cloudspaces.create(
@@ -114,7 +118,8 @@ class BaseTest(unittest.TestCase):
         )
 
         self.assertTrue(cloudspaceId)
-        self.wait_for_status('DEPLOYED', api.cloudapi.cloudspaces.get, cloudspaceId=cloudspaceId)
+        if wait:
+            self.wait_for_status('DEPLOYED', api.cloudapi.cloudspaces.get, cloudspaceId=cloudspaceId)
         return cloudspaceId
 
     def cloudbroker_cloudspace_create(self, account_id, location, access, api=None,
@@ -203,6 +208,25 @@ class BaseTest(unittest.TestCase):
         except AssertionError:
             self.api.cloudapi.machines.stop(vmid)
             self.waitForStatus(vmid, 'HALTED')
+
+    def cloudbroker_create_image(self, name='', url='', api='', gid=None, imagetype='linux', boottype='bios',
+                                 username=None, password=None, account_id=None, wait=True):
+        name = name or str(uuid.uuid4()).replace('-', '')[0:10]
+        api = api or self.api
+        gid = gid or j.application.whoAmI.gid
+        url = url or IMAGE_URL
+        api.cloudbroker.image.createImage(name=name, url=url, gid=gid,
+                                          imagetype=imagetype, boottype=boottype, username=username,
+                                          password=password, accountId=account_id)
+        ccl = j.clients.osis.getNamespace('cloudbroker')
+        query = {'name': name}
+        if wait:
+            self.wait_for_status('CREATED', ccl.image.searchOne,
+                                query=query)
+        else:
+            self.wait_for_set(ccl.image.searchOne, query=query)
+        image_id = ccl.image.searchOne({'$fields': ['id'], '$query': query})['id']
+        return image_id
 
     def get_image(self):
         images = self.api.cloudapi.images.list()
@@ -317,13 +341,28 @@ class BaseTest(unittest.TestCase):
         :param kwargs: the parameters to be sent to func to get resource
         """
         resource = func(**kwargs)  # get resource
-        self.assertTrue(resource)
+        self.wait_for_set(func, timeout, **kwargs)
         for _ in xrange(timeout):
             if resource['status'] == status:
                 break
             time.sleep(1)
             resource = func(**kwargs)  # get resource
         self.assertEqual(resource['status'], status)
+
+    def wait_for_set(self, func, timeout=300, **kwargs):
+        """
+        A generic utility method that gets a resource and wait for it be set with a value
+
+        :param func: the function used to get the resource
+        :param kwargs: the parameters to be sent to func to get resource
+        """
+        resource = func(**kwargs)
+        for _ in xrange(timeout):
+            if resource:
+                break
+            time.sleep(1)
+            resource = func(**kwargs)
+        self.assertTrue(resource)
 
     def wait_for_stack_status(self, stackId, status, timeout=30):
         ccl = j.clients.osis.getNamespace('cloudbroker')
@@ -453,6 +492,19 @@ class BaseTest(unittest.TestCase):
         disk_id = self.api.cloudapi.disks.create(accountId=account_id, gid=gid,
                                                  name=str(uuid.uuid4())[0:8], description='test',
                                                  size=size, type=disk_type, iops=maxiops)
+        return disk_id
+
+    def create_cdrom(self, name='', api='', url='', gid=None, account_id=None):
+        name = name or str(uuid.uuid4()).replace('-', '')[0:10]
+        api = api or self.api
+        gid = gid or j.application.whoAmI.gid
+        url = url or CDROM_URL
+        query = {'name': name}
+        ccl = j.clients.osis.getNamespace('cloudbroker')
+        self.api.cloudbroker.image.createCDROMImage(name=name, url=url, gid=gid, accountId=account_id)
+        self.wait_for_status('CREATED', ccl.disk.searchOne,
+                             query=query)
+        disk_id = ccl.disk.searchOne({'$fields': ['id'], '$query': query})['id']
         return disk_id
 
     def get_vm_ssh_publicport(self, vm_id, wait_vm_ip=True):
