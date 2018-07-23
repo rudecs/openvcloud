@@ -87,11 +87,12 @@ class virtualmachines():
         self.framework.click('virtual_machine_action')
         self.framework.click('virtual_machine_delete')
         self.framework.set_text('virtual_machine_delete_reason', "Test")
+        self.framework.select('virtual_delete_permanently', "Yes")
         self.framework.click("virtual_machine_delete_confirm")
         self.framework.get_page(self.framework.driver.current_url)
 
         for temp in range(10):
-            if self.framework.wait_until_element_located_and_has_text("virtual_machine_page_status", "DELETED"):
+            if self.framework.wait_until_element_located_and_has_text("virtual_machine_page_status", "DESTROYED"):
                 return True
             else:
                 self.framework.get_page(self.framework.driver.current_url)

@@ -79,6 +79,7 @@ class cloudspaces():
                 self.framework.click('cloudspace_delete_virtual')
 
             self.framework.set_text('cloudspace_delete_reason', "Test")
+            self.framework.select('cloudspace_delete_permanently', "Yes")
             self.framework.click("cloudspace_delete_confirm")
             self.framework.get_page(self.framework.driver.current_url)
             for temp in range(10):

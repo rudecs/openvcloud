@@ -187,6 +187,7 @@ class accounts():
             self.framework.click('account_action')
             self.framework.click('account_delete')
             self.framework.set_text('account_delete_reason', "Test")
+            self.framework.select('account_delete_permanently', "Yes")            
             self.framework.click("account_delete_confirm")
             self.framework.get_page(self.framework.driver.current_url)
             self.framework.wait_until_element_located_and_has_text("account_page_status",
