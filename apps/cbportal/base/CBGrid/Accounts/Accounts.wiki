@@ -11,5 +11,13 @@ h2. Accounts
   reload: false
   input:
   - reason
+  - name: permanently
+    label: Completely delete the Account, can't be restored later.
+    type: dropdown
+    values:
+    - label: "No"
+      value: 0
+    - label: "Yes"
+      value: 1
  }}
 {{accounts}}
