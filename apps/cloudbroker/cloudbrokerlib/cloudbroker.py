@@ -10,6 +10,7 @@ from .utils import getJobTags, Dummy, removeConfusingChars
 import random
 import time
 import string
+import yaml
 import re
 import netaddr
 
@@ -422,7 +423,7 @@ class CloudSpace(object):
                     leases.append({'mac-address': nic['macAddress'], 'address': nic['ipAddress']})
         return leases
 
-    def update_firewall(self, cloudspace):
+    def update_firewall(self, cloudspace, **kwargs):
         fwid = '{}_{}'.format(cloudspace.gid, cloudspace.networkId)
         self.cb.netmgr.fw_reapply(fwid)
 
@@ -448,7 +449,7 @@ class Machine(object):
                     vdiskguids.append(volume.vdiskguid)
             provider.destroy_volumes_by_guid(vdiskguids)
 
-    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks):
+    def validateCreate(self, cloudspace, name, sizeId, imageId, disksize, datadisks, userdata):
         self.assertName(cloudspace.id, name)
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
@@ -468,6 +469,17 @@ class Machine(object):
                 "Disk size of {}GB is to small for image {}, which requires at least {}GB.".format(disksize, image.name, image.size))
         if image.status != "CREATED":
             raise exceptions.BadRequest("Image {} is disabled.".format(imageId))
+        if userdata:
+            if isinstance(userdata, basestring):
+                try:
+                    data = yaml.load(userdata)
+                    if not isinstance(data, dict):
+                        raise exceptions.BadRequest('Userdata should be a dictonary')
+
+                except:
+                    raise exceptions.BadRequest('Userdata is not a valid yaml string')
+            elif not isinstance(userdata, dict):
+                raise exceptions.BadRequest('Userdata should be a dictonary')
 
         maxvms = netaddr.IPNetwork(cloudspace.privatenetwork).size - 5
         if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.DELETED_STATES}, 'cloudspaceId': cloudspace.id}) >= maxvms:

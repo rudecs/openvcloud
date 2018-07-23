@@ -54,9 +54,9 @@ class cloudbroker_machine(BaseActor):
             sizeId = None
         machine, auth, volumes, cloudspace = j.apps.cloudapi.machines._prepare_machine(cloudspaceId, name, description,
                                                                                         imageId, disksize, datadisks,
-                                                                                        sizeId, vcpus, memory)
+                                                                                        sizeId, vcpus, memory, userdata)
         machineId =  self.cb.machine.create(machine, auth, cloudspace, volumes, imageId, stackid, userdata)
-        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace, ctx=j.core.portal.active.requestContext)
         kwargs['ctx'].env['tags'] += " machineId:{}".format(machineId)
         return machineId
 

@@ -41,7 +41,7 @@
         Delete a machine
         """
         var:machineId int,, id of the machine
-        var:permanently bool,False, whether to completly delete the machine
+        var:permanently bool,False, whether to completly delete the machine @optional
         result: bool
 
     method:update

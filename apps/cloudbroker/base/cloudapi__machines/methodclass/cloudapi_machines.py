@@ -407,7 +407,7 @@ class cloudapi_machines(BaseActor):
         j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
 
     def syncImportOVF(self, uploaddata, envelope, cloudspace, name, description, callbackUrl, user, vcpus=None,
-                      memory=None, sizeId=None):
+                      memory=None, sizeId=None, ctx=None):
         try:
             error = False
             userobj = j.core.portal.active.auth.getUserInfo(user)
@@ -482,7 +482,7 @@ class cloudapi_machines(BaseActor):
             except:
                 self.cb.machine.cleanup(vm)
                 raise
-            gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+            gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace, ctx=j.core.portal.active.requestContext)
             if not callbackUrl:
                 url = j.apps.cloudapi.locations.getUrl() + '/g8vdc/#/edit/%s' % vm.id
                 [self._sendImportCompletionMail(name, email, url, success=True) for email in userobj.emails]
@@ -497,7 +497,7 @@ class cloudapi_machines(BaseActor):
             else:
                 requests.get(callbackUrl)
 
-    def syncExportOVF(self, uploaddata, vm, provider, cloudspace, user, callbackUrl):
+    def syncExportOVF(self, uploaddata, vm, provider, cloudspace, user, callbackUrl, ctx=None):
         try:
             error = False
             diskmapping = list()
@@ -603,7 +603,7 @@ class cloudapi_machines(BaseActor):
              raise exceptions.BadRequest("cannot pass vcpus or memory without the other.")
 
         gevent.spawn(self.syncImportOVF, uploaddata, job['result'], cloudspace, name, description, callbackUrl, user, vcpus,
-                     memory, sizeId)
+                     memory, sizeId, ctx=ctx)
 
     @authenticator.auth(acl={'machine': set('X')})
     def exportOVF(self, link, username, passwd, path, machineId, callbackUrl, **kwargs):
@@ -635,7 +635,7 @@ class cloudapi_machines(BaseActor):
             except:
                 msg = 'Failed to upload to link'
             raise exceptions.BadRequest(msg)
-        gevent.spawn(self.syncExportOVF, uploaddata, vm, provider, cloudspace, user, callbackUrl)
+        gevent.spawn(self.syncExportOVF, uploaddata, vm, provider, cloudspace, user, callbackUrl, ctx=j.core.portal.active.requestContext)
         return True
 
     @authenticator.auth(acl={'machine': set('X')})
@@ -674,15 +674,15 @@ class cloudapi_machines(BaseActor):
         cloudspace = self.models.cloudspace.get(cloudspaceId)
         with self.models.account.lock(cloudspace.accountId):
             machine, auth, volumes, cloudspace = self._prepare_machine(cloudspaceId, name, description, imageId, disksize,
-                                                                        datadisks, sizeId, vcpus, memory)
+                                                                        datadisks, sizeId, vcpus, memory, userdata)
 
         machineId = self.cb.machine.create(machine, auth, cloudspace, volumes, imageId, None, userdata)
         kwargs['ctx'].env['tags'] += " machineId:{}".format(machineId)
-        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace, ctx=j.core.portal.active.requestContext)
         return machineId
 
     def _prepare_machine(self, cloudspaceId, name, description, imageId, disksize, datadisks, sizeId=None, 
-                          vcpus=None, memory=None, **kwargs):
+                          vcpus=None, memory=None, userdata=None, **kwargs):
         """
         internal method to prevent code duplication
         """
@@ -693,7 +693,7 @@ class cloudapi_machines(BaseActor):
              raise exceptions.BadRequest("If sizeId is not specified need to specify both memory and vcpus.")
         datadisks = datadisks or []
         cloudspace = self.models.cloudspace.get(cloudspaceId)
-        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks)
+        self.cb.machine.validateCreate(cloudspace, name, sizeId, imageId, disksize, datadisks, userdata)
         # Validate that enough resources are available in the CU limits to create the machine
         if sizeId:
             size = self.models.size.get(sizeId)

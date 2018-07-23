@@ -252,6 +252,14 @@ h3. Virtual Machines
   action: /restmachine/cloudbroker/machine/destroyMachines
   reload: false
   input:
+  - name: permanently
+    label: Completely delete the Virtual Machines, can't be restored later.
+    type: dropdown
+    values:
+     - label: "No"
+       value: 0
+     - label: "Yes"
+       value: 1
   - reason
  }}
 {% endif %}
