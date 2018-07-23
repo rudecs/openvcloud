@@ -63,6 +63,7 @@ class cloudapi_machines(BaseActor):
                 raise exceptions.BadRequest("Action %s is not support on machine %s" % (actiontype, machineId))
             if node.extra.get('locked', False):
                 raise exceptions.Conflict("Can not %s a locked Machine" % actiontype)
+            node.extra.update({'machineId': machineId})
             actionname = "%s_node" % actiontype.lower()
             method = getattr(provider, actionname, None)
             if not method:

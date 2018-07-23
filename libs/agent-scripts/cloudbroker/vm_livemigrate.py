@@ -14,10 +14,11 @@ queue = "hypervisor"
 async = True
 
 
-def action(vm_id, sourceurl, domainxml, force):
+def action(vm_id, sourceurl, domainxml, force, vmlog_dir=None):
     import libvirt
     from xml.etree import ElementTree
     from urlparse import urlparse
+    j.system.fs.createDir(vmlog_dir)
     try:
         source_con = libvirt.open(sourceurl)
     except:

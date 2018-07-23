@@ -14,10 +14,11 @@ import crypt
 import random
 import string
 import yaml
+import datetime
 
 baselength = len(string.lowercase)
 env = Environment(loader=PackageLoader('CloudscalerLibcloud', 'templates'))
-
+vmlog_dir = '/var/log/ovc/vms'
 
 class LibvirtState:
     RUNNING = 1
@@ -485,7 +486,7 @@ class CSLibvirtNodeDriver(object):
     def get_host_memory(self):
         return self.node.memory - self.config.get('reserved_mem')
 
-    def init_node(self, name, size, networkid=None, volumes=None, imagetype='', boottype='bios'):
+    def init_node(self, name, size, networkid=None, volumes=None, imagetype='', boottype='bios', machineId=None):
         volumes = volumes or []
         macaddress = self.backendconnection.getMacAddress(self.gid)
 
@@ -501,7 +502,8 @@ class CSLibvirtNodeDriver(object):
                  'imagetype': imagetype,
                  'size': size,
                  'bootdev': 'hd',
-                 'boottype': boottype}
+                 'boottype': boottype,
+                 'machineId': machineId}
         node = Node(
             id=nodeid,
             name=name,
@@ -514,7 +516,7 @@ class CSLibvirtNodeDriver(object):
         machinexml = self.get_xml(node)
 
         # 0 means default behaviour, e.g machine is auto started.
-        result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml)
+        result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml, vmlog_dir=vmlog_dir)
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the
             # machine(e.g not enough resources, delete machine)
@@ -689,15 +691,18 @@ class CSLibvirtNodeDriver(object):
     def get_xml(self, node):
         machinetemplate = self.env.get_template("machine.xml")
         hostmemory = self.get_host_memory()
+        timestamp = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        logfile = '{logdir}/{id}.{timestamp}.log'.format(logdir=vmlog_dir, id=node.extra.get('machineId', node.id), timestamp=timestamp)
         machinexml = machinetemplate.render({'node': node,
                                              'hostmemory': hostmemory,
+                                             'logfile': logfile,
                                              })
         return machinexml
 
     def ex_start_node(self, node):
         self._ensure_network(node)
         machinexml = self.get_xml(node)
-        self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml)
+        self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml, vmlog_dir=vmlog_dir)
         return True
 
     def ex_get_console_output(self, node):
@@ -722,7 +727,7 @@ class CSLibvirtNodeDriver(object):
                 path, disk['guid']), name='N/A', size=disk['size'], driver=self)
             volume.dev = 'vd%s' % convertnumber(i + 1)
             volumes.append(volume)
-        return self.init_node(name, size, networkid=networkid, volumes=volumes)
+        return self.init_node(name, size, networkid=networkid, volumes=volumes, machineId=vmid)
 
     def ex_clone_disks(self, diskmapping, disks_snapshots=None):
         disks_snapshots = disks_snapshots or {}
@@ -757,7 +762,7 @@ class CSLibvirtNodeDriver(object):
         name = 'vm-%s' % vmid
         volumes = self.ex_clone_disks(diskmapping, disks_snapshots)
         volumes.append(self._create_metadata_iso(volumes[0].edgeclient, name, password, imagetype))
-        return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype)
+        return self.init_node(name, size, networkid=networkid, volumes=volumes, imagetype=imagetype, machineId=vmid)
 
     def ex_extend_disk(self, diskguid, newsize, disk_info=None):
         if disk_info is None:
@@ -885,4 +890,4 @@ class CSLibvirtNodeDriver(object):
                                 vm_id=node.id,
                                 sourceurl=sourceprovider.uri,
                                 force=force,
-                                domainxml=domainxml)
+                                domainxml=domainxml, vmlog_dir=vmlog_dir)

@@ -701,7 +701,7 @@ class Machine(object):
                 raise exceptions.BadRequest("Image is not available on requested stack")
 
             try:
-                node = provider.init_node(name, size, cloudspace.networkId, volumes, image.type, boottype)
+                node = provider.init_node(name, size, cloudspace.networkId, volumes, image.type, boottype, machineId=machine.id)
             except NotEnoughResources as e:
                 volumes = e.volumes
                 if stackId:

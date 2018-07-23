@@ -15,8 +15,9 @@ async = True
 queue = 'hypervisor'
 
 
-def action(machinexml):
+def action(machinexml, vmlog_dir=None):
     from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
+    j.system.fs.createDir(vmlog_dir)
     connection = LibvirtUtil()
     if not connection.check_machine(machinexml):
         return -1
