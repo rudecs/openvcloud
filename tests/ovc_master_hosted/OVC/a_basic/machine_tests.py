@@ -48,8 +48,7 @@ class BasicTests(BasicACLTest):
 
         self.lg('%s ENDED' % self._testID)
 
-    @parameterized.expand(['Ubuntu 16.04 x64',
-                           'Windows 2012r2 Standard'])
+    @parameterized.expand(['Ubuntu 16.04 x64', 'Windows 2012r2 Standard'])
     def test002_create_vmachine_withbig_disk(self, image_name):
         """ OVC-002
         *Test case for create machine with different Windows/Linux images available.*
@@ -116,116 +115,77 @@ class BasicTests(BasicACLTest):
 
         **Test Scenario:**
 
-        #. Creating machine with random disksize and random size
-        #. Stop the machine, if offline resize.
-        #. Resize the machine with all possible combinations, should succeed
+        #. Creating machine with random size.
+        #. Resize running machine with memory size less than selected size, should fail.
+        #. Resize machine with memory size greater than selected size, should succeed.
+        #. Resize the machine, should succeed
         #. Start the machine, if offline resize.
         #. Check that the machine is updated.
         """
+        memory_list = [1024, 2048, 4096, 8192]
+        vcpus_list = [1, 2, 4, 8]
+        disks_list = [10, 25, 50, 100]
 
-        self.lg('- Get all available sizes to use and choose one random and create vm with it , should succeed')
-        sizes = self.api.cloudapi.sizes.list(cloudspaceId=self.cloudspace_id)
-        sizes = [size for size in sizes if size['id'] in range(1, 7)]
-        selected_size = random.choice(sizes)
-        disksize = random.choice(selected_size['disks'])
+        memory = random.choice(memory_list)
+        vcpus = random.choice(vcpus_list)
+        disksize = random.choice(disks_list)
 
-        self.lg('- using memory size [%s] with disk [%s]' % (selected_size['memory'], disksize))
+        self.lg('Creating machine with random size')
         machineId = self.cloudapi_create_machine(
             cloudspace_id=self.cloudspace_id,
-            size_id=selected_size['id'],
+            memory=memory,
+            vcpus=vcpus,
             disksize=disksize
         )
 
-        for size in sizes:
-            if machine_status == "online":
-                if size['memory'] < selected_size['memory']:
-                    self.lg('resize running machine with memory size less than selected size, should fail')
-                    with self.assertRaises(ApiError) as e:
-                        self.account_owner_api.cloudapi.machines.resize(machineId=machineId, sizeId=size['id'])
-                    self.assertEqual(e.exception.message, '400 Bad Request')
-                    continue
+        self.wait_for_status('RUNNING', self.api.cloudapi.machines.get, machineId=machineId)
 
-            if machine_status == "offline":
-                self.lg('- Stop the machine')
-                self.account_owner_api.cloudapi.machines.stop(machineId=machineId)
-                machineInfo = self.api.cloudapi.machines.get(machineId=machineId)
-                self.assertEqual(machineInfo['status'], 'HALTED')
+        if machine_status == "online":
+            self.lg('Resize running machine with memory size less than selected size, should fail')
+            with self.assertRaises(ApiError) as e:
+                self.account_owner_api.cloudapi.machines.resize(
+                    machineId=machineId, 
+                    memory=memory-1,
+                    vcpus=vcpus-1
+                )
+            self.assertEqual(e.exception.message, '400 Bad Request')
+            
 
-            self.lg('- Resize the machine with {} status with all possible combinations, should succeed'.format(machine_status))
-            self.account_owner_api.cloudapi.machines.resize(machineId=machineId, sizeId=size['id'])
+        if machine_status == "offline":
+            self.lg('Stop the virtual machine')
+            self.account_owner_api.cloudapi.machines.stop(machineId=machineId)
 
-            if machine_status == "offline":
-                self.lg('- Start the machine')
-                self.account_owner_api.cloudapi.machines.start(machineId=machineId)
-                time.sleep(5)
-
-            self.lg('- Check that the machine is updated')
-            machineInfo = self.api.cloudapi.machines.get(machineId=machineId)
-            self.assertEqual(machineInfo['status'], 'RUNNING')
-            self.assertEqual(machineInfo['sizeid'], size['id'])
-            vm_client = VMClient(machineId)
-            response = vm_client.execute(" cat /proc/meminfo")
-            meminfo = response[1].read()
-            mem_total = int(meminfo[meminfo.find("MemTotal")+9:meminfo.find("kB")])/1024
-            self.assertAlmostEqual(mem_total, size['memory'], delta=400)
-            response = vm_client.execute(" grep -c ^processor /proc/cpuinfo ")
-            self.assertEqual(int(response[1].read()), size['vcpus'])
-
-            self.lg('%s ENDED' % self._testID)
-
-    def test004_create_machine_with_resize_in_halted(self):
-        """ OVC-004
-        *Test case for testing resize operation in the halted machine*
-
-        **Test Scenario:**
-
-        #. Creating machine with random disksize and random size
-        #. Stop the machine
-        #. Resize the machine
-        #. Resize it again
-        #. Start the machine
-        #. Check that the machine is updated with the last resized info
-        """
-
-        self.lg('1- Get all available sizes to use and choose one random and create vm with it , should succeed')
-        sizes = self.api.cloudapi.sizes.list(cloudspaceId=self.cloudspace_id)
-        sizes = [size for size in sizes if size['id'] in range(1, 7)]
-        selected_size = random.choice(sizes)
-        disksize = random.choice(selected_size['disks'])
-
-        self.lg('2- using memory size [%s] with disk [%s]' % (selected_size['memory'], disksize))
-        machineId = self.cloudapi_create_machine(
-            cloudspace_id=self.cloudspace_id,
-            size_id=selected_size['id'],
-            disksize=disksize
+        self.lg('Resize machine with memory size greater than selected size, should succeed')
+        new_memory = memory + 1
+        new_vcpus = vcpus + 1
+        self.account_owner_api.cloudapi.machines.resize(
+            machineId=machineId, 
+            memory=new_memory,
+            vcpus=new_vcpus
         )
 
-        self.lg('3- Stop the machine')
-        self.account_owner_api.cloudapi.machines.stop(machineId=machineId)
+        if machine_status == "offline":
+            self.lg('Start the virtual machine')
+            self.account_owner_api.cloudapi.machines.start(machineId=machineId)
 
-        for size in sizes:
-
-            if size['id'] not in range(1, 7):
-                continue
-
-            machineInfo = self.api.cloudapi.machines.get(machineId=machineId)
-            self.assertEqual(machineInfo['status'], 'HALTED')
-
-            self.lg('4- Resize the machine with all possible combinations, should succeed')
-            self.account_owner_api.cloudapi.machines.resize(machineId=machineId, sizeId=size['id'])
-
-        self.lg('5- Start the machine')
-        self.account_owner_api.cloudapi.machines.start(machineId=machineId)
-
-        self.lg('6- Check that the machine is updated')
+        self.lg('- Check that the machine is updated')
         machineInfo = self.api.cloudapi.machines.get(machineId=machineId)
         self.assertEqual(machineInfo['status'], 'RUNNING')
-        self.assertEqual(machineInfo['sizeid'], 6)
+        self.assertEqual(machineInfo['memory'], new_memory)
+        self.assertEqual(machineInfo['vcpus'], new_vcpus)
 
+        vm_client = VMClient(machineId)
+        response = vm_client.execute(" cat /proc/meminfo")
+        meminfo = response[1].read()
+        mem_total = int(meminfo[meminfo.find("MemTotal")+9:meminfo.find("kB")])/1024
+        self.assertAlmostEqual(mem_total, new_memory, delta=400)
+        response = vm_client.execute(" grep -c ^processor /proc/cpuinfo")
+        self.assertEqual(int(response[1].read()), new_vcpus)
+            
         self.lg('%s ENDED' % self._testID)
 
-    @parameterized.expand(['Ubuntu 16.04 x64',
-                           'Windows 2012r2 Standard'])
+
+    @parameterized.expand(['Ubuntu 16.04 x64', 'Windows 2012r2 Standard'])
     def test005_add_disks_to_vmachine(self, image_name):
         """ OVC-005
         *Test case for create machine with different Windows/Linux images available and add all disks to it.*
