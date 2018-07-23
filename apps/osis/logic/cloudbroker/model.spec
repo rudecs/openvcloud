@@ -85,6 +85,7 @@
     prop:provider_name str,, provider name for this image openstack/libvirt, ...
     prop:bootType str,, image boot type e.g bios, uefi
     prop:deletionTime int,, epoch time of deletion, in seconds @index
+    prop:hotResize bool,, Does image support hot resize?
 
 
 

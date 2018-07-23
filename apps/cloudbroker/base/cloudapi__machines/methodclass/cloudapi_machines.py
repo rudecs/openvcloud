@@ -313,6 +313,7 @@ class cloudapi_machines(BaseActor):
         image.status = 'CREATING'
         image.gid = cloudspace.gid
         image.bootType = origimage.bootType
+        image.hotResize = origimage.hotResize
         image.provider_name = origimage.provider_name
         imageid = self.models.image.set(image)[0]
         image.id = imageid
@@ -754,6 +755,7 @@ class cloudapi_machines(BaseActor):
         if provider:
             provider.destroy_node(node)
         self.models.disk.updateSearch({'id' : {'$in': vmachinemodel.disks}}, {'$set': {'status': resourcestatus.Disk.DELETED}})
+
 
         # delete leases
         cloudspace = self.models.cloudspace.get(vmachinemodel.cloudspaceId) 
@@ -1379,7 +1381,8 @@ class cloudapi_machines(BaseActor):
             if new_vcpus > old_vcpus:
                 newcpucount = new_vcpus
             success = True
-            if vmachine.status != resourcestatus.Machine.HALTED:
+            image = self.models.image.get(vmachine.imageId)
+            if vmachine.status != resourcestatus.Machine.HALTED and image.hotResize:
                 success = provider.ex_resize(node=node, extramem=deltamemorymb, vcpus=newcpucount)
 
             new_values = {'memory': new_memory, 'vcpus': new_vcpus, 'sizeId': 0}
@@ -1389,7 +1392,6 @@ class cloudapi_machines(BaseActor):
             if not success:
                 raise exceptions.Accepted(False)
             return True
-
     @authenticator.auth(acl={'cloudspace': set('X')})
     def detachExternalNetwork(self, machineId, **kwargs):
         """

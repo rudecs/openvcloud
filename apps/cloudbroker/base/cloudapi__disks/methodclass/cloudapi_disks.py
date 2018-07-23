@@ -213,6 +213,7 @@ class cloudapi_disks(BaseActor):
             return True
         disk.status = resourcestatus.Disk.DELETED
         self.models.disk.set(disk)
+
         provider = self.cb.getProviderByGID(disk.gid)
         volume = self.getStorageVolume(disk, provider)
         provider.destroy_volume(volume)

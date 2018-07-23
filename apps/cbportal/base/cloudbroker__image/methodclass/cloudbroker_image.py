@@ -95,7 +95,7 @@ class cloudbroker_image(BaseActor):
         return bytesize
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def createImage(self, name, url, gid, imagetype, boottype, username=None, password=None, accountId=None, **kwargs):
+    def createImage(self, name, url, gid, imagetype, boottype, username=None, password=None, accountId=None, hotresize=True, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exist")
         if boottype not in ['bios', 'uefi']:
@@ -103,7 +103,7 @@ class cloudbroker_image(BaseActor):
         bytesize = self._getImageSize(url)
         ctx = kwargs['ctx']
         ctx.events.runAsync(self._createImage,
-                            (name, url, gid, imagetype, boottype, bytesize, username, password, accountId, kwargs),
+                            (name, url, gid, imagetype, boottype, bytesize, username, password, accountId, hotresize, kwargs),
                             {},
                             'Creating Image {}'.format(name),
                             'Finished Creating Image',
@@ -127,7 +127,7 @@ class cloudbroker_image(BaseActor):
             update['accountId'] = accountId
         self.models.image.updateSearch({'id': imageId}, {'$set': update})
 
-    def _createImage(self, name, url, gid, imagetype, boottype, bytesize, username, password, accountId, kwargs):
+    def _createImage(self, name, url, gid, imagetype, boottype, bytesize, username, password, accountId, hotresize, kwargs):
         ctx = kwargs['ctx']
         gbsize = int(math.ceil(j.tools.units.bytes.toSize(bytesize, '', 'G')))
         provider = self.cb.getProviderByGID(gid)
@@ -141,6 +141,7 @@ class cloudbroker_image(BaseActor):
         image.status = resourcestatus.Image.CREATING
         image.size = gbsize
         image.bootType = boottype
+        image.hotResize = hotresize
         volume = None
         try:
             image.id = self.models.image.set(image)[0]

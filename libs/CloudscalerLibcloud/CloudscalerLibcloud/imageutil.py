@@ -2,7 +2,7 @@ from JumpScale import j
 from CloudscalerLibcloud import openvstorage
 
 
-def registerImage(service, name, type, disksize, username=None, bootType='bios', delete=True):
+def registerImage(service, name, type, disksize, username=None, bootType='bios', delete=True, hotResize=True):
     srcpath = None
     for export in service.hrd.getListFromPrefix('service.web.export'):
         srcpath = export['dest']
@@ -25,6 +25,7 @@ def registerImage(service, name, type, disksize, username=None, bootType='bios',
         image.UNCPath = imagepath
         image.status = 'CREATED'
         image.bootType = bootType
+        image.hotResize = hotResize
         imageId, _, _ = ccl.image.set(image)
         ccl.stack.updateSearch({'gid': image.gid}, {'$addToSet': {'images': imageId}})
     # successfully registered lets delete source file

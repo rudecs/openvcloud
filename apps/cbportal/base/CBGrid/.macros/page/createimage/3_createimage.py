@@ -23,8 +23,12 @@ def main(j, args, params, tags, tasklet):
             ('BIOS', 'bios'),
             ('UEFI', 'uefi'),
     ]
+    hotResize = [('Yes', True),
+                 ('No', False)
+    ]
     popup.addDropdown('Choose Type', 'imagetype', imagetypes)
     popup.addDropdown('Boot Type', 'boottype', boottype)
+    popup.addDropdown('Hot Resize', 'hotresize', hotResize)
     popup.addText('Username for the image leave empty when the image is cloud-init enabled', 'username')
     popup.addText('Password for the image leave empty when the image is cloud-init enabled', 'password')
     popup.addText('AccountId optional if you want to make the image for this account only', 'accountId')
