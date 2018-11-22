@@ -23,6 +23,7 @@ class RecycleBinTests(BasicACLTest):
 
         #. deleting empty cloudpsace using cloudbroker api, should succeed
         #. permanently deleting empty cloudpsace using cloudbroker api, should succeed
+        #. creating cloudspace with same name as deleted cloudspace, should fail
         """
         self.lg('%s STARTED' % self._testID)
         if perma == 'yes':
@@ -39,7 +40,18 @@ class RecycleBinTests(BasicACLTest):
 
         self.wait_for_status(state, self.api.cloudapi.cloudspaces.get,
                              cloudspaceId=self.cloudspace_id)
-        
+        if perma == 'no':
+            self.lg('- creating cloudspace with same name as deleted cloudspace, should fail')
+            cloudspace_name = self.api.cloudapi.cloudspaces.get(cloudspaceId=self.cloudspace_id)['name']
+            with self.assertRaises(ApiError) as e:
+                self.cloudapi_cloudspace_create(account_id=self.account_id,
+                                                location=self.location,
+                                                access=self.account_owner,
+                                                api=self.account_owner_api,
+                                                wait=False,
+                                                name=cloudspace_name)
+                self.assertEqual(e.message, '409 Conflict')
+
         self.lg('%s ENDED' % self._testID)
 
     @parameterized.expand(['no', 'yes'])
@@ -393,6 +405,7 @@ class RecycleBinTests(BasicACLTest):
 
         #. deleting account, should succeed
         #. permanently deleting account, should succeed
+        #. creating account with same name as deleted account, should fail
         """
         self.lg('%s STARTED' % self._testID)
 
@@ -410,6 +423,13 @@ class RecycleBinTests(BasicACLTest):
 
         self.wait_for_status(state, self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
+
+        if perma == 'no':
+            self.lg('- creating account with same name as deleted account, should fail')
+            account_name = self.api.cloudapi.accounts.get(accountId=self.account_id)['name']
+            with self.assertRaises(HTTPError) as e:
+                self.cloudbroker_account_create(account_name, self.account_owner, self.email)
+            self.assertEqual(e.exception.status_code, 409)
 
         cloudspace_status = self.api.cloudapi.cloudspaces.get(cloudspaceId=self.cloudspace_id)['status']
         self.assertEqual(cloudspace_status, state)
@@ -599,6 +619,7 @@ class RecycleBinTests(BasicACLTest):
         #. creating Virtual Machine, should succeed
         #. deleting Virtual Machine, should succeed
         #. permanently deleting Virtual Machine, should succeed
+        #. creating machine with same name as deleted machine, should fail
         """
         self.lg('%s STARTED' % self._testID)
 
@@ -620,6 +641,15 @@ class RecycleBinTests(BasicACLTest):
 
         self.wait_for_status(state, self.models.vmachine.searchOne,
                              query={'id': machine_id})
+
+        if perma == 'no':
+            self.lg('- creating machine with same name as deleted machine, should fail')
+            machine_name = self.models.vmachine.searchOne({'id': machine_id})['name']
+            with self.assertRaises(ApiError) as e:
+                self.cloudapi_create_machine(self.cloudspace_id,
+                                             self.account_owner_api,
+                                             machine_name)
+                self.assertEqual(e.message, '409 Conflict')
         
         self.lg('%s ENDED' % self._testID)
 
@@ -1308,7 +1338,8 @@ class RecycleBinTests(BasicACLTest):
 
         self.lg('%s ENDED' % self._testID)
 
-    def test043_destroy_used_cdrom_used(self):
+    @parameterized.expand(['no', 'yes'])
+    def test043_destroy_used_cdrom_used(self, destroy_machine):
         """ OVC-043
         *Test case for destroying CD-ROM that is used by a machine *
 
@@ -1319,6 +1350,7 @@ class RecycleBinTests(BasicACLTest):
         #. stopping created machine
         #. starting created machine with created CD-ROM
         #. deleting CD-ROM, should fail
+        #. destroying created machine to free created CD-ROM
         #. stopping created machine to stop using created CD-ROM
         """
         self.lg('%s STARTED' % self._testID)
@@ -1340,10 +1372,16 @@ class RecycleBinTests(BasicACLTest):
             self.api.cloudbroker.image.deleteCDROMImage(diskId=disk_id)
         self.assertEqual(e.exception.status_code, 409)
 
-        self.lg('- stopping created machine to stop using created CD-ROM')
-        self.api.cloudapi.machines.stop(machineId=machine_id)
+        if destroy_machine == 'yes':
+            self.lg('- destroying created machine to free created CD-ROM')
+            self.api.cloudapi.machines.delete(machineId=machine_id, permanently=True)
+            state = 'DESTROYED'
+        else:
+            self.lg('- stopping created machine to stop using created CD-ROM')
+            self.api.cloudapi.machines.stop(machineId=machine_id)
+            state = 'HALTED'
 
-        self.wait_for_status('HALTED', self.models.vmachine.searchOne,
+        self.wait_for_status(state, self.models.vmachine.searchOne,
                              query={'id': machine_id})
 
         self.api.cloudbroker.image.deleteCDROMImage(diskId=disk_id, permanently=True)

@@ -22,8 +22,7 @@ class AdminMenu(Framework):
         #. for all items verify redirect page
         """
 
-        compo_menu = ["At Your Service", "Cloud Broker", "Statistics", "Grid", "Storage", "System", "End User"]
-        ays_menu = ['Services', 'Templates']
+        compo_menu = ["Cloud Broker", "Statistics", "Grid", "Storage", "System", "End User"]
         cloud_broker_menu = ['Accounts', 'Cloud Spaces', 'Locations', 'Images', 'External Networks',
                              'Private Networks', 'Users', 'Groups', 'Virtual Machines', 'Software Versions']
         grid_menu = ['Audits', 'Error Conditions', 'Jobs', 'Job Queues', 'JumpScripts', 'Logs', 'Grid Nodes',
@@ -36,10 +35,8 @@ class AdminMenu(Framework):
 
         self.lg("check left menu")
         self.LeftNavigationMenu.compare_original_list_with_exist_list("", "left_menu", compo_menu)
-        self.lg("check ays menu")
-        self.LeftNavigationMenu.compare_original_list_with_exist_list("", "ays_menu", ays_menu)
         self.lg("check cloudbroker menu")
-        self.LeftNavigationMenu.compare_original_list_with_exist_list("cloudbroker_arrow", "cloudbroker_menu",
+        self.LeftNavigationMenu.compare_original_list_with_exist_list("", "cloudbroker_menu",
                                                                       cloud_broker_menu)
         self.lg("check grid menu")
         self.LeftNavigationMenu.compare_original_list_with_exist_list("grid_arrow", "grid_menu", grid_menu)
@@ -47,11 +44,6 @@ class AdminMenu(Framework):
         self.LeftNavigationMenu.compare_original_list_with_exist_list("system_arrow", "system_menu", system_menu)
         # self.lg("check storage menu")
         # self.LeftNavigationMenu.compare_original_list_with_exist_list("storage_arrow", "storage_menu", storage_menu)
-
-        self.lg("check ays items redirect page")
-        self.LeftNavigationMenu.check_redirect_page("ays_text", "AYS")
-        self.LeftNavigationMenu.check_redirect_page("ays_sub_service", "Services")
-        self.LeftNavigationMenu.check_redirect_page("ays_sub_templates", "Templates")
 
         self.lg("check cloudbroker items redirect page")
         self.LeftNavigationMenu.check_redirect_page("cloudbroker_text", "cbgrid")
@@ -66,6 +58,9 @@ class AdminMenu(Framework):
         self.LeftNavigationMenu.check_redirect_page("cloudbroker_sub_groups", "groups")
         self.LeftNavigationMenu.check_redirect_page("cloudbroker_sub_vm", "Virtual Machines")
         self.LeftNavigationMenu.check_redirect_page("cloudbroker_sub_0_access", "0-access")
+        # in case user have no access to 0-access page back to the base page first
+        self.get_page(self.base_page)
+        self.LeftNavigationMenu.check_redirect_page("cloudbroker_text", "cbgrid")
         self.LeftNavigationMenu.check_redirect_page("cloudbroker_sub_sv", "Version")
 
         # self.lg("check statistics items redirect page")

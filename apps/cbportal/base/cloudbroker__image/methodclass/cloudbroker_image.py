@@ -112,7 +112,7 @@ class cloudbroker_image(BaseActor):
         return True
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def edit(self, imageId, name=None, username=None, password=None, accountId=None, **kwargs):
+    def edit(self, imageId, name=None, username=None, password=None, accountId=None, hotResize=None, **kwargs):
         if accountId and not self.models.account.exists(accountId):
             raise exceptions.BadRequest("Specified accountId does not exists")
         self._checkimage(imageId)
@@ -125,7 +125,13 @@ class cloudbroker_image(BaseActor):
             update['password'] = password
         if accountId is not None:
             update['accountId'] = accountId
-        self.models.image.updateSearch({'id': imageId}, {'$set': update})
+
+        if hotResize == 'False':
+            update['hotResize'] = False
+        elif hotResize == 'True':
+            update['hotResize'] = True
+        if update:
+            self.models.image.updateSearch({'id': imageId}, {'$set': update})
 
     def _createImage(self, name, url, gid, imagetype, boottype, bytesize, username, password, accountId, hotresize, kwargs):
         ctx = kwargs['ctx']

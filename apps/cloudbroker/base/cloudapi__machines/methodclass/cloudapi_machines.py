@@ -3,12 +3,15 @@ from JumpScale.portal.portal import exceptions
 from cloudbrokerlib import authenticator, network, resourcestatus
 from cloudbrokerlib.baseactor import BaseActor
 from CloudscalerLibcloud.utils import ovf
+from CloudscalerLibcloud.compute.drivers.libvirt_driver import NetworkInterface
 import time
 import itertools
 import re
 import requests
 import gevent
 import urlparse
+import math
+import json
 from datetime import datetime
 
 
@@ -138,6 +141,11 @@ class cloudapi_machines(BaseActor):
 
         :param machineId: id of the machine
         """
+        machine = self._getMachine(machineId)
+        tags = j.core.tags.getObject(machine.tags)
+        if 'cdrom' in tags.tags:
+            tags.tagDelete('cdrom')
+            self.models.vmachine.updateSearch({'id': machine.id}, {'$set': {'tags': tags.tagstring}})
         return self._action(machineId, 'stop', resourcestatus.Machine.HALTED, force=force)
 
     @authenticator.auth(acl={'machine': set('X')})
@@ -384,6 +392,8 @@ class cloudapi_machines(BaseActor):
         message = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.html', **args)
         subject = j.core.portal.active.templates.render('cloudbroker/email/users/export_completion.subject.txt', **args)
 
+        j.clients.email.send(toaddrs, fromaddr, subject, message, files=None)
+
     def _sendCreateTemplateCompletionMail(self, name, emailaddress, success=True, error=False, eco=""):
         fromaddr = self.hrd.get('instance.openvcloud.supportemail')
         if isinstance(emailaddress, list):
@@ -446,7 +456,7 @@ class cloudapi_machines(BaseActor):
                 disk.order = i
                 disk.accountId = cloudspace.accountId
                 disk.type = 'B' if i == 0 else 'D'
-                disk.sizeMax = diskobj['size'] / 1024 / 1024 / 1024
+                disk.sizeMax = int(math.ceil(diskobj['size'] / 1024. ** 3))
                 totaldisksize += disk.sizeMax
                 disk.name = diskobj['name']
                 diskid = self.models.disk.set(disk)[0]
@@ -533,12 +543,12 @@ class cloudapi_machines(BaseActor):
                 provider.destroy_volumes_by_guid(diskguids)
             # TODO: the url to be sent to the user
             if export_job['state'] == 'ERROR':
-                raise exceptions.Error("Failed to export Virtaul Machine")
+                raise exceptions.Error("Failed to export Virtual Machine")
             if not callbackUrl:
                 [self._sendExportCompletionMail(vm.name, email, success=True) for email in userobj.emails]
             else:
                 requests.get(callbackUrl)
-        except Exception as e:
+        except BaseException as e:
             eco = j.errorconditionhandler.processPythonExceptionObject(e)
             eco.process()
             error = True
@@ -700,6 +710,9 @@ class cloudapi_machines(BaseActor):
             memory = size.memory
             vcpus = size.vcpus
         totaldisksize = sum(datadisks + [disksize])
+
+        if memory % 2:
+            raise exceptions.BadRequest("memory value should be an even number")
 
         j.apps.cloudapi.cloudspaces.checkAvailableMachineResources(cloudspace.id, vcpus,
                                                                    memory / 1024.0, totaldisksize)
@@ -905,7 +918,7 @@ class cloudapi_machines(BaseActor):
             machine['updateTime'] = int(time.time())
             machine['deletionTime'] = 0
             self.models.vmachine.set(machine)
-        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace, ctx=j.core.portal.active.requestContext)
         self.models.disk.updateSearch({'id' : {'$in': machine['disks']}}, {'$set': {'status': resourcestatus.Disk.CREATED}})
         return True
 
@@ -1144,7 +1157,7 @@ class cloudapi_machines(BaseActor):
             self.cb.machine.cleanup(clone)
             raise
         self.models.disk.updateSearch({'id' : {'$in': clone.disks}}, {'$set': {'status': resourcestatus.Disk.ASSIGNED}})
-        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace)
+        gevent.spawn(self.cb.cloudspace.update_firewall, cloudspace, ctx=j.core.portal.active.requestContext)
         return clone.id
 
     @authenticator.auth(acl={'machine': set('R')})
@@ -1190,6 +1203,12 @@ class cloudapi_machines(BaseActor):
             userId = user['id']
 
         self._addACE(machineId, userId, accesstype, userstatus='CONFIRMED')
+
+        machineId = int(machineId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(vmachine.cloudspaceId)
+        if userId not in cloudspaceacl:
+            j.apps.cloudapi.cloudspaces.addUser(cloudspaceId=vmachine.cloudspaceId, userId=userId, accesstype=accesstype, explicit=False)
         try:
             j.apps.cloudapi.users.sendShareResourceEmail(user, 'machine', machineId, accesstype)
             return True
@@ -1284,6 +1303,16 @@ class cloudapi_machines(BaseActor):
 
         result = self.models.vmachine.updateSearch({'id': machineId},
                                                    {'$pull': {'acl': {'type': 'U', 'userGroupId': userId}}})
+        # Remove user Read access from account it no other machines or cloudspaces have this user and not explicitly added to account
+        machineId = int(machineId)
+        vmachine = self.models.vmachine.get(machineId)
+        cloudspace = self.models.cloudspace.get(vmachine.cloudspaceId)
+        cloudspaceacl = authenticator.auth().getCloudspaceAcl(vmachine.cloudspaceId)
+        if userId in cloudspaceacl:
+            if not cloudspaceacl[userId].get('explicit', True):
+                matched_vms = self.models.cloudspace.search({'cloudspaceId':cloudspace.id, 'acl.userGroupId': userId, 'id': {'$ne': machineId}, '$fields': {'id'}})
+                if matched_vms[0] == 0:
+                    j.apps.cloudapi.cloudspaces.deleteUser(cloudspaceId=cloudspace.id, userId=userId, recursivedelete=True)
         if result['nModified'] == 0:
             # User was not found in access rights
             raise exceptions.NotFound('User "%s" does not have access on the machine' % userId)
@@ -1307,6 +1336,54 @@ class cloudapi_machines(BaseActor):
             userstatus = 'INVITED'
         return self._updateACE(machineId, userId, accesstype, userstatus)
 
+    @authenticator.auth(acl={"cloudspace": set("X")})
+    def setupDhcpServer(self, external_network_id, lease=None, **kwargs):
+        """
+        In case of dhcp for external network we:
+        1. get cloudspace object
+        2. build leases from OSIS DB
+        3. get firewall ID for this DHCP
+        4. call return old leases on dhcp server in case of problems
+        """
+        dhcp_id = self.models.externalnetwork.get(external_network_id).dhcpServerId
+        if not dhcp_id:
+            return
+
+        # get cloudspace object with public dhcp server
+        try:
+            cloudspace_dhcp = self.models.cloudspace.get(dhcp_id)
+        except:
+            raise RuntimeError("Can not find cloudspace with id {}".format(dhcp_id))
+
+        # build leases for existing public interfaces
+        try:
+            leases_list = self.cb.cloudspace.get_leases_public(external_network_id)
+        except:
+            raise RuntimeError("Can not get leases from OSIS for external network id {}".format(external_network_id))
+
+        # get firewall ID  from OSIS to push it to update_leases_script
+        fwid = "{}_{}".format(cloudspace_dhcp.gid, cloudspace_dhcp.networkId)
+
+        # Creating a temporary dictionary containing both old and new data
+        temp_leases_list = leases_list or []
+        if lease:
+            if isinstance(lease, dict):
+                temp_leases_list.append(lease)
+            elif isinstance(lease, str):
+                try:
+                    temp_leases_list.append(json.loads(lease))
+                except:
+                    # TODO: add logging
+                    pass
+
+        # Try to update leases in ROS;
+        try:
+            self.netmgr.fw_update_leases(fwid, temp_leases_list)
+        except:
+            # TODO return to old state
+            self.netmgr.fw_remove_lease(fwid, lease.get("macaddress"))
+            raise RuntimeError("Can not update leases for FW ID {}".format(fwid))
+
     @authenticator.auth(acl={'cloudspace': set('X')})
     def attachExternalNetwork(self, machineId, **kwargs):
         """
@@ -1315,6 +1392,25 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :return: True if a external network was attached to the machine
         """
+        def attach_public_nic():
+            """
+            1. Try to attach external network interface
+            2. If not cleanup properly
+            """
+
+            # Check and create dhcp server if necessary
+            self.setupDhcpServer(externalNetworkId, {"mac-address": macaddress, "address": nic.ipAddress})
+
+            # Try to attach network interface to VM
+            try:
+                return provider.attach_public_network(node, nic.ipAddress, interface)
+            # Remove entry about interface from OSIS
+            except:
+                # Remove entry about interface from OSIS
+                vmachine.nics = self._detachExternalNetworkFromModel(vmachine.nics, externalNetworkId)
+                self.models.vmachine.set(vmachine)
+                raise exceptions.ServiceUnavailable("Can not attach vNIC for external IP to VM id {}".format(machineId))
+
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
         for nic in vmachine.nics:
             if nic.type == 'PUBLIC':
@@ -1333,16 +1429,29 @@ class cloudapi_machines(BaseActor):
         nic.ipAddress = str(externalnetworkip)
         nic.params = j.core.tags.getTagString([], {'gateway': pool.gateway, 'externalnetworkId': str(pool.id)})
         nic.type = 'PUBLIC'
-        try:
-            iface = provider.attach_public_network(node, pool.vlan, nic.ipAddress)
-        except:
-            self._detachExternalNetworkFromModel(vmachine)
-            raise
-        self.models.vmachine.set(vmachine)
+
+        extnet = self.models.externalnetwork.get(externalNetworkId)
+        vlan = extnet.vlan
+        macaddress = provider.backendconnection.getMacAddress(cloudspace.gid)
+        target = "%s-%s-ext" % (node.name, externalNetworkId)
+        bridgename = j.system.ovsnetconfig.getVlanBridge(vlan)
+        interface = NetworkInterface(
+            mac=macaddress,
+            target=target,
+            type="PUBLIC",
+            bridgename=bridgename,
+            networkId=vlan,
+        )
+
+        iface = attach_public_nic()
         nic.deviceName = iface.target
         nic.macAddress = iface.mac
         self.models.vmachine.set(vmachine)
-        return True
+        return {
+            "ipAddress": nic.ipAddress,
+            "gateway": pool.gateway,
+            "MAC": macaddress
+        }
 
     @authenticator.auth(acl={'cloudspace': set('X')})
     def resize(self, machineId, sizeId=None, vcpus=None, memory=None, **kwargs):
@@ -1359,6 +1468,10 @@ class cloudapi_machines(BaseActor):
             vcpus = size.vcpus
         new_memory = memory
         new_vcpus = vcpus
+
+        if new_memory % 2:
+            raise exceptions.BadRequest("memory value should be an even number")
+
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
         # Validate that enough resources are available in the CU limits if size will be increased
         old_memory = vmachine.memory
@@ -1401,6 +1514,9 @@ class cloudapi_machines(BaseActor):
         :param machineId: id of the machine
         :return: True if external network was detached from the machine
         """
+        
+        # TODO: add feature to delete static leases from DHCP on detach
+        
         provider, node, vmachine = self.cb.getProviderAndNode(machineId)
 
         for nic in vmachine.nics:

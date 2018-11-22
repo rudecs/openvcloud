@@ -1,0 +1,128 @@
+<div id="noVNC_screen">
+    <div id="noVNC_status_bar" class="noVNC_status_bar">
+        <div id="noVNC_status">
+            Loading
+        </div>
+        <div>
+            <input class="btn btn-default" type=button value="Send Text" id="sendTextInput">
+            <input class="btn btn-default" type=button value="Send CtrlAltDel" id="sendCtrlAltDelButton">
+        </div>
+    </div>
+    <p>
+        <div>
+            <canvas id="noVNC_canvas" width="640px" height="20px">
+                Canvas not supported.
+            </canvas>
+        </div>
+    </p>
+</div>
+
+<script>
+/*jslint white: false */
+/*global window, $, Util, RFB, */
+"use strict";
+
+// Load supporting scripts
+//Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
+//                   "input.js", "display.js", "jsunzip.js", "rfb.js"]);
+
+var rfb;
+
+function sendText(text) {
+        function sendchar() {
+            var chr = text[0];
+            text = text.slice(1);
+            rfb.sendKey(chr.charCodeAt(0));
+            if (text.length > 0) {
+                setTimeout(sendchar, 50);
+            }
+        }
+        sendchar();
+};
+
+function sendTextInput() {
+    var text = prompt('Enter text to paste');
+    if (text) {
+        sendText(text);
+    };
+};
+
+function passwordRequired(rfb) {
+    var msg;
+    msg = '<form onsubmit="return setPassword();"';
+    msg += '  style="margin-bottom: 0px">';
+    msg += 'Password Required: ';
+    msg += '<input type=password size=10 id="password_input" class="noVNC_status">';
+    msg += '<\/form>';
+    $D('noVNC_status_bar').setAttribute("class", "noVNC_status_warn");
+    $D('noVNC_status').innerHTML = "<strong>Status:</strong>" + msg;
+}
+function setPassword() {
+    rfb.sendPassword($D('password_input').value);
+    return false;
+}
+function sendCtrlAltDel() {
+    rfb.sendCtrlAltDel();
+    return false;
+}
+function updateState(rfb, state, oldstate, msg) {
+    var s, sb, cad, level;
+    s = $D('noVNC_status');
+    sb = $D('noVNC_status_bar');
+    cad = $D('sendCtrlAltDelButton');
+    switch (state) {
+        case 'failed':       level = "error";  break;
+        case 'fatal':        level = "error";  break;
+        case 'normal':       level = "normal"; break;
+        case 'disconnected': level = "normal"; break;
+        case 'loaded':       level = "normal"; break;
+        default:             level = "warn";   break;
+    }
+
+    if (state === "normal") { cad.disabled = false; }
+    else                    { cad.disabled = true; }
+
+    if (typeof(msg) !== 'undefined') {
+        sb.setAttribute("class", "noVNC_status_" + level);
+        s.innerHTML = msg;
+        s.innerHTML = "<strong>Status: </strong>" + msg;
+    }
+}
+
+$(function () {
+    var host, port, password, path, token, queryargs;
+
+    $D('sendCtrlAltDelButton').style.display = "inline";
+    $D('sendCtrlAltDelButton').onclick = sendCtrlAltDel;
+    $D('sendTextInput').onclick = sendTextInput;
+
+    WebUtil.init_logging(WebUtil.getQueryVar('logging', 'warn'));
+    // By default, use the host and port of server that served this file
+    host = '{{host}}';
+    port = {{port}};
+    path = '{{path}}';
+
+
+    password = WebUtil.getQueryVar('password', '');
+
+    if ((!host) || (!port)) {
+        updateState('failed',
+            "Must specify host and port in URL");
+        return;
+    }
+
+    rfb = new RFB({'target':       $D('noVNC_canvas'),
+                   'encrypt':      WebUtil.getQueryVar('encrypt',
+                            (window.location.protocol === "https:")),
+                   'repeaterID':   WebUtil.getQueryVar('repeaterID', ''),
+                   'true_color':   WebUtil.getQueryVar('true_color', true),
+                   'local_cursor': WebUtil.getQueryVar('cursor', true),
+                   'shared':       WebUtil.getQueryVar('shared', true),
+                   'view_only':    WebUtil.getQueryVar('view_only', false),
+                   'updateState':  updateState,
+                   'onPasswordRequired':  passwordRequired});
+    rfb.connect(host, port, password, path, queryargs);
+});
+</script>
+
+

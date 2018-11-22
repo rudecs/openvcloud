@@ -21,6 +21,7 @@ class cloudbroker_iaas(BaseActor):
     def __init__(self):
         super(cloudbroker_iaas, self).__init__()
         self.lcl = j.clients.osis.getNamespace('libvirt')
+        self.pcl = j.clients.portal.getByInstance2('main')
 
     def _checkPingIps(self, pingips):
         pingips = pingips.split(',')
@@ -35,7 +36,7 @@ class cloudbroker_iaas(BaseActor):
         return res
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, pingips, **kwargs):
+    def addExternalNetwork(self, name, subnet, gateway, startip, endip, gid, vlan, accountId, pingips, dhcpServerId, **kwargs):
         """
         Adds a public network range to be used for cloudspaces
         param:subnet the subnet to add in CIDR notation (x.x.x.x/y)
@@ -54,6 +55,14 @@ class cloudbroker_iaas(BaseActor):
         except netaddr.AddrFormatError as e:
             raise exceptions.BadRequest(e.message)
 
+        if dhcpServerId < 0 and type(dhcpServerId) == int:
+            raise exceptions.BadRequest(
+                    "DHCP server ID is not valid! Use only 0 or positive number"
+                )
+
+        if not dhcpServerId:
+            dhcpServerId = 0
+
         if pingips is None:
             pingips = '8.8.8.8'
         pingips = self._checkPingIps(pingips)
@@ -67,6 +76,7 @@ class cloudbroker_iaas(BaseActor):
         pool.subnetmask = str(net.netmask)
         pool.network = str(net.network)
         pool.accountId = accountId or 0
+        pool.dhcpServerId = dhcpServerId
         pool.ips = [str(ip) for ip in netaddr.IPRange(startip, endip)]
         pool.id, _, _ = self.models.externalnetwork.set(pool)
         return pool.id
@@ -95,6 +105,42 @@ class cloudbroker_iaas(BaseActor):
             ip = str(netaddr.IPNetwork(obj['externalnetworkip']).ip)
             usedips.add(ip)
         return usedips
+
+    @auth(groups=['level1', 'level2', 'level3'])
+    def editDHCPServerId(self, externalnetworkId, dhcpServerId, **kwargs):
+        if self.models.externalnetwork.count({"id": externalnetworkId}) != 1:
+            raise exceptions.BadRequest(
+            "External network ID %s does not exist" % (externalnetworkId)
+            )
+        # If dhcpServerId param from API is less then 0, we should stop
+        if dhcpServerId < 0:
+            raise exceptions.BadRequest(
+            "DHCP server ID is not valid! Use only 0 or positive number"
+            )
+
+        # Get externalnetwork object
+        pool = self.models.externalnetwork.get(externalnetworkId)
+
+        # If dhcpServerId more then 0, check that DHCP server with this ID is exist
+        # If dhcpServerId equals 0, then just set new value to OSIS
+        if dhcpServerId > 0:
+            # TODO: check that DHCP has corresponding IP pool
+            if not self.models.cloudspace.count({"id": dhcpServerId, "status": "DEPLOYED"}):
+                raise exceptions.BadRequest(
+                "DHCP server ID %s is not available (can not find or it has a wrong status)" % (dhcpServerId)
+                )
+
+        pool.dhcpServerId = dhcpServerId
+
+        #Re-read all leases for this DHCP again
+        self.pcl.cloudbroker.iaas.setupDhcpServer(external_network_id=externalnetworkId)
+        self.models.externalnetwork.set(pool)
+
+    @auth(groups=["level1", "level2", "level3"])
+    def setupDhcpServer(self, external_network_id, lease=None, **kwargs):
+        return j.apps.cloudapi.machines.setupDhcpServer(
+            external_network_id=external_network_id, lease=lease
+        )
 
     @auth(groups=['level1', 'level2', 'level3'])
     def deleteExternalNetwork(self, externalnetworkId, **kwargs):

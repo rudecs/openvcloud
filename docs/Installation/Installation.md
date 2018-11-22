@@ -25,10 +25,7 @@ Setting up an OpenvCloud cluster is done in following steps:
 - SSH access credentials for all nodes
 - Swap needs to be off on each node
 - Each node needs to be able to access each other node in the cluster
-- Three files for SSL verification need to be added to the specified path in the YAML config on the machine all with the same name and have these extensions:
-  - .csr
-  - .crt
-  - .key
+- Certificates for SSL verification have to be included in YAML config in `certificates` section. Each certificate object should include fields `key` and `crt` containing a private key and a certificate correspondingly. The certificates for different cases should be referenced by name in `ssl` section
 - `jsonschema` python library
 
 

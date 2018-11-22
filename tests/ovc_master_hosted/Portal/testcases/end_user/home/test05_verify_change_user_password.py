@@ -2,15 +2,14 @@ import unittest
 import uuid
 from tests.ovc_master_hosted.Portal.framework.framework import Framework
 
-
+@unittest.skip('users created from admin portal cannot be accessed from itsyou.online')
 class ChangePassword(Framework):
     def __init__(self, *args, **kwargs):
         super(ChangePassword, self).__init__(*args, **kwargs)
     def setUp(self):
         super(ChangePassword, self).setUp()
-        self.Login.Login(cookies_login=True)
+        self.Login.Login(cookies_login=True, portal='enduser')
 
-    @unittest.skip('users created from admin portal cannot be accessed from itsyou.online')
     def test01_verify_change_user_password(self):
         """ PRTL-022
         *Test case for create new user and change his password*

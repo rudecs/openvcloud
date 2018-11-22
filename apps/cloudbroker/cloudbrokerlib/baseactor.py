@@ -9,6 +9,7 @@ class BaseActor(object):
     def __init__(self):
         self.cb = cloudbroker.CloudBroker()
         self.models = cloudbroker.models
+        self.sysmodels = cloudbroker.sysmodels
         if self.__class__.__name__.startswith('cloudapi'):
             packagename = 'cloudbroker'
         elif self.__class__.__name__.startswith('cloudbroker'):

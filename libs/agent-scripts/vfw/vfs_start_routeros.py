@@ -17,16 +17,11 @@ queue = 'hypervisor'
 def action(fwobject):
     import os
     import libvirt
-    from CloudscalerLibcloud.utils.network import Network
+    from CloudscalerLibcloud.utils.network import Network, NetworkTool
     internalip = fwobject['host']
     networkid = fwobject['id']
     vlan = fwobject['vlan']
-
-    def createnetwork():
-        createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
-        createnetwork.executeLocal(networkid=networkid)
-        create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-        return create_external_network.executeLocal(vlan=vlan)
+    netinfo = [{'type': 'vlan', 'id': vlan}, {'type': 'vxlan', 'id': networkid}]
 
     def protect_interfaces(network, domain):
         for publicip in fwobject['pubips']:
@@ -44,12 +39,12 @@ def action(fwobject):
             if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
                 return True
             else:
-                createnetwork()
-                domain.create()
-                protect_interfaces(network, domain)
-                return True
+                with NetworkTool(netinfo, network.libvirtutil):
+                    domain.create()
+                    protect_interfaces(network, domain)
+                    return True
         except:
-            bridgename = createnetwork()
+            bridgename = j.system.ovsnetconfig.getVlanBridge(vlan)
             import jinja2
             networkidHex = '%04x' % int(networkid)
             imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
@@ -61,9 +56,10 @@ def action(fwobject):
             xmlsource = xmltemplate.render(networkid=networkidHex,
                                            destinationfile=destinationfile,
                                            publicbridge=bridgename)
-
-            dom = con.defineXML(xmlsource)
-            dom.create()
+            
+            with NetworkTool(netinfo, network.libvirtutil):
+                dom = con.defineXML(xmlsource)
+                dom.create()
             protect_interfaces(network, dom)
             return True
     finally:

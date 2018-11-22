@@ -23,7 +23,7 @@
         """"
         var:accountId int,,ID of account to delete
         var:reason str,,reason for deleting the account
-        var:permanently bool,False, whether to completly delete the account
+        var:permanently bool,False, whether to completly delete the account @optional
 
 
     method:deleteAccounts
@@ -92,5 +92,5 @@
         """
         var:accountIds list(int),, IDs of accounts
         var:reason str,, reason for deletion
-        var:permanently bool ,, whether to completly destroy accounts or not
+        var:permanently bool ,, whether to completly destroy accounts or not @optional
 

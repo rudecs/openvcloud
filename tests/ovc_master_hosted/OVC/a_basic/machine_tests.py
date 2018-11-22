@@ -117,6 +117,7 @@ class BasicTests(BasicACLTest):
 
         #. Creating machine with random size.
         #. Resize running machine with memory size less than selected size, should fail.
+        #. Resize machine memory with odd value, should fail.
         #. Resize machine with memory size greater than selected size, should succeed.
         #. Resize the machine, should succeed
         #. Start the machine, if offline resize.
@@ -139,24 +140,34 @@ class BasicTests(BasicACLTest):
         )
 
         self.wait_for_status('RUNNING', self.api.cloudapi.machines.get, machineId=machineId)
-
+        
+        vm_client = VMClient(machineId)
+        
         if machine_status == "online":
             self.lg('Resize running machine with memory size less than selected size, should fail')
             with self.assertRaises(ApiError) as e:
                 self.account_owner_api.cloudapi.machines.resize(
                     machineId=machineId, 
-                    memory=memory-1,
-                    vcpus=vcpus-1
+                    memory=memory - 2,
+                    vcpus=vcpus - 1
                 )
             self.assertEqual(e.exception.message, '400 Bad Request')
-            
 
+        self.lg('Resize machine memory with odd value, should fail')
+        with self.assertRaises(ApiError) as e:
+            self.account_owner_api.cloudapi.machines.resize(
+                machineId=machineId, 
+                memory=memory + 1,
+                vcpus=vcpus + 1
+            )
+        self.assertEqual(e.exception.message, '400 Bad Request')
+            
         if machine_status == "offline":
             self.lg('Stop the virtual machine')
             self.account_owner_api.cloudapi.machines.stop(machineId=machineId)
 
         self.lg('Resize machine with memory size greater than selected size, should succeed')
-        new_memory = memory + 1
+        new_memory = memory + 2
         new_vcpus = vcpus + 1
         self.account_owner_api.cloudapi.machines.resize(
             machineId=machineId, 
@@ -167,6 +178,7 @@ class BasicTests(BasicACLTest):
         if machine_status == "offline":
             self.lg('Start the virtual machine')
             self.account_owner_api.cloudapi.machines.start(machineId=machineId)
+            vm_client = VMClient(machineId)
 
         self.lg('- Check that the machine is updated')
         machineInfo = self.api.cloudapi.machines.get(machineId=machineId)
@@ -174,7 +186,6 @@ class BasicTests(BasicACLTest):
         self.assertEqual(machineInfo['memory'], new_memory)
         self.assertEqual(machineInfo['vcpus'], new_vcpus)
 
-        vm_client = VMClient(machineId)
         response = vm_client.execute(" cat /proc/meminfo")
         meminfo = response[1].read()
         mem_total = int(meminfo[meminfo.find("MemTotal")+9:meminfo.find("kB")])/1024
@@ -520,21 +531,21 @@ class BasicTests(BasicACLTest):
                              timeout=120)
 
         self.lg('- delete the virtual machine')
-        self.api.cloudapi.machines.delete(machineId=self.machineId)
+        self.api.cloudapi.machines.delete(machineId=self.machineId, permanently=True)
 
         self.lg('- Delete the cloud space')
         self.wait_for_status('DEPLOYED', self.api.cloudapi.cloudspaces.get,
                              cloudspaceId=self.cloudspaceId,
                              timeout=120)
-        self.api.cloudbroker.cloudspace.destroy(accountId=self.accountId,
-                                                cloudspaceId=self.cloudspaceId,
+        self.api.cloudbroker.cloudspace.destroy(cloudspaceId=self.cloudspaceId,
+                                                permanently=True,
                                                 reason='Test %s' % self._testID)
         self.wait_for_status('DESTROYED', self.api.cloudapi.cloudspaces.get,
                              cloudspaceId=self.cloudspaceId,
                              timeout=120)
 
         self.lg('- delete the account')
-        self.api.cloudbroker.account.delete(accountId=self.accountId, reason="testing")
+        self.api.cloudbroker.account.delete(accountId=self.accountId, permanently=True, reason="testing")
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.accountId,
                              timeout=120)

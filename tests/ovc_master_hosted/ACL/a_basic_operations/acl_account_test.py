@@ -50,7 +50,7 @@ class Read(ACLACCOUNT):
         self.assertEqual(user2_account['id'], self.account_id)
 
         self.lg('5- delete user1 account: %s' % self.account_id)
-        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing')
+        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
@@ -104,7 +104,7 @@ class Read(ACLACCOUNT):
         self.assertEqual(user1_accounts[0]['id'], self.account_id)
 
         self.lg('5- delete account: %s' % self.account_id)
-        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing')
+        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
 
@@ -170,7 +170,7 @@ class Write(ACLACCOUNT):
         self.assertEqual(newcloudspace['id'], newcloudspaceId)
 
         self.lg('5- delete the account: %s' % self.account_id)
-        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing')
+        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
@@ -197,7 +197,7 @@ class Write(ACLACCOUNT):
 
         self.lg('%s ENDED' % self._testID)
 
-    @unittest.skip('bug: https://github.com/0-complexity/openvcloud/issues/797')
+    @unittest.skip('bug: https://github.com/0-complexity/openvcloud/issues/1006')
     def test004_machine_convertToTemplate(self):
         """ ACL-10
         *Test case for machine_convertToTemplate api with user has write access.*
@@ -285,7 +285,7 @@ class Write(ACLACCOUNT):
         self.assertEqual(status2, 'CREATED', 'Template did not created and still %s' % status2)
 
         self.lg('6- delete user1 account: %s' % self.account_id)
-        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing')
+        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='testing', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
@@ -358,7 +358,7 @@ class Admin(ACLACCOUNT):
             self.assertEqual(e.message, '403 Forbidden')
 
         self.lg('9- delete account, should succeed')
-        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='test')
+        self.api.cloudbroker.account.delete(accountId=self.account_id, reason='test', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         account = self.api.cloudapi.accounts.get(accountId=self.account_id)

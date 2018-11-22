@@ -7,7 +7,7 @@ class Support(Framework):
 
     def setUp(self):
         super(Support, self).setUp()
-        self.Login.Login(cookies_login=True)
+        self.Login.Login(cookies_login=True, portal='enduser')
         self.click("support_button")
 
     def test01_support(self):

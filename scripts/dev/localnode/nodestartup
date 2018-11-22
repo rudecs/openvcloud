@@ -3,4 +3,8 @@ echo "Started at $(date)" > /tmp/startup
 scriptdir=$(dirname $(readlink -f $0))
 $scriptdir/nodecreatenet
 mount LABEL="$(hostname -s)-db" /mnt/db
+asdloop=$(losetup -a | grep  "$(hostname -s)-asd" | cut -f1 -d:)
+if [ -n "$asdloop" ]; then
+    mount -o defaults,nofail,noatime,discard "${asdloop}p1" "/mnt/alba-asd/$(ls /mnt/alba-asd/)"
+fi
 mount -a

@@ -76,56 +76,6 @@ class ExtendedTests(BasicACLTest):
 
         self.lg('%s ENDED' % self._testID)
 
-    def test002_node_maintenance_stopVMs(self):
-        """ OVC-019
-        *Test case for putting node in maintenance with action stop all vms.*
-
-        **Test Scenario:**
-
-        #. create 2 VMs, should succeed
-        #. put node in maintenance with action stop all vms, should succeed
-        #. check that the 2 VMs have been halted
-        #. enable the node back, should succeed
-        #. check that the 2 VMs have returned to running status
-        """
-
-        self.lg('%s STARTED' % self._testID)
-
-        self.lg('1- get a running node to create VMs on')
-        stackId = self.get_running_stackId()
-        if not stackId:
-            self.skipTest('[*] No running nodes ')
-        self.assertNotEqual(stackId, -1, msg="No active node to create VMs on")
-
-        self.lg('2- create 2 VMs, should succeed')
-        machine_Id1 = self.cloudapi_create_machine(cloudspace_id=self.cloudspace_id, stackId=stackId)
-        machine_Id2 = self.cloudapi_create_machine(cloudspace_id=self.cloudspace_id, stackId=stackId)
-
-        self.lg('3- put node in maintenance with action stop all vms, should succeed')
-        gid = self.get_node_gid(stackId)
-        self.api.cloudbroker.computenode.maintenance(id=stackId, gid=gid, vmaction='stop', message='testing')
-
-        self.lg('4- check that the 2 VMs have been halted')
-        self.wait_for_status('HALTED', self.api.cloudapi.machines.get, machineId=machine_Id1)
-        machine_1 = self.api.cloudapi.machines.get(machineId=machine_Id1)
-        self.assertEqual(machine_1['status'], 'HALTED')
-        self.wait_for_status('HALTED', self.api.cloudapi.machines.get, machineId=machine_Id2)
-        machine_2 = self.api.cloudapi.machines.get(machineId=machine_Id2)
-        self.assertEqual(machine_2['status'], 'HALTED')
-
-        self.lg('5- enable the node back, should succeed')
-        self.api.cloudbroker.computenode.enable(id=stackId, gid=gid, message='testing')
-
-        self.lg('6- check that the 2 VMs have returned to running status')
-        self.wait_for_status('RUNNING', self.api.cloudapi.machines.get, machineId=machine_Id1)
-        machine_1 = self.api.cloudapi.machines.get(machineId=machine_Id1)
-        self.assertEqual(machine_1['status'], 'RUNNING')
-        self.wait_for_status('RUNNING', self.api.cloudapi.machines.get, machineId=machine_Id2)
-        machine_2 = self.api.cloudapi.machines.get(machineId=machine_Id2)
-        self.assertEqual(machine_2['status'], 'RUNNING')
-
-        self.lg('%s ENDED' % self._testID)
-
     def test003_create_vmachine_clone_with_empty_name(self):
         """ OVC-021
         *Test case for create vmachine/clone with empty name.*
@@ -177,7 +127,6 @@ class ExtendedTests(BasicACLTest):
         #. Make sure disk is in CREATED state
         #. List the data disks, DS1 should be found.
         #. List the Boot disks, DS1 shouldn't be found
-        #. Delete non existing disk, should fail.
         #. Delete DS1, should succeed.
         #. Make sure disk is in DELETED STATE
         #. List the disks, DS1 shouldn't be there.
@@ -201,6 +150,7 @@ class ExtendedTests(BasicACLTest):
             d_type = 'B'
         else:
             d_type = 'D'
+            
         self.lg("List the %s disks, DS1 shouldn't be found."% d_type)
         disks = self.api.cloudapi.disks.list(accountId=self.account_id, type=d_type)
         self.assertFalse([True for d in disks if d['id'] == disk_id])
@@ -216,9 +166,12 @@ class ExtendedTests(BasicACLTest):
         response = self.api.cloudapi.disks.delete(diskId=disk_id, detach=False)
         self.assertTrue(response)
 
-        self.lg("Make sure that disk status has changed to CREATED")
+        self.lg("Make sure that disk status has changed to TOBEDELETED")
         disk = self.api.cloudapi.disks.get(disk_id)
-        self.assertEqual(disk['status'], 'DELETED')
+        self.assertEqual(disk['status'], 'TOBEDELETED')
+
+        self.lg('Delete disk DS1 permanently, should succeed')
+        self.api.cloudapi.disks.delete(diskId=disk_id, permanently=True)
 
         self.lg("List the %s disks, DS1 shouldn't be there."% disk_type)
         disks = self.api.cloudapi.disks.list(accountId=self.account_id, type=disk_type)
@@ -277,13 +230,6 @@ class ExtendedTests(BasicACLTest):
         self.lg('- expected error raised %s' % e.exception.status_code)
         self.assertEqual(e.exception.status_code, 409)
 
-        self.lg("Detach non existing disk, should fail")
-        with self.assertRaises(HTTPError) as e:
-            self.api.cloudapi.machines.detachDisk(machineId=VM1_id, diskId=disk_id+9)
-
-        self.lg('- expected error raised %s' % e.exception.status_code)
-        self.assertEqual(e.exception.status_code, 404)
-
         self.lg("Detach DS1, should succeed")
         response = self.api.cloudapi.machines.detachDisk(machineId=VM1_id, diskId=disk_id)
         self.assertTrue(response)
@@ -293,6 +239,7 @@ class ExtendedTests(BasicACLTest):
         self.assertEqual(disk['status'], 'CREATED')
 
         self.lg('%s ENDED' % self._testID)
+
     def test006_attach_disk_to_vm_of_another_account(self):
         """ OVC-030
         *Test case for attaching disk to a vm of another account*

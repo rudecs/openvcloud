@@ -12,9 +12,6 @@ class APIsTests(Framework):
         self.EUMachines.create_default_account_cloudspace(self.admin_username, self.account, self.cloudspace)
         self.click("machine_api_button")
 
-    def tearDown(self):
-        self.EUMachines.delete_default_account_cloudspace(self.account, self.cloudspace)
-        super(APIsTests, self).tearDown()
 
     @unittest.skip("bug: 178")
     def test01_list_images_using_account(self):

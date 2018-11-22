@@ -20,6 +20,16 @@ metadata.openvcloud            =
     branch:'$OVCBRANCH',
     url:'https://github.com/0-complexity/openvcloud_ays',
 EOF
+    md5=$(hostname -s | md5sum | awk '{print $1}')
+    machineid="${md5:0:12}"
+    cat << EOF > /opt/jumpscale7/hrd/system/grid.hrd
+id                             = '66'
+node.id                        = ''
+node.machineguid               = '${machineid}'
+node.roles                     =
+     'node',
+
+EOF
 }
 
 installovsrepo() {

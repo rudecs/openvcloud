@@ -30,6 +30,7 @@ class Read(ACLCLOUDSPACE):
         #. try get cloudspace1 with user2, should fail '403 Forbidden'
         #. add user1 to the cloudspace owned by user2
         #. get cloudspace1 with user1, should succeed
+        #. get account with user1
         #. delete account.
         #. get account2 with user1, should fail '404 Not Found'
         """
@@ -60,13 +61,17 @@ class Read(ACLCLOUDSPACE):
         cloudspace1 = self.user_api.cloudapi.cloudspaces.get(cloudspaceId=cloudspace_id)
         self.assertEqual(cloudspace1['id'], cloudspace_id)
 
-        self.lg('5- delete account: %s' % self.account_id)
-        self.api.cloudbroker.account.delete(accountId=self.account_id,  reason='testing')
+        self.lg('5- get account with user1')
+        account = self.user_api.cloudapi.accounts.get(accountId=cloudspace1['accountId'])
+        self.assertEqual(account['id'], cloudspace1['accountId'])
+
+        self.lg('6- delete account: %s' % self.account_id)
+        self.api.cloudbroker.account.delete(accountId=self.account_id,  reason='testing', permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
 
-        self.lg('6- get cloudspace2 with user1')
+        self.lg('7- get cloudspace2 with user1')
         try:
             self.user_api.cloudapi.cloudspaces.get(cloudspaceId=cloudspace_id)
         except ApiError as e:
@@ -107,7 +112,7 @@ class Read(ACLCLOUDSPACE):
 
         self.lg('5- Try list user\'s cloud spaces,')
         cloudspaces = self.user_api.cloudapi.cloudspaces.list()
-        self.assertEqual(len(cloudspaces), 1, 'Failed to list all user\'s cloud spaces!')
+        self.assertEqual(len(cloudspaces), 2, 'Failed to list all user\'s cloud spaces!')
 
         self.lg('6- Verify that ACL rights for the account owner is ACDRUX and for user is R only')
         acl = cloudspaces[0]['acl']
@@ -121,7 +126,7 @@ class Read(ACLCLOUDSPACE):
 
         self.lg('8- Try list user\'s cloud spaces,')
         cloudspaces = self.user_api.cloudapi.cloudspaces.list()
-        self.assertEqual(len(cloudspaces), 1, 'Failed to list all user\'s cloud spaces!')
+        self.assertEqual(len(cloudspaces), 3, 'Failed to list all user\'s cloud spaces!')
 
         self.lg('%s ENDED' % self._testID)
 
@@ -148,13 +153,14 @@ class Read(ACLCLOUDSPACE):
 
         self.lg('3- Try list user\'s cloud spaces,')
         cloudspaces = self.user_api.cloudapi.cloudspaces.list()
-        self.assertEqual(len(cloudspaces), 1, 'Failed to list all user\'s cloud spaces!')
+        self.assertEqual(len(cloudspaces), 2, 'Failed to list all user\'s cloud spaces!')
 
         self.lg('4- Delete the newly created cloud space')
-        self.account_owner_api.cloudapi.cloudspaces.delete(cloudspaceId=cloudspace_id)
+        self.account_owner_api.cloudapi.cloudspaces.delete(cloudspaceId=cloudspace_id, permanently=True)
 
         self.lg('5- Try list user\'s cloud spaces,')
-        self.assertFalse(self.user_api.cloudapi.cloudspaces.list(), 'This list should be empty!')
+        cloudspaces = self.user_api.cloudapi.cloudspaces.list()
+        self.assertEqual(len(cloudspaces), 1)
 
         self.lg('%s ENDED' % self._testID)
 
@@ -189,7 +195,7 @@ class Read(ACLCLOUDSPACE):
 
         self.lg('4- Delete the account')
         self.api.cloudbroker.account.delete(accountId=self.account_id,
-                                            reason='Test %s' % self._testID)
+                                            reason='Test %s' % self._testID, permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                      accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
@@ -230,7 +236,7 @@ class Read(ACLCLOUDSPACE):
         self.assertEqual(len(machines), 1, 'Failed to list all account owner machines!')
 
         self.lg('6- Delete the machine')
-        self.account_owner_api.cloudapi.machines.delete(machineId=machine_id)
+        self.account_owner_api.cloudapi.machines.delete(machineId=machine_id, permanently=True)
         self.assertFalse(self.user_api.cloudapi.machines.list(cloudspaceId=self.cloudspace_id))
 
         self.lg('%s ENDED' % self._testID)
@@ -250,9 +256,9 @@ class Read(ACLCLOUDSPACE):
         self._machine_list_scenario_base()
 
         self.lg('4- Delete the cloud space')
-        self.api.cloudbroker.cloudspace.destroy(accountId=self.account_id,
-                                                cloudspaceId=self.cloudspace_id,
-                                                reason='Test %s' % self._testID)
+        self.api.cloudbroker.cloudspace.destroy(cloudspaceId=self.cloudspace_id,
+                                                reason='Test %s' % self._testID,
+                                                permanently=True)
 
         self.wait_for_status('DESTROYED', self.api.cloudapi.cloudspaces.get,
                              cloudspaceId=self.cloudspace_id)
@@ -297,7 +303,7 @@ class Read(ACLCLOUDSPACE):
 
         self.lg('6- Delete the account')
         self.api.cloudbroker.account.delete(accountId=self.account_id,
-                                            reason='Test %s' % self._testID)
+                                            reason='Test %s' % self._testID, permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.accounts.get,
                              accountId=self.account_id)
         self.CLEANUP['accountId'].remove(self.account_id)
@@ -602,7 +608,7 @@ class Write(ACLCLOUDSPACE):
 
         self.lg('4- try to delete created machine with new user [user], should return 403')
         try:
-            self.user_api.cloudapi.machines.delete(machineId=owner_machine_id)
+            self.user_api.cloudapi.machines.delete(machineId=owner_machine_id, permanently=True)
         except ApiError as e:
             self.lg('- expected error raised %s' % e.message)
             self.assertEqual(e.message, '403 Forbidden')
@@ -631,7 +637,7 @@ class Write(ACLCLOUDSPACE):
 
         self.lg('8- delete created machine with new user [user], should succeed')
         sleep(10)
-        self.user_api.cloudapi.machines.delete(machineId=cloned_machine_id)
+        self.user_api.cloudapi.machines.delete(machineId=cloned_machine_id, permanently=True)
         sleep(10)
         try:
             self.api.cloudapi.machines.get(machineId=cloned_machine_id)
@@ -1096,8 +1102,8 @@ class Admin(ACLCLOUDSPACE):
         self.assertEqual(cloudspace.resourceLimits['CU_D'], maxDiskCapacity)
 
         self.lg('6- delete cloudspace.')
-        self.account_owner_api.cloudapi.machines.delete(machineId=machine_id)
-        self.user_api.cloudapi.cloudspaces.delete(cloudspaceId=newcloudspaceId)
+        self.account_owner_api.cloudapi.machines.delete(machineId=machine_id, permanently=True)
+        self.user_api.cloudapi.cloudspaces.delete(cloudspaceId=newcloudspaceId, permanently=True)
 
         self.lg('7- try to get deleted cloudspace.')
         try:

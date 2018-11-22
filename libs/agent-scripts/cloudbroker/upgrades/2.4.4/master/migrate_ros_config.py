@@ -10,13 +10,22 @@ organization = "greenitglobe"
 author = "ali.chaddad@gig.tech"
 license = "bsd"
 version = "2.0"
-roles = ['controller']
+roles = ['master']
 async = True
 
 def action():
+    acl = j.clients.agentcontroller.get()
     vcl = j.clients.osis.getNamespace('vfw')
     vfws = vcl.virtualfirewall.search({}, size=0)[1:]
+    
+    args = dict()
+    args['script'] = '/system hardware set multi-cpu=no'
     for vfw in vfws:
-        router = j.clients.routeros.get(vfw['host'], vfw['username'], vfw['password'])
-        router.do("/system/hardware/set", {"multi-cpu": "no"})
-        router.close()
+        args['fwobject'] = vfw
+        try:
+            acl.executeJumpscript('jumpscale', 'vfs_runscript_routeros', args=args, nid=vfw['nid'], gid=vfw['gid'], timeout=5)
+        except:
+            j.errorconditionhandler.raiseOperationalWarning("Can't connect to routeros {}".format(vfw['guid']))
+
+if __name__ == '__main__':
+    action()

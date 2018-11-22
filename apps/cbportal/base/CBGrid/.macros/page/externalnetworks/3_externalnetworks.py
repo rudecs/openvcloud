@@ -35,6 +35,10 @@ def main(j, args, params, tags, tasklet):
              'id': 'vlan',
              'value': 'vlan',
             },
+            {'name': 'DHCP',
+             'id': 'dhcpServerId',
+             'value': 'dhcpServerId'
+            },
             {'name': 'Free',
              'id': 'ips',
              'value': getFreeIPS,

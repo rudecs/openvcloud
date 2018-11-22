@@ -8,7 +8,7 @@
         """
         var:imageId int,,id of image to be deleted
         var:reason str,, reason for deleting the image
-        var:permanently bool,False, whether to completly delete the image
+        var:permanently bool,False, whether to completly delete the image @optional
         result:bool
 
     method:deleteImages
@@ -17,7 +17,7 @@
         """
         var:imageIds list(int),,list of images to be deleted
         var:reason str,, reason for deleting the images
-        var:permanently bool,False, whether to completly delete the images
+        var:permanently bool,False, whether to completly delete the images @optional
         result:bool
 
     method:restore
@@ -66,7 +66,7 @@
         Delete a CD-ROM Image
         """
         var:diskId int,,diskId of the CD-ROM image to delete
-        var:permanently bool,False, whether to completly delete the CD-ROM image, needs to be unused
+        var:permanently bool,False, whether to completly delete the CD-ROM image, needs to be unused @optional
 
 
     method:createImage
@@ -77,7 +77,7 @@
         var:url str,,URL where to download ISO from
         var:gid int,,Grid ID where this template should be create in
         var:boottype str,,Boot type of image bios or uefi
-        var:hotresize bool,,Does this machine supports hot resize
+        var:hotresize bool,False, Does this machine supports hot resize @optional
         var:imagetype str,,Image type Linux, Windows or Other
         var:username str,,Optional username for the image @optional
         var:password str,,Optional password for the image @optional
@@ -93,3 +93,4 @@
         var:username str,,username for the image @optional
         var:password str,,password for the image @optional
         var:accountId int,,AccountId to make the image exclusive @optional
+        var:hotresize bool,, Does this machine supports hot resize @optional

@@ -1,8 +1,8 @@
 
 {{datatables_use}}
-below are the sessions for ${name} if you want to provision a session click [here|/cbgrid/provision?node=$$node]
 h2. Sessions for ${name}
 {{accesssessions id:$$node}}
+{{html: <a href='/cbgrid/provision?node=$$node'><span class='glyphicon glyphicon-plus margin-bottom-medium margin-left-medium'></span> Connect to node</a>}}
 
 ||Session ID||Username||Remote||Start||End||
 {% for table in tables -%}

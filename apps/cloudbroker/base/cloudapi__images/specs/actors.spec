@@ -16,7 +16,7 @@
         Delete an image
         """
         var:imageId int,, id of the image to delete
-        var:permanently bool,False, whether to completly delete the image
+        var:permanently bool,False, whether to completly delete the image @optional
         result:bool, True if image was deleted successfully
 
     method:restore

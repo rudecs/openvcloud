@@ -19,6 +19,7 @@ def main(j, args, params, tags, tasklet):
     networkinfo = j.apps.cloudbroker.iaas.getUsedIPInfo(pool)
     network = pool.dump()
     network['pingips'] = ','.join(network['pingips'])
+    network["dhcpserverid"] = pool.dhcpServerId
     network.update(networkinfo)
 
     args.doc.applyTemplate(network, True)

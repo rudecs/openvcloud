@@ -74,22 +74,30 @@ class cloudbroker_grid(BaseActor):
             self.cb.executeJumpscript('greenitglobe', 'upgrade_cluster', role='controllernode',gid=gid, wait=False)
         return {'redirect_url': '/updating'}
 
-    @auth(groups=['level1', 'level2', 'level3'])
+    @auth(groups=['level1', 'level2', 'level3'], skipversioncheck=True)
     def runUpgradeScript(self, **kwargs):
-        current_version = self.sysmodels.version.searchOne({'status': 'CURRENT'})['name']
+        current_version_dict = self.sysmodels.version.searchOne({'status': 'INSTALLING'})
         previous_version_dict = self.sysmodels.version.searchOne({'status': 'PREVIOUS'})
         if previous_version_dict:
             previous_version = previous_version_dict['name']
         else:
-            previous_version = current_version
+            previous_version = current_version_dict['name']
         location_url = j.apps.cloudapi.locations.getUrl()
         job = self.cb.executeJumpscript('greenitglobe', 'upgrader', role='master', gid=j.application.whoAmI.gid,
                                         wait=True, args={'previous_version': previous_version,
-                                                         'current_version': current_version,
+                                                         'current_version': current_version_dict['name'],
                                                          'location_url': location_url})
         if job['state'] != 'OK':
             raise exceptions.Error("Couldn't execute upgrade script")
+        self.sysmodels.version.updateSearch({'name': current_version_dict['name']}, 
+                                            {'$set': {'status': 'CURRENT', 'updateTime': j.base.time.getTimeEpoch() }})
         return 'Upgrade script ran successfully'
+
+
+    @auth(groups=['level1', 'level2', 'level3'], skipversioncheck=True)
+    def upgradeFailed(self, **kwargs):
+        result = self.sysmodels.version.updateSearch({'status': 'INSTALLING'}, {'$set': {'status': 'ERROR'}})
+        return bool(result['nModified'])
 
     @auth(groups=['level1', 'level2', 'level3'])
     def changeSettings(self, id, settings, **kwargs):
@@ -144,7 +152,7 @@ class cloudbroker_grid(BaseActor):
         except:
             raise exceptions.NotFound("No grid with id {} was found".format(id))
         all_vms = self.models.vmachine.search({
-            'status': {'$nin': resourcestatus.Machine.DELETED_STATES}})[1:]
+            'status': {'$nin': resourcestatus.Machine.INVALID_STATES}})[1:]
         vms = filter(lambda vm: self.models.disk.count({'id': {'$in': vm['disks']}, 'type': 'P'}) > 0, all_vms)
         if vms:
             raise exceptions.BadRequest("System space already exists on this location")
@@ -185,3 +193,10 @@ class cloudbroker_grid(BaseActor):
             self.models.vmachine.set(machine)
             self.cb.machine.create(machine, vmauth, cloudspace, volumes, imageId, stack['id'], userdata)
         return 'System space successfully created'
+
+    def status(self, **kwargs):
+        if self.sysmodels.version.count({'status': 'INSTALLING'}) > 0:
+            raise exceptions.ServiceUnavailable('Currently being upgraded')
+        else:
+            return True
+

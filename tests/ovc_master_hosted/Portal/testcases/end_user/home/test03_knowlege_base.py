@@ -8,7 +8,7 @@ class KnowledgeBase(Framework):
 
     def setUp(self):
         super(KnowledgeBase, self).setUp()
-        self.Login.Login(cookies_login=True)
+        self.Login.Login(cookies_login=True, portal='enduser')
         self.click("knowledge_base_button")
 
     def test01_technical_tutorials(self):

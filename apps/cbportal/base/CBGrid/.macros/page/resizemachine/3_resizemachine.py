@@ -7,12 +7,14 @@ def main(j, args, params, tags, tasklet):
     actors = j.apps.cloudbroker.iaas.cb.actors.cloudapi
 
     vmachine = ccl.vmachine.get(machineId)
+    image = ccl.image.get(vmachine.imageId)
     bootdisks = ccl.disk.search({'id': {'$in': vmachine.disks}, 'type': 'B'})[1:]
     if len(bootdisks) != 1:
         return params
     bootdisk = bootdisks[0]
-
     popup = Popup(id='resizemachine', header='Resize Machine', submit_url='/restmachine/cloudbroker/machine/resize', showresponse=True)
+    if not image.hotResize:
+        popup.addMessage('Machine resizing will take effect on next start')
     popup.addNumber('Number of VCPUS', 'vcpus')
     popup.addNumber('Amount of memory', 'memory')
     popup.addHiddenField('machineId', machineId)

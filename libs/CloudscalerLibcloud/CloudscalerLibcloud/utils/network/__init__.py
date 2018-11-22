@@ -77,3 +77,49 @@ class Network(object):
         port = self.get_port(interface)
         if port:
             self.cleanup_flows('gw_mgmt', port, mac)
+
+class NetworkTool:
+    def __init__(self, netinfo, connection=None):
+        self.netinfo = netinfo
+        if connection is None:
+            self.connection = libvirtutil.LibvirtUtil()
+        else:
+            self.connection = connection
+        self.locks = []
+
+    def __enter__(self):
+        for net in self.netinfo:
+            if net['type'] == 'vlan':
+                bridgename = j.system.ovsnetconfig.getVlanBridge(net['id'])
+                lockname = 'vlan_{}'.format(bridgename)
+                self.locks.append(lockname)
+                j.system.fs.lock(lockname)
+                self._create_vlan(bridgename, net['id'])
+            elif net['type'] == 'vxlan':
+                lockname = 'vxlan_{}'.format(net['id'])
+                self.locks.append(lockname)
+                j.system.fs.lock(lockname)
+                self._create_vxlan(net['id'])
+        return self
+
+    def _create_vxlan(self, networkid):
+        vxnet = j.system.ovsnetconfig.ensureVXNet(networkid, 'vxbackend')
+        networks = self.connection.connection.listNetworks()
+        bridgename = vxnet.bridge.name
+        if bridgename not in networks:
+            self.connection.createNetwork(bridgename, bridgename)
+
+    def _create_vlan(self, bridgename, networkid):
+        nics = j.system.net.getNics()
+        if bridgename not in nics:
+            extbridge = 'ext-bridge'
+            if extbridge not in nics:
+                extbridge = 'backplane1'
+            j.system.ovsnetconfig.newVlanBridge(bridgename, extbridge, networkid)
+        if not self.connection.checkNetwork(bridgename):
+            self.connection.createNetwork(bridgename, bridgename)
+
+    def __exit__(self, *args):
+        for lock in self.locks:
+            j.system.fs.unlock(lock)
+

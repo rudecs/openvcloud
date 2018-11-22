@@ -1,0 +1,25 @@
+@usedefaults
+{{vmachine}}
+{% if name %}
+h2. Virtual Machine: ${name}
+{% if status != "DESTROYED" %}
+
+{{include:vmachine_actions}}
+
+{% endif %}
+{% if status == 'RUNNING' %}
+{% if accounts -%}
+{{html:
+<strong>Login:</strong> ${accounts[0].login}
+<a href="javascript:sendText('${accounts[0].login}');"><i class="glyphicon glyphicon-paste" title="Copy login to console"></i></a>
+<strong>Password:</strong> ${accounts[0].password}
+<a href="javascript:sendText('${accounts[0].password}');"><i class="glyphicon glyphicon-paste" title="Copy password to console"></i></a>
+}}
+{% endif -%}
+{{console}}
+{% else -%}
+Console is only available for running machines
+{% endif -%}
+{% else %}
+Invalid machine
+{% endif %}

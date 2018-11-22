@@ -15,8 +15,8 @@ async = True
 queue = "hypervisor"
 
 
-def action(machineid, xml=None, vmlog_dir=None):
+def action(machineid, xml, vmlog_dir, netinfo):
+    from CloudscalerLibcloud.utils.network import NetworkTool
     j.system.fs.createDir(vmlog_dir)
-    from CloudscalerLibcloud.utils.libvirtutil import LibvirtUtil
-    connection = LibvirtUtil()
-    return connection.create(machineid, xml)
+    with NetworkTool(netinfo) as net:
+        return net.connection.create(machineid, xml)

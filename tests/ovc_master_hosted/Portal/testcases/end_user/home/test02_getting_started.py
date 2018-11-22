@@ -5,7 +5,7 @@ class QuickTutorialGuide(Framework):
 
     def setUp(self):
         super(QuickTutorialGuide, self).setUp()
-        self.Login.Login(cookies_login=True)
+        self.Login.Login(cookies_login=True, portal='enduser')
         self.click("getting_started_button")
 
     def test01_intro(self):

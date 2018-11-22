@@ -31,7 +31,7 @@ class cloudbroker_machine(BaseActor):
         return j.apps.cloudapi.machines.create(cloudspaceId=cloudspaceId, name=name,
                                                description=description, sizeId=sizeId,
                                                imageId=imageId, disksize=disksize, datadisks=datadisks,
-                                               vcpus=vcpus, memory=memory)
+                                               vcpus=vcpus, memory=memory, **kwargs)
 
     @auth(groups=['level1', 'level2', 'level3'])
     def createOnStack(self, cloudspaceId, name, description, imageId, disksize, stackid, datadisks,

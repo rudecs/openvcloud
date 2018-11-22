@@ -27,10 +27,12 @@ class Read(ACLMACHINE):
         #. try to list machines with new user [user], should return 403
         #. add user to the machine with read access
         #. get machine with new user [user], should succeed
+        #. get cloudspace of the machine with new user [user], hould succeed
+        #. get account of the machine with new user [user], hould succeed
         #. list machines with new user [user], should succeed
         #. create new machine with user2, should succeed
         #. get machine with user2, should succeed
-        #. list machines with new user [user] still see 1 machine, should succeed
+        #. list machines with new user [user] still see 2 machine, should succeed
         """
         self.lg('%s STARTED' % self._testID)
 
@@ -53,11 +55,19 @@ class Read(ACLMACHINE):
         self.lg('- add user1 to the machine owned by user2 with access type [%s]' % accesstype)
         self.add_user_to_machine(machine_id=self.machine_id,
                                  user=self.user,
-                                 accesstype=accesstype)
+                                 accesstype=accesstype)                                 
 
         self.lg('- get machine with new user [user], should succeed')
         machine = self.user_api.cloudapi.machines.get(machineId=self.machine_id)
         self.assertEqual(machine['id'], self.machine_id)
+        
+        self.lg('- get cloudspace of the machine with new user [user], should succeed')
+        cloudspace = self.user_api.cloudapi.cloudspaces.get(cloudspaceId=machine['cloudspaceid'])
+        self.assertEqual(cloudspace['id'], machine['cloudspaceid'])
+
+        self.lg('- get account of the machine  with new user [user], should succeed')
+        account = self.user_api.cloudapi.accounts.get(accountId=cloudspace['accountId'])
+        self.assertEqual(account['id'], cloudspace['accountId'])
 
         self.lg('- list machines with new user [user], should succeed')
         machines = self.user_api.cloudapi.machines.list(cloudspaceId=self.cloudspace_id)
@@ -71,9 +81,9 @@ class Read(ACLMACHINE):
         new_machine = self.account_owner_api.cloudapi.machines.get(machineId=new_machine_id)
         self.assertEqual(new_machine['id'], new_machine_id)
 
-        self.lg('- list machines with new user [user] still see 1 machine, should succeed')
+        self.lg('- list machines with new user [user] still see 2 machine, should succeed')
         machines = self.user_api.cloudapi.machines.list(cloudspaceId=self.cloudspace_id)
-        self.assertEqual(len(machines), 1)
+        self.assertEqual(len(machines), 2)
         self.assertEqual(machines[0]['id'], self.machine_id)
 
         self.lg('%s ENDED' % self._testID)

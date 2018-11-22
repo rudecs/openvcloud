@@ -16,7 +16,7 @@ queue = 'hypervisor'
 
 
 def action(networkid, sourceip, vlan, externalip):
-    from CloudscalerLibcloud.utils.network import Network
+    from CloudscalerLibcloud.utils.network import Network, NetworkTool
     import libvirt
     import netaddr
     from xml.etree import ElementTree
@@ -31,56 +31,55 @@ def action(networkid, sourceip, vlan, externalip):
     netrange = hrd.get("instance.vfw.netrange.internal")
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
 
-    createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
-    createnetwork.executeLocal(networkid=networkid)
-    create_external_network = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-    extbridge = create_external_network.executeLocal(vlan=vlan)
+    netinfo = [{'type': 'vlan', 'id': vlan}, {'type': 'vxlan', 'id': networkid}]
+    extbridge = j.system.ovsnetconfig.getVlanBridge(vlan)
     name = 'routeros_%04x' % networkid
 
-    if source_con:
-        templatepath = '/var/lib/libvirt/images/routeros/template/routeros.qcow2'
-        destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
-        destinationfile = j.system.fs.joinPaths(destination, 'routeros.qcow2')
-        try:
-            domain = source_con.lookupByName(name)
-        except libvirt.libvirtError:
-            domain = None
-        if domain:
-            if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
-                localip = j.system.net.getReachableIpAddress(sourceip, 22)
-                targeturl = "tcp://{}".format(localip)
-                if not j.system.fs.exists(destination):
-                    j.system.fs.createDir(destination)
-                if not j.system.fs.exists(destinationfile):
-                    j.system.fs.copyFile(templatepath, destinationfile)
-                xmldom = ElementTree.fromstring(domain.XMLDesc())
-                seclabel = xmldom.find('seclabel')
-                if seclabel is not None:
-                    xmldom.remove(seclabel)
-                xml = ElementTree.tostring(xmldom)
-                xml = re.sub(r"bridge='(public|ext-\w+)'", r"bridge='{}'".format(extbridge), xml)
-                flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
-                try:
-                    domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
-                except Exception as e:
+    with NetworkTool(netinfo):
+        if source_con:
+            templatepath = '/var/lib/libvirt/images/routeros/template/routeros.qcow2'
+            destination = '/var/lib/libvirt/images/routeros/{0:04x}'.format(networkid)
+            destinationfile = j.system.fs.joinPaths(destination, 'routeros.qcow2')
+            try:
+                domain = source_con.lookupByName(name)
+            except libvirt.libvirtError:
+                domain = None
+            if domain:
+                if domain.state()[0] == libvirt.VIR_DOMAIN_RUNNING:
+                    localip = j.system.net.getReachableIpAddress(sourceip, 22)
+                    targeturl = "tcp://{}".format(localip)
+                    if not j.system.fs.exists(destination):
+                        j.system.fs.createDir(destination)
+                    if not j.system.fs.exists(destinationfile):
+                        j.system.fs.copyFile(templatepath, destinationfile)
+                    xmldom = ElementTree.fromstring(domain.XMLDesc())
+                    seclabel = xmldom.find('seclabel')
+                    if seclabel is not None:
+                        xmldom.remove(seclabel)
+                    xml = ElementTree.tostring(xmldom)
+                    xml = re.sub(r"bridge='(public|ext-\w+)'", r"bridge='{}'".format(extbridge), xml)
+                    flags = libvirt.VIR_MIGRATE_LIVE | libvirt.VIR_MIGRATE_PERSIST_DEST | libvirt.VIR_MIGRATE_UNDEFINE_SOURCE | libvirt.VIR_MIGRATE_NON_SHARED_DISK
                     try:
-                        target_domain = target_con.lookupByName(name)
-                        target_domain.undefine()
-                    except:
-                        pass  # vm wasn't created on target
-                    raise e
-                domain = target_con.lookupByName(name)
-                network.protect_external(domain, externalip)
-                network.protect_gwmgmt(domain, internalip)
-                return domain.XMLDesc()
+                        domain.migrate2(target_con, flags=flags, dxml=xml, uri=targeturl)
+                    except Exception as e:
+                        try:
+                            target_domain = target_con.lookupByName(name)
+                            target_domain.undefine()
+                        except:
+                            pass  # vm wasn't created on target
+                        raise e
+                    domain = target_con.lookupByName(name)
+                    network.protect_external(domain, externalip)
+                    network.protect_gwmgmt(domain, internalip)
+                    return domain.XMLDesc()
+                else:
+                    domain.undefine()
+                    return False
             else:
-                domain.undefine()
                 return False
         else:
+            # source is not available caller should probable do a restore from scratch
             return False
-    else:
-        # source is not available caller should probable do a restore from scratch
-        return False
 
 
 if __name__ == '__main__':

@@ -18,6 +18,7 @@ DEFAULTIOPS = 2000
 
 ujson = j.db.serializers.ujson
 models = j.clients.osis.getNamespace('cloudbroker')
+sysmodels = j.clients.osis.getNamespace('system')
 _providers = dict()
 
 
@@ -42,8 +43,8 @@ class CloudBroker(object):
     def __init__(self):
         self.Dummy = Dummy
         self._actors = None
-        self.syscl = j.clients.osis.getNamespace('system')
-        self.cbcl = j.clients.osis.getNamespace('cloudbroker')
+        self.syscl = sysmodels
+        self.cbcl = models
         self.vcl = j.clients.osis.getNamespace('vfw')
         self.agentcontroller = j.clients.agentcontroller.get()
         self.machine = Machine(self)
@@ -427,7 +428,23 @@ class CloudSpace(object):
         fwid = '{}_{}'.format(cloudspace.gid, cloudspace.networkId)
         self.cb.netmgr.fw_reapply(fwid)
 
-
+    def get_leases_public(self, externalnetworkId):
+        leases = []
+        regex = {"$regex": ".*externalnetworkId:{}(\s|$)".format(externalnetworkId)}
+        #FIXME::ROS strict DHCP
+        for vm in models.vmachine.search(
+                {"nics.type": "PUBLIC", "nics.params": regex}, size=0
+        )[1:]:
+            for nic in vm["nics"]:
+                if (
+                    nic["ipAddress"] != "Undefined"
+                    and nic["type"] == "PUBLIC"
+                    and nic["macAddress"]
+                ):
+                    leases.append(
+                        {"mac-address": nic["macAddress"], "address": nic["ipAddress"]}
+                    )
+        return leases
 
 class Machine(object):
 
@@ -453,6 +470,10 @@ class Machine(object):
         self.assertName(cloudspace.id, name)
         if not disksize:
             raise exceptions.BadRequest("Invalid disksize %s" % disksize)
+
+        if cloudspace.allowedVMSizes:
+            if sizeId and sizeId not in cloudspace.allowedVMSizes:
+                raise exceptions.BadRequest("Specified size not allowed for this cloudspace")
 
         for datadisksize in datadisks:
             if datadisksize > 2000:
@@ -482,14 +503,14 @@ class Machine(object):
                 raise exceptions.BadRequest('Userdata should be a dictonary')
 
         maxvms = netaddr.IPNetwork(cloudspace.privatenetwork).size - 5
-        if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.DELETED_STATES}, 'cloudspaceId': cloudspace.id}) >= maxvms:
+        if models.vmachine.count({'status': {'$nin': resourcestatus.Machine.INVALID_STATES}, 'cloudspaceId': cloudspace.id}) >= maxvms:
             raise exceptions.BadRequest("Can not create more than {} Virtual Machines in this Cloud Space".format(maxvms))
 
     def assertName(self, cloudspaceId, name):
         if not name or not name.strip():
             raise ValueError("Machine name can not be empty")
         results = models.vmachine.search({'cloudspaceId': cloudspaceId, 'name': name,
-                                          'status': {'$nin': resourcestatus.Machine.DELETED_STATES}})[1:]
+                                          'status': {'$ne': resourcestatus.Machine.DESTROYED}})[1:]
         if results:
             raise exceptions.Conflict('Selected name already exists')
 

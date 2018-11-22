@@ -19,8 +19,6 @@ class GridTests(Framework):
         #. click grid arrow then click on error condition
         #. check that all elements on error condition page exist
         #. check if show 10 and 25 entries works as expected
-        #. click action button then click on purge
-        #. select All and click on confirm, and check that all ECS are deleted
         """
         self.lg('%s STARTED' % self._testID)
         self.ErrorConditions.get_it()
@@ -70,18 +68,5 @@ class GridTests(Framework):
             self.assertTrue(round(float(self.get_size("ec_table_body")['height'])
                                   / table_row_height) < 10.0)
 
-        self.lg('click action button then click on purge')
-        self.click('ec_action_button')
-        self.click('purge_button')
-
-        self.lg('select All and click on confirm, and check that all ECS are deleted')
-        self.click('action_purge_confirm_button')
-        for _ in range(10):
-            if self.get_text("ec_table_no_data_text") != "No data available in table":
-                time.sleep(1)
-            else:
-                return True
-        else:
-            return False
 
         self.lg('%s ENDED' % self._testID)

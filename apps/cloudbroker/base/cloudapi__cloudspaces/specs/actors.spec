@@ -34,7 +34,7 @@
         Returns 200 if cloudspace is deleted or was already deleted or never existed
         """
         var:cloudspaceId int,, id of the cloudspace
-        var:permanently bool,False, whether to completly delete the cloudspace
+        var:permanently bool,False, whether to completly delete the cloudspace @optional
         result:bool, True if deletion was successful
 
     method:disable

@@ -48,7 +48,7 @@
         """
         var:diskId int,, id of disk to delete
         var:detach bool,,detach disk from machine first @optional
-        var:permanently bool,False, whether to completly delete the disk, works only with non attached disks
+        var:permanently bool,False, whether to completly delete the disk, works only with non attached disks @optional
         result: bool, True if disk was deleted successfully
 
     method:create

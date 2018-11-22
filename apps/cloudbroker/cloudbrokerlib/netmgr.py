@@ -49,6 +49,28 @@ class NetManager(object):
             raise exceptions.ServiceUnavailable("VFW with id %s is not deployed yet!" % fwid)
         return fwobj
 
+    def fw_update_leases(self, fwid, leases):
+        for lease in leases:
+            lease["address"] = lease["address"].split('/')[0]
+
+        fwobj =  self._getVFWObject(fwid)
+        fwobj.leases = leases
+
+        args = {
+            "name": "%s_%s" % (fwobj.domain, fwobj.name),
+            "fwobject": fwobj.obj2dict(),
+        }
+
+        job = self.cb.executeJumpscript(
+            "jumpscale", "vfs_applyconfig_routeros", nid=fwobj.nid, gid=fwobj.gid, args=args
+        )
+
+        if job["state"] != "OK":
+            raise exceptions.ServiceUnavailable(
+                "Failed to add lease to DHCP server; check job %(guid)s" % job
+            )
+
+
     def fw_create(self, gid, domain, password, publicip, type, networkid, publicgwip, publiccidr, vlan, targetNid=None, privatenetwork=DEFAULTCIDR, **kwargs):
         """
         param:domain needs to be unique name of a domain,e.g. a group, space, ... (just to find the FW back)

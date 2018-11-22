@@ -7,7 +7,8 @@ SIZES = {
     'megabytes': 1024 * 1024,
     'kilobytes': 1024,
     'bytes': 1,
-    'byte * 2^20': 2**20
+    'byte * 2^20': 2**20,
+    'byte * 2^30': 2**30
 }
 
 
@@ -35,8 +36,13 @@ def ovf_to_model(ovf):
     disksobjs = (ds.find('ovf:Disk', namespaces) for ds in envelope.findall('ovf:DiskSection', namespaces))
     disks = {}
     for obj in disksobjs:
+        units = obj.get('{%(ovf)s}capacityAllocationUnits' % namespaces)
+        size = int(obj.get('{%(ovf)s}capacity' % namespaces))
+        if units:
+            size = size * SIZES[units]
+
         disks[obj.get('{%(ovf)s}diskId' % namespaces)] = {
-            'size': int(obj.get('{%(ovf)s}capacity' % namespaces)),
+            'size': size,
             'name': obj.get('{%(ovf)s}diskId' % namespaces),
             'file': files[obj.get('{%(ovf)s}fileRef' % namespaces)]
         }

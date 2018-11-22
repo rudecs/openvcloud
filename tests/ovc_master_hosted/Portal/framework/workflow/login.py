@@ -6,18 +6,18 @@ class login():
     def __init__(self, framework):
         self.framework = framework
 
-    def GetIt(self):
+    def GetIt(self, url, portal):
         for _ in range(5):
-            self.framework.get_page(self.framework.environment_url)
-            time.sleep(5)
+            self.framework.get_page(url)
             try:
-                self.framework.click('landing_page_login')
+                self.framework.click('{}_landing_page_login'.format(portal))
             except:
                 time.sleep(2)
             else:
-                break
-        else:
-            self.framework.click('landing_page_login')
+                break   
+        
+        self.framework.driver.get(self.framework.driver.current_url)
+
         if not self.IsAt():
             self.framework.fail("The login page isn't loading well.")
 
@@ -35,18 +35,25 @@ class login():
         GAuth_code = totp.now()
         return GAuth_code
 
-    def Login(self, username='', password='', cookies_login=False):
-    
+    def Login(self, username='', password='', cookies_login=False, portal='admin'):
         if cookies_login:       
             self.framework.get_page(self.framework.environment_url)
             cookies = {'name':'beaker.session.id', 'value':self.framework.beaker_session_id}
             self.framework.driver.add_cookie(cookies)
-            self.framework.driver.refresh()
+            self.framework.get_page(self.framework.driver.current_url)
 
         else:      
             username = username or self.framework.admin_username
             password = password or self.framework.admin_password
-            self.GetIt()
+
+            if portal == 'admin':
+                url = self.framework.base_page
+                title = 'CBGrid - Home'
+            elif portal == 'enduser':
+                url = self.framework.environment_url
+                title = 'OpenvCloud - Decks'
+
+            self.GetIt(url=url, portal=portal)
 
             self.framework.lg('check the login page title, should succeed')
             self.framework.assertEqual(self.framework.driver.title, 'Log in - It\'s You Online')
@@ -82,28 +89,5 @@ class login():
                 if not self.framework.driver.title:
                     time.sleep(1)
                 else:
-                    self.framework.assertEqual(self.framework.driver.title, 'OpenvCloud - Decks', "Can't Login")
+                    self.framework.assertEqual(self.framework.driver.title, title, "Can't Login")
             self.framework.maximize_window()
-
-    def LoginFail(self, username='', password=''):
-        username = username
-        password = password
-        self.GetIt()
-        self.framework.lg('check the login page title, should succeed')
-        self.framework.assertEqual(self.framework.driver.title, 'Log in - It\'s You Online')
-        self.framework.lg('Do login')
-        self.framework.set_text('username_textbox', username)
-        self.framework.set_text('password_textbox', password)
-        self.framework.click('login_button')
-        if password and not username:
-            self.framework.assertEqual(self.framework.find_element('username_textbox').get_attribute('aria-invalid'),"true")
-            self.framework.assertEqual(self.framework.find_element('password_textbox').get_attribute('aria-invalid'),"false")
-        elif username and not password:
-            self.framework.assertEqual(self.framework.find_element('password_textbox').get_attribute('aria-invalid'),"true")
-            self.framework.assertEqual(self.framework.find_element('username_textbox').get_attribute('aria-invalid'),"false")
-        elif not (username and password):
-            self.framework.assertEqual(self.framework.find_element('password_textbox').get_attribute('aria-invalid'),"true")
-            self.framework.assertEqual(self.framework.find_element('username_textbox').get_attribute('aria-invalid'),"true")
-        else:
-            self.framework.wait_until_element_located('error_message')
-            self.framework.assertEqual(self.framework.find_element('error_message').get_attribute('innerHTML'), "Invalid credentials")

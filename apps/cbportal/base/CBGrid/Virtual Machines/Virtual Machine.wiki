@@ -17,6 +17,12 @@ h2. Virtual Machine: ${name}
 }}
 {% endif %}
 
+{% if status == 'RUNNING' %}
+{{html:
+<p><a disabled href="/cbgrid/VMConsole?id=${id}"><i class="glyphicon glyphicon-modal-window" title="Open Console"></i>&nbsp;Open Console</a></p>
+}}
+{% endif %}
+
 |*ID*| ${id}|
 |*Description*| ${descr}|
 |*Tags*| ${tags}|

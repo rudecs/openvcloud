@@ -53,7 +53,7 @@ def createVM(xml):
 
 def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privatenetwork):
     from CloudscalerLibcloud.utils import libvirtutil
-    from CloudscalerLibcloud.utils.network import Network
+    from CloudscalerLibcloud.utils.network import Network, NetworkTool
     import pexpect
     import netaddr
     import jinja2
@@ -73,8 +73,6 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privaten
             'password': newpassword
             }
 
-    jumpscript = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'create_external_network')
-    bridgename = j.clients.redisworker.execJumpscript(jumpscript=jumpscript, vlan=vlan).result
 
     networkidHex = '%04x' % int(networkid)
     internalip = str(netaddr.IPAddress(netaddr.IPNetwork(netrange).first + int(networkid)))
@@ -91,11 +89,8 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privaten
 
     connection = libvirtutil.LibvirtUtil()
     network = Network(connection)
+    netinfo = [{'type': 'vlan', 'id': vlan}, {'type': 'vxlan', 'id': networkid}]
     try:
-        # setup network vxlan
-        print 'Creating network'
-        createnetwork = j.clients.redisworker.getJumpscriptFromName('greenitglobe', 'createnetwork')
-        j.clients.redisworker.execJumpscript(jumpscript=createnetwork, _queue='hypervisor', networkid=networkid)
         templatepath = '/var/lib/libvirt/images/routeros/template/routeros.qcow2'
         destination = '/var/lib/libvirt/images/routeros/%s/' % networkidHex
         destinationfile = os.path.join(destination, 'routeros.qcow2')
@@ -108,13 +103,17 @@ def action(networkid, publicip, publicgwip, publiccidr, password, vlan, privaten
         imagedir = j.system.fs.joinPaths(j.dirs.baseDir, 'apps/routeros/template/')
         xmltemplate = jinja2.Template(j.system.fs.fileGetContents(j.system.fs.joinPaths(imagedir, 'routeros-template.xml')))
 
-        xmlsource = xmltemplate.render(networkid=networkidHex, destinationfile=destinationfile, publicbridge=bridgename)
+        with NetworkTool(netinfo, connection):
+            # setup network vxlan
+            print('Creating network')
+            bridgename = j.system.ovsnetconfig.getVlanBridge(vlan)
+            xmlsource = xmltemplate.render(networkid=networkidHex, destinationfile=destinationfile, publicbridge=bridgename)
 
-        print 'Starting VM'
-        try:
-            domuuid = j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource)
-        except Exception, e:
-            raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s" % (networkid, networkidHex, e))
+            print 'Starting VM'
+            try:
+                domuuid = j.clients.redisworker.execFunction(createVM, _queue='hypervisor', xml=xmlsource, _timeout=180)
+            except Exception, e:
+                raise RuntimeError("Could not create VFW vm from template, network id:%s:%s\n%s" % (networkid, networkidHex, e))
         print 'Protect network'
         domain = connection.get_domain_obj(domuuid)
         network.protect_external(domain, publicip)

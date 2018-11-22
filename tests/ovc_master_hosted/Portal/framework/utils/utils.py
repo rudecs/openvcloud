@@ -29,7 +29,7 @@ class BaseTest(unittest.TestCase):
         self.admin_password = config['main']['passwd']
         self.GAuth_secret = config['main']['secret']
         self.browser = config['main']['browser']
-        self.base_page = self.environment_url + '/ays'
+        self.base_page = self.environment_url + '/cbgrid'
         self.elements = xpath.elements.copy()
         self.api_url = self.environment_url.replace('http://', 'https://') + '/restmachine'
         self.session = requests.Session()
@@ -57,14 +57,17 @@ class BaseTest(unittest.TestCase):
         self.driver.set_window_size(1800, 1000)
         self.wait = WebDriverWait(self.driver, 15)
 
-        self.username = str(uuid.uuid4()).replace('-', '')[0:10]
-        self.account = str(uuid.uuid4()).replace('-', '')[0:10]
-        self.cloudspace = str(uuid.uuid4()).replace('-', '')[0:10]
-        self.machine_name = str(uuid.uuid4()).replace('-', '')[0:10]
+        self.username = 'portal_tests_user_%s' % (self.random_string())
+        self.account = 'portal_tests_%s_%s' % (self._testID, self.random_string())
+        self.cloudspace = 'portal_tests_%s_%s' % (self._testID, self.random_string())
+        self.machine_name = 'portal_tests_%s_%s' % (self._testID, self.random_string())
         self.password = str(uuid.uuid4()).replace('-', '')[0:10]
         self.email = str(uuid.uuid4()).replace('-', '')[0:10] + "@g.com"
         self.group = 'user'
         self.session.cookies.set("beaker.session.id", self.beaker_session_id)
+
+    def random_string(self, length=5):
+        return str(uuid.uuid4()).replace('-', '')[0:length]
 
     def deleteUserApi(self, username):
         url = '%s/cloudbroker/user/delete' % self.api_url
@@ -77,8 +80,8 @@ class BaseTest(unittest.TestCase):
 
     def deleteAccountApi(self, account_name):
         url = '%s/cloudapi/accounts/list' % self.api_url
-        r = self.session.post(url)
-        for account in r.json():
+        response = self.session.post(url)
+        for account in response.json():
             if account['name'] == account_name:
                 account_id = account['id']
                 break
@@ -87,9 +90,9 @@ class BaseTest(unittest.TestCase):
             return False
 
         url = '%s/cloudbroker/account/delete' % self.api_url
-        r = self.session.post(url, data={'accountId':account_id, 'reason':'tearDown'})
+        response = self.session.post(url, data={'accountId':account_id, 'reason':'tearDown', 'permanently':True})
 
-        if r.status_code == 200:
+        if response.status_code == 200:
             self.lg('account %s is deleted' % account_name)
         else:
             self.lg('cannot delete account %s status code: %d' % (account_name,r.status_code))

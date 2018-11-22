@@ -490,13 +490,10 @@ class CSLibvirtNodeDriver(object):
         volumes = volumes or []
         macaddress = self.backendconnection.getMacAddress(self.gid)
 
-        result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=networkid)
-        if not result or result == -1:
-            raise NotEnoughResources("Failed to create network", volumes)
-
-        networkname = result['networkname']
+        networkname = 'space_{:04x}'.format(networkid)
         nodeid = str(uuid.uuid4())
         interfaces = [NetworkInterface(macaddress, '{}-{:04x}'.format(name, networkid), 'bridge', networkname)]
+        netinfo = [{'id': networkid, 'type': 'vxlan'}]
         extra = {'volumes': volumes,
                  'ifaces': interfaces,
                  'imagetype': imagetype,
@@ -516,7 +513,7 @@ class CSLibvirtNodeDriver(object):
         machinexml = self.get_xml(node)
 
         # 0 means default behaviour, e.g machine is auto started.
-        result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml, vmlog_dir=vmlog_dir)
+        result = self._execute_agent_job('createmachine', queue='hypervisor', machinexml=machinexml, vmlog_dir=vmlog_dir, netinfo=netinfo)
         if not result or result == -1:
             # Agent is not registered to agentcontroller or we can't provision the
             # machine(e.g not enough resources, delete machine)
@@ -669,24 +666,23 @@ class CSLibvirtNodeDriver(object):
         return self._execute_agent_job('unpausemachine', queue='hypervisor', machineid=machineid)
 
     def ex_soft_reboot_node(self, node):
-        self._ensure_network(node)
         xml = self.get_xml(node)
-        return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
+        netinfo = self.get_net_info(node)
+        return self._execute_agent_job('softrebootmachine', queue='hypervisor', machineid=node.id, xml=xml, netinfo=netinfo)
 
     def ex_hard_reboot_node(self, node):
-        self._ensure_network(node)
         xml = self.get_xml(node)
-        return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid=node.id, xml=xml)
+        netinfo = self.get_net_info(node)
+        return self._execute_agent_job('hardrebootmachine', queue='hypervisor', machineid=node.id, xml=xml, netinfo=netinfo)
 
-    def _ensure_network(self, node):
+    def get_net_info(self, node):
+        netinfo = []
         for interface in node.extra['ifaces']:
             if interface.type == 'private':
-                result = self._execute_agent_job('createnetwork', queue='hypervisor', networkid=interface.networkId)
-                if not result or result == -1:
-                    raise NotEnoughResources("Failed to create network")
+                netinfo.append({'type': 'vxlan', 'id': interface.networkId})
             else:
-                self._execute_agent_job('create_external_network', queue='hypervisor', vlan=interface.networkId)
-        return True
+                netinfo.append({'type': 'vlan', 'id': interface.networkId})
+        return netinfo
 
     def get_xml(self, node):
         machinetemplate = self.env.get_template("machine.xml")
@@ -700,9 +696,9 @@ class CSLibvirtNodeDriver(object):
         return machinexml
 
     def ex_start_node(self, node):
-        self._ensure_network(node)
         machinexml = self.get_xml(node)
-        self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml, vmlog_dir=vmlog_dir)
+        netinfo = self.get_net_info(node)
+        self._execute_agent_job('startmachine', queue='hypervisor', machineid=node.id, xml=machinexml, vmlog_dir=vmlog_dir, netinfo=netinfo)
         return True
 
     def ex_get_console_output(self, node):
@@ -854,15 +850,18 @@ class CSLibvirtNodeDriver(object):
         """
         return False
 
-    def attach_public_network(self, node, vlan, ipcidr):
+    def attach_public_network(self, node, ipcidr, interface):
         """
         Attach Virtual machine to the cpu node public network
         """
-        macaddress = self.backendconnection.getMacAddress(self.gid)
-        target = '%s-ext' % (node.name)
-        bridgename = self._execute_agent_job('create_external_network', queue='hypervisor', vlan=vlan)
-        interface = NetworkInterface(mac=macaddress, target=target, type='PUBLIC', bridgename=bridgename, networkId=vlan)
-        self._execute_agent_job('attach_device', queue='hypervisor', xml=str(interface), machineid=node.id, ipcidr=ipcidr)
+        self._execute_agent_job(
+            "attach_device",
+            queue="hypervisor",
+            xml=str(interface),
+            machineid=node.id,
+            ipcidr=ipcidr,
+            vlan=interface.networkId
+        )
         return interface
 
     def detach_public_network(self, node):
@@ -885,9 +884,9 @@ class CSLibvirtNodeDriver(object):
 
     def ex_migrate(self, node, sourceprovider, force=False):
         domainxml = self.get_xml(node)
-        self._ensure_network(node)
+        netinfo = self.get_net_info(node)
         return self._execute_agent_job('vm_livemigrate',
                                 vm_id=node.id,
                                 sourceurl=sourceprovider.uri,
                                 force=force,
-                                domainxml=domainxml, vmlog_dir=vmlog_dir)
+                                domainxml=domainxml, vmlog_dir=vmlog_dir, netinfo=netinfo)

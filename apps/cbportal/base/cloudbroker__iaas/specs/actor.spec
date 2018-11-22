@@ -15,6 +15,7 @@
         var:vlan int,,VLAN Tag @optional
         var:accountId int,,accountId that has exclusive access to this network Tag @optional
         var:pingips str,, comma seperated list of ips to be pinged to check for network, default is 8.8.8.8(to disable check enter 127.0.0.1) @optional
+        var:dhcpServerId int,,ID of DHCP server for this external network @optional
         result:int
 
     method:deleteExternalNetwork
@@ -38,6 +39,20 @@
         """
         var:externalnetworkId int,, the id of the external network
         var:gateway str,, Gateway of the pool
+
+    method:editDHCPServerId
+        """
+        Updates ID of DHCP server
+        """
+        var:externalnetworkId int,, the id of the external network
+        var:dhcpServerId int,,ID of DHCP server for this external network
+
+    method:setupDhcpServer
+        """
+        cloudbroker.Get external network leases from DB and update it on DHCP server
+        """
+        var:external_network_id int,, update leases for thix external network
+        var:leases str,, optional attach additional leases @optional
 
     method:removeExternalIP
         """

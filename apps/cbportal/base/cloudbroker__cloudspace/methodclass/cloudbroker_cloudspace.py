@@ -416,7 +416,7 @@ class cloudbroker_cloudspace(BaseActor):
         return cloudspaces[0]
 
     @auth(groups=['level1', 'level2', 'level3'])
-    def addUser(self, cloudspaceId, username, accesstype, **kwargs):
+    def addUser(self, cloudspaceId, username, accesstype, explicit=True, **kwargs):
         """
         Give a user access rights.
         Access rights can be 'R' or 'W'
@@ -433,7 +433,7 @@ class cloudbroker_cloudspace(BaseActor):
 
         cloudspaceacl = authenticator.auth().getCloudspaceAcl(cloudspaceId)
         if username in cloudspaceacl:
-            updated = j.apps.cloudapi.cloudspaces.updateUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype)
+            updated = j.apps.cloudapi.cloudspaces.updateUser(cloudspaceId=cloudspaceId, userId=username, accesstype=accesstype, explicit=explicit)
             if not updated:
                 raise exceptions.PreconditionFailed('User already has same access level to owning '
                                                     'account')

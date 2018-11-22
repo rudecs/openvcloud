@@ -1,11 +1,11 @@
 from JumpScale import j
 from JumpScale.portal.portal import exceptions
-from .cloudbroker import models
+from .cloudbroker import models, sysmodels
 from cloudbrokerlib import resourcestatus
 
 
 class auth(object):
-    def __init__(self, acl=None, level=None, groups=None):
+    def __init__(self, acl=None, level=None, groups=None, skipversioncheck=False):
         self.acl = acl or dict()
         for key in self.acl:
             if key not in ['account', 'cloudspace', 'machine']:
@@ -14,6 +14,7 @@ class auth(object):
         self.level = level
         self.models = models
         self.groups = groups
+        self.skipversioncheck = skipversioncheck
 
     def getAccountAcl(self, accountId):
         result = dict()
@@ -23,7 +24,7 @@ class auth(object):
         for ace in account.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, account_right=set(ace.right),
-                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status, explicit=ace.explicit)
                 result[ace.userGroupId] = ace_dict
         return result
 
@@ -35,7 +36,7 @@ class auth(object):
         for ace in cloudspace.acl:
             if ace.type == 'U':
                 ace_dict = dict(userGroupId=ace.userGroupId, cloudspace_right=set(ace.right),
-                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status)
+                                right=set(ace.right), type='U', canBeDeleted=True, status=ace.status, explicit=ace.explicit)
                 result[ace.userGroupId] = ace_dict
 
         for user_id, ace in self.getAccountAcl(cloudspace.accountId).iteritems():
@@ -105,6 +106,9 @@ class auth(object):
                 # call is not performed over rest let it pass
                 return func(*args, **kwargs)
             ctx = kwargs['ctx']
+            if not self.skipversioncheck and sysmodels.version.count({'status': 'INSTALLING'}) != 0:
+                raise exceptions.ServiceUnavailable('Can not call API during upgrade')
+            
             tags = j.core.tags.getObject(ctx.env['tags'])
             user = ctx.env['beaker.session']['user']
             account = None
@@ -226,7 +230,7 @@ class auth(object):
             if userobj:
                 groups = set(userobj.groups)
             if not groups.intersection(self.groups):
-                raise exceptions.Forbidden('User %s has no access. If you would like to gain access please contact your adminstrator' % user)
+                raise exceptions.Forbidden('User %s has no access. If you would like to gain access please contact your adminstrator' % username)
 
         if 'account' in self.acl and account:
             grantedaccountacl = self.expandAclFromAccount(username, groups, account)

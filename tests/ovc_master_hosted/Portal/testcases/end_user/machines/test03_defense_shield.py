@@ -13,15 +13,10 @@ class DefenseShield(Framework):
 
     def setUp(self):
         super(DefenseShield, self).setUp()
-        self.Login.Login(cookies_login=True)
+        self.Login.Login(cookies_login=True, portal='enduser')
         self.EUMachines.create_default_account_cloudspace(self.admin_username, self.account, self.cloudspace)
         self.assertTrue(self.EUMachines.end_user_create_virtual_machine(machine_name=self.machine_name))
         self.EUHome.get_it()
-
-    def tearDown(self):
-        self.EUMachines.delete_default_account_cloudspace(self.account, self.cloudspace)
-        self.Logout.Admin_Logout()
-        super(DefenseShield, self).tearDown()
 
     # @unittest.skip('bug: #778')
     def test001_defense_shield_page(self):

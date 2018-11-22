@@ -63,9 +63,10 @@ class CloudspaceTests(BasicACLTest):
         self.assertEqual(e.exception.status_code, 409)
 
         self.lg('4- Delete the cloudspace with destroy, should succeed')
-        self.api.cloudbroker.cloudspace.destroy(accountId= self.account_id,
-                                                cloudspaceId=cloudspace_id,
-                                                reason='test')
+        self.api.cloudbroker.cloudspace.destroy(cloudspaceId=cloudspace_id,
+                                                reason='test',
+                                                permanently=True)
+
         self.wait_for_status('DESTROYED', self.api.cloudapi.cloudspaces.get,
                              cloudspaceId=cloudspace_id)
 
@@ -315,7 +316,6 @@ class CloudspaceTests(BasicACLTest):
         self.api.cloudbroker.cloudspace.moveVirtualFirewallToFirewallNode(self.cloudspace_id, node_id)
         vfw = self.api.cloudbroker.cloudspace.getVFW(self.cloudspace_id)
         self.assertEqual(vfw['nid'], node_id)
-        self.wait_for_status('HALTED', self.api.cloudbroker.cloudspace.getVFW, cloudspaceId=self.cloudspace_id)
 
         self.lg('Start cloudspace (CS1)\'s vfw, should succeed')
         self.api.cloudbroker.cloudspace.startVFW(self.cloudspace_id)
@@ -408,14 +408,15 @@ class CloudspaceTests(BasicACLTest):
             number_of_ros = vcl.virtualfirewall.count({'gid': gid, 'nid': referenceId})
             stacks_list.append((referenceId, number_of_ros))
 
-        stacks_list.sort(key=lambda tup: tup[1])
+        min_ros_count = min(stacks_list, key=lambda tup: tup[1])[1]
+        available_stacks = [stack[0] for stack in stacks_list if stack[1] ==  min_ros_count]
 
         self.lg('Create new cloudspace')
         cloudspace_id = self.cloudapi_cloudspace_create(self.account_id, self.location, self.account_owner)
 
         self.lg('Check that the new cloudspace is created on the cpu node with smallest number of router os')        
         vfw = self.api.cloudbroker.cloudspace.getVFW(cloudspace_id)
-        self.assertEqual(vfw['nid'], stacks_list[0][0])
+        self.assertIn(vfw['nid'], available_stacks)
 
 
 

@@ -16,6 +16,7 @@ def main(j, args, params, tags, tasklet):
     popup.addNumber('VLAN Tag (leave empty if its the standard public bridge)', 'vlan', required=False)
     popup.addNumber('AccountId (make external network exclusive to this accountId otherwise leave empty)', 'accountId', required=False)
     popup.addDropdown('Choose Location', 'gid', [(location['name'], location['gid']) for location in locations])
+    popup.addNumber("DHCP server ID (leave empty if no DHCP server for this network)", "dhcpServerId", required=False)
     popup.addText(' Enter list of ips(seperated by commas), eg 8.8.8.8,10.10.10.10. If you want to disable the health check, enter 127.0.0.1', 'pingips', placeholder='If left empty default will be 8.8.8.8')
     popup.write_html(page)
 

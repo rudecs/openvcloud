@@ -62,7 +62,7 @@ def action(previous_version, location_url,  current_version=""):
                             errors = True
                             j.console.warning('Failed to execute {} on {} in reasonable time is not up?'.format(name, job['nid']))
                     if errors:
-                        sys.exit(1)
+                        raise RuntimeError('Failed to execute script {}, the status was {}'.format(name, job['state']))
 
 
 if __name__ == '__main__':

@@ -11,3 +11,4 @@
 * [Stacks](Stacks/Stacks.md)
 * [Users](Users/Users.md)
 * [Virtual Machines](VirtualMachines/VirtualMachines.md)
+* [Recycle Bin](RecycleBin/RecycleBin.md)

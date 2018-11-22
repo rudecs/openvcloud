@@ -86,7 +86,7 @@ class level1_group(ACLACCOUNT):
 
         self.lg('9-delete created account by user1 ')
 
-        self.user1_api.cloudbroker.account.delete(accountId = accountId ,reason="test")
+        self.user1_api.cloudbroker.account.delete(accountId = accountId ,reason="test", permanently=True)
 
 
     def test002_level1_and_cloudspaces(self):
@@ -181,7 +181,7 @@ class level1_group(ACLACCOUNT):
 
         self.lg('-destroy  cloudspace1')
 
-        self.user2_api.cloudbroker.cloudspace.destroy(accountId=self.account_id,cloudspaceId = cloudspaceId1,reason="test")
+        self.user2_api.cloudbroker.cloudspace.destroy(cloudspaceId = cloudspaceId1,reason="test", permanently=True)
         self.wait_for_status('DESTROYED', self.api.cloudapi.cloudspaces.get,cloudspaceId= cloudspaceId1)
 
 

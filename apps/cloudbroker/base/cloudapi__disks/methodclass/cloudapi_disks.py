@@ -119,8 +119,8 @@ class cloudapi_disks(BaseActor):
                 if val and val < MIN_IOPS:
                     raise exceptions.BadRequest("{arg} was set below the minimum iops {min_iops}: {provided_iops} provided".format(
                         arg=arg, min_iops=MIN_IOPS, provided_iops=val))
-
-        iotune = args
+        
+        iotune = args.copy()
         iotune.pop('diskId')
         iotune.pop('kwargs')
         iotune.pop('self')
@@ -197,11 +197,11 @@ class cloudapi_disks(BaseActor):
         if disk.status == resourcestatus.Disk.DESTROYED:
             return True
         if disk.type == 'C':
-            machines = self.models.vmachine.count({'tags': {'$regex': ".*cdrom:%s.*" % disk.id}})
+            machines = self.models.vmachine.count({'tags': {'$regex': ".*cdrom:%s.*" % disk.id}, 'status': {'$ne': resourcestatus.Machine.DESTROYED}})
             if machines:
                 raise exceptions.Conflict('Cannot delete a used disk')
         else:
-            machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': 'DESTROYED'}})[1:]
+            machines = self.models.vmachine.search({'disks': diskId, 'status': {'$ne': resourcestatus.Machine.DESTROYED}})[1:]
         if machines and not detach:
             raise exceptions.Conflict('Can not delete disk which is attached')
         elif machines:

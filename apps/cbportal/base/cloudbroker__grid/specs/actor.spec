@@ -5,7 +5,7 @@
 
     method:purgeLogs
         """
-        Remove logs & eco’s
+        Remove logs & eco's
         By default the logs en eco's older than than 1 week but this can be overriden
         """
         var:gid int,, id of the grid
@@ -48,6 +48,12 @@
         """
         result: str
 
+    method:upgradeFailed
+        """
+        Set status of current installing version to Error
+        """
+        result: str
+
     method:changeSettings
         """
         changes grid settings
@@ -63,6 +69,11 @@
         var:gid str,, id of the grid
         var:nodestype str,, Type of nodes you want to apply the action on
         var:script str,, the script you want to run
+
+    method:status @noauth
+        """
+        Check if current environment is active
+        """
 
     method:createSystemSpace
         """

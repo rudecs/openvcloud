@@ -15,9 +15,9 @@ import paramiko
 
 SESSION_DATA = {'vms': []}
 
-IMAGE_URL = 'ftp://pub:pub1234@ftp.aydo.com/Linux/openwrt/openwrt-18.06-rc1.qcow2'
+IMAGE_URL = 'ftp://pub:pub1234@ftp.gig.tech/Linux/openwrt/openwrt-18.06-rc1.qcow2'
 
-CDROM_URL = 'https://distro.ibiblio.org/tinycorelinux/9.x/x86/release/Core-current.iso'
+CDROM_URL = 'ftp://pub:pub1234@ftp.gig.tech/Linux/tinycorelinux/Core-9x.iso'
 
 
 class API(object):
@@ -374,6 +374,15 @@ class BaseTest(unittest.TestCase):
 
         return False
 
+    def wait_for_node_status(self, nodeId, status, timeout=30):
+        scl = j.clients.osis.getNamespace('system')
+        for _ in range(timeout):
+            if scl.node.get(int(nodeId)).status == status:
+                return True
+            else:
+                time.sleep(3)
+        return False
+
     def get_machine_ipaddress(self, machineId):
         machine_info = self.api.cloudapi.machines.get(machineId=machineId)
         ip_address = machine_info['interfaces'][0]['ipAddress']
@@ -579,10 +588,13 @@ class BaseTest(unittest.TestCase):
         return ssh_client
 
     def get_running_nodeId(self, except_nodeid=None):
-        nodes = self.api.cloudbroker.computenode.list()
+        osiscl = j.clients.osis.getByInstance('main')
+        nodecl = j.clients.osis.getCategory(osiscl, 'system', 'node')
+        nodes = nodecl.simpleSearch({})
+        nodes = [node for node in nodes if 'cpunode' in node['roles']]
         for node in nodes:
-            if int(node['referenceId']) != except_nodeid and node['status'] == 'ENABLED':
-                return int(node['referenceId'])
+            if int(node['id']) != except_nodeid and node['status'] == 'ENABLED':
+                return int(node['id'])
         else:
             return None
 

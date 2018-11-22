@@ -16,9 +16,9 @@ class cloudapi_images(BaseActor):
         """
         fields = ['id', 'name', 'description', 'type', 'size', 'username', 'accountId', 'status']
         if accountId:
-            q = {'referenceId': {'$ne': None}, 'status': resourcestatus.Image.CREATED, 'accountId': {"$in": [0, int(accountId)]}}
+            q = {'referenceId': {'$nin': ['', None]}, 'status': resourcestatus.Image.CREATED, 'accountId': {"$in": [0, int(accountId)]}}
         else:
-            q = {'referenceId': {'$ne': None}, 'status': resourcestatus.Image.CREATED, 'accountId': 0}
+            q = {'referenceId': {'$nin': ['', None]}, 'status': resourcestatus.Image.CREATED, 'accountId': 0}
         query = {'$query': q, '$fields': fields}
 
         if cloudspaceId:
@@ -97,9 +97,9 @@ class cloudapi_images(BaseActor):
         if not image:
             raise exceptions.BadRequest('Image with id "%s" not found' % imageId)
         account = self.models.account.searchOne({'id': image['accountId']})
-        if account and account['status'] == resourcestatus.Account.DELETED:
+        if account and account['status'] == resourcestatus.Account.DELETED and 'imgrestore' not in kwargs:
             raise exceptions.BadRequest("Cannot restore an image on a deleted account")
-        if image['status'] != resourcestatus.Image.DELETED and 'imgrestore' not in kwargs:
+        if image['status'] != resourcestatus.Image.DELETED:
             raise exceptions.BadRequest('Can only restore a deleted image')
         self.models.image.updateSearch({'id': image['id']}, {'$set': {'status': resourcestatus.Image.CREATED, 'deletionTime': 0}})
         self.models.stack.updateSearch({'gid': image['gid']}, {'$addToSet': {'images': image['id']}})
